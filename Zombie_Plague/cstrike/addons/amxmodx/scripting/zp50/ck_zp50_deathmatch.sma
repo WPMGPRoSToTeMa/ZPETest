@@ -1,0 +1,175 @@
+/* AMX Mod X
+*	[ZP] Deathmatch.
+*	Author: MeRcyLeZZ. Edition: C&K Corporation.
+*	This enterprise software. Please, buy plugin: https://news.ckcorp.ru/zp/75-zombie-plague-next.html / http://news.ckcorp.ru/24-contacts.html
+*
+*	http://ckcorp.ru/ - support from the C&K Corporation.
+*
+*	Support is provided only on the site.
+*/
+
+#define PLUGIN "deathmatch"
+#define VERSION "5.2.4.0"
+#define AUTHOR "C&K Corporation"
+
+#include <amxmodx>
+#include <cs_util>
+#include <ck_zp50_gamemodes>
+#include <ck_zp50_kernel>
+
+#define TASK_RESPAWN 100
+#define ID_RESPAWN (iTask_ID - TASK_RESPAWN)
+
+// Custom Forwards
+enum _:TOTAL_FORWARDS
+{
+	FW_USER_RESPAWN_PRE = 0
+};
+
+new g_Forwards[TOTAL_FORWARDS];
+new g_Forward_Result;
+
+new g_Game_Mode_Started;
+
+new g_pCvar_Deathmatch;
+new g_pCvar_Respawn_Delay;
+new g_pCvar_Respawn_Zombies;
+new g_pCvar_Respawn_Humans;
+new g_pCvar_Respawn_On_Suicide;
+
+new g_iBit_Alive;
+new g_iBit_Connected;
+
+public plugin_init()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_pCvar_Deathmatch = register_cvar("zm_deathmatch", "0");
+	g_pCvar_Respawn_Delay = register_cvar("zm_respawn_delay", "5");
+	g_pCvar_Respawn_Zombies = register_cvar("zm_respawn_zombies", "1");
+	g_pCvar_Respawn_Humans = register_cvar("zm_respawn_humans", "1");
+	g_pCvar_Respawn_On_Suicide = register_cvar("zm_respawn_on_suicide", "0");
+
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
+
+	g_Forwards[FW_USER_RESPAWN_PRE] = CreateMultiForward("zm_fw_deathmatch_respawn_pre", ET_CONTINUE, FP_CELL);
+}
+
+public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
+{
+	// Respawn if deathmatch is enabled
+	if (get_pcvar_num(g_pCvar_Deathmatch))
+	{
+		if (!get_pcvar_num(g_pCvar_Respawn_On_Suicide) && (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker)))
+		{
+			return;
+		}
+
+		// Respawn if human/zombie?
+		if ((zp_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Zombies)) || (!zp_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Humans)))
+		{
+			return;
+		}
+
+		set_task(float(get_pcvar_num(g_pCvar_Respawn_Delay)), "Respawn_Player_Task", iVictim + TASK_RESPAWN);
+	}
+}
+
+public Respawn_Player_Task(iTask_ID)
+{
+	// Already alive or round ended
+	if (BIT_VALID(g_iBit_Alive, ID_RESPAWN) || zp_gamemodes_get_current() == ZP_NO_GAME_MODE)
+	{
+		return;
+	}
+
+	// Player moved to spectators
+	if (CS_GET_USER_TEAM(ID_RESPAWN) == CS_TEAM_SPECTATOR || CS_GET_USER_TEAM(ID_RESPAWN) == CS_TEAM_UNASSIGNED)
+	{
+		return;
+	}
+
+	// Allow other plugins to decide whether player can respawn or not
+	ExecuteForward(g_Forwards[FW_USER_RESPAWN_PRE], g_Forward_Result, ID_RESPAWN);
+
+	if (g_Forward_Result >= PLUGIN_HANDLED)
+	{
+		return;
+	}
+
+	// Respawn as zombie?
+	if (get_pcvar_num(g_pCvar_Deathmatch) == 2 || (get_pcvar_num(g_pCvar_Deathmatch) == 3 && random_num(0, 1)) || (get_pcvar_num(g_pCvar_Deathmatch) == 4 && zp_core_get_zombie_count() < Get_Alive_Count() / 2))
+	{
+		// Only allow respawning as zombie after a game mode started
+		if (g_Game_Mode_Started)
+		{
+			zp_core_respawn_as_zombie(ID_RESPAWN, true);
+		}
+	}
+
+	Respawn_Player_Manually(ID_RESPAWN);
+}
+
+// Respawn Player Manually (called after respawn checks are done)
+Respawn_Player_Manually(iPlayer)
+{
+	// Respawn!
+	rg_round_respawn(iPlayer);
+}
+
+public zp_fw_gamemodes_start()
+{
+	g_Game_Mode_Started = true;
+}
+
+public zp_fw_gamemodes_end()
+{
+	g_Game_Mode_Started = false;
+
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		remove_task(i + TASK_RESPAWN);
+	}
+}
+
+public client_putinserver(iPlayer)
+{
+	BIT_ADD(g_iBit_Connected, iPlayer);
+}
+
+public client_disconnected(iPlayer)
+{
+	// Remove tasks on disconnect
+	remove_task(iPlayer + TASK_RESPAWN);
+
+	BIT_SUB(g_iBit_Alive, iPlayer);
+	BIT_SUB(g_iBit_Connected, iPlayer);
+}
+
+public zp_fw_kill_pre_bit_sub(iPlayer)
+{
+	BIT_SUB(g_iBit_Alive, iPlayer);
+}
+
+public zp_fw_spawn_post_add_bit(iPlayer)
+{
+	remove_task(iPlayer + TASK_RESPAWN);
+
+	BIT_ADD(g_iBit_Alive, iPlayer);
+}
+
+// Get Alive Count -returns alive players number-
+Get_Alive_Count()
+{
+	new iAlive;
+
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		if (BIT_VALID(g_iBit_Alive, i))
+		{
+			iAlive++;
+		}
+	}
+
+	return iAlive;
+}

@@ -1,0 +1,326 @@
+[en]
+
+ZP_PREFIX = [ZPE]
+
+MENU_TITLE = \y Zombie Plague 6.0 ^n ^n
+
+NOTICE_VIRUS_FREE = The T-Virus has been set loose...
+NOTICE_FIRST = %s is the first zombie !!
+NOTICE_INFECT = %s's brains has been eaten...
+NOTICE_INFECT2 = %s's brains has been eaten by %s...
+NOTICE_NEMESIS = %s is a Nemesis !!!
+NOTICE_ASSASSIN = %s is a Assassin !!!
+NOTICE_SURVIVOR = %s is a Survivor !!!
+NOTICE_SNIPER = %s is a Sniper !!!
+NOTICE_SWARM = Swarm Mode !!!
+NOTICE_MULTI = Multiple Infection !!!
+NOTICE_PLAGUE = Plague Mode !!!
+
+WIN_HUMAN = Humans defeated the plague!
+WIN_ZOMBIE = Zombies have taken over the world!
+WIN_NO_ONE = No one won...
+
+CMD_INFECT = turned into a Zombie
+CMD_DISINFECT = turned back to Human
+CMD_NEMESIS = turned into a Nemesis
+CMD_ASSASSIN = turned into a Assassin
+CMD_SURVIVAL = turned into a Survivor
+CMD_SNIPER = turned into a Sniper
+CMD_RESPAWN = respawned
+CMD_NOT = Unavailable command.
+CMD_HUMAN_ONLY = This is only available to humans.
+CMD_NOT_STUCK = You are not stuck.
+CMD_NOT_ACCESS = You have no access.
+CMD_NOT_EXTRAS = Extra Items are disabled.
+CMD_NOT_ZCLASSES = Zombie Classes are disabled.
+
+MENU_BUY = Buy Weapons
+MENU_EXTRABUY = Buy Extra Items
+MENU_ZCLASS = Choose Zombie Class
+MENU_UNSTUCK = Unstuck
+MENU_ADMIN = Admin Menu
+MENU_BUY1_TITLE = Primary Weapon
+MENU_BUY2_TITLE = Secondary Weapon
+MENU_ADMIN_TITLE = Admin Menu
+MENU_ADMIN1 = Make Zombie/Human
+MENU_ADMIN2 = Make Nemesis
+MENU_ADMIN3 = Make Assassin
+MENU_ADMIN4 = Make Survivor
+MENU_ADMIN5 = Make Sniper
+MENU_ADMIN6 = Respawn Someone
+
+CUSTOM_BUY_DISABLED = Custom buy menus are disabled.
+
+MENU_AUTOSELECT = Remember Selection
+
+MENU_BACK = Back
+MENU_NEXT = Next
+MENU_EXIT = Exit
+
+MOTD_ENABLED = Enabled
+MOTD_DISABLED = Disabled
+MOTD_DM_ZOMBIE = Respawn as zombie
+
+ZOMBIE_ATTRIB1 = Health
+ZOMBIE_ATTRIB2 = Speed
+ZOMBIE_ATTRIB3 = Gravity
+ZOMBIE_ATTRIB4 = Knockback
+ZOMBIE_ATTRIB5 = Armor
+
+CLASS_CLASS = Class:
+CLASS_HUMAN = Human
+CLASS_ZOMBIE = Zombie
+CLASS_SURVIVOR = Survivor
+CLASS_SNIPER = Sniper
+CLASS_NEMESIS = Nemesis
+CLASS_ASSASSIN = Assasin
+
+LAST_ZOMBIE_LEFT = The last zombie has left, %s is the new zombie.
+LAST_HUMAN_LEFT = The last human has left, %s is the new human.
+
+NOT_ENOUGH_AMMO = You dont have enough ammo packs.
+AMMO_BOUGHT = You purchased extra ammo for your guns.
+
+ZOMBIE_SELECT = Your zombie class after the next infection will be
+BUY_ENABLED = Your buy menu has been re-enabled.
+
+AMMO_PACKS1 = Ammo packs:
+SPECTATING = Spectating:
+
+ALREADY_SURVIVOR = Player already a survivor
+ALREADY_SNIPER = Player already a sniper
+ALREADY_NEMESIS = Player already a nemesis
+ALREADY_ASSASSIN = Player already a assassin
+ALREADY_HUMAN = Player already a human
+ALREADY_ZOMBIE = Player already a zombie
+
+INVALID_GAME_MODE = Invalid game mode id
+
+CMD_START_GAME_MODE = start Game Mode
+CANT_BUY_WEAPONS_DEAD = You can't buy weapons when dead.
+BUY_MENU_TIME_EXPIRED = Buy menu time has expired.
+CANT_BUY_ITEMS_DEAD = You can't buy extra items when dead.
+CMD_NOT_HCLASSES = Human Classes are disabled.
+
+NO_ADMIN_MENU = Admin menu not available.
+NO_CLASSES = No classes are currently available to you.
+NO_EXTRA_ITEMS = No extra items are currently available to you.
+
+CANT_CHANGE_TEAM = You can't change team right now.
+NOT_ENOUGH_MONEY = You dont have enough money.
+REQUIRED_AMOUNT = %d required
+HUMAN_SELECT = Your next human class will be
+MONEY1 = Money:
+
+MENU_BUY3_TITLE = Grenades
+MENU_HCLASS = Choose Human Class
+MENU_CHOOSE_TEAM = Choose Team
+MENU_ADMIN_START_GAME_MODE = Start Game Mode (use at roundstart)
+
+NOTICE_ARMAGEDDON = Armageddon Mode !!!
+
+ZOMBIENAME Classic Zombie = Classic Zombie
+ZOMBIEDESC Classic Zombie = =Balanced=
+
+ZOMBIENAME Raptor Zombie = Raptor Zombie
+ZOMBIEDESC Raptor Zombie = HP-- Speed++ Knockback++
+
+ZOMBIENAME Light Zombie = Light Zombie
+ZOMBIEDESC Light Zombie = HP- Jump+ Knockback+
+
+ZOMBIENAME Fat Zombie = Fat Zombie
+ZOMBIEDESC Fat Zombie = HP++ Speed- Knockback--
+
+ZOMBIENAME Leech Zombie = Leech Zombie
+ZOMBIEDESC Leech Zombie = HP- Knockback+ Leech++
+
+ZOMBIENAME Rage Zombie = Rage Zombie
+ZOMBIEDESC Rage Zombie = HP+ Speed+ Radioactivity++
+
+HUMANNAME Classic Human = Classic Human
+HUMANDESC Classic Human = =Balanced=
+
+HUMANNAME Raptor Human = Raptor Human
+HUMANDESC Raptor Human = HP-- Speed+ Gravity+
+
+ITEMNAME Nightvision = Nightvision
+
+MODENAME Infection Mode = Infection Mode
+MODENAME Nemesis Mode = Nemesis Mode
+MODENAME Assassin Mode = Assassin Mode
+MODENAME Survivor Mode = Survivor Mode
+MODENAME Sniper Mode = Sniper Mode
+MODENAME Swarm Mode = Swarm Mode
+MODENAME Multiple Infection Mode = Multiple Infection Mode
+MODENAME Plague Mode = Plague Mode
+MODENAME Armageddon Mode = Armageddon Mode
+
+CMD_CANT_LAST_HUMAN = You can't use this command on the last human.
+CMD_CANT_LAST_ZOMBIE = You can't use this command on the last zombie.
+CMD_ONLY_AFTER_GAME_MODE = You can only use this command after a game mode started.
+
+GAME_MODE_CANT_START = Game mode can't be started right now.
+
+CANT_RESPAWN = Player can't be respawned
+
+[RU]
+
+ZP_PREFIX = [ZPE]
+
+MENU_TITLE = \y Zombie Plague 6.0 ^n ^n
+
+NOTICE_VIRUS_FREE = T-Virus витает в воздухе...
+NOTICE_FIRST = %s первый зомби !!
+NOTICE_INFECT = %s's мозги съедены...
+NOTICE_INFECT2 = %s's мозг был съеден %s...
+NOTICE_NEMESIS = %s Немезида !!!
+NOTICE_ASSASSIN = %s Убийца !!!
+NOTICE_SURVIVOR = %s Выживший !!!
+NOTICE_SNIPER = %s Снайпер !!!
+NOTICE_SWARM = Куча на Кучу !!!
+NOTICE_MULTI = Массовое заражение !!!
+NOTICE_PLAGUE = Чума !!!
+
+WIN_HUMAN = Люди победили!
+WIN_ZOMBIE = Зомби захватили мир!
+WIN_NO_ONE = Никто не выиграл...
+
+CMD_INFECT = превратился в зомби
+CMD_DISINFECT = стал обратно человеком
+CMD_NEMESIS = превратился в немезиду
+CMD_ASSASSIN = превратился в убийцу
+CMD_SURVIVAL = превратился в выжившего
+CMD_SNIPER = превратился в снайпера
+CMD_RESPAWN = возродился
+CMD_NOT = Команды недоступны.
+CMD_HUMAN_ONLY = Доступно только для людей.
+CMD_NOT_STUCK = Вы не застряли.
+CMD_NOT_ACCESS = У Вас нет доступа.
+CMD_NOT_EXTRAS = Дополнительное снаряжение выключено.
+CMD_NOT_ZCLASSES = Зомби классы выключены.
+
+CUSTOM_BUY_DISABLED = Custom buy menus are disabled.
+
+MENU_BUY = Купить оружие
+MENU_EXTRABUY = Купить дополнительное снаряжение
+MENU_ZCLASS = Выбрать класс зомби
+MENU_UNSTUCK = Застрял
+MENU_ADMIN = Меню администратора
+MENU_BUY1_TITLE = Основное оружие
+MENU_BUY2_TITLE = Дополнительное оружие
+MENU_ADMIN_TITLE = Меню администратора
+MENU_ADMIN1 = Сделать Зомби/Человеком
+MENU_ADMIN2 = Сделать Немезидой
+MENU_ADMIN3 = Сделать Убийцей
+MENU_ADMIN4 = Сделать Выжившим
+MENU_ADMIN5 = Сделать Снайпером
+MENU_ADMIN6 = Возродить
+
+MENU_AUTOSELECT = Запомнить выбор
+
+MENU_BACK = Назад
+MENU_NEXT = Вперёд
+MENU_EXIT = Выход
+
+MOTD_ENABLED = Включено
+MOTD_DISABLED = Выключено
+MOTD_DM_ZOMBIE = Возродить за зомби
+
+ZOMBIE_ATTRIB1 = Жизни
+ZOMBIE_ATTRIB2 = Скорость
+ZOMBIE_ATTRIB3 = Гравитация
+ZOMBIE_ATTRIB4 = Отдача
+ZOMBIE_ATTRIB5 = Броня
+
+CLASS_CLASS = Класс:
+CLASS_HUMAN = Человек
+CLASS_ZOMBIE = Зомби
+CLASS_SURVIVOR = Выживший
+CLASS_SNIPER = Снайпер
+CLASS_NEMESIS = Немезида
+CLASS_ASSASSIN = Убийца
+
+LAST_ZOMBIE_LEFT = Последний зомби сбежал, %s теперь Вы новый зомби.
+LAST_HUMAN_LEFT = Последний человек сбежал, %s теперь Вы новый человек.
+
+NOT_ENOUGH_AMMO = У Вас недостаточно дополнительных пакетов.
+AMMO_BOUGHT = Вы приобрели дополнительные боеприпасы для оружия.
+
+ZOMBIE_SELECT = Ваш зомби класс изменится при следующей инфекции.
+BUY_ENABLED = Ваше меню покупки было повторно включено.
+
+AMMO_PACKS1 = Пакеты:
+SPECTATING = Зритель:
+
+ALREADY_SURVIVOR = Игрок уже выживший
+ALREADY_SNIPER = Игрок уже снайпер
+ALREADY_NEMESIS = Игрок уже немезида
+ALREADY_ASSASSIN = Игрок уже убийца
+ALREADY_HUMAN = Игрок уже человек
+ALREADY_ZOMBIE = Игрок уже зомби
+
+INVALID_GAME_MODE = Invalid game mode id
+
+CMD_START_GAME_MODE = начать Игровой Режим
+CANT_BUY_WEAPONS_DEAD = Вы не можете купить оружие когда мертвы.
+BUY_MENU_TIME_EXPIRED = Время покупки истекло.
+CANT_BUY_ITEMS_DEAD = Вы не можете купить дополнительное снаряжение когда мертвы.
+CMD_NOT_HCLASSES = Классы людей выключены.
+
+NO_ADMIN_MENU = Вам недоступно меню администратора.
+NO_CLASSES = На данный для Вас нет доступных классов.
+NO_EXTRA_ITEMS = На данный для Вас нет доступного дополнительного снаряжения.
+
+CANT_CHANGE_TEAM = Вы не можете изменить команду прямо сейчас.
+NOT_ENOUGH_MONEY = У Вас нет денег.
+REQUIRED_AMOUNT = %d необходимо
+HUMAN_SELECT = Ваш следующий класс человека будет
+MONEY1 = Деньги:
+
+MENU_BUY3_TITLE = Гранаты
+MENU_HCLASS = Выберите Класс Человека
+MENU_CHOOSE_TEAM = Выбор команды
+MENU_ADMIN_START_GAME_MODE = Режим запуска игры (в начале раунда)
+
+NOTICE_ARMAGEDDON = Армагеддон !!!
+
+ZOMBIENAME Raptor Zombie = Хищник
+ZOMBIEDESC Raptor Zombie = HP-- Скорость++ Отдача++
+
+ZOMBIENAME Light Zombie = Легкий
+ZOMBIEDESC Light Zombie = HP- Прыжок+ Отдача+
+
+ZOMBIENAME Fat Zombie = Толстый
+ZOMBIEDESC Fat Zombie = HP++ Скорость- Отдача--
+
+ZOMBIENAME Leech Zombie = Кровосос
+ZOMBIEDESC Leech Zombie = HP- Скорость+ Отдача--
+
+ZOMBIENAME Rage Zombie = Радиоактивный
+ZOMBIEDESC Rage Zombie = HP+ Скорость+ Радиоактивность++
+
+HUMANNAME Classic Human = Человек Классический
+HUMANDESC Classic Human = =Баланс=
+
+HUMANNAME Raptor Human = Человек Хищник
+HUMANDESC Raptor Human = HP-- Скорость+ Гравитация+
+
+ITEMNAME Nightvision = Ночное видение
+
+MODENAME Infection Mode = Режим инфекции
+MODENAME Nemesis Mode = Режим Немезиды
+MODENAME Assassin Mode = Режим Убийцы
+MODENAME Survivor Mode = Режим Выжившего
+MODENAME Sniper Mode = Режим Снайпера
+MODENAME Swarm Mode = Режим Кучи на Кучу
+MODENAME Multiple Infection Mode = Режим массового заражения
+MODENAME Plague Mode = Режим Чумы
+MODENAME Armageddon Mode = Режим Армагеддона
+
+CMD_CANT_LAST_HUMAN = Вы не можете использовать эту команду на последнем человеке.
+CMD_CANT_LAST_ZOMBIE = Вы не можете использовать эту команду на последнем зомби.
+CMD_ONLY_AFTER_GAME_MODE = Вы не можете использовать эту команду после начала игрового режима.
+
+GAME_MODE_CANT_START = Игровой режим не может быть запущен прямо сейчас.
+
+CANT_RESPAWN = Игрок не может быть возрождён

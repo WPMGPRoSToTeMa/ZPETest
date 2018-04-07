@@ -1,0 +1,1066 @@
+/* AMX Mod X
+*	[ZP] Admin Menu.
+*	Author: MeRcyLeZZ. Edition: C&K Corporation.
+*	This enterprise software. Please, buy plugin: https://news.ckcorp.ru/zp/75-zombie-plague-next.html / http://news.ckcorp.ru/24-contacts.html
+*
+*	http://ckcorp.ru/ - support from the C&K Corporation.
+*
+*	Support is provided only on the site.
+*/
+
+#define PLUGIN "admin menu"
+#define VERSION "5.3.7.1"
+#define AUTHOR "C&K Corporation"
+
+#define ZP_SETTINGS_FILE "zm_settings.ini"
+
+#include <amxmodx>
+#include <amxmisc>
+#include <cs_util>
+#include <amx_settings_api>
+#include <ck_zp50_kernel>
+#include <ck_zp50_gamemodes>
+
+#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
+#include <ck_zp50_class_nemesis>
+
+#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
+#include <ck_zp50_class_assassin>
+
+#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
+#include <ck_zp50_class_survivor>
+
+#define LIBRARY_SNIPER "ck_zp50_class_sniper"
+#include <ck_zp50_class_sniper>
+
+#include <ck_zp50_admin_commands>
+
+// For players/mode list menu handlers
+#define PL_ACTION(%0) g_Menu_Data[%0][0]
+#define MENU_PAGE_PLAYERS(%1) g_Menu_Data[%1][1]
+#define MENU_PAGE_GAME_MODES(%2) g_Menu_Data[%2][2]
+
+// Admin menu actions
+enum
+{
+	ACTION_INFECT_CURE = 0,
+	ACTION_MAKE_NEMESIS,
+	ACTION_MAKE_ASSASSIN,
+	ACTION_MAKE_SURVIVOR,
+	ACTION_MAKE_SNIPER,
+	ACTION_RESPAWN_PLAYER,
+	ACTION_START_GAME_MODE
+};
+
+#define ACCESS_FLAG_MAX_LENGTH 2
+
+new g_Access_Make_Zombie[ACCESS_FLAG_MAX_LENGTH] = "d";
+new g_Access_Make_Human[ACCESS_FLAG_MAX_LENGTH] = "d";
+new g_Access_Make_Nemesis[ACCESS_FLAG_MAX_LENGTH] = "d";
+new g_Access_Make_Assassin[ACCESS_FLAG_MAX_LENGTH] = "d";
+new g_Access_Make_Survivor[ACCESS_FLAG_MAX_LENGTH] = "d";
+new g_Access_Make_Sniper[ACCESS_FLAG_MAX_LENGTH] = "d";
+
+new g_Access_Respawn_Players[ACCESS_FLAG_MAX_LENGTH] = "d";
+new g_Access_Start_Game_Mode[ACCESS_FLAG_MAX_LENGTH] = "d";
+
+new g_Menu_Data[MAX_PLAYERS + 1][3];
+
+new g_iBit_Alive;
+new g_iBit_Connected;
+
+public plugin_init()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	register_clcmd("say /adminmenu", "Client_Command_Admin_Menu");
+	register_clcmd("say adminmenu", "Client_Command_Admin_Menu");
+}
+
+public plugin_precache()
+{
+	// Load from external file, save if not found
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie, charsmax(g_Access_Make_Zombie)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie);
+	}
+
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human, charsmax(g_Access_Make_Human)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human);
+	}
+
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis, charsmax(g_Access_Make_Nemesis)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis);
+	}
+
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin, charsmax(g_Access_Make_Assassin)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin);
+	}
+
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor, charsmax(g_Access_Make_Survivor)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor);
+	}
+
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper, charsmax(g_Access_Make_Sniper)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper);
+	}
+
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players, charsmax(g_Access_Respawn_Players)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players);
+	}
+
+	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode, charsmax(g_Access_Start_Game_Mode)))
+	{
+		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode);
+	}
+}
+
+public plugin_natives()
+{
+	register_library("ck_zp50_admin_menu");
+
+	register_native("zp_admin_menu_show", "native_admin_menu_show");
+
+	set_module_filter("module_filter");
+	set_native_filter("native_filter");
+}
+
+public module_filter(const szModule[])
+{
+	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	return PLUGIN_CONTINUE;
+}
+
+public native_filter(const szName[], iIndex, iTrap)
+{
+	if (!iTrap)
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	return PLUGIN_CONTINUE;
+}
+
+public native_admin_menu_show(iPlugin_ID, iNum_Params)
+{
+	new iPlayer = get_param(1);
+
+	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
+	{
+		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
+
+		return false;
+	}
+
+	Show_Menu_Admin(iPlayer);
+
+	return true;
+}
+
+public Client_Command_Admin_Menu(iPlayer)
+{
+	Show_Menu_Admin(iPlayer);
+}
+
+// Admin Menu
+Show_Menu_Admin(iPlayer)
+{
+	static szMenu[512];
+
+	formatex(szMenu, charsmax(szMenu), "\y %L:", iPlayer, "MENU_ADMIN_TITLE");
+
+	new iMenu = menu_create(szMenu, "Menu_Admin");
+
+	new iUser_Flags = get_user_flags(iPlayer);
+
+	// 1. Infect/Cure command
+	if (iUser_Flags & (read_flags(g_Access_Make_Zombie) | read_flags(g_Access_Make_Human)))
+	{
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN1");
+		menu_additem(iMenu, szMenu, "1");
+	}
+
+	else
+	{
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN1");
+		menu_additem(iMenu, szMenu, "1");
+	}
+
+	// 2. Nemesis command
+	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Nemesis)))
+	{
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN2");
+		menu_additem(iMenu, szMenu, "2");
+	}
+
+	else
+	{
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN2");
+		menu_additem(iMenu, szMenu, "2");
+	}
+
+	// 3. Assassin command
+	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Assassin)))
+	{
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN3");
+		menu_additem(iMenu, szMenu, "3");
+	}
+
+	else
+	{
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN3");
+		menu_additem(iMenu, szMenu, "3");
+	}
+
+	// 4. Survivor command
+	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Survivor)))
+	{
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN4");
+		menu_additem(iMenu, szMenu, "4");
+	}
+
+	else
+	{
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN4");
+		menu_additem(iMenu, szMenu, "4");
+	}
+
+	// 5. Sniper command
+	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Sniper)))
+	{
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN5");
+		menu_additem(iMenu, szMenu, "5");
+	}
+
+	else
+	{
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN5");
+		menu_additem(iMenu, szMenu, "5");
+	}
+
+	// 6. Respawn command
+	if (iUser_Flags & read_flags(g_Access_Respawn_Players))
+	{
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN6");
+		menu_additem(iMenu, szMenu, "6");
+	}
+
+	else
+	{
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN6");
+		menu_additem(iMenu, szMenu, "6");
+	}
+
+	// 7. Start Game Mode command
+	if (iUser_Flags & read_flags(g_Access_Start_Game_Mode))
+	{
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_START_GAME_MODE");
+		menu_additem(iMenu, szMenu, "7");
+	}
+
+	else
+	{
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN_START_GAME_MODE");
+		menu_additem(iMenu, szMenu, "7");
+	}
+
+	// Back - Next - Exit
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_BACK");
+	menu_setprop(iMenu, MPROP_BACKNAME, szMenu);
+
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_NEXT");
+	menu_setprop(iMenu, MPROP_NEXTNAME, szMenu);
+
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_EXIT");
+	menu_setprop(iMenu, MPROP_EXITNAME, szMenu);
+
+	menu_display(iPlayer, iMenu, 0);
+}
+
+// Admin Menu
+public Menu_Admin(iPlayer, iMenu, iItem)
+{
+	new szData[512];
+	new szName[512];
+
+	new iAccess;
+	new iCallback;
+
+	menu_item_getinfo(iMenu, iItem, iAccess, szData, charsmax(szData), szName, charsmax(szName), iCallback);
+
+	new iKey = str_to_num(szData);
+
+	new iUser_Flags = get_user_flags(iPlayer);
+
+	switch (iKey)
+	{
+		case 1: // Infect/Cure command
+		{
+			if (iUser_Flags & (read_flags(g_Access_Make_Zombie) | read_flags(g_Access_Make_Human)))
+			{
+				// Show players list for admin to pick a target
+				PL_ACTION(iPlayer) = ACTION_INFECT_CURE;
+
+				Show_Menu_Player_List(iPlayer);
+			}
+
+			else
+			{
+				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+
+				Show_Menu_Admin(iPlayer);
+			}
+		}
+
+		case 2: // Nemesis command
+		{
+			if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Nemesis)))
+			{
+				// Show players list for admin to pick a target
+				PL_ACTION(iPlayer) = ACTION_MAKE_NEMESIS;
+
+				Show_Menu_Player_List(iPlayer);
+			}
+
+			else
+			{
+				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+
+				Show_Menu_Admin(iPlayer);
+			}
+		}
+
+		case 3: // Assassin command
+		{
+			if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Assassin)))
+			{
+				// Show players list for admin to pick a target
+				PL_ACTION(iPlayer) = ACTION_MAKE_ASSASSIN;
+
+				Show_Menu_Player_List(iPlayer);
+			}
+
+			else
+			{
+				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+
+				Show_Menu_Admin(iPlayer);
+			}
+		}
+
+		case 4: // Survivor command
+		{
+			if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Survivor)))
+			{
+				// Show players list for admin to pick a target
+				PL_ACTION(iPlayer) = ACTION_MAKE_SURVIVOR;
+
+				Show_Menu_Player_List(iPlayer);
+			}
+
+			else
+			{
+				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+
+				Show_Menu_Admin(iPlayer);
+			}
+		}
+
+		case 5: // Sniper command
+		{
+			if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Sniper)))
+			{
+				// Show players list for admin to pick a target
+				PL_ACTION(iPlayer) = ACTION_MAKE_SNIPER;
+
+				Show_Menu_Player_List(iPlayer);
+			}
+
+			else
+			{
+				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+
+				Show_Menu_Admin(iPlayer);
+			}
+		}
+
+		case 6: // Respawn command
+		{
+			if (iUser_Flags & read_flags(g_Access_Respawn_Players))
+			{
+				// Show players list for admin to pick a target
+				PL_ACTION(iPlayer) = ACTION_RESPAWN_PLAYER;
+
+				Show_Menu_Player_List(iPlayer);
+			}
+
+			else
+			{
+				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+
+				Show_Menu_Admin(iPlayer);
+			}
+		}
+
+		case 7: // Start Game Mode command
+		{
+			if (iUser_Flags & read_flags(g_Access_Start_Game_Mode))
+			{
+				Show_Menu_Game_Mode_List(iPlayer);
+			}
+
+			else
+			{
+				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+
+				Show_Menu_Admin(iPlayer);
+			}
+		}
+	}
+
+	menu_destroy(iMenu);
+
+	return PLUGIN_HANDLED
+}
+
+// Player List Menu
+Show_Menu_Player_List(iPlayer)
+{
+	static szMenu[512];
+	static szPlayer_Name[32];
+
+	new iMenu;
+	new szBuffer[2];
+
+	// Title
+	switch (PL_ACTION(iPlayer))
+	{
+		case ACTION_INFECT_CURE:
+		{
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN1");
+		}
+
+		case ACTION_MAKE_NEMESIS:
+		{
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN2");
+		}
+
+		case ACTION_MAKE_ASSASSIN:
+		{
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN3");
+		}
+
+		case ACTION_MAKE_SURVIVOR:
+		{
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN4");
+		}
+
+		case ACTION_MAKE_SNIPER:
+		{
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN5");
+		}
+
+		case ACTION_RESPAWN_PLAYER:
+		{
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN6");
+		}
+	}
+
+	iMenu = menu_create(szMenu, "Menu_Player_List");
+
+	new iUser_Flags = get_user_flags(iPlayer);
+
+	// Player List
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		// Skip if not connected
+		if (BIT_NOT_VALID(g_iBit_Connected, i))
+		{
+			continue;
+		}
+
+		// Get player's name
+		GET_USER_NAME(i, szPlayer_Name, charsmax(szPlayer_Name));
+
+		// Format text depending on the action to take
+		switch (PL_ACTION(iPlayer))
+		{
+			case ACTION_INFECT_CURE: // Infect/Cure command
+			{
+				if (zp_core_is_zombie(i))
+				{
+					if ((iUser_Flags & read_flags(g_Access_Make_Human)) && BIT_VALID(g_iBit_Alive, i))
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i)) ? "CLASS_NEMESIS" : (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i)) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+					}
+
+					else
+					{
+						formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i)) ? "CLASS_NEMESIS" : (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i)) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+					}
+				}
+
+				else
+				{
+					if ((iUser_Flags & read_flags(g_Access_Make_Zombie)) && BIT_VALID(g_iBit_Alive, i))
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i)) ? "CLASS_SURVIVOR" : (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i)) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+					}
+
+					else
+					{
+						formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i)) ? "CLASS_SURVIVOR" : (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i)) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+					}
+				}
+			}
+
+			case ACTION_MAKE_NEMESIS: // Nemesis command
+			{
+				if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Nemesis)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_nemesis_get(i))
+				{
+					if (zp_core_is_zombie(i))
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i)) ? "CLASS_NEMESIS" : (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i)) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+					}
+
+					else
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i)) ? "CLASS_SURVIVOR" : (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i)) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+					}
+				}
+
+				else
+				{
+					if (zp_core_is_zombie(i))
+					{
+						if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
+						}
+
+						else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ZOMBIE");
+						}
+					}
+
+					else
+					{
+						if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
+						}
+
+						else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_HUMAN");
+						}
+					}
+				}
+			}
+
+			case ACTION_MAKE_ASSASSIN: // Assassin command
+			{
+				if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Assassin)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_assassin_get(i))
+				{
+					if (zp_core_is_zombie(i))
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i)) ? "CLASS_NEMESIS" : (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i)) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+					}
+
+					else
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i)) ? "CLASS_SURVIVOR" : (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i)) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+					}
+				}
+
+				else
+				{
+					if (zp_core_is_zombie(i))
+					{
+						if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
+						}
+
+						else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ZOMBIE");
+						}
+					}
+
+					else
+					{
+						if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
+						}
+
+						else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_HUMAN");
+						}
+					}
+				}
+			}
+
+			case ACTION_MAKE_SURVIVOR: // Survivor command
+			{
+				if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Survivor)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_survivor_get(i))
+				{
+					if (zp_core_is_zombie(i))
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i)) ? "CLASS_NEMESIS" : (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i)) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+					}
+
+					else
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i)) ? "CLASS_SURVIVOR" : (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i)) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+					}
+				}
+
+				else
+				{
+					if (zp_core_is_zombie(i))
+					{
+						if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
+						}
+
+						else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ZOMBIE");
+						}
+					}
+
+					else
+					{
+						if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
+						}
+
+						else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_HUMAN");
+						}
+					}
+				}
+			}
+
+			case ACTION_MAKE_SNIPER: // Sniper command
+			{
+				if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Sniper)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_sniper_get(i))
+				{
+					if (zp_core_is_zombie(i))
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i)) ? "CLASS_NEMESIS" : (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i)) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+					}
+
+					else
+					{
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i)) ? "CLASS_SURVIVOR" : (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i)) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+					}
+				}
+
+				else
+				{
+					if (zp_core_is_zombie(i))
+					{
+						if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
+						}
+
+						else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ZOMBIE");
+						}
+					}
+
+					else
+					{
+						if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
+						}
+
+						else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(i))
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
+						}
+
+						else
+						{
+							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_HUMAN");
+						}
+					}
+				}
+			}
+
+			case ACTION_RESPAWN_PLAYER: // Respawn command
+			{
+				if ((iUser_Flags & read_flags(g_Access_Respawn_Players)) && Allowed_Respawn(i))
+				{
+					formatex(szMenu, charsmax(szMenu), "%s", szPlayer_Name);
+				}
+
+				else
+				{
+					formatex(szMenu, charsmax(szMenu), "\d %s", szPlayer_Name);
+				}
+			}
+		}
+
+		// TODO: better convert number to string
+		szBuffer[0] = i;
+		szBuffer[1] = 0;
+
+		menu_additem(iMenu, szMenu, szBuffer);
+	}
+
+	// Back - Next - Exit
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_BACK");
+	menu_setprop(iMenu, MPROP_BACKNAME, szMenu);
+
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_NEXT");
+	menu_setprop(iMenu, MPROP_NEXTNAME, szMenu);
+
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_EXIT");
+	menu_setprop(iMenu, MPROP_EXITNAME, szMenu);
+
+	// If remembered page is greater than number of pages, clamp down the value
+	MENU_PAGE_PLAYERS(iPlayer) = min(MENU_PAGE_PLAYERS(iPlayer), menu_pages(iMenu) - 1);
+
+	menu_display(iPlayer, iMenu, MENU_PAGE_PLAYERS(iPlayer));
+}
+
+// Game Mode List Menu
+Show_Menu_Game_Mode_List(iPlayer)
+{
+	static szMenu[128];
+	static szTranskey[64];
+
+	new iMenu;
+	new szItemdata[2];
+
+	new Game_Mode_Count = zp_gamemodes_get_count();
+
+	// Title
+	formatex(szMenu, charsmax(szMenu), "%L: \r", iPlayer, "MENU_INFO4");
+
+	iMenu = menu_create(szMenu, "Menu_Game_Mode_List");
+
+	// Item List
+	for (new i = 0; i < Game_Mode_Count; i++)
+	{
+		// Add Game Mode Name
+		zp_gamemodes_get_name(i, szMenu, charsmax(szMenu));
+
+		// ML support for mode name
+		formatex(szTranskey, charsmax(szTranskey), "MODENAME %s", szMenu);
+
+		if (GetLangTransKey(szTranskey) != TransKey_Bad)
+		{
+			formatex(szMenu, charsmax(szMenu), "%L", iPlayer, szTranskey);
+		}
+
+		// TODO: better convert number to string
+		szItemdata[0] = i;
+		szItemdata[1] = 0;
+
+		menu_additem(iMenu, szMenu, szItemdata);
+	}
+
+	// No game modes to display?
+	if (menu_items(iMenu) <= 0)
+	{
+		menu_destroy(iMenu);
+
+		return;
+	}
+
+	// Back - Next - Exit
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_BACK");
+	menu_setprop(iMenu, MPROP_BACKNAME, szMenu);
+
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_NEXT");
+	menu_setprop(iMenu, MPROP_NEXTNAME, szMenu);
+
+	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_EXIT");
+	menu_setprop(iMenu, MPROP_EXITNAME, szMenu);
+
+	// If remembered page is greater than number of pages, clamp down the value
+	MENU_PAGE_GAME_MODES(iPlayer) = min(MENU_PAGE_GAME_MODES(iPlayer), menu_pages(iMenu) - 1);
+
+	menu_display(iPlayer, iMenu, MENU_PAGE_GAME_MODES(iPlayer));
+}
+
+// Player List Menu
+public Menu_Player_List(iPlayer, iMenu, iItem)
+{
+	// Menu was closed
+	if (iItem == MENU_EXIT)
+	{
+		MENU_PAGE_PLAYERS(iPlayer) = 0;
+
+		menu_destroy(iMenu);
+
+		Show_Menu_Admin(iPlayer);
+
+		return PLUGIN_HANDLED;
+	}
+
+	// Remember players's menu page
+	MENU_PAGE_PLAYERS(iPlayer) = iItem / 7;
+
+	// Retrieve players id
+	new szBuffer[2];
+	new iDummy;
+
+	menu_item_getinfo(iMenu, iItem, iDummy, szBuffer, charsmax(szBuffer), _, _, iDummy);
+
+	new iPlayers;
+
+	iPlayers = szBuffer[0];
+
+	new iUser_Flags = get_user_flags(iPlayer);
+
+	// Make sure it's still connected
+	if (BIT_VALID(g_iBit_Connected, iPlayers))
+	{
+		// Perform the right action if allowed
+		switch (PL_ACTION(iPlayer))
+		{
+			case ACTION_INFECT_CURE: // Infect/Cure command
+			{
+				if (zp_core_is_zombie(iPlayers))
+				{
+					if ((iUser_Flags & read_flags(g_Access_Make_Human)) && BIT_VALID(g_iBit_Alive, iPlayers))
+					{
+						zp_admin_commands_human(iPlayer, iPlayers);
+					}
+
+					else
+					{
+						zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+					}
+				}
+
+				else
+				{
+					if ((iUser_Flags & read_flags(g_Access_Make_Zombie)) && BIT_VALID(g_iBit_Alive, iPlayers))
+					{
+						zp_admin_commands_zombie(iPlayer, iPlayers);
+					}
+
+					else
+					{
+						zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+					}
+				}
+			}
+
+			case ACTION_MAKE_NEMESIS: // Nemesis command
+			{
+				if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Nemesis)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_nemesis_get(iPlayers))
+				{
+					zp_admin_commands_nemesis(iPlayer, iPlayers);
+				}
+
+				else
+				{
+					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+				}
+			}
+
+			case ACTION_MAKE_ASSASSIN: // Assassin command
+			{
+				if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Assassin)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_assassin_get(iPlayers))
+				{
+					zp_admin_commands_assassin(iPlayer, iPlayers);
+				}
+
+				else
+				{
+					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+				}
+			}
+
+			case ACTION_MAKE_SURVIVOR: // Survivor command
+			{
+				if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Survivor)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_survivor_get(iPlayers))
+				{
+					zp_admin_commands_survivor(iPlayer, iPlayers);
+				}
+
+				else
+				{
+					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+				}
+			}
+
+			case ACTION_MAKE_SNIPER: // Sniper command
+			{
+				if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && (iUser_Flags & read_flags(g_Access_Make_Sniper)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_sniper_get(iPlayers))
+				{
+					zp_admin_commands_sniper(iPlayer, iPlayers);
+				}
+
+				else
+				{
+					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+				}
+			}
+
+			case ACTION_RESPAWN_PLAYER: // Respawn command
+			{
+				if ((iUser_Flags & read_flags(g_Access_Respawn_Players)) && Allowed_Respawn(iPlayers))
+				{
+					zp_admin_commands_respawn(iPlayer, iPlayers);
+				}
+
+				else
+				{
+					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+				}
+			}
+		}
+	}
+
+	else
+	{
+		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+	}
+
+	menu_destroy(iMenu);
+
+	Show_Menu_Player_List(iPlayer);
+
+	return PLUGIN_HANDLED;
+}
+
+// Game Mode List Menu
+public Menu_Game_Mode_List(iPlayer, iMenu, iItem)
+{
+	// Menu was closed
+	if (iItem == MENU_EXIT)
+	{
+		MENU_PAGE_GAME_MODES(iPlayer) = 0;
+
+		menu_destroy(iMenu);
+
+		Show_Menu_Admin(iPlayer);
+
+		return PLUGIN_HANDLED;
+	}
+
+	// Remember game modes menu page
+	MENU_PAGE_GAME_MODES(iPlayer) = iItem / 7;
+
+	// Retrieve game mode player
+	new szItemdata[2];
+	new iDummy;
+
+	menu_item_getinfo(iMenu, iItem, iDummy, szItemdata, charsmax(szItemdata), _, _, iDummy);
+
+	new iGame_Mode_ID;
+
+	iGame_Mode_ID = szItemdata[0];
+
+	// Attempt to start game mode
+	zp_admin_commands_start_mode(iPlayer, iGame_Mode_ID);
+
+	menu_destroy(iMenu);
+
+	Show_Menu_Game_Mode_List(iPlayer);
+
+	return PLUGIN_HANDLED;
+}
+
+// Checks if a players is allowed to respawn
+Allowed_Respawn(iPlayer)
+{
+	if (BIT_VALID(g_iBit_Alive, iPlayer))
+	{
+		return false;
+	}
+
+	if (CS_GET_USER_TEAM(iPlayer) == CS_TEAM_SPECTATOR || CS_GET_USER_TEAM(iPlayer) == CS_TEAM_UNASSIGNED)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+public client_putinserver(iPlayer)
+{
+	BIT_ADD(g_iBit_Connected, iPlayer);
+}
+
+public client_disconnected(iPlayer)
+{
+	// Reset remembered menu pages
+	MENU_PAGE_GAME_MODES(iPlayer) = 0;
+	MENU_PAGE_PLAYERS(iPlayer) = 0;
+
+	BIT_SUB(g_iBit_Alive, iPlayer);
+	BIT_SUB(g_iBit_Connected, iPlayer);
+}
+
+public zp_fw_kill_pre_bit_sub(iPlayer)
+{
+	BIT_SUB(g_iBit_Alive, iPlayer);
+}
+
+public zp_fw_spawn_post_add_bit(iPlayer)
+{
+	BIT_ADD(g_iBit_Alive, iPlayer);
+}

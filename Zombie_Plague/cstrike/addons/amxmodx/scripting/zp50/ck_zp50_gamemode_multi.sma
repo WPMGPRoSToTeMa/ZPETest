@@ -1,0 +1,304 @@
+/* AMX Mod X
+*	[ZP] Gamemode Multi.
+*	Author: MeRcyLeZZ. Edition: C&K Corporation.
+*	This enterprise software. Please, buy plugin: https://news.ckcorp.ru/zp/75-zombie-plague-next.html / http://news.ckcorp.ru/24-contacts.html
+*
+*	http://ckcorp.ru/ - support from the C&K Corporation.
+*
+*	Support is provided only on the site.
+*/
+
+#define PLUGIN "gamemode multi"
+#define VERSION "5.2.7.0"
+#define AUTHOR "C&K Corporation"
+
+#define ZP_SETTINGS_FILE "zm_settings.ini"
+
+new const g_Sound_Multi[][] =
+{
+	"ambience/the_horror2.wav"
+};
+
+#include <amxmodx>
+#include <cs_util>
+#include <amx_settings_api>
+#include <ck_cs_teams_api>
+#include <ck_zp50_kernel>
+#include <ck_zp50_gamemodes>
+#include <ck_zp50_deathmatch>
+
+#define SOUND_MAX_LENGTH 64
+
+new Array:g_aSound_Multi;
+
+new g_pCvar_Multi_Chance;
+new g_pCvar_Multi_Min_Players;
+new g_pCvar_Multi_Min_Zombies;
+new g_pCvar_Multi_Ratio;
+new g_pCvar_Multi_Sounds;
+new g_pCvar_Multi_Allow_Respawn;
+new g_pCvar_Respawn_After_Last_Human;
+
+new g_pCvar_Notice_Multi_Show_Hud;
+
+new g_pCvar_Message_Notice_Multi_Converted;
+new g_pCvar_Message_Notice_Multi_R;
+new g_pCvar_Message_Notice_Multi_G;
+new g_pCvar_Message_Notice_Multi_B;
+new g_pCvar_Message_Notice_Multi_X;
+new g_pCvar_Message_Notice_Multi_Y;
+new g_pCvar_Message_Notice_Multi_Effects;
+new g_pCvar_Message_Notice_Multi_Fxtime;
+new g_pCvar_Message_Notice_Multi_Holdtime;
+new g_pCvar_Message_Notice_Multi_Fadeintime;
+new g_pCvar_Message_Notice_Multi_Fadeouttime;
+new g_pCvar_Message_Notice_Multi_Channel;
+
+new g_pCvar_All_Messages_Converted;
+
+public plugin_precache()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	zp_gamemodes_register("Multiple Infection Mode");
+
+	g_pCvar_Multi_Chance = register_cvar("zm_multi_chance", "20");
+	g_pCvar_Multi_Min_Players = register_cvar("zm_multi_min_players", "0");
+	g_pCvar_Multi_Min_Zombies = register_cvar("zm_multi_min_zombies", "2");
+	g_pCvar_Multi_Ratio = register_cvar("zm_multi_ratio", "0.15");
+	g_pCvar_Multi_Sounds = register_cvar("zm_multi_sounds", "1");
+	g_pCvar_Multi_Allow_Respawn = register_cvar("zm_multi_allow_respawn", "1");
+	g_pCvar_Respawn_After_Last_Human = register_cvar("zm_multi_respawn_after_last_human", "1");
+
+	g_pCvar_Notice_Multi_Show_Hud = register_cvar("zm_notice_multi_show_hud", "1");
+
+	g_pCvar_Message_Notice_Multi_Converted = register_cvar("zm_notice_multi_message_converted", "0");
+	g_pCvar_Message_Notice_Multi_R = register_cvar("zm_notice_multi_message_r", "0");
+	g_pCvar_Message_Notice_Multi_G = register_cvar("zm_notice_multi_message_g", "250");
+	g_pCvar_Message_Notice_Multi_B = register_cvar("zm_notice_multi_message_b", "0");
+	g_pCvar_Message_Notice_Multi_X = register_cvar("zm_notice_multi_message_x", "-1.0");
+	g_pCvar_Message_Notice_Multi_Y = register_cvar("zm_notice_multi_message_y", "0.75");
+	g_pCvar_Message_Notice_Multi_Effects = register_cvar("zm_notice_multi_message_effects", "0");
+	g_pCvar_Message_Notice_Multi_Fxtime = register_cvar("zm_notice_multi_message_fxtime", "0.1");
+	g_pCvar_Message_Notice_Multi_Holdtime = register_cvar("zm_notice_multi_message_holdtime", "1.5");
+	g_pCvar_Message_Notice_Multi_Fadeintime = register_cvar("zm_notice_multi_message_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Multi_Fadeouttime = register_cvar("zm_notice_multi_message_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Multi_Channel = register_cvar("zm_notice_multi_message_channel", "-1");
+
+	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
+
+	// Initialize arrays
+	g_aSound_Multi = ArrayCreate(SOUND_MAX_LENGTH, 1);
+
+	// Load from external file
+	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND MULTI", g_aSound_Multi);
+
+	// If we couldn't load custom sounds from file, use and save default ones
+	if (ArraySize(g_aSound_Multi) == 0)
+	{
+		for (new i = 0; i < sizeof g_Sound_Multi; i++)
+		{
+			ArrayPushString(g_aSound_Multi, g_Sound_Multi[i]);
+		}
+
+		// Save to external file
+		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND MULTI", g_aSound_Multi);
+	}
+
+	for (new i = 0; i < sizeof g_Sound_Multi; i++)
+	{
+		precache_sound(g_Sound_Multi[i]);
+	}
+}
+
+// Deathmatch module's player respawn forward
+public zp_fw_deathmatch_respawn_pre(iPlayer)
+{
+	// Respawning allowed?
+	if (!get_pcvar_num(g_pCvar_Multi_Allow_Respawn))
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	// Respawn if only the last human is left?
+	if (!get_pcvar_num(g_pCvar_Respawn_After_Last_Human) && zp_core_get_human_count() == 1)
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	return PLUGIN_CONTINUE;
+}
+
+public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
+{
+	new iAlive_Count = Get_Alive_Count();
+
+	new Zombie_Count = floatround(iAlive_Count * get_pcvar_float(g_pCvar_Multi_Ratio), floatround_ceil);
+
+	if (!iSkipchecks)
+	{
+		if (random_num(1, get_pcvar_num(g_pCvar_Multi_Chance)) != 1)
+		{
+			return PLUGIN_HANDLED;
+		}
+
+		// Min players
+		if (iAlive_Count < get_pcvar_num(g_pCvar_Multi_Min_Players))
+		{
+			return PLUGIN_HANDLED;
+		}
+
+		// Min zombies
+		if (Zombie_Count < get_pcvar_num(g_pCvar_Multi_Min_Zombies))
+		{
+			return PLUGIN_HANDLED;
+		}
+	}
+
+	if (Zombie_Count >= iAlive_Count)
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	return PLUGIN_CONTINUE;
+}
+
+public zp_fw_gamemodes_start()
+{
+	zp_gamemodes_set_allow_infect();
+
+	new iZombies;
+	new iPlayer;
+
+	new iAlive_Count = Get_Alive_Count();
+
+	new iMax_Zombies = floatround(iAlive_Count * get_pcvar_float(g_pCvar_Multi_Ratio), floatround_ceil);
+
+	while (iZombies < iMax_Zombies)
+	{
+		iPlayer = Get_Random_Alive_Player();
+
+		if (!is_user_alive(iPlayer))
+		{
+			continue;
+		}
+
+		if (zp_core_is_zombie(iPlayer))
+		{
+			continue;
+		}
+
+		zp_core_infect(iPlayer, 0);
+
+		iZombies++;
+	}
+
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		// Not alive
+		if (!is_user_alive(i))
+		{
+			continue;
+		}
+
+		// This is our first zombie
+		if (zp_core_is_zombie(i))
+		{
+			continue;
+		}
+
+		cs_set_player_team(i, CS_TEAM_CT);
+	}
+
+	if (get_pcvar_num(g_pCvar_Multi_Sounds))
+	{
+		Play_Sound_To_Clients(g_Sound_Multi[random(sizeof g_Sound_Multi)]);
+	}
+
+	if (get_pcvar_num(g_pCvar_Notice_Multi_Show_Hud))
+	{
+		if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Multi_Converted))
+		{
+			set_hudmessage
+			(
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_R),
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_G),
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_B),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_X),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Y),
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_Effects),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Fxtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Holdtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Fadeintime),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Fadeouttime),
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_Channel)
+			);
+
+			show_hudmessage(0, "%L", LANG_PLAYER, "NOTICE_MULTI");
+		}
+
+		else
+		{
+			set_dhudmessage
+			(
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_R),
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_G),
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_B),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_X),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Y),
+				get_pcvar_num(g_pCvar_Message_Notice_Multi_Effects),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Fxtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Holdtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Fadeintime),
+				get_pcvar_float(g_pCvar_Message_Notice_Multi_Fadeouttime)
+			);
+
+			show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_MULTI");
+		}
+	}
+}
+
+// Plays a sound on clients
+Play_Sound_To_Clients(const szSound[])
+{
+	if (equal(szSound[strlen(szSound) - 4], ".mp3"))
+	{
+		client_cmd(0, "mp3 play ^"sound/%s^"", szSound);
+	}
+
+	else
+	{
+		client_cmd(0, "spk ^"%s^"", szSound);
+	}
+}
+
+Get_Alive_Count()
+{
+	new iAlive;
+
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		if (is_user_alive(i))
+		{
+			iAlive++;
+		}
+	}
+
+	return iAlive;
+}
+
+Get_Random_Alive_Player()
+{
+	new iPlayers[32];
+	new iCount;
+
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		if (is_user_alive(i))
+		{
+			iPlayers[iCount++] = i;
+		}
+	}
+
+	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+}
