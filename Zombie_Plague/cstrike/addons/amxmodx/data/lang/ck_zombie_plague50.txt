@@ -1,6 +1,6 @@
 [en]
 
-ZP_PREFIX = [ZPE]
+ZP_PREFIX = [ZP]
 
 MENU_TITLE = \y Zombie Plague 6.0 ^n ^n
 
@@ -165,7 +165,7 @@ CANT_RESPAWN = Player can't be respawned
 
 [RU]
 
-ZP_PREFIX = [ZPE]
+ZP_PREFIX = [ZP]
 
 MENU_TITLE = \y Zombie Plague 6.0 ^n ^n
 
