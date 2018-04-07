@@ -1,9 +1,11 @@
 /* AMX Mod X
 *	[ZP] Rewards Ammopacks.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
-*	This enterprise software. Please, buy plugin: https://news.ckcorp.ru/zp/75-zombie-plague-next.html / http://news.ckcorp.ru/24-contacts.html
 *
-*	http://ckcorp.ru/ - support from the C&K Corporation.
+*	https://ckcorp.ru/ - support from the C&K Corporation.
+*	https://forum.ckcorp.ru/ - forum support from the C&K Corporation.
+*	https://wiki.ckcorp.ru - documentation and other useful information.
+*	https://news.ckcorp.ru/ - other info.
 *
 *	Support is provided only on the site.
 */

@@ -2,8 +2,10 @@
 *	[ZP] Sounds for zombie and human.
 *	Author: C&K Corporation.
 *
-*	http://ckcorp.ru/ - support from the C&K Corporation.
-*	http://wiki.ckcorp.ru/ - documentation and other useful information.
+*	https://ckcorp.ru/ - support from the C&K Corporation.
+*	https://forum.ckcorp.ru/ - forum support from the C&K Corporation.
+*	https://wiki.ckcorp.ru - documentation and other useful information.
+*	https://news.ckcorp.ru/ - other info.
 *
 *	Support is provided only on the site.
 */
