@@ -17,7 +17,6 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <fakemeta>
 
 #define MODEL_NAME_MAX_LENGTH 32
 
