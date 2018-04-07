@@ -1,0 +1,437 @@
+/* AMX Mod X
+*	[ZP] Rewards Money.
+*	Author: MeRcyLeZZ. Edition: C&K Corporation.
+*	This enterprise software. Please, buy plugin: https://news.ckcorp.ru/zp/75-zombie-plague-next.html / http://news.ckcorp.ru/24-contacts.html
+*
+*	http://ckcorp.ru/ - support from the C&K Corporation.
+*
+*	Support is provided only on the site.
+*/
+
+#define PLUGIN "rewards money"
+#define VERSION "5.2.6.0"
+#define AUTHOR "C&K Corporation"
+
+#include <amxmodx>
+#include <cs_util>
+#include <fakemeta>
+#include <ck_zp50_kernel>
+#include <ck_zp50_gamemodes>
+
+#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
+#include <ck_zp50_class_nemesis>
+
+#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
+#include <ck_zp50_class_assassin>
+
+#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
+#include <ck_zp50_class_survivor>
+
+#define LIBRARY_SNIPER "ck_zp50_class_sniper"
+#include <ck_zp50_class_sniper>
+
+#define NO_DATA -1
+
+new Float:g_fDamage_Dealt_To_Zombies[MAX_PLAYERS + 1];
+new Float:g_fDamage_Dealt_To_Humans[MAX_PLAYERS + 1];
+
+new g_Money_At_Round_Start[MAX_PLAYERS + 1] = { NO_DATA, ... };
+new g_Money_Rewarded[MAX_PLAYERS + 1] = { NO_DATA, ... };
+new g_Money_Before_Kill[MAX_PLAYERS + 1];
+
+new g_Game_Restarting;
+
+new g_Message_Money;
+new g_Message_Money_Block_Status;
+
+new g_pCvar_Money_Limit;
+
+new g_pCvar_Money_For_Winner;
+new g_pCvar_Money_For_Loser;
+
+new g_pCvar_Money_Damage;
+new g_pCvar_Money_Zombie_Damaged_HP;
+new g_pCvar_Money_Human_Damaged_HP;
+
+new g_pCvar_Money_Zombie_Killed;
+new g_pCvar_Money_Human_Killed;
+
+new g_pCvar_Money_Human_Infected;
+
+new g_pCvar_Money_Nemesis_Ignore;
+new g_pCvar_Money_Assassin_Ignore;
+new g_pCvar_Money_Survivor_Ignore;
+new g_pCvar_Money_Sniper_Ignore;
+
+new g_iBit_Alive;
+new g_iBit_Connected;
+
+public plugin_init()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_pCvar_Money_Limit = register_cvar("zm_money_limit", "16000");
+
+	g_pCvar_Money_For_Winner = register_cvar("zm_money_for_winner", "1000");
+	g_pCvar_Money_For_Loser = register_cvar("zm_money_for_loser", "500");
+
+	g_pCvar_Money_Damage = register_cvar("zm_money_damage", "100");
+	g_pCvar_Money_Zombie_Damaged_HP = register_cvar("zm_money_zombie_damaged_hp", "500");
+	g_pCvar_Money_Human_Damaged_HP = register_cvar("zm_money_human_damaged_hp", "250");
+
+	g_pCvar_Money_Zombie_Killed = register_cvar("zm_money_zombie_killed", "200");
+	g_pCvar_Money_Human_Killed = register_cvar("zm_money_human_killed", "200");
+
+	g_pCvar_Money_Human_Infected = register_cvar("zm_money_human_infected", "200");
+
+	// Nemesis Class loaded?
+	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
+	{
+		g_pCvar_Money_Nemesis_Ignore = register_cvar("zm_money_nemesis_ignore", "0");
+	}
+
+	// Assassin Class loaded?
+	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
+	{
+		g_pCvar_Money_Assassin_Ignore = register_cvar("zm_money_assassin_ignore", "0");
+	}
+
+	// Survivor Class loaded?
+	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
+	{
+		g_pCvar_Money_Survivor_Ignore = register_cvar("zm_money_survivor_ignore", "0");
+	}
+
+	// Sniper Class loaded?
+	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
+	{
+		g_pCvar_Money_Sniper_Ignore = register_cvar("zm_money_sniper_ignore", "0");
+	}
+
+	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
+	register_event("TextMsg", "Event_Game_Restart", "a", "2=#Game_will_restart_in");
+	register_event("TextMsg", "Event_Game_Restart", "a", "2=#Game_Commencing");
+
+	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_Post", 1);
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
+
+	g_Message_Money = get_user_msgid("Money");
+
+	register_message(g_Message_Money, "Message_Money");
+}
+
+public plugin_natives()
+{
+	set_module_filter("module_filter");
+	set_native_filter("native_filter");
+}
+
+public module_filter(const szModule[])
+{
+	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	return PLUGIN_CONTINUE;
+}
+
+public native_filter(const szName[], iIndex, iTrap)
+{
+	if (!iTrap)
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	return PLUGIN_CONTINUE;
+}
+
+public zp_fw_core_infect_post(iPlayer, iAttacker)
+{
+	// Reward money to zombies infecting humans?
+	if (BIT_VALID(g_iBit_Connected, iAttacker) && iAttacker != iPlayer && get_pcvar_num(g_pCvar_Money_Human_Infected) > 0)
+	{
+		CS_SET_USER_MONEY(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + get_pcvar_num(g_pCvar_Money_Human_Infected), get_pcvar_num(g_pCvar_Money_Limit)));
+	}
+}
+
+public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDamage)
+{
+	// Non-player damage or self damage
+	if (iVictim == iAttacker || iAttacker > 32 || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	{
+		return;
+	}
+
+	// Ignore money rewards for Nemesis?
+	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
+	{
+		return;
+	}
+
+	// Ignore money rewards for Assassin?
+	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
+	{
+		return;
+	}
+
+	// Ignore money rewards for Survivor?
+	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
+	{
+		return;
+	}
+
+	// Ignore money rewards for Sniper?
+	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
+	{
+		return;
+	}
+
+	// Zombie attacking human...
+	if (zp_core_is_zombie(iAttacker) && !zp_core_is_zombie(iVictim))
+	{
+		// Reward money to zombies for damaging humans?
+		if (get_pcvar_num(g_pCvar_Money_Damage) > 0)
+		{
+			// Store damage dealt
+			g_fDamage_Dealt_To_Humans[iAttacker] += fDamage;
+
+			// Give rewards according to damage dealt
+			new iHow_Many_Rewards = floatround(g_fDamage_Dealt_To_Humans[iAttacker] / get_pcvar_float(g_pCvar_Money_Human_Damaged_HP), floatround_floor);
+
+			if (iHow_Many_Rewards > 0)
+			{
+				CS_SET_USER_MONEY(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + (get_pcvar_num(g_pCvar_Money_Damage) * iHow_Many_Rewards), get_pcvar_num(g_pCvar_Money_Limit)));
+
+				g_fDamage_Dealt_To_Humans[iAttacker] -= get_pcvar_float(g_pCvar_Money_Human_Damaged_HP) * iHow_Many_Rewards;
+			}
+		}
+	}
+
+	// Human attacking zombie...
+	else if (!zp_core_is_zombie(iAttacker) && zp_core_is_zombie(iVictim))
+	{
+		if (get_pcvar_num(g_pCvar_Money_Damage) > 0)
+		{
+			// Store damage dealt
+			g_fDamage_Dealt_To_Zombies[iAttacker] += fDamage;
+
+			// Give rewards according to damage dealt
+			new iHow_Many_Rewards = floatround(g_fDamage_Dealt_To_Zombies[iAttacker] / get_pcvar_float(g_pCvar_Money_Zombie_Damaged_HP), floatround_floor);
+
+			if (iHow_Many_Rewards > 0)
+			{
+				CS_SET_USER_MONEY(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + (get_pcvar_num(g_pCvar_Money_Damage) * iHow_Many_Rewards), get_pcvar_num(g_pCvar_Money_Limit)));
+
+				g_fDamage_Dealt_To_Zombies[iAttacker] -= get_pcvar_float(g_pCvar_Money_Zombie_Damaged_HP) * iHow_Many_Rewards;
+			}
+		}
+	}
+}
+
+public zp_fw_kill_pre_bit_sub(iVictim, iAttacker)
+{
+	// Non-player kill or self kill
+	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
+	{
+		return;
+	}
+
+	// Block CS money message before the kill
+	g_Message_Money_Block_Status = get_msg_block(g_Message_Money);
+
+	set_msg_block(g_Message_Money, BLOCK_SET);
+
+	// Save attacker's money before the kill
+	g_Money_Before_Kill[iAttacker] = CS_GET_USER_MONEY(iAttacker);
+
+	BIT_SUB(g_iBit_Alive, iVictim);
+}
+
+public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
+{
+	// Non-player kill or self kill
+	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
+	{
+		return;
+	}
+
+	// Restore CS money message block status
+	set_msg_block(g_Message_Money, g_Message_Money_Block_Status);
+
+	// Ignore money rewards for nemesis?
+	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
+	{
+		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+
+		return;
+	}
+
+	// Ignore money rewards for assassin?
+	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
+	{
+		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+
+		return;
+	}
+
+	// Ignore money rewards for survivor?
+	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
+	{
+		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+
+		return;
+	}
+
+	// Ignore money rewards for sniper?
+	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
+	{
+		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+
+		return;
+	}
+
+	// Reward money to atacker for the kill
+	if (zp_core_is_zombie(iVictim))
+	{
+		CS_SET_USER_MONEY(iAttacker, min(g_Money_Before_Kill[iAttacker] + get_pcvar_num(g_pCvar_Money_Zombie_Killed), get_pcvar_num(g_pCvar_Money_Limit)));
+	}
+
+	else
+	{
+		CS_SET_USER_MONEY(iAttacker, min(g_Money_Before_Kill[iAttacker] + get_pcvar_num(g_pCvar_Money_Human_Killed), get_pcvar_num(g_pCvar_Money_Limit)));
+	}
+}
+
+public Event_Round_Start()
+{
+	// Don't reward money after game restart event
+	if (g_Game_Restarting)
+	{
+		g_Game_Restarting = false;
+
+		return;
+	}
+
+	// Save player's money at round start, plus our custom money rewards
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		if (BIT_NOT_VALID(g_iBit_Connected, i) || g_Money_Rewarded[i] == NO_DATA)
+		{
+			continue;
+		}
+
+		g_Money_At_Round_Start[i] = min(CS_GET_USER_MONEY(i) + g_Money_Rewarded[i], get_pcvar_num(g_pCvar_Money_Limit));
+
+		g_Money_Rewarded[i] = NO_DATA;
+	}
+}
+
+public zp_fw_gamemodes_end()
+{
+	// Determine round winner and money rewards
+	if (!zp_core_get_zombie_count())
+	{
+		// Human team wins
+		for (new i = 1; i <= MaxClients; i++)
+		{
+			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			{
+				continue;
+			}
+
+			if (zp_core_is_zombie(i))
+			{
+				g_Money_Rewarded[i] = get_pcvar_num(g_pCvar_Money_For_Loser);
+			}
+
+			else
+			{
+				g_Money_Rewarded[i] = get_pcvar_num(g_pCvar_Money_For_Winner);
+			}
+		}
+	}
+
+	else if (!zp_core_get_human_count())
+	{
+		// Zombie team wins
+		for (new i = 1; i <= MaxClients; i++)
+		{
+			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			{
+				continue;
+			}
+
+			if (zp_core_is_zombie(i))
+			{
+				g_Money_Rewarded[i] = get_pcvar_num(g_pCvar_Money_For_Winner);
+			}
+
+			else
+			{
+				g_Money_Rewarded[i] = get_pcvar_num(g_pCvar_Money_For_Loser);
+			}
+		}
+	}
+
+	else
+	{
+		// No one wins
+		for (new i = 1; i <= MaxClients; i++)
+		{
+			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			{
+				continue;
+			}
+
+			g_Money_Rewarded[i] = get_pcvar_num(g_pCvar_Money_For_Loser);
+		}
+	}
+}
+
+public Message_Money(iMessage_ID, iMessage_Dest, iMessage_Entity)
+{
+	if (BIT_NOT_VALID(g_iBit_Connected, iMessage_Entity))
+	{
+		return;
+	}
+
+	// If arg 2 = 0, this is CS giving round win money or start money
+	if (get_msg_arg_int(2) == 0 && g_Money_At_Round_Start[iMessage_Entity] != NO_DATA)
+	{
+		CS_SET_USER_MONEY(iMessage_Entity, g_Money_At_Round_Start[iMessage_Entity]);
+
+		set_msg_arg_int(1, get_msg_argtype(1), g_Money_At_Round_Start[iMessage_Entity]);
+
+		g_Money_At_Round_Start[iMessage_Entity] = NO_DATA;
+	}
+}
+
+public Event_Game_Restart()
+{
+	g_Game_Restarting = true;
+}
+
+public client_putinserver(iPlayer)
+{
+	BIT_ADD(g_iBit_Connected, iPlayer);
+}
+
+public client_disconnected(iPlayer)
+{
+	// Clear saved money after disconnecting
+	g_Money_At_Round_Start[iPlayer] = NO_DATA;
+	g_Money_Rewarded[iPlayer] = NO_DATA;
+
+	// Clear damage after disconnecting
+	g_fDamage_Dealt_To_Zombies[iPlayer] = 0.0;
+	g_fDamage_Dealt_To_Humans[iPlayer] = 0.0;
+
+	BIT_SUB(g_iBit_Alive, iPlayer);
+	BIT_SUB(g_iBit_Connected, iPlayer);
+}
+
+public zp_fw_spawn_post_add_bit(iPlayer)
+{
+	BIT_ADD(g_iBit_Alive, iPlayer);
+}

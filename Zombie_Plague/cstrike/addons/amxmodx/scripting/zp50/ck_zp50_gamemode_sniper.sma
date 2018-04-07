@@ -1,0 +1,275 @@
+/* AMX Mod X
+*	[ZP] Gamemode Sniper.
+*	Author: MeRcyLeZZ. Edition: C&K Corporation.
+*	This enterprise software. Please, buy plugin: https://news.ckcorp.ru/zp/75-zombie-plague-next.html / http://news.ckcorp.ru/24-contacts.html
+*
+*	http://ckcorp.ru/ - support from the C&K Corporation.
+*
+*	Support is provided only on the site.
+*/
+
+#define PLUGIN "gamemode sniper"
+#define VERSION "5.2.4.0"
+#define AUTHOR "C&K Corporation"
+
+#define ZP_SETTINGS_FILE "zm_settings.ini"
+
+new const g_Sound_Sniper[][] =
+{
+	"zombie_plague/survivor1.wav",
+	"zombie_plague/survivor2.wav"
+};
+
+#include <amxmodx>
+#include <cs_util>
+#include <amx_settings_api>
+#include <ck_zp50_kernel>
+#include <ck_zp50_gamemodes>
+#include <ck_zp50_class_sniper>
+#include <ck_zp50_deathmatch>
+
+#define SOUND_MAX_LENGTH 64
+
+new Array:g_aSound_Sniper;
+
+new g_pCvar_Sniper_Chance;
+new g_pCvar_Sniper_Min_Players;
+new g_pCvar_Sniper_Sounds;
+new g_pCvar_Sniper_Allow_Respawn;
+
+new g_pCvar_Notice_Sniper_Show_Hud;
+
+new g_pCvar_Message_Notice_Sniper_Converted;
+new g_pCvar_Message_Notice_Sniper_R;
+new g_pCvar_Message_Notice_Sniper_G;
+new g_pCvar_Message_Notice_Sniper_B;
+new g_pCvar_Message_Notice_Sniper_X;
+new g_pCvar_Message_Notice_Sniper_Y;
+new g_pCvar_Message_Notice_Sniper_Effects;
+new g_pCvar_Message_Notice_Sniper_Fxtime;
+new g_pCvar_Message_Notice_Sniper_Holdtime;
+new g_pCvar_Message_Notice_Sniper_Fadeintime;
+new g_pCvar_Message_Notice_Sniper_Fadeouttime;
+new g_pCvar_Message_Notice_Sniper_Channel;
+
+new g_pCvar_All_Messages_Converted;
+
+new g_iTarget_Player;
+
+public plugin_precache()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	// Register game mode at precache (plugin gets paused after this)
+	zp_gamemodes_register("Sniper Mode");
+
+	g_pCvar_Sniper_Chance = register_cvar("zm_sniper_chance", "20");
+	g_pCvar_Sniper_Min_Players = register_cvar("zm_sniper_min_players", "0");
+	g_pCvar_Sniper_Sounds = register_cvar("zm_sniper_sounds", "1");
+	g_pCvar_Sniper_Allow_Respawn = register_cvar("zm_sniper_allow_respawn", "0");
+
+	g_pCvar_Notice_Sniper_Show_Hud = register_cvar("zm_notice_sniper_show_hud", "1");
+
+	g_pCvar_Message_Notice_Sniper_Converted = register_cvar("zm_notice_sniper_message_converted", "0");
+	g_pCvar_Message_Notice_Sniper_R = register_cvar("zm_notice_sniper_message_r", "0");
+	g_pCvar_Message_Notice_Sniper_G = register_cvar("zm_notice_sniper_message_g", "250");
+	g_pCvar_Message_Notice_Sniper_B = register_cvar("zm_notice_sniper_message_b", "0");
+	g_pCvar_Message_Notice_Sniper_X = register_cvar("zm_notice_sniper_message_x", "-1.0");
+	g_pCvar_Message_Notice_Sniper_Y = register_cvar("zm_notice_sniper_message_y", "0.75");
+	g_pCvar_Message_Notice_Sniper_Effects = register_cvar("zm_notice_sniper_message_effects", "0");
+	g_pCvar_Message_Notice_Sniper_Fxtime = register_cvar("zm_notice_sniper_message_fxtime", "0.1");
+	g_pCvar_Message_Notice_Sniper_Holdtime = register_cvar("zm_notice_sniper_message_holdtime", "1.5");
+	g_pCvar_Message_Notice_Sniper_Fadeintime = register_cvar("zm_notice_sniper_message_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Sniper_Fadeouttime = register_cvar("zm_notice_sniper_message_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Sniper_Channel = register_cvar("zm_notice_sniper_message_channel", "-1");
+
+	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
+
+	// Initialize arrays
+	g_aSound_Sniper = ArrayCreate(SOUND_MAX_LENGTH, 1);
+
+	// Load from external file
+	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND SNIPER", g_aSound_Sniper);
+
+	// If we couldn't load custom sounds from file, use and save default ones
+	if (ArraySize(g_aSound_Sniper) == 0)
+	{
+		for (new i = 0; i < sizeof g_Sound_Sniper; i++)
+		{
+			ArrayPushString(g_aSound_Sniper, g_Sound_Sniper[i]);
+		}
+
+		// Save to external file
+		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND SNIPER", g_aSound_Sniper);
+	}
+
+	for (new i = 0; i < sizeof g_Sound_Sniper; i++)
+	{
+		precache_sound(g_Sound_Sniper[i]);
+	}
+}
+
+// Deathmatch module's player respawn forward
+public zp_fw_deathmatch_respawn_pre(iPlayer)
+{
+	// Respawning allowed?
+	if (!get_pcvar_num(g_pCvar_Sniper_Allow_Respawn))
+	{
+		return PLUGIN_HANDLED;
+	}
+
+	return PLUGIN_CONTINUE;
+}
+
+public zp_fw_core_spawn_post(iPlayer)
+{
+	// Always respawn as human on sniper rounds
+	zp_core_respawn_as_zombie(iPlayer, false);
+}
+
+public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipcheck)
+{
+	if (!iSkipcheck)
+	{
+		// Random chance
+		if (random_num(1, get_pcvar_num(g_pCvar_Sniper_Chance)) != 1)
+		{
+			return PLUGIN_HANDLED;
+		}
+
+		// Min players
+		if (Get_Alive_Count() < get_pcvar_num(g_pCvar_Sniper_Min_Players))
+		{
+			return PLUGIN_HANDLED;
+		}
+	}
+
+	// Game mode allowed
+	return PLUGIN_CONTINUE;
+}
+
+public zp_fw_gamemodes_choose_post(iGame_Mode_ID, iTarget_Player)
+{
+	// Pick player randomly?
+	g_iTarget_Player = (iTarget_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iTarget_Player;
+}
+
+public zp_fw_gamemodes_start()
+{
+	// Turn player into sniper
+	zp_class_sniper_set(g_iTarget_Player);
+
+	// Turn the remaining players into zombies
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		// Not alive
+		if (!is_user_alive(i))
+		{
+			continue;
+		}
+
+		// Sniper or already a zombie
+		if (zp_class_sniper_get(i) || zp_core_is_zombie(i))
+		{
+			continue;
+		}
+
+		zp_core_infect(i);
+	}
+
+	if (get_pcvar_num(g_pCvar_Sniper_Sounds))
+	{
+		Play_Sound_To_Clients(g_Sound_Sniper[random(sizeof g_Sound_Sniper)]);
+	}
+
+	if (get_pcvar_num(g_pCvar_Notice_Sniper_Show_Hud))
+	{
+		new szPlayer_Name[32];
+
+		GET_USER_NAME(g_iTarget_Player, szPlayer_Name, charsmax(szPlayer_Name));
+
+		if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Sniper_Converted))
+		{
+			set_hudmessage
+			(
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_R),
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_G),
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_B),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_X),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Y),
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_Effects),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Fxtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Holdtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Fadeintime),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Fadeouttime),
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_Channel)
+			);
+
+			show_hudmessage(0, "%L", LANG_PLAYER, "NOTICE_SNIPER", szPlayer_Name);
+		}
+
+		else
+		{
+			set_dhudmessage
+			(
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_R),
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_G),
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_B),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_X),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Y),
+				get_pcvar_num(g_pCvar_Message_Notice_Sniper_Effects),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Fxtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Holdtime),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Fadeintime),
+				get_pcvar_float(g_pCvar_Message_Notice_Sniper_Fadeouttime)
+			);
+
+			show_dhudmessage(0, "%L", LANG_PLAYER, "NOTICE_SNIPER", szPlayer_Name);
+		}
+	}
+}
+
+// Plays a sound on clients
+Play_Sound_To_Clients(const szSound[])
+{
+	if (equal(szSound[strlen(szSound) - 4], ".mp3"))
+	{
+		client_cmd(0, "mp3 play ^"sound/%s^"", szSound);
+	}
+
+	else
+	{
+		client_cmd(0, "spk ^"%s^"", szSound);
+	}
+}
+
+Get_Alive_Count()
+{
+	new iAlive;
+
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		if (is_user_alive(i))
+		{
+			iAlive++;
+		}
+	}
+
+	return iAlive;
+}
+
+Get_Random_Alive_Player()
+{
+	new iPlayers[32];
+	new iCount;
+
+	for (new i = 1; i <= MaxClients; i++)
+	{
+		if (is_user_alive(i))
+		{
+			iPlayers[iCount++] = i;
+		}
+	}
+
+	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+}

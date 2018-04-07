@@ -1,0 +1,100 @@
+/* AMX Mod X
+*	[ZP] Weapon Drop Strip.
+*	Author: MeRcyLeZZ. Edition: C&K Corporation.
+*	This enterprise software. Please, buy plugin: https://news.ckcorp.ru/zp/75-zombie-plague-next.html / http://news.ckcorp.ru/24-contacts.html
+*
+*	http://ckcorp.ru/ - support from the C&K Corporation.
+*
+*	Support is provided only on the site.
+*/
+
+#define PLUGIN "weapon drop strip"
+#define VERSION "5.2.5.0"
+#define AUTHOR "C&K Corporation"
+
+#include <amxmodx>
+#include <cs_util>
+#include <fakemeta>
+#include <hamsandwich>
+#include <ck_zp50_kernel>
+
+new g_pCvar_Zombie_Strip_Armor;
+new g_pCvar_Remove_Dropped_Weapons;
+
+new g_iBit_Alive;
+
+public plugin_init()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_pCvar_Zombie_Strip_Armor = register_cvar("zm_zombie_strip_armor", "1");
+	g_pCvar_Remove_Dropped_Weapons = register_cvar("zm_remove_dropped_weapons", "0");
+
+	RegisterHam(Ham_Touch, "weaponbox", "Ham_Touch_");
+	RegisterHam(Ham_Touch, "armoury_entity", "Ham_Touch_");
+	RegisterHam(Ham_Touch, "weapon_shield", "Ham_Touch_");
+
+	register_forward(FM_SetModel, "FM_SetModel_");
+}
+
+public zp_fw_core_infect(iPlayer)
+{
+	rg_remove_all_items(iPlayer); // strip_user_weapons
+
+	rg_give_item(iPlayer, "weapon_knife");
+
+	if (get_pcvar_num(g_pCvar_Zombie_Strip_Armor))
+	{
+		rg_set_user_armor(iPlayer, 0, ARMOR_NONE);
+	}
+}
+
+// Forward Set Model
+public FM_SetModel_(iEntity, const szModel[])
+{
+	// We don't care
+	if (strlen(szModel) < 8)
+	{
+		return;
+	}
+
+	// Get entity's classname
+	new szClassname[10];
+
+	get_entvar(iEntity, var_classname, szClassname, charsmax(szClassname));
+
+	// Check if it's a weapon box
+	if (equal(szClassname, "weaponbox"))
+	{
+		// They get automatically removed when thinking
+		set_entvar(iEntity, var_nextthink, get_gametime() + get_pcvar_float(g_pCvar_Remove_Dropped_Weapons));
+
+		return;
+	}
+}
+
+// Ham Weapon Touch Forward
+public Ham_Touch_(iWeapon, iPlayer)
+{
+	if ((0 < iPlayer <= MaxClients) && BIT_VALID(g_iBit_Alive, iPlayer) && zp_core_is_zombie(iPlayer))
+	{
+		return HAM_SUPERCEDE;
+	}
+
+	return HAM_IGNORED;
+}
+
+public client_disconnected(iPlayer)
+{
+	BIT_SUB(g_iBit_Alive, iPlayer);
+}
+
+public zp_fw_kill_pre_bit_sub(iPlayer)
+{
+	BIT_SUB(g_iBit_Alive, iPlayer);
+}
+
+public zp_fw_spawn_post_add_bit(iPlayer)
+{
+	BIT_ADD(g_iBit_Alive, iPlayer);
+}
