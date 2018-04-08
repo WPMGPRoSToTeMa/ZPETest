@@ -72,7 +72,7 @@ public native_set_player_model(iPlugin_ID, iNum_Params)
 
 	if (g_Set_Model_Index_Offset)
 	{
-		new szModel_Path[32 + (2 * MODEL_NAME_MAX_LENGTH)];
+		new szModel_Path[128];
 
 		formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szNew_Model, szNew_Model);
 
