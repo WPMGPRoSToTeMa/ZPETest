@@ -1,3 +1,5 @@
+[![Build Status](https://build.ckcorp.ru/job/CK-AMXX-MODES/badge/icon)](https://build.ckcorp.ru/job/CK-AMXX-MODES/)
+
 ### System requirements: ###
 
 - Linux
