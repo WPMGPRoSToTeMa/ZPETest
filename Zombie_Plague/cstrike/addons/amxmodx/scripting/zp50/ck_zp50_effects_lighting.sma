@@ -67,7 +67,7 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	g_pCvar_Lighting = register_cvar("zm_lighting", "d");
-	g_pCvar_Thunder_Time = register_cvar("zm_thunder_time", "0");
+	g_pCvar_Thunder_Time = register_cvar("zm_thunder_time", "0.0");
 	g_pCvar_Triggered_Lights = register_cvar("zm_triggered_lights", "1");
 
 	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
@@ -209,7 +209,7 @@ public Remove_Lights()
 public Lighting_Task()
 {
 	// Set thunder task if enabled and not already in place
-	if (float(get_pcvar_num(g_pCvar_Thunder_Time)) > 0.0 && !task_exists(TASK_THUNDER) && !task_exists(TASK_THUNDER_LIGHTS))
+	if (get_pcvar_float(g_pCvar_Thunder_Time) > 0.0 && !task_exists(TASK_THUNDER) && !task_exists(TASK_THUNDER_LIGHTS))
 	{
 		g_Thunder_Light_Index = 0;
 
@@ -217,7 +217,7 @@ public Lighting_Task()
 
 		g_Thunder_Light_Max_Len = strlen(g_Thunder_Light);
 
-		set_task(float(get_pcvar_num(g_pCvar_Thunder_Time)), "Thunder_Task", TASK_THUNDER);
+		set_task(get_pcvar_float(g_pCvar_Thunder_Time), "Thunder_Task", TASK_THUNDER);
 	}
 }
 

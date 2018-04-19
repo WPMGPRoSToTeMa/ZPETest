@@ -233,9 +233,9 @@ public plugin_init()
 	g_pCvar_Random_Secondary = register_cvar("zm_random_secondary", "0");
 	g_pCvar_Random_Grenades = register_cvar("zm_random_grenades", "0");
 
-	g_pCvar_Buy_Custom_Time_Primary = register_cvar("zm_buy_custom_time_primary", "15");
-	g_pCvar_Buy_Custom_Time_Secondary = register_cvar("zm_buy_custom_time_secondary", "15");
-	g_pCvar_Buy_Custom_Time_Grenades = register_cvar("zm_buy_custom_time_grenades", "15");
+	g_pCvar_Buy_Custom_Time_Primary = register_cvar("zm_buy_custom_time_primary", "15.0");
+	g_pCvar_Buy_Custom_Time_Secondary = register_cvar("zm_buy_custom_time_secondary", "15.0");
+	g_pCvar_Buy_Custom_Time_Grenades = register_cvar("zm_buy_custom_time_grenades", "15.0");
 
 	g_pCvar_Buy_Custom_Primary = register_cvar("zm_buy_custom_primary", "1");
 	g_pCvar_Buy_Custom_Secondary = register_cvar("zm_buy_custom_secondary", "1");

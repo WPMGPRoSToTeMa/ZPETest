@@ -168,7 +168,7 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Buyzone_Time = register_cvar("zm_buy_zone_time", "15");
+	g_pCvar_Buyzone_Time = register_cvar("zm_buy_zone_time", "15.0");
 	g_pCvar_Buyzone_Humans = register_cvar("zm_buy_zone_humans", "1");
 	g_pCvar_Buyzone_Zombies = register_cvar("zm_buy_zone_zombies", "0");
 
