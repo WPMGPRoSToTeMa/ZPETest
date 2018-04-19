@@ -70,9 +70,9 @@ public plugin_init()
 
 	g_pCvar_Zombie_Madness_Time = register_cvar("zm_zombie_madness_time", "5");
 
-	g_pCvar_Madness_Aura_Color_R = register_cvar("zm_madness_aura_color_R", "150");
-	g_pCvar_Madness_Aura_Color_G = register_cvar("zm_madness_aura_color_G", "0");
-	g_pCvar_Madness_Aura_Color_B = register_cvar("zm_madness_aura_color_B", "0");
+	g_pCvar_Madness_Aura_Color_R = register_cvar("zm_zombie_madness_aura_color_R", "150");
+	g_pCvar_Madness_Aura_Color_G = register_cvar("zm_zombie_madness_aura_color_G", "0");
+	g_pCvar_Madness_Aura_Color_B = register_cvar("zm_zombie_madness_aura_color_B", "0");
 
 	RegisterHookChain(RG_CBasePlayer_TraceAttack, "RG_CBasePlayer_TraceAttack_");
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");

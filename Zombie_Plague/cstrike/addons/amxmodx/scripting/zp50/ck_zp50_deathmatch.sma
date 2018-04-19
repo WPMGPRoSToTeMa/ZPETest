@@ -47,7 +47,7 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	g_pCvar_Deathmatch = register_cvar("zm_deathmatch", "0");
-	g_pCvar_Respawn_Delay = register_cvar("zm_respawn_delay", "5");
+	g_pCvar_Respawn_Delay = register_cvar("zm_respawn_delay", "5.0");
 	g_pCvar_Respawn_Zombies = register_cvar("zm_respawn_zombies", "1");
 	g_pCvar_Respawn_Humans = register_cvar("zm_respawn_humans", "1");
 	g_pCvar_Respawn_On_Suicide = register_cvar("zm_respawn_on_suicide", "0");
@@ -73,7 +73,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 			return;
 		}
 
-		set_task(float(get_pcvar_num(g_pCvar_Respawn_Delay)), "Respawn_Player_Task", iVictim + TASK_RESPAWN);
+		set_task(get_pcvar_float(g_pCvar_Respawn_Delay), "Respawn_Player_Task", iVictim + TASK_RESPAWN);
 	}
 }
 

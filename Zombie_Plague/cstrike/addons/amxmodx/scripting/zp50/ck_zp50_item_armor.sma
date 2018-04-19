@@ -50,8 +50,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Armor_Buy_Count = register_cvar("zm_armor_buy_count", "70");
-	g_pCvar_Armor_Buy_Sound = register_cvar("zm_armor_buy_sound", "1");
+	g_pCvar_Armor_Buy_Count = register_cvar("zm_item_armor_buy_count", "70");
+	g_pCvar_Armor_Buy_Sound = register_cvar("zm_item_armor_buy_sound", "1");
 	g_pCvar_Item_Armor_Type = register_cvar("zm_item_armor_type", "0");
 
 	g_Item_ID = zp_items_register(ITEM_NAME, ITEM_COST);
