@@ -1,4 +1,4 @@
-[![Build Status](https://build.ckcorp.ru/job/CK-AMXX-MODES/badge/icon)](https://build.ckcorp.ru/job/CK-AMXX-MODES/)
+[![Build Status](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/badge/icon)](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/)
 
 ### System requirements: ###
 
