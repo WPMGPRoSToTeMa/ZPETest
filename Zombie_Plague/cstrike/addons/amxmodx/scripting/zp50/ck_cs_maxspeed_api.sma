@@ -127,7 +127,7 @@ public Logevent_Round_Start()
 
 public RG_CBasePlayer_ResetMaxSpeed_Post(iPlayer)
 {
-	// TODO: Use alive bit = bug.
+	// is_user_alive is used to prevent the bug that occurs when using the bit sum
 	if (g_Freeze_Time || !is_user_alive(iPlayer) || BIT_NOT_VALID(g_Has_Custom_Max_Speed, iPlayer))
 	{
 		return;
