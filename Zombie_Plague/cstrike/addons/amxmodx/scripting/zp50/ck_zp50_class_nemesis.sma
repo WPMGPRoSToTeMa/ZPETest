@@ -71,9 +71,7 @@ new const g_Sound_Nemesis_Hit_Stab[][] =
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
-#include <fakemeta>
 #include <ck_cs_weap_models_api>
-#include <ck_cs_player_models_api>
 #include <ck_zp50_kernel>
 
 #define LIBRARY_GRENADE_FROST "ck_zp50_grenade_frost"
@@ -486,7 +484,7 @@ public zp_fw_core_infect_post(iPlayer)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Speed));
 
 	// Apply nemesis player model
-	cs_set_player_model(iPlayer, g_Models_Nemesis_Player[random_num(0, sizeof g_Models_Nemesis_Player - 1)]);
+	rg_set_user_model(iPlayer, g_Models_Nemesis_Player[random_num(0, sizeof g_Models_Nemesis_Player - 1)]);
 
 	// Apply nemesis claw model
 	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_Models_Nemesis_Claw[random_num(0, sizeof g_Models_Nemesis_Claw - 1)]);

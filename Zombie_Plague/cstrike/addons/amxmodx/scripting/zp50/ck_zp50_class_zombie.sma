@@ -23,7 +23,6 @@
 #include <ck_cs_maxspeed_api>
 #include <ck_cs_weap_models_api>
 #include <ck_cs_weap_restrict_api>
-#include <ck_cs_player_models_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_class_zombie_const>
 
@@ -318,7 +317,7 @@ public zp_fw_core_infect_post(iPlayer)
 
 		ArrayGetString(aClass_Models, iIndex, szPlayer_Model, charsmax(szPlayer_Model));
 
-		cs_set_player_model(iPlayer, szPlayer_Model);
+		rg_set_user_model(iPlayer, szPlayer_Model);
 	}
 
 	// Apply zombie claw model
