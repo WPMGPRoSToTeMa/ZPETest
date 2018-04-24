@@ -360,7 +360,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 		// Leech Zombie infection hp bonus
 		if (zp_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
 		{
-			SET_USER_HEALTH(iAttacker, GET_USER_HEALTH(iAttacker) + float(get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward)));
+			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker) + float(get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward)));
 		}
 	}
 }

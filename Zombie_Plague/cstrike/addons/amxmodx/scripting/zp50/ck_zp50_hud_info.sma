@@ -290,12 +290,12 @@ public Show_HUD(iTask_ID)
 		{
 			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
 			{
-				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(iPlayer));
+				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, Float:GET_USER_HEALTH(iPlayer), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(iPlayer));
 			}
 
 			else
 			{
-				show_dhudmessage(ID_SHOWHUD, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(iPlayer));
+				show_dhudmessage(ID_SHOWHUD, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, Float:GET_USER_HEALTH(iPlayer), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(iPlayer));
 			}
 		}
 
@@ -303,12 +303,12 @@ public Show_HUD(iTask_ID)
 		{
 			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
 			{
-				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L $ %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "MONEY1", CS_GET_USER_MONEY(iPlayer));
+				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L $ %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, Float:GET_USER_HEALTH(iPlayer), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "MONEY1", CS_GET_USER_MONEY(iPlayer));
 			}
 
 			else
 			{
-				show_dhudmessage(ID_SHOWHUD, "%L: %s ^n HP: %d Armor: %d - %L %s - %L $ %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "MONEY1", CS_GET_USER_MONEY(iPlayer));
+				show_dhudmessage(ID_SHOWHUD, "%L: %s ^n HP: %d Armor: %d - %L %s - %L $ %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, Float:GET_USER_HEALTH(iPlayer), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "MONEY1", CS_GET_USER_MONEY(iPlayer));
 			}
 		}
 	}
@@ -355,12 +355,12 @@ public Show_HUD(iTask_ID)
 		{
 			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
 			{
-				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s - %L %d", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(ID_SHOWHUD));
+				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s - %L %d", Float:GET_USER_HEALTH(ID_SHOWHUD), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(ID_SHOWHUD));
 			}
 
 			else
 			{
-				show_dhudmessage(ID_SHOWHUD, "HP: %d Armor: %d - %L %s - %L %d", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(ID_SHOWHUD));
+				show_dhudmessage(ID_SHOWHUD, "HP: %d Armor: %d - %L %s - %L %d", Float:GET_USER_HEALTH(ID_SHOWHUD), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(ID_SHOWHUD));
 			}
 		}
 
@@ -368,12 +368,12 @@ public Show_HUD(iTask_ID)
 		{
 			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
 			{
-				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name);
+				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s", Float:GET_USER_HEALTH(ID_SHOWHUD), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name);
 			}
 
 			else
 			{
-				show_dhudmessage(ID_SHOWHUD, "HP: %d Armor: %d - %L %s", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name);
+				show_dhudmessage(ID_SHOWHUD, "HP: %d Armor: %d - %L %s", Float:GET_USER_HEALTH(ID_SHOWHUD), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name);
 			}
 		}
 	}
