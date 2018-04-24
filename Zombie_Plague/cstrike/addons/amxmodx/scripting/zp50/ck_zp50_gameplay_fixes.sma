@@ -355,7 +355,7 @@ public client_disconnected(iLeaving_Player)
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, float(GET_USER_HEALTH(iLeaving_Player)));
+					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
@@ -365,7 +365,7 @@ public client_disconnected(iLeaving_Player)
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, float(GET_USER_HEALTH(iLeaving_Player)));
+					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
@@ -399,7 +399,7 @@ public client_disconnected(iLeaving_Player)
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, float(GET_USER_HEALTH(iLeaving_Player)));
+					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
@@ -409,7 +409,7 @@ public client_disconnected(iLeaving_Player)
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, float(GET_USER_HEALTH(iLeaving_Player)));
+					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
@@ -491,7 +491,7 @@ public Message_Health(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	// Check if we need to fix it
 	if (iHelath % 256 == 0)
 	{
-		SET_USER_HEALTH(iMessage_Entity, float(GET_USER_HEALTH(iMessage_Entity) + 1));
+		SET_USER_HEALTH(iMessage_Entity, Float:GET_USER_HEALTH(iMessage_Entity) + 1);
 	}
 
 	// HUD can only show as much as 255 hp

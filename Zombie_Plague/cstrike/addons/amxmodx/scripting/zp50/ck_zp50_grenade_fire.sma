@@ -620,7 +620,7 @@ public Burning_Flame(Task_ID)
 	// Take damage from the fire
 	if (iHealth - floatround(get_pcvar_float(g_pCvar_Grenade_Fire_Damage), floatround_ceil) > 0)
 	{
-		SET_USER_HEALTH(ID_BURN, float(iHealth - floatround(get_pcvar_float(g_pCvar_Grenade_Fire_Damage), floatround_ceil)));
+		SET_USER_HEALTH(ID_BURN, Float:iHealth - floatround(get_pcvar_float(g_pCvar_Grenade_Fire_Damage), floatround_ceil));
 	}
 
 	// Flame sprite

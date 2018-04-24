@@ -203,7 +203,7 @@ public zp_fw_gamemodes_start()
 
 		iNemesis++;
 
-		SET_USER_HEALTH(iPlayer, floatround(GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Nemesis_HP_Multi)));
+		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Nemesis_HP_Multi));
 	}
 
 	new iZombies;

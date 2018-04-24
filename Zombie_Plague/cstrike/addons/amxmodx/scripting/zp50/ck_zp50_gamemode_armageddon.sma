@@ -179,7 +179,7 @@ public zp_fw_gamemodes_start()
 		iSurvivors++;
 
 		// Apply survivor health multiplier
-		SET_USER_HEALTH(iPlayer, floatround(GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Armageddon_Survivor_HP_Multi)));
+		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Armageddon_Survivor_HP_Multi));
 	}
 
 	// Turn specified amount of players into Nemesis
@@ -203,7 +203,7 @@ public zp_fw_gamemodes_start()
 		iNemesis++;
 
 		// Apply nemesis health multiplier
-		SET_USER_HEALTH(iPlayer, floatround(GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Armageddon_Nemesis_HP_Multi)));
+		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Armageddon_Nemesis_HP_Multi));
 	}
 
 	if (get_pcvar_num(g_pCvar_Armageddon_Sounds))
