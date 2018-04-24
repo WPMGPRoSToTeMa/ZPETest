@@ -27,7 +27,6 @@ new g_Model_V_Knife_Human[MODEL_MAX_LENGTH] = "models/v_knife.mdl";
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
-#include <ck_cs_player_models_api>
 #include <ck_cs_weap_models_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_class_human_const>
@@ -375,7 +374,7 @@ public zp_fw_core_cure_post(iPlayer)
 
 		ArrayGetString(aClass_Models, iIndex, szPlayer_Model, charsmax(szPlayer_Model));
 
-		cs_set_player_model(iPlayer, szPlayer_Model);
+		rg_set_user_model(iPlayer, szPlayer_Model);
 	}
 
 	// Set custom knife model

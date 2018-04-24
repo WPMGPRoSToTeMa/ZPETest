@@ -41,8 +41,6 @@ new const g_Sound_Sniper_Pain[][] =
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
-#include <fakemeta>
-#include <ck_cs_player_models_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_items>
 
@@ -335,7 +333,7 @@ public zp_fw_core_cure_post(iPlayer, iAttacker)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Sniper_Speed));
 
 	// Apply sniper player model
-	cs_set_player_model(iPlayer, g_Models_Sniper_Player[random(sizeof g_Models_Sniper_Player)]);
+	rg_set_user_model(iPlayer, g_Models_Sniper_Player[random(sizeof g_Models_Sniper_Player)]);
 
 	// Sniper glow
 	if (get_pcvar_num(g_pCvar_Sniper_Glow))

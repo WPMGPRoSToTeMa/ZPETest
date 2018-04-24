@@ -39,6 +39,7 @@
 #define CLAWMODEL_PATH "models/zombie_plague/%s"
 
 #include <amxmodx>
+#include <cs_util>
 #include <cstrike>
 #include <fakemeta>
 #include <hamsandwich>
@@ -53,7 +54,6 @@
 #include <ck_zp50_items>
 #include <ck_zp50_ammopacks>
 #include <ck_zp50_grenade_frost>
-#include <ck_cs_player_models_api>
 
 #define BIT_ADD(%0,%1)					(%0 |= (1 << (%1)))
 #define BIT_SUB(%0,%1)					(%0 &= ~(1 << (%1)))
@@ -1044,7 +1044,7 @@ public native_override_user_model(iPlugin_ID, iNum_Params)
 	
 	get_string(2, szNew_Model, charsmax(szNew_Model));
 	
-	cs_set_player_model(iPlayer, szNew_Model);
+	rg_set_user_model(iPlayer, szNew_Model);
 	
 	return true;
 }

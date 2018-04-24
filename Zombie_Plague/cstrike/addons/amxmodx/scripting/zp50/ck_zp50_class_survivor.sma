@@ -41,8 +41,6 @@ new const g_Sound_Survivor_Pain[][] =
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
-#include <fakemeta>
-#include <ck_cs_player_models_api>
 #include <ck_zp50_kernel>
 
 #define TASK_AURA 100
@@ -303,7 +301,7 @@ public zp_fw_core_cure_post(iPlayer)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Survivor_Speed));
 
 	// Apply survivor player model
-	cs_set_player_model(iPlayer, g_Models_Survivor_Player[random_num(0, sizeof g_Models_Survivor_Player - 1)]);
+	rg_set_user_model(iPlayer, g_Models_Survivor_Player[random_num(0, sizeof g_Models_Survivor_Player - 1)]);
 
 	// Survivor glow
 	if (get_pcvar_num(g_pCvar_Survivor_Glow))

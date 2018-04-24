@@ -19,7 +19,6 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_cs_player_models_api>
 #include <ck_cs_weap_models_api>
 
 #define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
@@ -255,7 +254,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 
 			ArrayGetString(g_aModels_Admin_Zombie_Player, random_num(0, ArraySize(g_aModels_Admin_Zombie_Player) - 1), szPlayer_Model, charsmax(szPlayer_Model));
 
-			cs_set_player_model(iPlayer, szPlayer_Model);
+			rg_set_user_model(iPlayer, szPlayer_Model);
 		}
 	}
 
@@ -298,7 +297,7 @@ public zp_fw_core_cure_post(iPlayer, iAttacker)
 
 			ArrayGetString(g_aModels_Admin_Human_Player, random_num(0, ArraySize(g_aModels_Admin_Human_Player) - 1), szPlayer_Model, charsmax(szPlayer_Model));
 
-			cs_set_player_model(iPlayer, szPlayer_Model);
+			rg_set_user_model(iPlayer, szPlayer_Model);
 		}
 	}
 
