@@ -17,7 +17,6 @@
 #include <amxmodx>
 #include <cs_util>
 #include <fun>
-#include <ck_cs_teams_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
 
@@ -142,7 +141,7 @@ public zp_fw_gamemodes_start()
 			continue;
 		}
 
-		cs_set_player_team(i, CS_TEAM_CT);
+		rg_set_user_team(i, TEAM_CT);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Infection_Show_Hud))

@@ -19,7 +19,6 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_cs_teams_api>
 #include <fakemeta>
 #include <hamsandwich>
 #include <ck_zp50_kernel>
@@ -315,7 +314,7 @@ public client_disconnected(iLeaving_Player)
 			// Find replacement and move him to Terrorist team
 			while (iPlayer == ((iLeaving_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iLeaving_Player)) { /* keep looping */ }
 
-			cs_set_player_team(iPlayer, CS_TEAM_T);
+			rg_set_user_team(iPlayer, TEAM_TERRORIST);
 		}
 
 		// Last CT
@@ -324,7 +323,7 @@ public client_disconnected(iLeaving_Player)
 			// Find replacement and move him to CT team
 			while (iPlayer == ((iLeaving_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iLeaving_Player)) { /* keep looping */ }
 
-			cs_set_player_team(iPlayer, CS_TEAM_CT);
+			rg_set_user_team(iPlayer, TEAM_CT);
 		}
 	}
 

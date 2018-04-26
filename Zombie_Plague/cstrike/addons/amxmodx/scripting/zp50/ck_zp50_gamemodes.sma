@@ -16,7 +16,6 @@
 
 #include <amxmodx>
 #include <cs_util>
-#include <ck_cs_teams_api>
 #include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes_const>
@@ -728,7 +727,7 @@ public zp_fw_core_infect_post(iPlayer)
 	if (g_Current_Game_Mode != ZP_NO_GAME_MODE)
 	{
 		// Zombies are switched to Terrorist team
-		cs_set_player_team(iPlayer, CS_TEAM_T);
+		rg_set_user_team(iPlayer, TEAM_TERRORIST);
 	}
 }
 
@@ -737,7 +736,7 @@ public zp_fw_core_cure_post(iPlayer)
 	if (g_Current_Game_Mode != ZP_NO_GAME_MODE)
 	{
 		// Humans are switched to CT team
-		cs_set_player_team(iPlayer, CS_TEAM_CT);
+		rg_set_user_team(iPlayer, TEAM_CT);
 	}
 }
 
@@ -773,7 +772,7 @@ Balance_Teams()
 		}
 
 		// Set team
-		cs_set_player_team(i, CS_TEAM_CT, 0);
+		rg_set_user_team(i, TEAM_CT, MODEL_AUTO, false);
 	}
 
 	new iPlayer;
@@ -802,7 +801,7 @@ Balance_Teams()
 		// Random chance
 		if (random_num(0, 1))
 		{
-			cs_set_player_team(iPlayer, CS_TEAM_T, 0);
+			rg_set_user_team(iPlayer, TEAM_TERRORIST, MODEL_AUTO, false);
 
 			iTerrors++;
 		}
