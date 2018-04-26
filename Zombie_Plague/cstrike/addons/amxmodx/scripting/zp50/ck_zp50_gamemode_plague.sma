@@ -26,7 +26,6 @@ new const g_Sound_Plague[][] =
 #include <cs_util>
 #include <fun>
 #include <amx_settings_api>
-#include <ck_cs_teams_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
 #include <ck_zp50_class_nemesis>
@@ -235,7 +234,7 @@ public zp_fw_gamemodes_start()
 			continue;
 		}
 
-		cs_set_player_team(i, CS_TEAM_CT);
+		rg_set_user_team(i, TEAM_CT);
 	}
 
 	if (get_pcvar_num(g_pCvar_Plague_Sounds))

@@ -26,7 +26,6 @@ new const g_Sounds_Assassin[][] =
 #include <amxmisc>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_cs_teams_api>
 #include <engine>
 #include <ck_zp50_gamemodes>
 #include <ck_zp50_class_assassin>
@@ -174,7 +173,7 @@ public zp_fw_gamemodes_start()
 			continue;
 		}
 
-		cs_set_player_team(i, CS_TEAM_CT);
+		rg_set_user_team(i, TEAM_CT);
 	}
 
 	// Play assassin sound
