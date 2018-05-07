@@ -22,17 +22,9 @@
 #include <amx_settings_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #include <ck_zp50_log>
@@ -116,29 +108,10 @@ public plugin_init()
 	register_concmd(szConsole_Command_Target_Respawn, "Cmd_Respawn", _, "<target> - Respawn someone", 0);
 	register_concmd(szConsole_Command_Target_Start_Game_Mode, "Cmd_Start_Game_Mode", _, "<game mode player> - Start specific game mode", 0);
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		register_concmd(szConsole_Command_Target_Nemesis, "Cmd_Nemesis", _, "<target> - Turn someone into a Nemesis", 0);
-	}
-
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		register_concmd(szConsole_Command_Target_Assassin, "Cmd_Assassin", _, "<target> - Turn someone into a Assassin", 0);
-	}
-
-	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		register_concmd(szConsole_Command_Target_Survivor, "Cmd_Survivor", _, "<target> - Turn someone into a Survivor", 0);
-	}
-
-	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		register_concmd(szConsole_Command_Target_Sniper, "Cmd_Sniper", _, "<target> - Turn someone into a Sniper", 0);
-	}
+	register_concmd(szConsole_Command_Target_Nemesis, "Cmd_Nemesis", _, "<target> - Turn someone into a Nemesis", 0);
+	register_concmd(szConsole_Command_Target_Assassin, "Cmd_Assassin", _, "<target> - Turn someone into a Assassin", 0);
+	register_concmd(szConsole_Command_Target_Survivor, "Cmd_Survivor", _, "<target> - Turn someone into a Survivor", 0);
+	register_concmd(szConsole_Command_Target_Sniper, "Cmd_Sniper", _, "<target> - Turn someone into a Sniper", 0);
 }
 
 public plugin_precache()
@@ -197,29 +170,6 @@ public plugin_natives()
 	register_native("zp_admin_commands_sniper", "native_admin_commands_sniper");
 	register_native("zp_admin_commands_respawn", "native_admin_commands_respawn");
 	register_native("zp_admin_commands_start_mode", "native_admin_commands_start_mode");
-
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public plugin_cfg()
@@ -303,12 +253,6 @@ public native_admin_commands_nemesis(iPlugin_ID, iNum_Params)
 		return false;
 	}
 
-	// Nemesis class not present
-	if (!LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		return false;
-	}
-
 	Command_Nemesis(iID_Admin, iPlayer);
 
 	return true;
@@ -331,12 +275,6 @@ public native_admin_commands_assassin(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 
-		return false;
-	}
-
-	// Assassin class not present
-	if (!LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
 		return false;
 	}
 
@@ -365,12 +303,6 @@ public native_admin_commands_survivor(iPlugin_ID, iNum_Params)
 		return false;
 	}
 
-	// Survivor class not present
-	if (!LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		return false;
-	}
-
 	Command_Survivor(iID_Admin, iPlayer);
 
 	return true;
@@ -393,12 +325,6 @@ public native_admin_commands_sniper(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 
-		return false;
-	}
-
-	// Sniper class not present
-	if (!LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
 		return false;
 	}
 
