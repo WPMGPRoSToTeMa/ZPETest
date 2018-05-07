@@ -469,7 +469,7 @@ Show_Menu_Player_List(iPlayer)
 			{
 				if (zp_core_is_zombie(i))
 				{
-					if ((iUser_Flags & read_flags(g_Access_Make_Human)) && BIT_VALID(g_iBit_Alive, i))
+					if (iUser_Flags & read_flags(g_Access_Make_Human) && BIT_VALID(g_iBit_Alive, i))
 					{
 						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zp_class_nemesis_get(i) ? "CLASS_NEMESIS" : zp_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
@@ -482,7 +482,7 @@ Show_Menu_Player_List(iPlayer)
 
 				else
 				{
-					if ((iUser_Flags & read_flags(g_Access_Make_Zombie)) && BIT_VALID(g_iBit_Alive, i))
+					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && BIT_VALID(g_iBit_Alive, i))
 					{
 						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zp_class_survivor_get(i) ? "CLASS_SURVIVOR" : zp_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
@@ -496,7 +496,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_NEMESIS: // Nemesis command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Nemesis)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_nemesis_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, i) && !zp_class_nemesis_get(i))
 				{
 					if (zp_core_is_zombie(i))
 					{
@@ -551,7 +551,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_ASSASSIN: // Assassin command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Assassin)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_assassin_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, i) && !zp_class_assassin_get(i))
 				{
 					if (zp_core_is_zombie(i))
 					{
@@ -606,7 +606,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Survivor)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_survivor_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, i) && !zp_class_survivor_get(i))
 				{
 					if (zp_core_is_zombie(i))
 					{
@@ -661,7 +661,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_SNIPER: // Sniper command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Sniper)) && BIT_VALID(g_iBit_Alive, i) && !zp_class_sniper_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, i) && !zp_class_sniper_get(i))
 				{
 					if (zp_core_is_zombie(i))
 					{
@@ -716,7 +716,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_RESPAWN_PLAYER: // Respawn command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Respawn_Players)) && Allowed_Respawn(i))
+				if (iUser_Flags & read_flags(g_Access_Respawn_Players) && Allowed_Respawn(i))
 				{
 					formatex(szMenu, charsmax(szMenu), "%s", szPlayer_Name);
 				}
@@ -852,7 +852,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 			{
 				if (zp_core_is_zombie(iPlayers))
 				{
-					if ((iUser_Flags & read_flags(g_Access_Make_Human)) && BIT_VALID(g_iBit_Alive, iPlayers))
+					if (iUser_Flags & read_flags(g_Access_Make_Human) && BIT_VALID(g_iBit_Alive, iPlayers))
 					{
 						zp_admin_commands_human(iPlayer, iPlayers);
 					}
@@ -865,7 +865,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 				else
 				{
-					if ((iUser_Flags & read_flags(g_Access_Make_Zombie)) && BIT_VALID(g_iBit_Alive, iPlayers))
+					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && BIT_VALID(g_iBit_Alive, iPlayers))
 					{
 						zp_admin_commands_zombie(iPlayer, iPlayers);
 					}
@@ -879,7 +879,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_NEMESIS: // Nemesis command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Nemesis)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_nemesis_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_nemesis_get(iPlayers))
 				{
 					zp_admin_commands_nemesis(iPlayer, iPlayers);
 				}
@@ -892,7 +892,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_ASSASSIN: // Assassin command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Assassin)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_assassin_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_assassin_get(iPlayers))
 				{
 					zp_admin_commands_assassin(iPlayer, iPlayers);
 				}
@@ -905,7 +905,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Survivor)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_survivor_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_survivor_get(iPlayers))
 				{
 					zp_admin_commands_survivor(iPlayer, iPlayers);
 				}
@@ -918,7 +918,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_SNIPER: // Sniper command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Make_Sniper)) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_sniper_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_sniper_get(iPlayers))
 				{
 					zp_admin_commands_sniper(iPlayer, iPlayers);
 				}
@@ -931,7 +931,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_RESPAWN_PLAYER: // Respawn command
 			{
-				if ((iUser_Flags & read_flags(g_Access_Respawn_Players)) && Allowed_Respawn(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Respawn_Players) && Allowed_Respawn(iPlayers))
 				{
 					zp_admin_commands_respawn(iPlayer, iPlayers);
 				}
