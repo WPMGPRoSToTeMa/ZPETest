@@ -103,13 +103,8 @@ new const g_Class_Zombie_Leech_Burning_Sounds[][] =
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_zp50_class_zombie>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
 #include <ck_zp50_kernel>
 #include <zp_sounds_api>
 
@@ -377,7 +372,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	if (zp_core_is_zombie(iAttacker) && zp_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
 	{
 		// Unless nemesis and assassin
-		if (!LibraryExists(LIBRARY_NEMESIS, LibType_Library) || !zp_class_nemesis_get(iAttacker) || !LibraryExists(LIBRARY_ASSASSIN, LibType_Library) || !zp_class_assassin_get(iAttacker))
+		if (!zp_class_nemesis_get(iAttacker) || !zp_class_assassin_get(iAttacker))
 		{
 			SET_USER_HEALTH(iAttacker, GET_USER_HEALTH(iAttacker) + float(get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward)));
 		}

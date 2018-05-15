@@ -20,17 +20,9 @@
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_cs_weap_models_api>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #define PLAYER_MODELS_MAX_LENGTH 32
@@ -203,42 +195,16 @@ public plugin_precache()
 	}
 }
 
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
 public zp_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Skip for Nemesis
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iPlayer))
+	if (zp_class_nemesis_get(iPlayer))
 	{
 		return;
 	}
 
 	// Skip for Assassin
-	else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iPlayer))
+	else if (zp_class_assassin_get(iPlayer))
 	{
 		return;
 	}
@@ -275,13 +241,13 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 public zp_fw_core_cure_post(iPlayer, iAttacker)
 {
 	// Skip for Survivor
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer))
+	if (zp_class_survivor_get(iPlayer))
 	{
 		return;
 	}
 
 	// Skip for Sniper
-	else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+	else if (zp_class_sniper_get(iPlayer))
 	{
 		return;
 	}

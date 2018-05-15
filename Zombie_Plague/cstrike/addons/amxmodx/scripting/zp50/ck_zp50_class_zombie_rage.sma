@@ -104,13 +104,8 @@ new const g_Class_Zombie_Rage_Burning_Sounds[][] =
 #include <amx_settings_api>
 #include <fakemeta>
 #include <ck_zp50_class_zombie>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
 #include <zp_sounds_api>
 
 #define SOUND_MAX_LENGTH 64
@@ -358,7 +353,7 @@ public zp_fw_core_infect_post(iPlayer)
 	if (zp_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
 	{
 		// Apply custom glow, unless nemesis and assassin
-		if (!LibraryExists(LIBRARY_NEMESIS, LibType_Library) || !zp_class_nemesis_get(iPlayer) || !LibraryExists(LIBRARY_ASSASSIN, LibType_Library) || !zp_class_assassin_get(iPlayer))
+		if (!zp_class_nemesis_get(iPlayer) || !zp_class_assassin_get(iPlayer))
 		{
 			rh_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Class_Zombie_Rage_Aura_R), get_pcvar_num(g_pCvar_Class_Zombie_Rage_Aura_G), get_pcvar_num(g_pCvar_Class_Zombie_Rage_Aura_B), kRenderNormal, 15);
 		}
