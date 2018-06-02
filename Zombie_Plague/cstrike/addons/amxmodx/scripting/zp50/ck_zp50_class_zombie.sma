@@ -32,6 +32,9 @@
 // Allowed weapons for zombies
 const ZOMBIE_ALLOWED_WEAPONS_BITSUM = (1 << CSW_KNIFE) | (1 << CSW_HEGRENADE) | (1 << CSW_FLASHBANG) | (1 << CSW_SMOKEGRENADE) | (1 << CSW_C4);
 
+#define ZOMBIE_DEFAULT_MODEL "zombie"
+#define ZOMBIE_DEFAULT_CLAWMODEL "models/zombie_plague/v_knife_zombie.mdl"
+#define ZOMBIE_DEFAULT_KNOCKBACK 1.0
 #define ZOMBIE_DEFAULT_ALLOWED_WEAPON CSW_KNIFE
 
 enum _:TOTAL_FORWARDS
@@ -53,8 +56,11 @@ new Array:g_aZombie_Class_Description;
 new Array:g_aZombie_Class_Health;
 new Array:g_aZombie_Class_Speed;
 new Array:g_aZombie_Class_Gravity;
+new Array:g_aZombie_Class_Knockback_File;
 new Array:g_aZombie_Class_Knockback;
+new Array:g_aZombie_Class_Models_File
 new Array:g_aZombie_Class_Models_Handle;
+new Array:g_aZombie_Class_Claws_File;
 new Array:g_aZombie_Class_Claws_Handle;
 
 new g_Forwards[TOTAL_FORWARDS];
@@ -63,6 +69,15 @@ new g_Forward_Result;
 new g_Zombie_Class_Count;
 
 new g_iBit_Connected;
+
+public plugin_precache()
+{
+	new szModel_Path[128]
+	formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", ZOMBIE_DEFAULT_MODEL, ZOMBIE_DEFAULT_MODEL)
+	precache_model(szModel_Path)
+
+	precache_model(ZOMBIE_DEFAULT_CLAWMODEL)
+}
 
 public plugin_init()
 {
@@ -103,8 +118,11 @@ public plugin_natives()
 	g_aZombie_Class_Health = ArrayCreate(1, 1);
 	g_aZombie_Class_Speed = ArrayCreate(1, 1);
 	g_aZombie_Class_Gravity = ArrayCreate(1, 1);
+	g_aZombie_Class_Knockback_File = ArrayCreate(1, 1);
 	g_aZombie_Class_Knockback = ArrayCreate(1, 1);
+	g_aZombie_Class_Models_File = ArrayCreate(1, 1);
 	g_aZombie_Class_Models_Handle = ArrayCreate(1, 1);
+	g_aZombie_Class_Claws_File = ArrayCreate(1, 1);
 	g_aZombie_Class_Claws_Handle = ArrayCreate(1, 1);
 }
 
@@ -311,27 +329,29 @@ public zp_fw_core_infect_post(iPlayer)
 
 	if (aClass_Models != Invalid_Array)
 	{
-		new iIndex = random(ArraySize(aClass_Models));
-
 		new szPlayer_Model[32];
-
-		ArrayGetString(aClass_Models, iIndex, szPlayer_Model, charsmax(szPlayer_Model));
-
+		ArrayGetString(aClass_Models, random(ArraySize(aClass_Models)), szPlayer_Model, charsmax(szPlayer_Model));
 		rg_set_user_model(iPlayer, szPlayer_Model);
+	}
+	
+	else
+	{
+		rg_set_user_model(iPlayer, ZOMBIE_DEFAULT_MODEL);
 	}
 
 	// Apply zombie claw model
-	new szClaw_Model[64];
-
 	new Array:aClass_Claws = ArrayGetCell(g_aZombie_Class_Claws_Handle, g_Zombie_Class[iPlayer]);
 
 	if (aClass_Claws != Invalid_Array)
 	{
-		new iIndex = random(ArraySize(aClass_Claws));
-
-		ArrayGetString(aClass_Claws, iIndex, szClaw_Model, charsmax(szClaw_Model));
-
+		new szClaw_Model[64];
+		ArrayGetString(aClass_Claws, random(ArraySize(aClass_Claws)), szClaw_Model, charsmax(szClaw_Model));
 		cs_set_player_view_model(iPlayer, CSW_KNIFE, szClaw_Model);
+	}
+	
+	else
+	{
+		cs_set_player_view_model(iPlayer, CSW_KNIFE, ZOMBIE_DEFAULT_CLAWMODEL);
 	}
 
 	cs_set_player_weap_model(iPlayer, CSW_KNIFE, "");
@@ -429,7 +449,6 @@ public native_class_zombie_get_max_health(iPlugin_ID, iNum_Params)
 public native_class_zombie_register(iPlugin_ID, iNum_Params)
 {
 	new szName[32];
-
 	get_string(1, szName, charsmax(szName));
 
 	if (strlen(szName) == 0)
@@ -455,7 +474,6 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 
 	// Load settings from zombie classes file
 	new szReal_Name[32];
-
 	copy(szReal_Name, charsmax(szReal_Name), szName);
 
 	ArrayPushString(g_aZombie_Class_Real_Name, szReal_Name);
@@ -470,7 +488,6 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 
 	// Description
 	new szDescription[32];
-
 	get_string(2, szDescription, charsmax(szDescription));
 
 	if (!amx_load_setting_string(ZP_ZOMBIECLASSES_FILE, szReal_Name, "INFO", szDescription, charsmax(szDescription)))
@@ -482,15 +499,57 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 
 	// Models
 	new Array:aClass_Models = ArrayCreate(32, 1);
-
 	amx_load_setting_string_arr(ZP_ZOMBIECLASSES_FILE, szReal_Name, "MODELS", aClass_Models);
+	
+	new iArray_Size = ArraySize(aClass_Models);
+	
+	if (iArray_Size > 0)
+	{
+		ArrayPushCell(g_aZombie_Class_Models_File, true);
+		
+		new szPlayer_Model[32];
+		new szModel_Path[128];
+		
+		for (new i = 0; i < iArray_Size; i++)
+		{
+			ArrayGetString(aClass_Models, i, szPlayer_Model, charsmax(szPlayer_Model));
+			formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szPlayer_Model, szPlayer_Model);
+			precache_model(szModel_Path);
+		}
+	}
+	
+	else
+	{
+		ArrayPushCell(g_aZombie_Class_Models_File, false)
+		ArrayDestroy(aClass_Models);
+		amx_save_setting_string(ZP_ZOMBIECLASSES_FILE, szReal_Name, "MODELS", ZOMBIE_DEFAULT_MODEL)
+	}
 
 	ArrayPushCell(g_aZombie_Class_Models_Handle, aClass_Models);
 
 	// Claw models
 	new Array:aClass_Claws = ArrayCreate(64, 1);
-
-	amx_load_setting_string_arr(ZP_ZOMBIECLASSES_FILE, szReal_Name, "CLAWMODEL", aClass_Claws)
+	amx_load_setting_string_arr(ZP_ZOMBIECLASSES_FILE, szReal_Name, "CLAWMODEL", aClass_Claws);
+	
+	iArray_Size = ArraySize(aClass_Claws);
+	
+	if (iArray_Size > 0)
+	{
+		ArrayPushCell(g_aZombie_Class_Claws_File, true)
+		
+		new szClaw_Model[64];
+		for (new i = 0; i < iArray_Size; i++)
+		{
+			ArrayGetString(aClass_Claws, i, szClaw_Model, charsmax(szClaw_Model));
+			precache_model(szClaw_Model);
+		}
+	}
+	else
+	{
+		ArrayPushCell(g_aZombie_Class_Claws_File, false);
+		ArrayDestroy(aClass_Claws);
+		amx_save_setting_string(ZP_ZOMBIECLASSES_FILE, szReal_Name, "CLAWMODEL", ZOMBIE_DEFAULT_CLAWMODEL);
+	}
 
 	ArrayPushCell(g_aZombie_Class_Claws_Handle, aClass_Claws);
 
@@ -525,9 +584,20 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	ArrayPushCell(g_aZombie_Class_Gravity, fGravity);
 
 	// Knockback
-	amx_save_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "KNOCKBACK", 1.0);
-
-	ArrayPushCell(g_aZombie_Class_Knockback, 1.0);
+	new Float:fKnockback = ZOMBIE_DEFAULT_KNOCKBACK;
+	
+	if (!amx_load_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "KNOCKBACK", fKnockback))
+	{
+		ArrayPushCell(g_aZombie_Class_Knockback_File, false);
+		amx_save_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "KNOCKBACK", fKnockback);
+	}
+	
+	else
+	{
+		ArrayPushCell(g_aZombie_Class_Knockback_File, true);
+	}
+	
+	ArrayPushCell(g_aZombie_Class_Knockback, fKnockback);
 
 	g_Zombie_Class_Count++;
 
@@ -544,32 +614,31 @@ public native_class_zombie_register_model(iPlugin_ID, iNum_Params)
 
 		return false;
 	}
+	
+	if (ArrayGetCell(g_aZombie_Class_Models_File, iClass_ID))
+	{
+		return true;
+	}
 
 	new szPlayer_Model[32];
-
 	get_string(2, szPlayer_Model, charsmax(szPlayer_Model));
 
 	new szModel_Path[128];
-
 	formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szPlayer_Model, szPlayer_Model);
-
 	precache_model(szModel_Path);
 
 	new Array:aClass_Models = ArrayGetCell(g_aZombie_Class_Models_Handle, iClass_ID);
-
-	// No models registered yet?
+	
 	if (aClass_Models == Invalid_Array)
 	{
 		aClass_Models = ArrayCreate(32, 1);
-
 		ArraySetCell(g_aZombie_Class_Models_Handle, iClass_ID, aClass_Models);
 	}
-
+	
 	ArrayPushString(aClass_Models, szPlayer_Model);
 
 	// Save models to file
 	new szReal_Name[32];
-
 	ArrayGetString(g_aZombie_Class_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	amx_save_setting_string_arr(ZP_ZOMBIECLASSES_FILE, szReal_Name, "MODELS", aClass_Models);
@@ -587,28 +656,29 @@ public native_class_zombie_register_claw(iPlugin_ID, iNum_Params)
 
 		return false;
 	}
+	
+	if (ArrayGetCell(g_aZombie_Class_Claws_File, iClass_ID))
+	{
+		return true;
+	}
 
 	new szClaw_Model[64];
-
 	get_string(2, szClaw_Model, charsmax(szClaw_Model));
 
 	precache_model(szClaw_Model);
 
 	new Array:aClass_Claws = ArrayGetCell(g_aZombie_Class_Claws_Handle, iClass_ID);
-
-	// No models registered yet?
+	
 	if (aClass_Claws == Invalid_Array)
 	{
-		aClass_Claws = ArrayCreate(64, 1);
-
-		ArraySetCell(g_aZombie_Class_Claws_Handle, iClass_ID, aClass_Claws);
+		aClass_Claws = ArrayCreate(64, 1)
+		ArraySetCell(g_aZombie_Class_Claws_Handle, iClass_ID, aClass_Claws)
 	}
-
+	
 	ArrayPushString(aClass_Claws, szClaw_Model);
 
 	// Save models to file
 	new szReal_Name[32];
-
 	ArrayGetString(g_aZombie_Class_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	amx_save_setting_string_arr(ZP_ZOMBIECLASSES_FILE, szReal_Name, "CLAWMODEL", aClass_Claws);
@@ -626,6 +696,11 @@ public native_class_zombie_register_kb(iPlugin_ID, iNum_Params)
 
 		return false;
 	}
+	
+	if (ArrayGetCell(g_aZombie_Class_Knockback_File, iClass_ID))
+	{
+		return true;
+	}
 
 	new Float:fKnockback = get_param_f(2);
 
@@ -634,10 +709,9 @@ public native_class_zombie_register_kb(iPlugin_ID, iNum_Params)
 
 	// Save to file
 	new szReal_Name[32];
-
 	ArrayGetString(g_aZombie_Class_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	amx_save_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "KNOCKBACK", 1.0);
+	amx_save_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "KNOCKBACK", fKnockback);
 
 	return true;
 }
@@ -645,7 +719,6 @@ public native_class_zombie_register_kb(iPlugin_ID, iNum_Params)
 public native_class_zombie_get_id(iPlugin_ID, iNum_Params)
 {
 	new szReal_Name[32];
-
 	get_string(1, szReal_Name, charsmax(szReal_Name));
 
 	// Loop through every class
@@ -676,11 +749,9 @@ public native_class_zombie_get_name(iPlugin_ID, iNum_Params)
 	}
 
 	new szName[32];
-
 	ArrayGetString(g_aZombie_Class_Name, iClass_ID, szName, charsmax(szName));
 
 	new sLen = get_param(3);
-
 	set_string(2, szName, sLen);
 
 	return true;
@@ -698,12 +769,8 @@ public native_class_zombie_get_real_name(iPlugin_ID, iNum_Params)
 	}
 
 	new szReal_Name[32];
-
 	ArrayGetString(g_aZombie_Class_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
-
-	new sLen = get_param(3);
-
-	set_string(2, szReal_Name, sLen);
+	set_string(2, szReal_Name, get_param(3));
 
 	return true;
 }
@@ -720,12 +787,8 @@ public native_class_zombie_get_description(iPlugin_ID, iNum_Params)
 	}
 
 	new szDescription[32];
-
 	ArrayGetString(g_aZombie_Class_Description, iClass_ID, szDescription, charsmax(szDescription));
-
-	new sLen = get_param(3);
-
-	set_string(2, szDescription, sLen);
+	set_string(2, szDescription, get_param(3));
 
 	return true;
 }
@@ -769,7 +832,6 @@ public native_class_zombie_show_menu(iPlugin_ID, iNum_Params)
 public native_class_zombie_menu_text_add(iPlugin_ID, iNum_Params)
 {
 	static szText[32];
-
 	get_string(1, szText, charsmax(szText));
 
 	format(g_Additional_Menu_Text, charsmax(g_Additional_Menu_Text), "%s %s", g_Additional_Menu_Text, szText);
@@ -790,3 +852,6 @@ public client_disconnected(iPlayer)
 
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
+/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
+*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1049\\ f0\\ fs16 \n\\ par }
+*/
