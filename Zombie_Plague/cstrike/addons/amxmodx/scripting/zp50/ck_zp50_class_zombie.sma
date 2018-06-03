@@ -852,6 +852,3 @@ public client_disconnected(iPlayer)
 
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
-/* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
-*{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1049\\ f0\\ fs16 \n\\ par }
-*/
