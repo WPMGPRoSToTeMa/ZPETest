@@ -120,7 +120,7 @@
 
 #endif
 
-#include <zp_sounds_api>
+#include <ck_zp50_sounds_api>
 
 #define TASK_IDLE_SOUNDS 100
 #define TASK_FLAME_SOUNDS 1212

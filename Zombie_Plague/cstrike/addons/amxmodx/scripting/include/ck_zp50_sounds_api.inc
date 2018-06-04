@@ -1,3 +1,9 @@
+#if defined _ck_zp50_sounds_api_included
+  #endinput
+#endif
+
+#define _ck_zp50_sounds_api_included
+
 enum ZOMBIE_SOUNDS
 {
 	ZOMBIE_SOUND_PAIN = 0,

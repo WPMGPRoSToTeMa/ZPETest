@@ -174,3 +174,10 @@ forward zp_fw_class_zombie_select_pre(id, classid)
  * @param classid		Internal zombie class ID.
  */
 forward zp_fw_class_zombie_select_post(id, classid)
+
+/**
+ * Called after zombie class registered.
+ *
+ * @param classid		Internal zombie class ID.
+ */
+forward zp_fw_class_zombie_register_post(classid);
