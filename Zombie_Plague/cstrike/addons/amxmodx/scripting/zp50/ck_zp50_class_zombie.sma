@@ -15,7 +15,9 @@
 #define AUTHOR "C&K Corporation"
 
 #define ZP_ZOMBIECLASSES_FILE "zm_zombieclasses.ini"
-#define ZP_CLASS_SETTINGS_PATH "classes/zombie"
+#define ZP_CLASS_SETTINGS_PATH "ZPE/classes/zombie"
+
+#define ZP_SETTING_SECTION_NAME "Settings"
 
 #include <amxmodx>
 #include <cs_util>
@@ -60,7 +62,7 @@ new Array:g_aZombie_Class_Speed;
 new Array:g_aZombie_Class_Gravity;
 new Array:g_aZombie_Class_Knockback_File;
 new Array:g_aZombie_Class_Knockback;
-new Array:g_aZombie_Class_Models_File
+new Array:g_aZombie_Class_Models_File;
 new Array:g_aZombie_Class_Models_Handle;
 new Array:g_aZombie_Class_Claws_File;
 new Array:g_aZombie_Class_Claws_Handle;
@@ -72,15 +74,27 @@ new g_Zombie_Class_Count;
 
 new g_iBit_Connected;
 
+new g_szConfigs_Path[64];
+
 public plugin_precache()
 {	
-	new szModel_Path[128]
-	formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", ZOMBIE_DEFAULT_MODEL, ZOMBIE_DEFAULT_MODEL)
-	precache_model(szModel_Path)
-
+	new szModel_Path[128];
+	formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", ZOMBIE_DEFAULT_MODEL, ZOMBIE_DEFAULT_MODEL);
+	precache_model(szModel_Path);
+	
 	precache_model(ZOMBIE_DEFAULT_CLAWMODEL);
 	
 	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zp_fw_class_zombie_register_post", ET_CONTINUE, FP_CELL);
+	
+	get_localinfo("amxx_configsdir", g_szConfigs_Path, charsmax(g_szConfigs_Path));
+	
+	new szSettings_Path[86];
+	formatex(szSettings_Path, charsmax(szSettings_Path), "%s/%s", g_szConfigs_Path, ZP_CLASS_SETTINGS_PATH);
+	
+	if (!dir_exists(szSettings_Path))
+	{
+		Recursive_Mkdir(szSettings_Path);
+	}
 }
 
 public plugin_init()
@@ -484,61 +498,58 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	new szDescription[32];
 	get_string(2, szDescription, charsmax(szDescription));
 	
-	new Array:aClass_Models = ArrayCreate(32, 1);
-	new Array:aClass_Claws = ArrayCreate(64, 1);
-	
 	new iHealth = get_param(3);
 	new Float:fSpeed = get_param_f(4);
 	new Float:fGravity = get_param_f(5);
 	new Float:fKnockback = ZOMBIE_DEFAULT_KNOCKBACK;
 	
+	new Array:aClass_Models = ArrayCreate(32, 1);
+	new Array:aClass_Claws = ArrayCreate(64, 1);
+	
 	new szClass_Config_Path[64];
 	new szClass_Config_Full_Path[128];
 	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZP_CLASS_SETTINGS_PATH, szReal_Name);
-	formatex(szClass_Config_Full_Path, charsmax(szClass_Config_Full_Path), "addons/amxmodx/configs/%s", szClass_Config_Path);
+	formatex(szClass_Config_Full_Path, charsmax(szClass_Config_Full_Path), "%s/%s", g_szConfigs_Path, szClass_Config_Path);
 	
 	new bool:bConfig_Exists = bool:file_exists(szClass_Config_Full_Path);
 	
 	if (bConfig_Exists)
 	{
-		if (!amx_load_setting_string(szClass_Config_Path, szReal_Name, "NAME", szName, charsmax(szName)))
+		if (!amx_load_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "NAME", szName, charsmax(szName)))
 		{
-			amx_save_setting_string(szClass_Config_Path, szReal_Name, "NAME", szName);
+			amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "NAME", szName);
 		}
 		
-		if (!amx_load_setting_string(szClass_Config_Path, szReal_Name, "INFO", szDescription, charsmax(szDescription)))
+		if (!amx_load_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "INFO", szDescription, charsmax(szDescription)))
 		{
-			amx_save_setting_string(szClass_Config_Path, szReal_Name, "INFO", szDescription);
+			amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "INFO", szDescription);
 		}
 		
-		if (!amx_load_setting_int(szClass_Config_Path, szReal_Name, "HEALTH", iHealth))
+		if (!amx_load_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth))
 		{
-			amx_save_setting_int(szClass_Config_Path, szReal_Name, "HEALTH", iHealth);
+			amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth);
 		}
 		
-		if (!amx_load_setting_float(szClass_Config_Path, szReal_Name, "SPEED", fSpeed))
+		if (!amx_load_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed))
 		{
-			amx_save_setting_float(szClass_Config_Path, szReal_Name, "SPEED", fSpeed);
+			amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed);
 		}
 		
-		if (!amx_load_setting_float(szClass_Config_Path, szReal_Name, "GRAVITY", fGravity))
+		if (!amx_load_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity))
 		{
-			amx_save_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "GRAVITY", fGravity);
+			amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity);
 		}
 		
-		if (!amx_load_setting_float(szClass_Config_Path, szReal_Name, "KNOCKBACK", fKnockback))
+		new bool:bSetting_Loaded = bool:amx_load_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "KNOCKBACK", fKnockback);
+		ArrayPushCell(g_aZombie_Class_Knockback_File, bSetting_Loaded);
+		
+		if (!bSetting_Loaded)
 		{
-			ArrayPushCell(g_aZombie_Class_Knockback_File, false);
-			amx_save_setting_float(szClass_Config_Path, szReal_Name, "KNOCKBACK", fKnockback);
+			amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "KNOCKBACK", fKnockback);
 		}
 		
-		else
-		{
-			ArrayPushCell(g_aZombie_Class_Knockback_File, true);
-		}
-		
-		amx_load_setting_string_arr(szClass_Config_Path, szReal_Name, "MODELS", aClass_Models);
-		amx_load_setting_string_arr(szClass_Config_Path, szReal_Name, "CLAWMODEL", aClass_Claws);
+		amx_load_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", aClass_Models);
+		amx_load_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "CLAWMODEL", aClass_Claws);
 	}
 	
 	else
@@ -546,23 +557,23 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 		write_file(szClass_Config_Full_Path, "");
 		
 		amx_load_setting_string(ZP_ZOMBIECLASSES_FILE, szReal_Name, "NAME", szName, charsmax(szName));
-		amx_save_setting_string(szClass_Config_Path, szReal_Name, "NAME", szName);
+		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "NAME", szName);
 		
 		amx_load_setting_string(ZP_ZOMBIECLASSES_FILE, szReal_Name, "INFO", szDescription, charsmax(szDescription));
-		amx_save_setting_string(szClass_Config_Path, szReal_Name, "INFO", szDescription);
+		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "INFO", szDescription);
 		
 		amx_load_setting_int(ZP_ZOMBIECLASSES_FILE, szReal_Name, "HEALTH", iHealth);
-		amx_save_setting_int(szClass_Config_Path, szReal_Name, "HEALTH", iHealth);
+		amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth);
 		
 		amx_load_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "SPEED", fSpeed);
-		amx_save_setting_float(szClass_Config_Path, szReal_Name, "SPEED", fSpeed);
+		amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed);
 		
 		amx_load_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "GRAVITY", fGravity);
-		amx_save_setting_float(szClass_Config_Path, szReal_Name, "GRAVITY", fGravity);
+		amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity);
 		
-		new bool:bResult_Read = bool:amx_load_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "KNOCKBACK", fKnockback);		
-		amx_save_setting_float(szClass_Config_Path, szReal_Name, "KNOCKBACK", fKnockback);
-		ArrayPushCell(g_aZombie_Class_Knockback_File, bResult_Read);
+		new bool:bSetting_Loaded = bool:amx_load_setting_float(ZP_ZOMBIECLASSES_FILE, szReal_Name, "KNOCKBACK", fKnockback);		
+		amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "KNOCKBACK", fKnockback);
+		ArrayPushCell(g_aZombie_Class_Knockback_File, bSetting_Loaded);
 		
 		amx_load_setting_string_arr(ZP_ZOMBIECLASSES_FILE, szReal_Name, "MODELS", aClass_Models);
 		amx_load_setting_string_arr(ZP_ZOMBIECLASSES_FILE, szReal_Name, "CLAWMODEL", aClass_Claws);
@@ -575,7 +586,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	{
 		if (!bConfig_Exists)
 		{
-			amx_save_setting_string_arr(szClass_Config_Path, szReal_Name, "MODELS", aClass_Models);
+			amx_save_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", aClass_Models);
 		}
 	
 		new szPlayer_Model[32];
@@ -592,7 +603,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	else
 	{
 		ArrayDestroy(aClass_Models);
-		amx_save_setting_string(szClass_Config_Path, szReal_Name, "MODELS", ZOMBIE_DEFAULT_MODEL)
+		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", ZOMBIE_DEFAULT_MODEL);
 	}
 	
 	ArrayPushCell(g_aZombie_Class_Models_File, bHave_Elements);
@@ -604,7 +615,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	{
 		if (!bConfig_Exists)
 		{
-			amx_save_setting_string_arr(szClass_Config_Path, szReal_Name, "CLAWMODEL", aClass_Claws);
+			amx_save_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "CLAWMODEL", aClass_Claws);
 		}
 		
 		new szClaw_Model[86];
@@ -619,18 +630,18 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	else
 	{
 		ArrayDestroy(aClass_Claws);
-		amx_save_setting_string(szClass_Config_Path, szReal_Name, "CLAWMODEL", ZOMBIE_DEFAULT_CLAWMODEL);
+		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "CLAWMODEL", ZOMBIE_DEFAULT_CLAWMODEL);
 	}
 	
 	ArrayPushCell(g_aZombie_Class_Claws_File, bHave_Elements);
 	
 	ArrayPushString(g_aZombie_Class_Name, szName);
 	ArrayPushString(g_aZombie_Class_Description, szDescription);
-	ArrayPushCell(g_aZombie_Class_Models_Handle, aClass_Models);
-	ArrayPushCell(g_aZombie_Class_Claws_Handle, aClass_Claws);
 	ArrayPushCell(g_aZombie_Class_Health, iHealth);
 	ArrayPushCell(g_aZombie_Class_Speed, fSpeed);
 	ArrayPushCell(g_aZombie_Class_Knockback, fKnockback);
+	ArrayPushCell(g_aZombie_Class_Models_Handle, aClass_Models);
+	ArrayPushCell(g_aZombie_Class_Claws_Handle, aClass_Claws);
 
 	g_Zombie_Class_Count++;
 	
@@ -678,7 +689,7 @@ public native_class_zombie_register_model(iPlugin_ID, iNum_Params)
 	
 	new szClass_Config_Path[64];
 	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZP_CLASS_SETTINGS_PATH, szReal_Name);
-	amx_save_setting_string_arr(szClass_Config_Path, szReal_Name, "MODELS", aClass_Models);
+	amx_save_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", aClass_Models);
 
 	return true;
 }
@@ -708,8 +719,8 @@ public native_class_zombie_register_claw(iPlugin_ID, iNum_Params)
 	
 	if (aClass_Claws == Invalid_Array)
 	{
-		aClass_Claws = ArrayCreate(64, 1)
-		ArraySetCell(g_aZombie_Class_Claws_Handle, iClass_ID, aClass_Claws)
+		aClass_Claws = ArrayCreate(64, 1);
+		ArraySetCell(g_aZombie_Class_Claws_Handle, iClass_ID, aClass_Claws);
 	}
 	
 	ArrayPushString(aClass_Claws, szClaw_Model);

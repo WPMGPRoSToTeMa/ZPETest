@@ -148,3 +148,10 @@ forward zp_fw_class_human_select_pre(id, classid)
  * @param classid		Internal human class ID.
  */
 forward zp_fw_class_human_select_post(id, classid)
+
+/**
+ * Called after human class registered.
+ *
+ * @param classid		Internal human class ID.
+ */
+forward zp_fw_class_human_register_post(classid);
