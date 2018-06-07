@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Admin Commands.
+*	[ZPE] Admin Commands.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -11,10 +11,10 @@
 */
 
 #define PLUGIN "admin commands"
-#define VERSION "5.3.7.1"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #include <amxmodx>
 #include <amxmisc>
@@ -47,7 +47,7 @@ new g_pCvar_Console_Command_Target_Assassin;
 new g_pCvar_Console_Command_Target_Survivor;
 new g_pCvar_Console_Command_Target_Sniper;
 
-new g_pCvar_Console_Command_Target_Respawn;
+new g_pCvar_Console_Command_Target_Respawn_Players;
 new g_pCvar_Console_Command_Target_Start_Game_Mode;
 
 new g_pCvar_Message_Information;
@@ -68,18 +68,18 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Console_Command_Target_Zombie = register_cvar("zm_console_command_taget_zombie", "zp_zombie");
-	g_pCvar_Console_Command_Target_Human = register_cvar("zm_console_command_taget_human", "zp_human");
-	g_pCvar_Console_Command_Target_Nemesis = register_cvar("zm_console_command_taget_nemesis", "zp_nemesis");
-	g_pCvar_Console_Command_Target_Assassin = register_cvar("zm_console_command_taget_assassin", "zp_assassin");
-	g_pCvar_Console_Command_Target_Survivor = register_cvar("zm_console_command_taget_survivor", "zp_survivor");
-	g_pCvar_Console_Command_Target_Sniper = register_cvar("zm_console_command_taget_sniper", "zp_sniper");
+	g_pCvar_Console_Command_Target_Zombie = register_cvar("zpe_console_command_taget_zombie", "zpe_zombie");
+	g_pCvar_Console_Command_Target_Human = register_cvar("zpe_console_command_taget_human", "zpe_human");
+	g_pCvar_Console_Command_Target_Nemesis = register_cvar("zpe_console_command_taget_nemesis", "zpe_nemesis");
+	g_pCvar_Console_Command_Target_Assassin = register_cvar("zpe_console_command_taget_assassin", "zpe_assassin");
+	g_pCvar_Console_Command_Target_Survivor = register_cvar("zpe_console_command_taget_survivor", "zpe_survivor");
+	g_pCvar_Console_Command_Target_Sniper = register_cvar("zpe_console_command_taget_sniper", "zpe_sniper");
 
-	g_pCvar_Console_Command_Target_Respawn = register_cvar("zm_console_command_taget_respawn", "zp_respawn");
-	g_pCvar_Console_Command_Target_Start_Game_Mode = register_cvar("zm_console_command_taget_start_game_mode", "zp_start_game_mode");
+	g_pCvar_Console_Command_Target_Respawn_Players = register_cvar("zpe_console_command_taget_respawn", "zp_respawn");
+	g_pCvar_Console_Command_Target_Start_Game_Mode = register_cvar("zpe_console_command_taget_start_game_mode", "zp_start_game_mode");
 
-	g_pCvar_Management_Admin_Log = register_cvar("zm_management_admin_log", "1");
-	g_pCvar_Message_Information = register_cvar("zm_message_information", "1");
+	g_pCvar_Management_Admin_Log = register_cvar("zpe_management_admin_log", "1");
+	g_pCvar_Message_Information = register_cvar("zpe_message_information", "1");
 
 	new szConsole_Command_Target_Zombie[32];
 	new szConsole_Command_Target_Human[32];
@@ -98,7 +98,7 @@ public plugin_init()
 	get_pcvar_string(g_pCvar_Console_Command_Target_Survivor, szConsole_Command_Target_Survivor, charsmax(szConsole_Command_Target_Survivor));
 	get_pcvar_string(g_pCvar_Console_Command_Target_Sniper, szConsole_Command_Target_Sniper, charsmax(szConsole_Command_Target_Sniper));
 
-	get_pcvar_string(g_pCvar_Console_Command_Target_Respawn, szConsole_Command_Target_Respawn, charsmax(szConsole_Command_Target_Respawn));
+	get_pcvar_string(g_pCvar_Console_Command_Target_Respawn_Players, szConsole_Command_Target_Respawn, charsmax(szConsole_Command_Target_Respawn));
 	get_pcvar_string(g_pCvar_Console_Command_Target_Start_Game_Mode, szConsole_Command_Target_Start_Game_Mode, charsmax(szConsole_Command_Target_Start_Game_Mode));
 
 	// Admin commands
@@ -116,44 +116,44 @@ public plugin_init()
 public plugin_precache()
 {
 	// Load from external file, save if not found
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie, charsmax(g_Access_Make_Zombie)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie, charsmax(g_Access_Make_Zombie)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human, charsmax(g_Access_Make_Human)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human, charsmax(g_Access_Make_Human)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis, charsmax(g_Access_Make_Nemesis)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis, charsmax(g_Access_Make_Nemesis)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin, charsmax(g_Access_Make_Assassin)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin, charsmax(g_Access_Make_Assassin)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor, charsmax(g_Access_Make_Survivor)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor, charsmax(g_Access_Make_Survivor)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper, charsmax(g_Access_Make_Sniper)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper, charsmax(g_Access_Make_Sniper)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players, charsmax(g_Access_Respawn_Players)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players, charsmax(g_Access_Respawn_Players)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode, charsmax(g_Access_Start_Game_Mode)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode, charsmax(g_Access_Start_Game_Mode)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode);
 	}
 }
 
