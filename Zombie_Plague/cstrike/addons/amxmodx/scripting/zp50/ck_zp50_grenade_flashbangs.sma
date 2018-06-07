@@ -27,11 +27,7 @@ new g_W_Model_Grenade_Flashbang[64] = "models/w_flashbang.mdl";
 #include <fakemeta>
 #include <ck_cs_weap_models_api>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
 
 // HACK: var_ field used to store custom nade types and their values
@@ -73,47 +69,12 @@ public plugin_init()
 	g_pCvar_Grenade_Flashbang_Trail_Rendering_G = register_cvar("zm_grenade_flashbang_trail_rendering_g", "0");
 	g_pCvar_Grenade_Flashbang_Trail_Rendering_B = register_cvar("zm_grenade_flashbang_trail_rendering_b", "0");
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Grenade_Flashbang_Nemesis = register_cvar("zm_grenade_flashbang_nemesis", "0");
-	}
-
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Grenade_Flashbang_Assassin = register_cvar("zm_grenade_flashbang_assassin", "0");
-	}
+	g_pCvar_Grenade_Flashbang_Nemesis = register_cvar("zm_grenade_flashbang_nemesis", "0");
+	g_pCvar_Grenade_Flashbang_Assassin = register_cvar("zm_grenade_flashbang_assassin", "0");
 
 	register_message(get_user_msgid("ScreenFade"), "Message_ScreenFade");
 
 	register_forward(FM_SetModel, "FM_SetModel_");
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public plugin_precache()
@@ -133,7 +94,7 @@ public plugin_precache()
 	{
 		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "W GRENADE FLASHBANG", g_W_Model_Grenade_Flashbang);
 	}
-	
+
 	// Precache models
 	precache_model(g_V_Model_Grenade_Flashbang);
 	precache_model(g_P_Model_Grenade_Flashbang);
@@ -158,13 +119,13 @@ public Message_ScreenFade(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	}
 
 	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Nemesis))
+	if (zp_class_nemesis_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Nemesis))
 	{
 		return PLUGIN_HANDLED;
 	}
 
 	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Assassin))
+	if (zp_class_assassin_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Assassin))
 	{
 		return PLUGIN_HANDLED;
 	}

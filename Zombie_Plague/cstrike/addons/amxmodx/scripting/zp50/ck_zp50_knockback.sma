@@ -23,11 +23,7 @@
 #include <xs>
 #include <ck_zp50_kernel>
 #include <ck_zp50_class_zombie>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
 
 // Knockback Power values for weapons
@@ -97,17 +93,8 @@ public plugin_init()
 	g_pCvar_Knockback_Ducking = register_cvar("zm_knockback_ducking", "0.25");
 	g_pCvar_Knockback_Distance = register_cvar("zm_knockback_distance", "500");
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Knockback_Nemesis = register_cvar("zm_knockback_nemesis", "0.25");
-	}
-
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Knockback_Assassin = register_cvar("zm_knockback_assassin", "0.25");
-	}
+	g_pCvar_Knockback_Nemesis = register_cvar("zm_knockback_nemesis", "0.25");
+	g_pCvar_Knockback_Assassin = register_cvar("zm_knockback_assassin", "0.25");
 
 	// TODO: use reapi
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttack_Player_Post", 1);
@@ -127,32 +114,6 @@ public plugin_precache()
 			amx_save_setting_float(ZP_SETTINGS_FILE, "Knockback Power for Weapons", g_Weapon_Entity_Names_UP[i][7], g_fKnockback_Weapon_Power[i]);
 		}
 	}
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 // Ham Trace Attack Post Forward
@@ -183,13 +144,13 @@ public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDir
 	}
 
 	// Nemesis knockback disabled, nothing else to do here
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Nemesis) == 0.0)
+	if (zp_class_nemesis_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Nemesis) == 0.0)
 	{
 		return;
 	}
 
 	// Assassin knockback disabled, nothing else to do here
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Assassin) == 0.0)
+	if (zp_class_assassin_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Assassin) == 0.0)
 	{
 		return;
 	}
@@ -243,14 +204,14 @@ public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDir
 	}
 
 	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iVictim))
+	if (zp_class_nemesis_get(iVictim))
 	{
 		// Apply nemesis knockback multiplier
 		xs_vec_mul_scalar(fDirection, get_pcvar_float(g_pCvar_Knockback_Nemesis), fDirection);
 	}
 
 	// Assassin Class loaded?
-	else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iVictim))
+	else if (zp_class_assassin_get(iVictim))
 	{
 		// Apply assassin knockback multiplier
 		xs_vec_mul_scalar(fDirection, get_pcvar_float(g_pCvar_Knockback_Assassin), fDirection);

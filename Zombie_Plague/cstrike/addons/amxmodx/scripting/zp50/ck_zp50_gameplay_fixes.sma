@@ -23,17 +23,9 @@
 #include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #define STATIONARY_USING 2
@@ -93,32 +85,6 @@ public plugin_init()
 	unregister_forward(FM_Spawn, g_unfwSpawn);
 
 	register_message(get_user_msgid("Health"), "Message_Health");
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const iName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public plugin_precache()
@@ -348,7 +314,7 @@ public client_disconnected(iLeaving_Player)
 
 			client_print(0, print_chat, "%L", LANG_PLAYER, "LAST_ZOMBIE_LEFT", szPlayer_Name);
 
-			if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iLeaving_Player))
+			if (zp_class_nemesis_get(iLeaving_Player))
 			{
 				zp_class_nemesis_set(iPlayer);
 
@@ -358,7 +324,7 @@ public client_disconnected(iLeaving_Player)
 				}
 			}
 
-			else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iLeaving_Player))
+			else if (zp_class_assassin_get(iLeaving_Player))
 			{
 				zp_class_assassin_set(iPlayer);
 
@@ -392,7 +358,7 @@ public client_disconnected(iLeaving_Player)
 
 			client_print(0, print_chat, "%L", LANG_PLAYER, "LAST_HUMAN_LEFT", szPlayer_Name);
 
-			if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iLeaving_Player))
+			if (zp_class_survivor_get(iLeaving_Player))
 			{
 				zp_class_survivor_set(iPlayer);
 
@@ -402,7 +368,7 @@ public client_disconnected(iLeaving_Player)
 				}
 			}
 
-			else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iLeaving_Player))
+			else if (zp_class_sniper_get(iLeaving_Player))
 			{
 				zp_class_sniper_set(iPlayer);
 

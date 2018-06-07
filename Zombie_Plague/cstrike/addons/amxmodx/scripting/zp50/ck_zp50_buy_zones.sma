@@ -26,11 +26,7 @@ new const g_Sound_Buy_Ammo[][] =
 #include <amx_settings_api>
 #include <hamsandwich>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #define LIBRARY_AMMOPACKS "ck_zp50_ammopacks"
@@ -239,7 +235,7 @@ public plugin_natives()
 
 public module_filter(const szModule[])
 {
-	if (equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER) || equal(szModule, LIBRARY_AMMOPACKS))
+	if (equal(szModule, LIBRARY_AMMOPACKS))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -290,7 +286,7 @@ public fw_Spawn(iEntity)
 
 public zp_fw_core_cure_post(iPlayer)
 {
-	if (get_pcvar_num(g_pCvar_Buyzone_Humans) && (!LibraryExists(LIBRARY_SURVIVOR, LibType_Library) || !zp_class_survivor_get(iPlayer)) && (!LibraryExists(LIBRARY_SNIPER, LibType_Library) || !zp_class_sniper_get(iPlayer)))
+	if (get_pcvar_num(g_pCvar_Buyzone_Humans) && !zp_class_survivor_get(iPlayer) && !zp_class_sniper_get(iPlayer))
 	{
 		// Buyzones time starts when player is set to human
 		g_fBuy_Time_Start[iPlayer] = get_gametime();

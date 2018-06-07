@@ -19,17 +19,9 @@
 #include <fun>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 new Float:g_fLeap_Last_Time[MAX_PLAYERS + 1];
@@ -72,67 +64,25 @@ public plugin_init()
 	g_pCvar_Leap_Zombie_Height = register_cvar("zm_leap_zombie_height", "300");
 	g_pCvar_Leap_Zombie_Cooldown = register_cvar("zm_leap_zombie_cooldown", "10.0");
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Leap_Nemesis = register_cvar("zm_leap_nemesis", "1");
-		g_pCvar_Leap_Nemesis_Force = register_cvar("zm_leap_nemesis_force", "500");
-		g_pCvar_Leap_Nemesis_Height = register_cvar("zm_leap_nemesis_height", "300");
-		g_pCvar_Leap_Nemesis_Cooldown = register_cvar("zm_leap_nemesis_cooldown", "5.0");
-	}
+	g_pCvar_Leap_Nemesis = register_cvar("zm_leap_nemesis", "1");
+	g_pCvar_Leap_Nemesis_Force = register_cvar("zm_leap_nemesis_force", "500");
+	g_pCvar_Leap_Nemesis_Height = register_cvar("zm_leap_nemesis_height", "300");
+	g_pCvar_Leap_Nemesis_Cooldown = register_cvar("zm_leap_nemesis_cooldown", "5.0");
+	
+	g_pCvar_Leap_Assassin = register_cvar("zm_leap_assassin", "1");
+	g_pCvar_Leap_Assassin_Force = register_cvar("zm_leap_assassin_force", "500");
+	g_pCvar_Leap_Assassin_Height = register_cvar("zm_leap_assassin_height", "300");
+	g_pCvar_Leap_Assassin_Cooldown = register_cvar("zm_leap_assassin_cooldown", "5.0");
 
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Leap_Assassin = register_cvar("zm_leap_assassin", "1");
-		g_pCvar_Leap_Assassin_Force = register_cvar("zm_leap_assassin_force", "500");
-		g_pCvar_Leap_Assassin_Height = register_cvar("zm_leap_assassin_height", "300");
-		g_pCvar_Leap_Assassin_Cooldown = register_cvar("zm_leap_assassin_cooldown", "5.0");
-	}
-
-	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		g_pCvar_Leap_Survivor = register_cvar("zm_leap_survivor", "0");
-		g_pCvar_Leap_Survivor_Force = register_cvar("zm_leap_survivor_force", "500");
-		g_pCvar_Leap_Survivor_Height = register_cvar("zm_leap_survivor_height", "300");
-		g_pCvar_Leap_Survivor_Cooldown = register_cvar("zm_leap_survivor_cooldown", "5.0");
-	}
-
-	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		g_pCvar_Leap_Sniper = register_cvar("zm_leap_sniper", "0");
-		g_pCvar_Leap_Sniper_Force = register_cvar("zm_leap_sniper_force", "500");
-		g_pCvar_Leap_Sniper_Height = register_cvar("zm_leap_sniper_height", "300");
-		g_pCvar_Leap_Sniper_Cooldown = register_cvar("zm_leap_sniper_cooldown", "5.0");
-	}
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
+	g_pCvar_Leap_Survivor = register_cvar("zm_leap_survivor", "0");
+	g_pCvar_Leap_Survivor_Force = register_cvar("zm_leap_survivor_force", "500");
+	g_pCvar_Leap_Survivor_Height = register_cvar("zm_leap_survivor_height", "300");
+	g_pCvar_Leap_Survivor_Cooldown = register_cvar("zm_leap_survivor_cooldown", "5.0");
+	
+	g_pCvar_Leap_Sniper = register_cvar("zm_leap_sniper", "0");
+	g_pCvar_Leap_Sniper_Force = register_cvar("zm_leap_sniper_force", "500");
+	g_pCvar_Leap_Sniper_Height = register_cvar("zm_leap_sniper_height", "300");
+	g_pCvar_Leap_Sniper_Cooldown = register_cvar("zm_leap_sniper_cooldown", "5.0");
 }
 
 public plugin_cfg()
@@ -160,7 +110,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	new Float:fHeight;
 
 	// Nemesis class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iPlayer))
+	if (zp_class_nemesis_get(iPlayer))
 	{
 		if (!get_pcvar_num(g_pCvar_Leap_Nemesis))
 		{
@@ -173,7 +123,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	}
 
 	// Assassin Class loaded?
-	else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iPlayer))
+	else if (zp_class_assassin_get(iPlayer))
 	{
 		// Check if assassin should leap
 		if (!get_pcvar_num(g_pCvar_Leap_Assassin))
@@ -187,7 +137,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	}
 
 	// Survivor Class loaded?
-	else if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer))
+	else if (zp_class_survivor_get(iPlayer))
 	{
 		// Check if survivor should leap
 		if (!get_pcvar_num(g_pCvar_Leap_Survivor))
@@ -201,7 +151,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	}
 
 	// Sniper Class loaded?
-	else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+	else if (zp_class_sniper_get(iPlayer))
 	{
 		// Check if sniper should leap
 		if (!get_pcvar_num(g_pCvar_Leap_Sniper))
