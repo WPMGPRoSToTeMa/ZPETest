@@ -18,19 +18,10 @@
 #include <cs_util>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
-
 #include <ck_zp50_ammopacks>
 
 new Float:g_fDamage_Dealt_To_Zombies[MAX_PLAYERS + 1];
@@ -72,58 +63,13 @@ public plugin_init()
 
 	g_pCvar_Ammo_Packs_Human_Infected = register_cvar("zm_ammo_packs_human_infected", "1");
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Ammo_Packs_Nemesis_Ignore = register_cvar("zm_ammo_packs_nemesis_ignore", "0");
-	}
-
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Ammo_Packs_Assassin_Ignore = register_cvar("zm_ammo_packs_assassin_ignore", "0");
-	}
-
-	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		g_pCvar_Ammo_Packs_Survivor_Ignore = register_cvar("zm_ammo_packs_survivor_ignore", "0");
-	}
-
-	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		g_pCvar_Ammo_Packs_Sniper_Ignore = register_cvar("zm_ammo_packs_sniper_ignore", "0");
-	}
+	g_pCvar_Ammo_Packs_Nemesis_Ignore = register_cvar("zm_ammo_packs_nemesis_ignore", "0");
+	g_pCvar_Ammo_Packs_Assassin_Ignore = register_cvar("zm_ammo_packs_assassin_ignore", "0");
+	g_pCvar_Ammo_Packs_Survivor_Ignore = register_cvar("zm_ammo_packs_survivor_ignore", "0");
+	g_pCvar_Ammo_Packs_Sniper_Ignore = register_cvar("zm_ammo_packs_sniper_ignore", "0");
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_Post", 1);
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public zp_fw_core_infect_post(iPlayer, iAttacker)
@@ -144,25 +90,25 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	}
 
 	// Ignore ammo pack rewards for Nemesis?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Nemesis_Ignore))
+	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Nemesis_Ignore))
 	{
 		return;
 	}
 
 	// Ignore ammo pack rewards for Assassin?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Assassin_Ignore))
+	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Assassin_Ignore))
 	{
 		return;
 	}
 
 	// Ignore ammo pack rewards for Survivor?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Survivor_Ignore))
+	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Survivor_Ignore))
 	{
 		return;
 	}
 
 	// Ignore ammo pack rewards for Sniper?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Sniper_Ignore))
+	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Sniper_Ignore))
 	{
 		return;
 	}
@@ -219,29 +165,29 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Ignore ammo pack rewards for Nemesis?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Nemesis_Ignore))
+	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Nemesis_Ignore))
 	{
 		return;
 	}
 
 	// Ignore ammo pack rewards for Assassin?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Assassin_Ignore))
+	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Assassin_Ignore))
 	{
 		return;
 	}
-	
+
 	// Ignore ammo pack rewards for Survivor?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Survivor_Ignore))
+	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Survivor_Ignore))
 	{
 		return;
 	}
-	
+
 	// Ignore ammo pack rewards for Sniper?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Sniper_Ignore))
+	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Ammo_Packs_Sniper_Ignore))
 	{
 		return;
 	}
-	
+
 	// Reward ammo packs to attacker for the kill
 	if (zp_core_is_zombie(iVictim))
 	{

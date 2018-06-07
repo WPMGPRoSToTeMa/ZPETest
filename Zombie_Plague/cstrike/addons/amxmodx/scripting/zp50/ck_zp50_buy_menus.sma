@@ -22,11 +22,7 @@
 #include <amx_settings_api>
 #include <hamsandwich>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 // Buy Menu: Primary Weapons
@@ -306,29 +302,6 @@ public plugin_natives()
 	register_library("ck_zp50_buy_menus");
 
 	register_native("zp_buy_menus_show", "native_buy_menus_show");
-
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public native_buy_menus_show(iPlugin_ID, iNum_Params)
@@ -374,7 +347,7 @@ public Human_Weapons(iPlayer)
 	}
 
 	// Survivor and Sniper automatically gets his own weapon
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer) || LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+	if (zp_class_survivor_get(iPlayer) || zp_class_sniper_get(iPlayer))
 	{
 		BIT_SUB(g_Can_Buy_Primary, iPlayer);
 		BIT_SUB(g_Can_Buy_Secondary, iPlayer);

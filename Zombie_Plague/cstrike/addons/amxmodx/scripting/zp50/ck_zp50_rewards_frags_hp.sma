@@ -21,17 +21,9 @@
 #include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 new g_Message_Score_Info;
@@ -63,29 +55,10 @@ public plugin_init()
 
 	g_pCvar_Frags_Human_Infected = register_cvar("zm_frags_human_infected", "1");
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Frags_Nemesis_Ignore = register_cvar("zm_frags_nemesis_ignore", "0");
-	}
-
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Frags_Assassin_Ignore = register_cvar("zm_frags_assassin_ignore", "0");
-	}
-
-	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		g_pCvar_Frags_Survivor_Ignore = register_cvar("zm_frags_survivor_ignore", "0");
-	}
-
-	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		g_pCvar_Frags_Sniper_Ignore = register_cvar("zm_frags_sniper_ignore", "0");
-	}
+	g_pCvar_Frags_Nemesis_Ignore = register_cvar("zm_frags_nemesis_ignore", "0");
+	g_pCvar_Frags_Assassin_Ignore = register_cvar("zm_frags_assassin_ignore", "0");
+	g_pCvar_Frags_Survivor_Ignore = register_cvar("zm_frags_survivor_ignore", "0");
+	g_pCvar_Frags_Sniper_Ignore = register_cvar("zm_frags_sniper_ignore", "0");
 
 	g_pCvar_Infection_Health_Bonus = register_cvar("zm_infection_health_bonus", "100");
 	g_pCvar_Human_Last_Health_Bonus = register_cvar("zm_human_last_health_bonus", "50");
@@ -93,32 +66,6 @@ public plugin_init()
 	g_Message_Score_Info = get_user_msgid("ScoreInfo");
 
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
@@ -130,7 +77,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Nemesis class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Nemesis_Ignore))
+	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Nemesis_Ignore))
 	{
 		// Ignore nemesis frags
 		Remove_Frags(iAttacker, iVictim);
@@ -139,7 +86,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Assassin_Ignore))
+	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Assassin_Ignore))
 	{
 		// Ignore nemesis frags
 		Remove_Frags(iAttacker, iVictim);
@@ -148,7 +95,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Survivor_Ignore))
+	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Survivor_Ignore))
 	{
 		// Ignore survivor frags
 		Remove_Frags(iAttacker, iVictim);
@@ -157,7 +104,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Sniper_Ignore))
+	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Sniper_Ignore))
 	{
 		// Ignore sniper frags
 		Remove_Frags(iAttacker, iVictim);

@@ -19,17 +19,9 @@
 #include <fakemeta>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #define NO_DATA -1
@@ -86,29 +78,10 @@ public plugin_init()
 
 	g_pCvar_Money_Human_Infected = register_cvar("zm_money_human_infected", "200");
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Money_Nemesis_Ignore = register_cvar("zm_money_nemesis_ignore", "0");
-	}
-
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Money_Assassin_Ignore = register_cvar("zm_money_assassin_ignore", "0");
-	}
-
-	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		g_pCvar_Money_Survivor_Ignore = register_cvar("zm_money_survivor_ignore", "0");
-	}
-
-	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		g_pCvar_Money_Sniper_Ignore = register_cvar("zm_money_sniper_ignore", "0");
-	}
+	g_pCvar_Money_Nemesis_Ignore = register_cvar("zm_money_nemesis_ignore", "0");
+	g_pCvar_Money_Assassin_Ignore = register_cvar("zm_money_assassin_ignore", "0");
+	g_pCvar_Money_Survivor_Ignore = register_cvar("zm_money_survivor_ignore", "0");
+	g_pCvar_Money_Sniper_Ignore = register_cvar("zm_money_sniper_ignore", "0");
 
 	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
 	register_event("TextMsg", "Event_Game_Restart", "a", "2=#Game_will_restart_in");
@@ -120,32 +93,6 @@ public plugin_init()
 	g_Message_Money = get_user_msgid("Money");
 
 	register_message(g_Message_Money, "Message_Money");
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public zp_fw_core_infect_post(iPlayer, iAttacker)
@@ -166,25 +113,25 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	}
 
 	// Ignore money rewards for Nemesis?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
+	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
 	{
 		return;
 	}
 
 	// Ignore money rewards for Assassin?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
+	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
 	{
 		return;
 	}
 
 	// Ignore money rewards for Survivor?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
+	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
 	{
 		return;
 	}
 
 	// Ignore money rewards for Sniper?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
+	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
 	{
 		return;
 	}
@@ -262,7 +209,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	set_msg_block(g_Message_Money, g_Message_Money_Block_Status);
 
 	// Ignore money rewards for nemesis?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
+	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 
@@ -270,7 +217,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Ignore money rewards for assassin?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
+	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 
@@ -278,7 +225,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Ignore money rewards for survivor?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
+	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 
@@ -286,7 +233,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Ignore money rewards for sniper?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
+	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 

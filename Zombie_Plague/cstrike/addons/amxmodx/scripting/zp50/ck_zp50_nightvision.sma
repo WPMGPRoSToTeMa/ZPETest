@@ -18,17 +18,9 @@
 #include <cs_util>
 #include <cstrike>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #define TASK_NIGHTVISION 100
@@ -109,46 +101,30 @@ public plugin_init()
 	g_pCvar_Night_Vision_Spectator_Color_G = register_cvar("zm_night_vision_spec_color_G", "150");
 	g_pCvar_Night_Vision_Spectator_Color_B = register_cvar("zm_night_vision_spec_color_B", "0");
 
-	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Night_Vision_Nemesis = register_cvar("zm_night_vision_nemesis", "2");
-		g_pCvar_Night_Vision_Nemesis_Radius = register_cvar("zm_night_vision_radius_nemesis", "80");
-		g_pCvar_Night_Vision_Nemesis_Color_R = register_cvar("zm_night_vision_nemesis_color_R", "150");
-		g_pCvar_Night_Vision_Nemesis_Color_G = register_cvar("zm_night_vision_nemesis_color_G", "0");
-		g_pCvar_Night_Vision_Nemesis_Color_B = register_cvar("zm_night_vision_nemesis_color_B", "0");
-	}
+	g_pCvar_Night_Vision_Nemesis = register_cvar("zm_night_vision_nemesis", "2");
+	g_pCvar_Night_Vision_Nemesis_Radius = register_cvar("zm_night_vision_radius_nemesis", "80");
+	g_pCvar_Night_Vision_Nemesis_Color_R = register_cvar("zm_night_vision_nemesis_color_R", "150");
+	g_pCvar_Night_Vision_Nemesis_Color_G = register_cvar("zm_night_vision_nemesis_color_G", "0");
+	g_pCvar_Night_Vision_Nemesis_Color_B = register_cvar("zm_night_vision_nemesis_color_B", "0");
 
-	// Assassin Class loaded?
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Night_Vision_Assassin = register_cvar("zm_night_vision_assassin", "2");
-		g_pCvar_Night_Vision_Assassin_Radius = register_cvar("zm_night_vision_radius_assassin", "80");
-		g_pCvar_Night_Vision_Assassin_Color_R = register_cvar("zm_night_vision_assassin_color_R", "150");
-		g_pCvar_Night_Vision_Assassin_Color_G = register_cvar("zm_night_vision_assassin_color_G", "0");
-		g_pCvar_Night_Vision_Assassin_Color_B = register_cvar("zm_night_vision_assassin_color_B", "0");
-	}
+	g_pCvar_Night_Vision_Assassin = register_cvar("zm_night_vision_assassin", "2");
+	g_pCvar_Night_Vision_Assassin_Radius = register_cvar("zm_night_vision_radius_assassin", "80");
+	g_pCvar_Night_Vision_Assassin_Color_R = register_cvar("zm_night_vision_assassin_color_R", "150");
+	g_pCvar_Night_Vision_Assassin_Color_G = register_cvar("zm_night_vision_assassin_color_G", "0");
+	g_pCvar_Night_Vision_Assassin_Color_B = register_cvar("zm_night_vision_assassin_color_B", "0");
 
-	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		g_pCvar_Night_Vision_Survivor = register_cvar("zm_night_vision_survivor", "0");
-		g_pCvar_Night_Vision_Survivor_Radius = register_cvar("zm_night_vision_radius_survivor", "80");
-		g_pCvar_Night_Vision_Survivor_Color_R = register_cvar("zm_night_vision_survivor_color_R", "0");
-		g_pCvar_Night_Vision_Survivor_Color_G = register_cvar("zm_night_vision_survivor_color_G", "0");
-		g_pCvar_Night_Vision_Survivor_Color_B = register_cvar("zm_night_vision_survivor_color_B", "150");
-	}
+	g_pCvar_Night_Vision_Survivor = register_cvar("zm_night_vision_survivor", "0");
+	g_pCvar_Night_Vision_Survivor_Radius = register_cvar("zm_night_vision_radius_survivor", "80");
+	g_pCvar_Night_Vision_Survivor_Color_R = register_cvar("zm_night_vision_survivor_color_R", "0");
+	g_pCvar_Night_Vision_Survivor_Color_G = register_cvar("zm_night_vision_survivor_color_G", "0");
+	g_pCvar_Night_Vision_Survivor_Color_B = register_cvar("zm_night_vision_survivor_color_B", "150");
 
-	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		g_pCvar_Night_Vision_Sniper = register_cvar("zm_night_vision_sniper", "0");
-		g_pCvar_Night_Vision_Sniper_Radius = register_cvar("zm_night_vision_radius_sniper", "80");
-		g_pCvar_Night_Vision_Sniper_Color_R = register_cvar("zm_night_vision_sniper_color_R", "0");
-		g_pCvar_Night_Vision_Sniper_Color_G = register_cvar("zm_night_vision_sniper_color_G", "0");
-		g_pCvar_Night_Vision_Sniper_Color_B = register_cvar("zm_night_vision_sniper_color_B", "150");
-	}
-
+	g_pCvar_Night_Vision_Sniper = register_cvar("zm_night_vision_sniper", "0");
+	g_pCvar_Night_Vision_Sniper_Radius = register_cvar("zm_night_vision_radius_sniper", "80");
+	g_pCvar_Night_Vision_Sniper_Color_R = register_cvar("zm_night_vision_sniper_color_R", "0");
+	g_pCvar_Night_Vision_Sniper_Color_G = register_cvar("zm_night_vision_sniper_color_G", "0");
+	g_pCvar_Night_Vision_Sniper_Color_B = register_cvar("zm_night_vision_sniper_color_B", "150");
+	
 	g_Message_NVG_Toggle = get_user_msgid("NVGToggle");
 
 	register_message(g_Message_NVG_Toggle, "Message_NVG_Toggle");
@@ -158,32 +134,6 @@ public plugin_init()
 	register_event("ResetHUD", "Event_Reset_Hud", "b");
 
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const module[])
-{
-	if (equal(module, LIBRARY_NEMESIS) || equal(module, LIBRARY_ASSASSIN) || equal(module, LIBRARY_SURVIVOR) || equal(module, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public RG_CSGameRules_PlayerKilled_Post(iPlayer)
@@ -201,7 +151,7 @@ public client_putinserver(iPlayer)
 public zp_fw_core_infect_post(iPlayer)
 {
 	// Nemesis Class loaded?
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iPlayer))
+	if (zp_class_nemesis_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Nemesis))
 		{
@@ -236,7 +186,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 
 	// Assassin Class loaded?
-	else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iPlayer))
+	else if (zp_class_assassin_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Assassin))
 		{
@@ -308,7 +258,7 @@ public zp_fw_core_infect_post(iPlayer)
 public zp_fw_core_cure_post(iPlayer)
 {
 	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer))
+	if (zp_class_survivor_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Survivor))
 		{
@@ -343,7 +293,7 @@ public zp_fw_core_cure_post(iPlayer)
 	}
 
 	// Sniper Class loaded?
-	else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+	else if (zp_class_sniper_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Sniper))
 		{
@@ -515,7 +465,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 	else if (zp_core_is_zombie(ID_NIGHTVISION))
 	{
 		// Nemesis Class loaded?
-		if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(ID_NIGHTVISION))
+		if (zp_class_nemesis_get(ID_NIGHTVISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Nemesis_Radius)); // radius
 
@@ -524,7 +474,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Nemesis_Color_B)); // b
 		}
 
-		else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(ID_NIGHTVISION))
+		else if (zp_class_assassin_get(ID_NIGHTVISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Assassin_Radius)); // radius
 
@@ -547,7 +497,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 	else
 	{
 		// Survivor Class loaded?
-		if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(ID_NIGHTVISION))
+		if (zp_class_survivor_get(ID_NIGHTVISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Survivor_Radius)); // radius
 
@@ -556,7 +506,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Survivor_Color_B)); // b
 		}
 
-		else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(ID_NIGHTVISION))
+		else if (zp_class_sniper_get(ID_NIGHTVISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Sniper_Radius)); // radius
 

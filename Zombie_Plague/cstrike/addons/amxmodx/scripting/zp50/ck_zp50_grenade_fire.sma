@@ -39,11 +39,7 @@ new const g_Sound_Grenade_Fire_Explode[][] =
 #include <xs>
 #include <ck_cs_weap_models_api>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
 
 // HACK: var_ field used to store custom nade types and their values
@@ -231,29 +227,6 @@ public plugin_natives()
 
 	register_native("zp_grenade_fire_get", "native_grenade_fire_get");
 	register_native("zp_grenade_fire_set", "native_grenade_fire_set");
-
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public native_grenade_fire_get(iPlugin_ID, iNum_Params)
@@ -525,14 +498,14 @@ Set_On_Fire(iVictim)
 	}
 
 	// Reduced duration for nemesis
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iVictim))
+	if (zp_class_nemesis_get(iVictim))
 	{
 		// Fire duration (nemesis)
 		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Fire_Duration);
 	}
 
 	// Reduced duration for assassin
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iVictim))
+	if (zp_class_assassin_get(iVictim))
 	{
 		// Fire duration (assassin)
 		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Fire_Duration);
@@ -583,7 +556,7 @@ public Burning_Flame(Task_ID)
 	}
 
 	// Nemesis Class loaded?
-	if (!LibraryExists(LIBRARY_NEMESIS, LibType_Library) || !zp_class_nemesis_get(ID_BURN))
+	if (!zp_class_nemesis_get(ID_BURN))
 	{
 		// Fire slow down
 		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown) > 0.0)
@@ -599,7 +572,7 @@ public Burning_Flame(Task_ID)
 	}
 
 	// Assassin Class loaded?
-	if (!LibraryExists(LIBRARY_ASSASSIN, LibType_Library) || !zp_class_assassin_get(ID_BURN))
+	if (!zp_class_assassin_get(ID_BURN))
 	{
 		// Fire slow down
 		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown) > 0.0)

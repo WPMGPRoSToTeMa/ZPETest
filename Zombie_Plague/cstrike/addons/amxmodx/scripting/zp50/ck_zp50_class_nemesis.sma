@@ -74,12 +74,6 @@ new const g_Sound_Nemesis_Hit_Stab[][] =
 #include <ck_cs_weap_models_api>
 #include <ck_zp50_kernel>
 
-#define LIBRARY_GRENADE_FROST "ck_zp50_grenade_frost"
-#include <ck_zp50_grenade_frost>
-
-#define LIBRARY_GRENADE_FIRE "ck_zp50_grenade_fire"
-#include <ck_zp50_grenade_fire>
-
 #define TASK_AURA 100
 #define ID_AURA (iTask_ID - TASK_AURA)
 
@@ -342,29 +336,6 @@ public plugin_natives()
 
 	register_native("zp_class_nemesis_set", "native_class_nemesis_set");
 	register_native("zp_class_nemesis_get_count", "native_class_nemesis_get_count");
-
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_GRENADE_FROST) || equal(szModule, LIBRARY_GRENADE_FIRE))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)

@@ -19,17 +19,9 @@
 #include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes_const>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #define TASK_GAMEMODE 100
@@ -47,8 +39,6 @@ enum _:TOTAL_FORWARDS
 
 new g_Forwards[TOTAL_FORWARDS];
 new g_Forward_Result;
-
-#pragma unused g_Last_Game_Mode // Fix warnings for compilation
 
 // Game Modes data
 new Array:g_aGame_Mode_Name;
@@ -149,29 +139,6 @@ public plugin_natives()
 	// Initialize dynamic arrays
 	g_aGame_Mode_Name = ArrayCreate(32, 1);
 	g_aGame_Mode_File_Name = ArrayCreate(64, 1);
-
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public native_gamemodes_register(iPlugin_ID, iNum_Params)
@@ -643,25 +610,25 @@ public Ham_TakeDamage_Player_(iVictim, iInflictor, iAttacker, Float:fDamage, iDa
 	if (g_Allow_Infection && zp_core_is_zombie(iAttacker) && !zp_core_is_zombie(iVictim))
 	{
 		// Nemesis shouldn't be infecting
-		if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iAttacker))
+		if (zp_class_nemesis_get(iAttacker))
 		{
 			return HAM_IGNORED;
 		}
 
 		// Assassin shouldn't be infecting
-		if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iAttacker))
+		if (zp_class_assassin_get(iAttacker))
 		{
 			return HAM_IGNORED;
 		}
 
 		// Survivor shouldn't be infected
-		if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iVictim))
+		if (zp_class_survivor_get(iVictim))
 		{
 			return HAM_IGNORED;
 		}
 
 		// Sniper shouldn't be infected
-		if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iVictim))
+		if (zp_class_sniper_get(iVictim))
 		{
 			return HAM_IGNORED;
 		}

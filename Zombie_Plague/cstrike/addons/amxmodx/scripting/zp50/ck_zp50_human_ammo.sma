@@ -18,11 +18,7 @@
 #include <cs_util>
 #include <hamsandwich>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 // Weapon id for ammo types
@@ -170,49 +166,14 @@ public plugin_init()
 
 	g_pCvar_Human_Unlimited_Ammo = register_cvar("zm_human_unlimited_ammo", "0"); // 1-bp ammo // 2-clip ammo
 
-	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		g_pCvar_Survivor_Unlimited_Ammo = register_cvar("zm_survivor_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
-	}
-
-	// Sniper Class loaded?
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		g_pCvar_Sniper_Unlimited_Ammo = register_cvar("zm_sniper_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
-	}
+	g_pCvar_Survivor_Unlimited_Ammo = register_cvar("zm_survivor_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
+	g_pCvar_Sniper_Unlimited_Ammo = register_cvar("zm_sniper_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
 
 	register_event("AmmoX", "Event_Ammo_X", "be");
 
 	register_message(get_user_msgid("CurWeapon"), "Message_Cur_Weapon");
 
 	g_Message_Ammo_Pickup = get_user_msgid("AmmoPickup");
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 // BP Ammo update
@@ -225,7 +186,7 @@ public Event_Ammo_X(iPlayer)
 	}
 
 	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer))
+	if (zp_class_survivor_get(iPlayer))
 	{
 		// Unlimited BP ammo enabled for survivor?
 		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) < 1)
@@ -235,7 +196,7 @@ public Event_Ammo_X(iPlayer)
 	}
 
 	// Sniper Class loaded?
-	else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+	else if (zp_class_sniper_get(iPlayer))
 	{
 		// Unlimited BP ammo enabled for sniper?
 		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) < 1)
@@ -301,7 +262,7 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	}
 
 	// Survivor Class loaded?
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iMessage_Entity))
+	if (zp_class_survivor_get(iMessage_Entity))
 	{
 		// Unlimited Clip ammo enabled for humans?
 		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) < 2)
@@ -311,7 +272,7 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	}
 
 	// Sniper Class loaded?
-	else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iMessage_Entity))
+	else if (zp_class_sniper_get(iMessage_Entity))
 	{
 		// Unlimited Clip ammo enabled for humans?
 		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) < 2)
