@@ -77,8 +77,6 @@ new g_pCvar_Human_Armor_Type;
 new g_iBit_Alive;
 new g_iBit_Connected;
 
-new g_szConfigs_Path[64];
-
 public plugin_precache()
 {
 	// Load from external file, save if not found
@@ -92,10 +90,8 @@ public plugin_precache()
 	
 	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zp_fw_class_human_register_post", ET_CONTINUE, FP_CELL);
 	
-	get_localinfo("amxx_configsdir", g_szConfigs_Path, charsmax(g_szConfigs_Path));
-	
 	new szSettings_Path[86];
-	formatex(szSettings_Path, charsmax(szSettings_Path), "%s/%s", g_szConfigs_Path, ZP_CLASS_SETTINGS_PATH);
+	formatex(szSettings_Path, charsmax(szSettings_Path), "addons/amxmodx/configs/%s", ZP_CLASS_SETTINGS_PATH);
 	
 	if (!dir_exists(szSettings_Path))
 	{
@@ -526,7 +522,7 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	new szClass_Config_Path[64];
 	new szClass_Config_Full_Path[128];
 	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZP_CLASS_SETTINGS_PATH, szReal_Name);
-	formatex(szClass_Config_Full_Path, charsmax(szClass_Config_Full_Path), "%s/%s", g_szConfigs_Path, szClass_Config_Path);
+	formatex(szClass_Config_Full_Path, charsmax(szClass_Config_Full_Path), "addons/amxmodx/configs/%s", szClass_Config_Path);
 	
 	new bool:bConfig_Exists = bool:file_exists(szClass_Config_Full_Path);
 	new bool:bModels_Loaded;

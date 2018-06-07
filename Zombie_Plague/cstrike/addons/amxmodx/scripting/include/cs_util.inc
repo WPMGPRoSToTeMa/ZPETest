@@ -394,7 +394,7 @@ stock Recursive_Mkdir(szPath[])
 		return;
 	}
 	
-	if(bRecursive_Creating)
+	if (bRecursive_Creating)
 	{
 		mkdir(szRecursive_Path);
 	}
