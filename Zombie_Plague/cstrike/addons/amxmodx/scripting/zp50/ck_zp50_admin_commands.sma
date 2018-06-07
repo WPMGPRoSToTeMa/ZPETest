@@ -75,8 +75,8 @@ public plugin_init()
 	g_pCvar_Console_Command_Target_Survivor = register_cvar("zpe_console_command_taget_survivor", "zpe_survivor");
 	g_pCvar_Console_Command_Target_Sniper = register_cvar("zpe_console_command_taget_sniper", "zpe_sniper");
 
-	g_pCvar_Console_Command_Target_Respawn_Players = register_cvar("zpe_console_command_taget_respawn", "zp_respawn");
-	g_pCvar_Console_Command_Target_Start_Game_Mode = register_cvar("zpe_console_command_taget_start_game_mode", "zp_start_game_mode");
+	g_pCvar_Console_Command_Target_Respawn_Players = register_cvar("zpe_console_command_taget_respawn", "zpe_respawn");
+	g_pCvar_Console_Command_Target_Start_Game_Mode = register_cvar("zpe_console_command_taget_start_game_mode", "zpe_start_game_mode");
 
 	g_pCvar_Management_Admin_Log = register_cvar("zpe_management_admin_log", "1");
 	g_pCvar_Message_Information = register_cvar("zpe_message_information", "1");
