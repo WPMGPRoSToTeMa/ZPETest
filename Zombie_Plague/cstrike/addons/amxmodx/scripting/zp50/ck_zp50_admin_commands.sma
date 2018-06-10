@@ -88,7 +88,7 @@ public plugin_init()
 	new szConsole_Command_Target_Survivor[32];
 	new szConsole_Command_Target_Sniper[32];
 
-	new szConsole_Command_Target_Respawn[32];
+	new szConsole_Command_Target_Respawn_Players[32];
 	new szConsole_Command_Target_Start_Game_Mode[32];
 
 	get_pcvar_string(g_pCvar_Console_Command_Target_Zombie, szConsole_Command_Target_Zombie, charsmax(szConsole_Command_Target_Zombie));
@@ -98,19 +98,19 @@ public plugin_init()
 	get_pcvar_string(g_pCvar_Console_Command_Target_Survivor, szConsole_Command_Target_Survivor, charsmax(szConsole_Command_Target_Survivor));
 	get_pcvar_string(g_pCvar_Console_Command_Target_Sniper, szConsole_Command_Target_Sniper, charsmax(szConsole_Command_Target_Sniper));
 
-	get_pcvar_string(g_pCvar_Console_Command_Target_Respawn_Players, szConsole_Command_Target_Respawn, charsmax(szConsole_Command_Target_Respawn));
+	get_pcvar_string(g_pCvar_Console_Command_Target_Respawn_Players, szConsole_Command_Target_Respawn_Players, charsmax(szConsole_Command_Target_Respawn_Players));
 	get_pcvar_string(g_pCvar_Console_Command_Target_Start_Game_Mode, szConsole_Command_Target_Start_Game_Mode, charsmax(szConsole_Command_Target_Start_Game_Mode));
 
 	// Admin commands
 	register_concmd(szConsole_Command_Target_Zombie, "Cmd_Zombie", _, "<target> - Turn someone into a Zombie", 0);
 	register_concmd(szConsole_Command_Target_Human, "Cmd_Human", _, "<target> - Turn someone back to Human", 0);
-	register_concmd(szConsole_Command_Target_Respawn, "Cmd_Respawn", _, "<target> - Respawn someone", 0);
-	register_concmd(szConsole_Command_Target_Start_Game_Mode, "Cmd_Start_Game_Mode", _, "<game mode player> - Start specific game mode", 0);
-
 	register_concmd(szConsole_Command_Target_Nemesis, "Cmd_Nemesis", _, "<target> - Turn someone into a Nemesis", 0);
 	register_concmd(szConsole_Command_Target_Assassin, "Cmd_Assassin", _, "<target> - Turn someone into a Assassin", 0);
 	register_concmd(szConsole_Command_Target_Survivor, "Cmd_Survivor", _, "<target> - Turn someone into a Survivor", 0);
 	register_concmd(szConsole_Command_Target_Sniper, "Cmd_Sniper", _, "<target> - Turn someone into a Sniper", 0);
+
+	register_concmd(szConsole_Command_Target_Respawn_Players, "Cmd_Respawn", _, "<target> - Respawn someone", 0);
+	register_concmd(szConsole_Command_Target_Start_Game_Mode, "Cmd_Start_Game_Mode", _, "<game mode player> - Start specific game mode", 0);
 }
 
 public plugin_precache()
@@ -173,7 +173,7 @@ public plugin_natives()
 
 public plugin_cfg()
 {
-	g_pCvar_Deathmatch = get_cvar_pointer("zm_deathmatch");
+	g_pCvar_Deathmatch = get_cvar_pointer("zpe_deathmatch");
 
 	g_Game_Mode_Infection_ID = zp_gamemodes_get_id("Infection Mode");
 	g_Game_Mode_Nemesis_ID = zp_gamemodes_get_id("Nemesis Mode");
@@ -389,7 +389,7 @@ public native_admin_commands_start_mode(iPlugin_ID, iNum_Params)
 	return true;
 }
 
-// zp_zombie [target]
+// zpe_zombie [target]
 public Cmd_Zombie(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Make Zombie
@@ -428,7 +428,7 @@ public Cmd_Zombie(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// zp_human [target]
+// zpe_human [target]
 public Cmd_Human(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Make Human
@@ -457,7 +457,7 @@ public Cmd_Human(iID_Admin, iLevel, iCID)
 
 		GET_USER_NAME(iPlayer, szPlayer_Name, charsmax(szPlayer_Name));
 
-		client_print(iID_Admin, print_console, "%L (%s)",iID_Admin, "ALREADY_HUMAN", szPlayer_Name);
+		client_print(iID_Admin, print_console, "%L (%s)", iID_Admin, "ALREADY_HUMAN", szPlayer_Name);
 
 		return PLUGIN_HANDLED;
 	}
@@ -467,7 +467,7 @@ public Cmd_Human(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// zp_nemesis [target]
+// zpe_nemesis [target]
 public Cmd_Nemesis(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Make Nemesis
@@ -506,7 +506,7 @@ public Cmd_Nemesis(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// zp_assassin [target]
+// zpe_assassin [target]
 public Cmd_Assassin(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Make assassin
@@ -545,7 +545,7 @@ public Cmd_Assassin(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// zp_survivor [target]
+// zpe_survivor [target]
 public Cmd_Survivor(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Make Survivor
@@ -584,7 +584,7 @@ public Cmd_Survivor(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// zp_sniper [target]
+// zpe_sniper [target]
 public Cmd_Sniper(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Make sniper
@@ -623,7 +623,7 @@ public Cmd_Sniper(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// zp_respawn [target]
+// zpe_respawn [target]
 public Cmd_Respawn(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Respawn
@@ -662,7 +662,7 @@ public Cmd_Respawn(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// zp_gamemodes_start [game mode player]
+// zpe_gamemodes_start [game mode player]
 public Cmd_Start_Game_Mode(iID_Admin, iLevel, iCID)
 {
 	// Check for access flag - Start Game Mode
@@ -691,7 +691,7 @@ public Cmd_Start_Game_Mode(iID_Admin, iLevel, iCID)
 	return PLUGIN_HANDLED;
 }
 
-// Admin Command zp_zombie
+// Admin Command zpe_zombie
 Command_Zombie(iID, iPlayer)
 {
 	// Prevent infecting last human
