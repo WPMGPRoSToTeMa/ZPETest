@@ -14,7 +14,6 @@
 #define VERSION "4.4.3.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_HUMANCLASSES_FILE "zm_humanclasses.ini"
 #define ZP_CLASS_SETTINGS_PATH "ZPE/classes/human"
 
 #define ZP_SETTING_SECTION_NAME "Settings"
@@ -89,14 +88,6 @@ public plugin_precache()
 	precache_model(g_Model_V_Knife_Human);
 	
 	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zp_fw_class_human_register_post", ET_CONTINUE, FP_CELL);
-	
-	new szSettings_Path[86];
-	formatex(szSettings_Path, charsmax(szSettings_Path), "addons/amxmodx/configs/%s", ZP_CLASS_SETTINGS_PATH);
-	
-	if (!dir_exists(szSettings_Path))
-	{
-		Recursive_Mkdir(szSettings_Path);
-	}
 }
 
 public plugin_init()
@@ -503,131 +494,118 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 			return ZP_INVALID_HUMAN_CLASS;
 		}
 	}
+	
+	new szClass_Config_Full_Path[128];
+	formatex(szClass_Config_Full_Path, charsmax(szClass_Config_Full_Path), "addons/amxmodx/configs/%s/%s.ini", ZP_CLASS_SETTINGS_PATH, szName);
+	
+	if (!file_exists(szClass_Config_Full_Path))
+	{
+		if(!write_file(szClass_Config_Full_Path, ""))
+		{
+			log_error(AMX_ERR_NATIVE, "Can't create config for human class (%s)", szName);
 
-	// Load settings from human classes file
-	new szReal_Name[32];
-	copy(szReal_Name, charsmax(szReal_Name), szName);
-	ArrayPushString(g_aHuman_Class_Real_Name, szReal_Name);
-	
-	new szDescription[32];
-	get_string(2, szDescription, charsmax(szDescription));
-	
-	new iHealth = get_param(3);
-	new iArmor = get_param(4);
-	new Float:fSpeed = get_param_f(5);
-	new Float:fGravity = get_param_f(6);
-	
-	new Array:aClass_Models = ArrayCreate(32, 1);
+			return ZP_INVALID_HUMAN_CLASS;
+		}
+	}
+
+	ArrayPushString(g_aHuman_Class_Real_Name, szName);
 	
 	new szClass_Config_Path[64];
-	new szClass_Config_Full_Path[128];
-	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZP_CLASS_SETTINGS_PATH, szReal_Name);
-	formatex(szClass_Config_Full_Path, charsmax(szClass_Config_Full_Path), "addons/amxmodx/configs/%s", szClass_Config_Path);
-	
-	new bool:bConfig_Exists = bool:file_exists(szClass_Config_Full_Path);
-	new bool:bModels_Loaded;
-	
-	if (bConfig_Exists)
+	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZP_CLASS_SETTINGS_PATH, szName);
+
+	// Name
+	if (!amx_load_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME , "NAME", szName, charsmax(szName)))
 	{
-		if (!amx_load_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "NAME", szName, charsmax(szName)))
-		{
-			amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "NAME", szName);
-		}
-		
-		if (!amx_load_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "INFO", szDescription, charsmax(szDescription)))
-		{
-			amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "INFO", szDescription);
-		}
-		
-		if (!amx_load_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth))
-		{
-			amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth);
-		}
-		
-		if (!amx_load_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "ARMOR", iArmor))
-		{
-			amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "ARMOR", iArmor);
-		}
-		
-		if (!amx_load_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed))
-		{
-			amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed);
-		}
-		
-		if (!amx_load_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity))
-		{
-			amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity);
-		}
-		
-		bModels_Loaded = bool:amx_load_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", aClass_Models);
+		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME , "NAME", szName);
 	}
-	
-	else
+
+	ArrayPushString(g_aHuman_Class_Name, szName);
+
+	// Description
+	new szDescription[32];
+
+	get_string(2, szDescription, charsmax(szDescription));
+
+	if (!amx_load_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "INFO", szDescription, charsmax(szDescription)))
 	{
-		write_file(szClass_Config_Full_Path, "");
-		
-		amx_load_setting_string(ZP_HUMANCLASSES_FILE, szReal_Name, "NAME", szName, charsmax(szName));
-		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "NAME", szName);
-		
-		amx_load_setting_string(ZP_HUMANCLASSES_FILE, szReal_Name, "INFO", szDescription, charsmax(szDescription));
 		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "INFO", szDescription);
-		
-		amx_load_setting_int(ZP_HUMANCLASSES_FILE, szReal_Name, "HEALTH", iHealth);
-		amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth);
-		
-		amx_load_setting_int(ZP_HUMANCLASSES_FILE, szReal_Name, "ARMOR", iArmor);
-		amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "ARMOR", iArmor);
-		
-		amx_load_setting_float(ZP_HUMANCLASSES_FILE, szReal_Name, "SPEED", fSpeed);
-		amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed);
-		
-		amx_load_setting_float(ZP_HUMANCLASSES_FILE, szReal_Name, "GRAVITY", fGravity);
-		amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity);
-		
-		bModels_Loaded = bool:amx_load_setting_string_arr(ZP_HUMANCLASSES_FILE, szReal_Name, "MODELS", aClass_Models);
 	}
+
+	ArrayPushString(g_aHuman_Class_Description, szDescription);
+
+	// Models
+	new Array:aClass_Models = ArrayCreate(32, 1);
+
+	amx_load_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", aClass_Models);
 	
 	new iArray_Size = ArraySize(aClass_Models);
 	new bool:bHave_Elements = iArray_Size > 0;
-		
+
 	if (bHave_Elements)
 	{
-		if (!bConfig_Exists)
-		{
-			amx_save_setting_string_arr(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", aClass_Models);
-		}
-	
+		// Precache player models
 		new szPlayer_Model[32];
-		new szModel_Path[86];
-		
+		new szModel_Path[128];
+
 		for (new i = 0; i < iArray_Size; i++)
 		{
 			ArrayGetString(aClass_Models, i, szPlayer_Model, charsmax(szPlayer_Model));
+
 			formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szPlayer_Model, szPlayer_Model);
+
 			precache_model(szModel_Path);
 		}
 	}
-	
+
 	else
 	{
 		ArrayDestroy(aClass_Models);
-		
-		if (!bModels_Loaded)
-		{
-			amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", "");
-		}
-		
+
+		amx_save_setting_string(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "MODELS", "");
 	}
-	
+
 	ArrayPushCell(g_aHuman_Class_Models_File, bHave_Elements);
-	
-	ArrayPushString(g_aHuman_Class_Name, szName);
-	ArrayPushString(g_aHuman_Class_Description, szDescription);
-	ArrayPushCell(g_aHuman_Class_Health, iHealth);
-	ArrayPushCell(g_aHuman_Class_Armor, iArmor);
-	ArrayPushCell(g_aHuman_Class_Speed, fSpeed);
-	ArrayPushCell(g_aHuman_Class_Gravity, fGravity);
 	ArrayPushCell(g_aHuman_Class_Models_Handle, aClass_Models);
+
+	// Health
+	new iHealth = get_param(3);
+
+	if (!amx_load_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth))
+	{
+		amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "HEALTH", iHealth);
+	}
+
+	ArrayPushCell(g_aHuman_Class_Health, iHealth);
+
+	// Armor
+	new iArmor = get_param(4);
+
+	if (!amx_load_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "ARMOR", iArmor))
+	{
+		amx_save_setting_int(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "ARMOR", iArmor);
+	}
+
+	ArrayPushCell(g_aHuman_Class_Armor, iArmor);
+
+	// Speed
+	new Float:fSpeed = get_param_f(5);
+
+	if (!amx_load_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed))
+	{
+		amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "SPEED", fSpeed);
+	}
+
+	ArrayPushCell(g_aHuman_Class_Speed, fSpeed);
+
+	// Gravity
+	new Float:fGravity = get_param_f(6);
+
+	if (!amx_load_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity))
+	{
+		amx_save_setting_float(szClass_Config_Path, ZP_SETTING_SECTION_NAME, "GRAVITY", fGravity);
+	}
+
+	ArrayPushCell(g_aHuman_Class_Gravity, fGravity);
 
 	g_Human_Class_Count++;
 	
