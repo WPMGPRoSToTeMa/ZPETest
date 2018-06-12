@@ -7,6 +7,8 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
@@ -697,7 +699,7 @@ Command_Zombie(iID, iPlayer)
 	// Prevent infecting last human
 	if (zp_core_is_last_human(iPlayer))
 	{
-		zp_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_HUMAN");
+		zpe_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_HUMAN_COLOR");
 
 		return;
 	}
@@ -708,7 +710,7 @@ Command_Zombie(iID, iPlayer)
 		// Start infection game mode with this target player
 		if (!zp_gamemodes_start(g_Game_Mode_Infection_ID, iPlayer))
 		{
-			zp_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START");
+			zpe_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START_COLOR");
 
 			return;
 		}
@@ -729,10 +731,10 @@ Command_Zombie(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_INFECT");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_INFECT_COLOR");
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -741,17 +743,17 @@ Command_Zombie(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_INFECT", Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_INFECT_LOG", Get_Playing_Count());
 	}
 }
 
-// Admin Command zp_human
+// Admin Command zpe_human
 Command_Human(iID, iPlayer)
 {
 	// Prevent infecting last zombie
 	if (zp_core_is_last_zombie(iPlayer))
 	{
-		zp_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_ZOMBIE");
+		zpe_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_ZOMBIE_COLOR");
 
 		return;
 	}
@@ -759,7 +761,7 @@ Command_Human(iID, iPlayer)
 	// No game mode currently in progress
 	if (zp_gamemodes_get_current() == ZP_NO_GAME_MODE)
 	{
-		zp_client_print_color(iID, print_team_default, "%L", iID, "CMD_ONLY_AFTER_GAME_MODE");
+		zpe_client_print_color(iID, print_team_default, "%L", iID, "CMD_ONLY_AFTER_GAME_MODE_COLOR");
 
 		return;
 	}
@@ -776,10 +778,10 @@ Command_Human(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_DISINFECT");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_DISINFECT_COLOR");
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -788,17 +790,17 @@ Command_Human(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_DISINFECT", Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_DISINFECT_LOG", Get_Playing_Count());
 	}
 }
 
-// Admin Command zp_nemesis
+// Admin Command zpe_nemesis
 Command_Nemesis(iID, iPlayer)
 {
 	// Prevent infecting last human
 	if (zp_core_is_last_human(iPlayer))
 	{
-		zp_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_HUMAN");
+		zpe_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_HUMAN_COLOR");
 
 		return;
 	}
@@ -809,7 +811,7 @@ Command_Nemesis(iID, iPlayer)
 		// Start nemesis game mode with this target player
 		if (!zp_gamemodes_start(g_Game_Mode_Nemesis_ID, iPlayer))
 		{
-			zp_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START");
+			zpe_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START_COLOR");
 
 			return;
 		}
@@ -830,10 +832,10 @@ Command_Nemesis(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_NEMESIS");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_NEMESIS_COLOR");
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -842,17 +844,17 @@ Command_Nemesis(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_NEMESIS", Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_NEMESIS_LOG", Get_Playing_Count());
 	}
 }
 
-// Admin Command zp_assassin
+// Admin Command zpe_assassin
 Command_Assassin(iID, iPlayer)
 {
 	// Prevent infecting last human
 	if (zp_core_is_last_human(iPlayer))
 	{
-		zp_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_HUMAN");
+		zpe_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_HUMAN_COLOR");
 
 		return;
 	}
@@ -863,7 +865,7 @@ Command_Assassin(iID, iPlayer)
 		// Start assassin game mode with this target player
 		if (!zp_gamemodes_start(g_Game_Mode_Assassin_ID, iPlayer))
 		{
-			zp_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START");
+			zpe_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START_COLOR");
 
 			return;
 		}
@@ -884,10 +886,10 @@ Command_Assassin(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_ASSASSIN");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_ASSASSIN_COLOR");
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -896,17 +898,17 @@ Command_Assassin(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_ASSASSIN", Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_ASSASSIN_LOG", Get_Playing_Count());
 	}
 }
 
-// Admin Command zp_survivor
+// Admin Command zpe_survivor
 Command_Survivor(iID, iPlayer)
 {
 	// Prevent infecting last zombie
 	if (zp_core_is_last_zombie(iPlayer))
 	{
-		zp_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_ZOMBIE");
+		zpe_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_ZOMBIE_COLOR");
 
 		return;
 	}
@@ -917,7 +919,7 @@ Command_Survivor(iID, iPlayer)
 		// Start survivor game mode with this target player
 		if (!zp_gamemodes_start(g_Game_Mode_Survivor_ID, iPlayer))
 		{
-			zp_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START");
+			zpe_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START_COLOR");
 
 			return;
 		}
@@ -938,10 +940,10 @@ Command_Survivor(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_SURVIVAL");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_SURVIVAL_COLOR");
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -950,17 +952,17 @@ Command_Survivor(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_SURVIVAL", Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_SURVIVAL_LOG", Get_Playing_Count());
 	}
 }
 
-// Admin Command zp_sniper
+// Admin Command zpe_sniper
 Command_Sniper(iID, iPlayer)
 {
 	// Prevent infecting last zombie
 	if (zp_core_is_last_zombie(iPlayer))
 	{
-		zp_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_ZOMBIE");
+		zpe_client_print_color(iID, print_team_default, "%L", iID, "CMD_CANT_LAST_ZOMBIE_COLOR");
 
 		return;
 	}
@@ -971,7 +973,7 @@ Command_Sniper(iID, iPlayer)
 		// Start sniper game mode with this target player
 		if (!zp_gamemodes_start(g_Game_Mode_Sniper_ID, iPlayer))
 		{
-			zp_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START");
+			zpe_client_print_color(iID, print_team_default, "%L", iID, "GAME_MODE_CANT_START_COLOR");
 
 			return;
 		}
@@ -992,10 +994,10 @@ Command_Sniper(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_SNIPER");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_SNIPER_COLOR");
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -1004,14 +1006,14 @@ Command_Sniper(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_SNIPER", Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_SNIPER_LOG", Get_Playing_Count());
 	}
 }
 
-// Admin Command zp_respawn
+// Admin Command zpe_respawn
 Command_Respawn(iID, iPlayer)
 {
-	// Deathmatch szModule active?
+	// Deathmatch module active?
 	if (g_pCvar_Deathmatch)
 	{
 		// Respawn as zombie?
@@ -1037,10 +1039,10 @@ Command_Respawn(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_RESPAWN");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_RESPAWN_COLOR");
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -1049,7 +1051,7 @@ Command_Respawn(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_RESPAWN", Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_RESPAWN_LOG", Get_Playing_Count());
 	}
 }
 
@@ -1060,13 +1062,13 @@ Respawn_Player_Manually(iPlayer)
 	rg_round_respawn(iPlayer);
 }
 
-// Admin Command zp_start_game_mode
+// Admin Command zpe_start_game_mode
 Command_Start_Mode(iPlayer, iGame_Mode_ID)
 {
 	// Attempt to start game mode
 	if (!zp_gamemodes_start(iGame_Mode_ID))
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "GAME_MODE_CANT_START");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "GAME_MODE_CANT_START_COLOR");
 
 		return;
 	}
@@ -1080,10 +1082,10 @@ Command_Start_Mode(iPlayer, iGame_Mode_ID)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zp_client_print_color(0, print_team_default, "ADMIN %s - %L: %s", szAdmin_Name, LANG_PLAYER, "CMD_START_GAME_MODE", szMode_name);
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %L: %s", szAdmin_Name, LANG_PLAYER, "CMD_START_GAME_MODE_COLOR", szMode_name);
 	}
 
-	// Log to Zombie Plague log file?
+	// Log to Zombie Plague Enterprise log file?
 	if (get_pcvar_num(g_pCvar_Management_Admin_Log))
 	{
 		new szAuth_ID[32];
@@ -1092,7 +1094,7 @@ Command_Start_Mode(iPlayer, iGame_Mode_ID)
 		get_user_authid(iPlayer, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iPlayer, szIP, charsmax(szIP), 1);
 
-		zp_log("ADMIN %s <%s><%s> - %L: %s (Players: %d)", szAdmin_Name, szAuth_ID, szIP, LANG_SERVER, "CMD_START_GAME_MODE", szMode_name, Get_Playing_Count());
+		zp_log("ADMIN %s <%s><%s> - %L: %s (Players: %d)", szAdmin_Name, szAuth_ID, szIP, LANG_SERVER, "CMD_START_GAME_MODE_LOG", szMode_name, Get_Playing_Count());
 	}
 }
 
@@ -1158,12 +1160,12 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

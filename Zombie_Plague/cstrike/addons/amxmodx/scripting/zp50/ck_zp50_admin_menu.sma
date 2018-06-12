@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Admin Menu.
+*	[ZPE] Admin Menu.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,14 +7,16 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "admin menu"
-#define VERSION "5.3.7.1"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #include <amxmodx>
 #include <amxmisc>
@@ -73,44 +75,44 @@ public plugin_init()
 public plugin_precache()
 {
 	// Load from external file, save if not found
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie, charsmax(g_Access_Make_Zombie)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie, charsmax(g_Access_Make_Zombie)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ZOMBIE", g_Access_Make_Zombie);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human, charsmax(g_Access_Make_Human)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human, charsmax(g_Access_Make_Human)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE HUMAN", g_Access_Make_Human);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis, charsmax(g_Access_Make_Nemesis)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis, charsmax(g_Access_Make_Nemesis)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE NEMESIS", g_Access_Make_Nemesis);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin, charsmax(g_Access_Make_Assassin)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin, charsmax(g_Access_Make_Assassin)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE ASSASSIN", g_Access_Make_Assassin);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor, charsmax(g_Access_Make_Survivor)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor, charsmax(g_Access_Make_Survivor)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SURVIVOR", g_Access_Make_Survivor);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper, charsmax(g_Access_Make_Sniper)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper, charsmax(g_Access_Make_Sniper)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "MAKE SNIPER", g_Access_Make_Sniper);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players, charsmax(g_Access_Respawn_Players)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players, charsmax(g_Access_Respawn_Players)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "RESPAWN PLAYERS", g_Access_Respawn_Players);
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode, charsmax(g_Access_Start_Game_Mode)))
+	if (!amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode, charsmax(g_Access_Start_Game_Mode)))
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode);
+		amx_save_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "START GAME MODE", g_Access_Start_Game_Mode);
 	}
 }
 
@@ -286,7 +288,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS_COLOR");
 
 				Show_Menu_Admin(iPlayer);
 			}
@@ -304,7 +306,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS_COLOR");
 
 				Show_Menu_Admin(iPlayer);
 			}
@@ -322,7 +324,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS_COLOR");
 
 				Show_Menu_Admin(iPlayer);
 			}
@@ -340,7 +342,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS_COLOR");
 
 				Show_Menu_Admin(iPlayer);
 			}
@@ -358,7 +360,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS_COLOR");
 
 				Show_Menu_Admin(iPlayer);
 			}
@@ -376,7 +378,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS_COLOR");
 
 				Show_Menu_Admin(iPlayer);
 			}
@@ -391,7 +393,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ACCESS_COLOR");
 
 				Show_Menu_Admin(iPlayer);
 			}
@@ -728,7 +730,6 @@ Show_Menu_Player_List(iPlayer)
 			}
 		}
 
-		// TODO: better convert number to string
 		szBuffer[0] = i;
 		szBuffer[1] = 0;
 
@@ -781,7 +782,6 @@ Show_Menu_Game_Mode_List(iPlayer)
 			formatex(szMenu, charsmax(szMenu), "%L", iPlayer, szTranskey);
 		}
 
-		// TODO: better convert number to string
 		szItemdata[0] = i;
 		szItemdata[1] = 0;
 
@@ -859,7 +859,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 					else
 					{
-						zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+						zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 					}
 				}
 
@@ -872,7 +872,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 					else
 					{
-						zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+						zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 					}
 				}
 			}
@@ -886,7 +886,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 				}
 			}
 
@@ -899,7 +899,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 				}
 			}
 
@@ -912,7 +912,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 				}
 			}
 
@@ -925,7 +925,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 				}
 			}
 
@@ -938,7 +938,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 				}
 			}
 		}
@@ -946,7 +946,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 	else
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_COLOR");
 	}
 
 	menu_destroy(iMenu);
@@ -1025,12 +1025,12 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

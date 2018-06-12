@@ -347,7 +347,7 @@ stock Str_Count(const sStr[], iSearch_Char)
 	return iCount;
 }
 
-stock zp_client_print_color(iIdex, iSender, const szMessage[], any:...)
+stock zpe_client_print_color(iIdex, iSender, const szMessage[], any:...)
 {
 	static szBuffer[512];
 
