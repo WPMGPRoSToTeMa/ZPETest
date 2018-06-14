@@ -73,8 +73,8 @@ public plugin_init()
 
 	g_Forwards[FW_USER_SPAWN_POST] = CreateMultiForward("zp_fw_core_spawn_post", ET_IGNORE, FP_CELL);
 
-	g_Forwards[FW_USER_ADD_BIT] = CreateMultiForward("zp_fw_spawn_post_add_bit", ET_IGNORE, FP_CELL);
-	g_Forwards[FW_USER_BIT_SUB] = CreateMultiForward("zp_fw_kill_pre_bit_sub", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_USER_ADD_BIT] = CreateMultiForward("zpe_fw_spawn_post_add_bit", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_USER_BIT_SUB] = CreateMultiForward("zpe_fw_kill_pre_bit_sub", ET_IGNORE, FP_CELL);
 
 	RegisterHookChain(RG_CSGameRules_PlayerSpawn, "RG_CSGameRules_PlayerSpawn_Post", 1);
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Pre");
