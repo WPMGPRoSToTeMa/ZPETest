@@ -20,17 +20,9 @@
 #include <ck_zp50_kernel>
 #include <ck_zp50_class_human>
 #include <ck_zp50_class_zombie>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 #define LIBRARY_AMMOPACKS "ck_zp50_ammopacks"
@@ -127,7 +119,7 @@ public plugin_natives()
 
 public module_filter(const szModule[])
 {
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER) || equal(szModule, LIBRARY_AMMOPACKS))
+	if (equal(szModule, LIBRARY_AMMOPACKS))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -186,13 +178,13 @@ public Show_HUD(iTask_ID)
 		iBlue = get_pcvar_num(g_pCvar_Message_Stats_Zombie_B);
 
 		// Nemesis Class loaded?
-		if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iPlayer))
+		if (zp_class_nemesis_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_NEMESIS");
 		}
 
 		// Assassin Class loaded?
-		else if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iPlayer))
+		else if (zp_class_assassin_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_ASSASSIN");
 		}
@@ -218,13 +210,13 @@ public Show_HUD(iTask_ID)
 		iBlue = get_pcvar_num(g_pCvar_Message_Stats_Human_B);
 
 		// Survivor Class loaded?
-		if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer))
+		if (zp_class_survivor_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_SURVIVOR");
 		}
 
 		// Sniper Class loaded?
-		else if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+		else if (zp_class_sniper_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_SNIPER");
 		}

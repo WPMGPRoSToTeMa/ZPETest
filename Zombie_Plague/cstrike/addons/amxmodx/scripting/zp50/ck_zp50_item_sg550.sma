@@ -30,11 +30,7 @@
 #include <cs_util>
 #include <ck_zp50_kernel>
 #include <ck_zp50_items>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 new g_Item_ID;
@@ -44,32 +40,6 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	g_Item_ID = zp_items_register(ITEM_SG550_NAME, ITEM_SG550_COST);
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public zp_fw_items_select_pre(iPlayer, iItem_ID)
@@ -85,12 +55,12 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID)
 		return ZP_ITEM_DONT_SHOW;
 	}
 
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer))
+	if (zp_class_survivor_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
 	}
 
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+	if (zp_class_sniper_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
 	}

@@ -30,17 +30,9 @@
 #include <cstrike>
 #include <ck_zp50_kernel>
 #include <ck_zp50_items>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 new g_Item_ID;
@@ -52,32 +44,6 @@ public plugin_init()
 	g_Item_ID = zp_items_register(ITEM_NIGHTVISION_NAME, ITEM_NIGHTVISION_COST);
 }
 
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
 public zp_fw_items_select_pre(iPlayer, iItem_ID)
 {
 	// This is not our item
@@ -87,22 +53,22 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID)
 	}
 
 	// Nightvision only available to humans
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) &&  zp_class_nemesis_get(iPlayer))
+	if (zp_class_nemesis_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
 	}
 
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iPlayer))
+	if (zp_class_assassin_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
 	}
 
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && zp_class_survivor_get(iPlayer))
+	if (zp_class_survivor_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
 	}
 
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && zp_class_sniper_get(iPlayer))
+	if (zp_class_sniper_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
 	}

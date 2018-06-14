@@ -30,14 +30,8 @@ new const g_szDefault_Sound_Zombie_Madness[] = "zombie_plague/zombie_madness1.wa
 
 #define LIBRARY_GRENADE_FROST "ck_zp50_grenade_frost"
 #include <ck_zp50_grenade_frost>
-
-#define LIBRARY_GRENADE_FIRE "ck_zp50_grenade_fire"
 #include <ck_zp50_grenade_fire>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
 
 #define SOUND_MAX_LENGTH 64
@@ -125,29 +119,6 @@ public plugin_natives()
 	register_library("ck_zp50_item_zombie_madness");
 
 	register_native("zp_item_zombie_madness_get", "native_item_zombie_madness_get");
-
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_GRENADE_FROST) || equal(szModule, LIBRARY_GRENADE_FIRE))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public native_item_zombie_madness_get(iPlugin_ID, iNum_Params)
@@ -179,7 +150,7 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID)
 	}
 
 	// Zombie madness not available to Nemesis/Assassin
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && zp_class_nemesis_get(iPlayer) || LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && zp_class_assassin_get(iPlayer))
+	if (zp_class_nemesis_get(iPlayer) || zp_class_assassin_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
 	}

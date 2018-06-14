@@ -22,10 +22,7 @@
 #define LIBRARY_BUYMENUS "ck_zp50_buy_menus"
 #include <ck_zp50_buy_menus>
 
-#define LIBRARY_ZOMBIECLASSES "ck_zp50_class_zombie"
 #include <ck_zp50_class_zombie>
-
-#define LIBRARY_HUMANCLASSES "ck_zp50_class_human"
 #include <ck_zp50_class_human>
 
 #define LIBRARY_ITEMS "ck_zp50_items"
@@ -73,7 +70,7 @@ public plugin_natives()
 
 public module_filter(const szModule[])
 {
-	if (equal(szModule, LIBRARY_BUYMENUS) || equal(szModule, LIBRARY_ZOMBIECLASSES) || equal(szModule, LIBRARY_HUMANCLASSES) || equal(szModule, LIBRARY_ITEMS) || equal(szModule, LIBRARY_ADMIN_MENU) || equal(szModule, LIBRARY_RANDOMSPAWN))
+	if (equal(szModule, LIBRARY_BUYMENUS) || equal(szModule, LIBRARY_ITEMS) || equal(szModule, LIBRARY_ADMIN_MENU) || equal(szModule, LIBRARY_RANDOMSPAWN))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -151,7 +148,7 @@ Show_Menu_Main(iPlayer)
 	}
 
 	// 3. Zombie class
-	if (LibraryExists(LIBRARY_ZOMBIECLASSES, LibType_Library) && zp_class_zombie_get_count() > 1)
+	if (zp_class_zombie_get_count() > 1)
 	{
 		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 3. \w %L ^n", iPlayer, "MENU_ZCLASS");
 	}
@@ -162,7 +159,7 @@ Show_Menu_Main(iPlayer)
 	}
 
 	// 4. Human class
-	if (LibraryExists(LIBRARY_HUMANCLASSES, LibType_Library) && zp_class_human_get_count() > 1)
+	if (zp_class_human_get_count() > 1)
 	{
 		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 4. \w %L ^n", iPlayer, "MENU_HCLASS");
 	}
@@ -261,7 +258,7 @@ public Menu_Main(iPlayer, iKey)
 
 		case 2: // Zombie classes
 		{
-			if (LibraryExists(LIBRARY_ZOMBIECLASSES, LibType_Library) && zp_class_zombie_get_count() > 1)
+			if (zp_class_zombie_get_count() > 1)
 			{
 				zp_class_zombie_show_menu(iPlayer);
 			}
@@ -274,7 +271,7 @@ public Menu_Main(iPlayer, iKey)
 
 		case 3: // Human classes
 		{
-			if (LibraryExists(LIBRARY_HUMANCLASSES, LibType_Library) && zp_class_human_get_count() > 1)
+			if (zp_class_human_get_count() > 1)
 			{
 				zp_class_human_show_menu(iPlayer);
 			}

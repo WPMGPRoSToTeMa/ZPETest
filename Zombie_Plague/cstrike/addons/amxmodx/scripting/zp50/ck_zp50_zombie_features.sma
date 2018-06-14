@@ -20,11 +20,7 @@
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
 
 new const g_Bleeding_Decals[] =
@@ -102,32 +98,6 @@ public plugin_precache()
 	}
 }
 
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
 public RG_CSGameRules_PlayerKilled_Post(iVictim)
 {
 	// Remove bleeding task
@@ -158,7 +128,7 @@ public zp_fw_core_infect_post(iPlayer)
 	remove_task(iPlayer + TASK_BLOOD);
 
 	// Nemesis Class loaded?
-	if (!LibraryExists(LIBRARY_NEMESIS, LibType_Library) || !zp_class_nemesis_get(iPlayer))
+	if (!zp_class_nemesis_get(iPlayer))
 	{
 		// Set silent footsteps?
 		if (get_pcvar_num(g_pCvar_Zombie_Silent))
@@ -174,7 +144,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 
 	// Assassin Class loaded?
-	else if (!LibraryExists(LIBRARY_ASSASSIN, LibType_Library) || !zp_class_assassin_get(iPlayer))
+	else if (!zp_class_assassin_get(iPlayer))
 	{
 		// Set silent footsteps?
 		if (get_pcvar_num(g_pCvar_Zombie_Silent))

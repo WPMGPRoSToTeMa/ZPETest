@@ -26,17 +26,9 @@ new const g_Sound_Armor_Hit[][] =
 #include <amx_settings_api>
 #include <fakemeta>
 #include <ck_zp50_kernel>
-
-#define LIBRARY_NEMESIS "ck_zp50_class_nemesis"
 #include <ck_zp50_class_nemesis>
-
-#define LIBRARY_ASSASSIN "ck_zp50_class_assassin"
 #include <ck_zp50_class_assassin>
-
-#define LIBRARY_SURVIVOR "ck_zp50_class_survivor"
 #include <ck_zp50_class_survivor>
-
-#define LIBRARY_SNIPER "ck_zp50_class_sniper"
 #include <ck_zp50_class_sniper>
 
 // Some constants
@@ -63,53 +55,12 @@ public plugin_init()
 	g_pCvar_Human_Armor_Protect = register_cvar("zm_human_armor_protect", "1");
 	g_pCvar_Human_Armor_Default = register_cvar("zm_human_armor_default", "0");
 
-	if (LibraryExists(LIBRARY_NEMESIS, LibType_Library))
-	{
-		g_pCvar_Armor_Protect_Nemesis = register_cvar("zm_armor_protect_nemesis", "1");
-	}
-
-	if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library))
-	{
-		g_pCvar_Armor_Protect_Assassin = register_cvar("zm_armor_protect_assassin", "1");
-	}
-
-	if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library))
-	{
-		g_pCvar_Armor_Protect_Survivor = register_cvar("zm_armor_protect_survivor", "1");
-	}
-
-	if (LibraryExists(LIBRARY_SNIPER, LibType_Library))
-	{
-		g_pCvar_Armor_Protect_Sniper = register_cvar("zm_armor_protect_sniper", "1")
-	}
+	g_pCvar_Armor_Protect_Nemesis = register_cvar("zm_armor_protect_nemesis", "1");
+	g_pCvar_Armor_Protect_Assassin = register_cvar("zm_armor_protect_assassin", "1");
+	g_pCvar_Armor_Protect_Survivor = register_cvar("zm_armor_protect_survivor", "1");
+	g_pCvar_Armor_Protect_Sniper = register_cvar("zm_armor_protect_sniper", "1")
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
-}
-
-public plugin_natives()
-{
-	set_module_filter("module_filter");
-	set_native_filter("native_filter");
-}
-
-public module_filter(const szModule[])
-{
-	if (equal(szModule, LIBRARY_NEMESIS) || equal(szModule, LIBRARY_ASSASSIN) || equal(szModule, LIBRARY_SURVIVOR) || equal(szModule, LIBRARY_SNIPER))
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-public native_filter(const szName[], iIndex, iTrap)
-{
-	if (!iTrap)
-	{
-		return PLUGIN_HANDLED;
-	}
-
-	return PLUGIN_CONTINUE;
 }
 
 public plugin_precache()
@@ -175,25 +126,25 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 		}
 
 		// Should armor protect against nemesis attacks?
-		if (LibraryExists(LIBRARY_NEMESIS, LibType_Library) && !get_pcvar_num(g_pCvar_Armor_Protect_Nemesis) && zp_class_nemesis_get(iAttacker))
+		if (!get_pcvar_num(g_pCvar_Armor_Protect_Nemesis) && zp_class_nemesis_get(iAttacker))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect against assassin attacks?
-		if (LibraryExists(LIBRARY_ASSASSIN, LibType_Library) && !get_pcvar_num(g_pCvar_Armor_Protect_Assassin) && zp_class_assassin_get(iAttacker))
+		if (!get_pcvar_num(g_pCvar_Armor_Protect_Assassin) && zp_class_assassin_get(iAttacker))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect survivor too?
-		if (LibraryExists(LIBRARY_SURVIVOR, LibType_Library) && !get_pcvar_num(g_pCvar_Armor_Protect_Survivor) && zp_class_survivor_get(iVictim))
+		if (!get_pcvar_num(g_pCvar_Armor_Protect_Survivor) && zp_class_survivor_get(iVictim))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect sniper too?
-		if (LibraryExists(LIBRARY_SNIPER, LibType_Library) && !get_pcvar_num(g_pCvar_Armor_Protect_Sniper) && zp_class_sniper_get(iVictim))
+		if (!get_pcvar_num(g_pCvar_Armor_Protect_Sniper) && zp_class_sniper_get(iVictim))
 		{
 			return HC_CONTINUE;
 		}

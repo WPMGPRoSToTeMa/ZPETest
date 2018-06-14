@@ -26,7 +26,6 @@
 #include <ck_zp50_class_assassin>
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
-
 #include <ck_zp50_log>
 
 #define ACCESS_FLAG_MAX_LENGTH 2
