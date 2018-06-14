@@ -16,10 +16,7 @@
 
 #define ZP_SETTINGS_FILE "zm_items.ini"
 
-new const g_Sound_Zombie_Madness[][] =
-{
-	"zombie_plague/zombie_madness1.wav"
-};
+new const g_szDefault_Sound_Zombie_Madness[] = "zombie_plague/zombie_madness1.wav";
 
 #define ITEM_NAME "Zombie Madness"
 #define ITEM_COST 1
@@ -29,6 +26,7 @@ new const g_Sound_Zombie_Madness[][] =
 #include <amx_settings_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_items>
+#include <ck_zp50_class_zombie>
 
 #define LIBRARY_GRENADE_FROST "ck_zp50_grenade_frost"
 #include <ck_zp50_grenade_frost>
@@ -49,6 +47,10 @@ new const g_Sound_Zombie_Madness[][] =
 
 #define ID_MADNESS (iTask_ID - TASK_MADNESS)
 #define ID_AURA (iTask_ID - TASK_AURA)
+
+#define ZP_ZOMBIE_CLASS_SETTINGS_PATH "ZPE/classes/zombie"
+
+new const g_szSound_Section_Name[] = "Sounds";
 
 new Array:g_aSound_Zombie_Madness;
 
@@ -81,31 +83,41 @@ public plugin_init()
 	g_Item_ID = zp_items_register(ITEM_NAME, ITEM_COST);
 }
 
-public plugin_precache()
+public zp_fw_class_zombie_register_post(classid)
 {
-	// Initialize arrays
-	g_aSound_Zombie_Madness = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ZOMBIE MADNESS", g_aSound_Zombie_Madness);
-
-	// If we couldn't load custom sounds from file, use and save default ones
-	if (ArraySize(g_aSound_Zombie_Madness) == 0)
+	if (g_aSound_Zombie_Madness == Invalid_Array)
 	{
-		for (new i = 0; i < sizeof g_Sound_Zombie_Madness; i++)
+		g_aSound_Zombie_Madness = ArrayCreate(1, 1);
+	}
+	
+	new szReal_Name[32];
+	zp_class_zombie_get_real_name(classid, szReal_Name, charsmax(szReal_Name));
+	
+	new szClass_Config_Path[64];
+	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZP_ZOMBIE_CLASS_SETTINGS_PATH, szReal_Name);
+	
+	new Array:aMadness_Sounds = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	amx_load_setting_string_arr(szClass_Config_Path, g_szSound_Section_Name, "MADNESS", aMadness_Sounds);
+	new iArray_Size = ArraySize(aMadness_Sounds);
+	
+	if (iArray_Size > 0)
+	{
+		new szSound_Path[64];
+		
+		for (new i = 0; i < iArray_Size; i++)
 		{
-			ArrayPushString(g_aSound_Zombie_Madness, g_Sound_Zombie_Madness[i]);
+			ArrayGetString(aMadness_Sounds, i, szSound_Path, charsmax(szSound_Path));
+			precache_sound(szSound_Path);
 		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ZOMBIE MADNESS", g_aSound_Zombie_Madness);
 	}
-
-	// Precache sounds
-	for (new i = 0; i < sizeof g_Sound_Zombie_Madness; i++)
+	
+	else
 	{
-		precache_sound(g_Sound_Zombie_Madness[i]);
+		ArrayDestroy(aMadness_Sounds);
+		amx_save_setting_string(szClass_Config_Path, g_szSound_Section_Name, "MADNESS", g_szDefault_Sound_Zombie_Madness);
 	}
+	
+	ArrayPushCell(g_aSound_Zombie_Madness, aMadness_Sounds);
 }
 
 public plugin_natives()
@@ -196,7 +208,19 @@ public zp_fw_items_select_post(iPlayer, iItem_ID)
 	set_task(0.1, "Madness_Aura", iPlayer + TASK_AURA, _, _, "b");
 
 	// Madness sound
-	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Zombie_Madness[random(sizeof g_Sound_Zombie_Madness)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	new Array:aMadness_Sounds = ArrayGetCell(g_aSound_Zombie_Madness, zp_class_zombie_get_current(iPlayer));
+	
+	if (aMadness_Sounds != Invalid_Array)
+	{
+		new szSound_Path[64];
+		ArrayGetString(aMadness_Sounds, random(ArraySize(aMadness_Sounds)), szSound_Path, charsmax(szSound_Path));
+		emit_sound(iPlayer, CHAN_VOICE, szSound_Path, 1.0, ATTN_NORM, 0, PITCH_NORM);
+	}
+	
+	else
+	{
+		emit_sound(iPlayer, CHAN_VOICE, g_szDefault_Sound_Zombie_Madness, 1.0, ATTN_NORM, 0, PITCH_NORM);
+	}
 
 	// Set task to remove it
 	set_task(float(get_pcvar_num(g_pCvar_Zombie_Madness_Time)), "Remove_Zombie_Madness", iPlayer + TASK_MADNESS);
