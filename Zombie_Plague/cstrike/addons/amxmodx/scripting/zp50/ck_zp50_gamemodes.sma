@@ -679,12 +679,12 @@ public FM_ClientDisconnect_Post(iPlayer)
 	}
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

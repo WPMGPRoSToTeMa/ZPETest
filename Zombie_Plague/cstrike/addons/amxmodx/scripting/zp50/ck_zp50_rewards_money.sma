@@ -178,7 +178,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	}
 }
 
-public zp_fw_kill_pre_bit_sub(iVictim, iAttacker)
+public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 {
 	// Non-player kill or self kill
 	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
@@ -380,7 +380,7 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Ammo Save.
+*	[ZPE] Ammo Save.
 *	Author: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,18 +7,20 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "ammo save"
-#define VERSION "5.0.1.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
 #include <sqlx>
 #include <ck_zp50_ammopacks>
 
-new g_iGloabal_Indexes[33];
+new g_iGlobal_Indexes[33];
 new g_iLast_Index;
 
 new Handle:g_SQL_Make_Db_Cache;
@@ -33,10 +35,10 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Database_Host = register_cvar("zm_database_host", "");
-	g_pCvar_Database_Name = register_cvar("zm_database_name", "");
-	g_pCvar_Database_User = register_cvar("zm_database_user", "");
-	g_pCvar_Database_Password = register_cvar("zm_database_password", "");
+	g_pCvar_Database_Host = register_cvar("zpe_database_host", "");
+	g_pCvar_Database_Name = register_cvar("zpe_database_name", "");
+	g_pCvar_Database_User = register_cvar("zpe_database_user", "");
+	g_pCvar_Database_Password = register_cvar("zpe_database_password", "");
 }
 
 public plugin_cfg()
@@ -60,10 +62,10 @@ public plugin_cfg()
 
 	if (g_SQL_Connect != Empty_Handle)
 	{
-		new Handle:SQL_Query_Check_DB = SQL_PrepareQuery(g_SQL_Connect, "CREATE TABLE IF NOT EXISTS `zp_ammo` (Player_ID INT PRIMARY KEY auto_increment, Steam VARCHAR(32), Ammo INT");
+		new Handle:SQL_Query_Check_Db = SQL_PrepareQuery(g_SQL_Connect, "CREATE TABLE IF NOT EXISTS `zpe_ammo` (Player_ID INT PRIMARY KEY auto_increment, Steam VARCHAR(32), Ammo INT");
 
-		SQL_Execute(SQL_Query_Check_DB);
-		SQL_FreeHandle(SQL_Query_Check_DB);
+		SQL_Execute(SQL_Query_Check_Db);
+		SQL_FreeHandle(SQL_Query_Check_Db);
 	}
 
 	else
@@ -81,15 +83,12 @@ public plugin_cfg()
 public client_putinserver(iPlayer)
 {
 	new szAuth_ID[32];
-
 	get_user_authid(iPlayer, szAuth_ID, charsmax(szAuth_ID));
 
 	new szQuery[100];
-
-	formatex(szQuery, charsmax(szQuery), "SELECT * FROM `zp_ammo` WHERE `Steam` LIKE '%s'", szAuth_ID);
+	formatex(szQuery, charsmax(szQuery), "SELECT * FROM `zpe_ammo` WHERE `Steam` LIKE '%s'", szAuth_ID);
 
 	new iIndex[1];
-
 	iIndex[0] = iPlayer;
 
 	SQL_ThreadQuery(g_SQL_Make_Db_Cache, "SQL_Check_Player", szQuery, iIndex, 1);
@@ -101,7 +100,7 @@ public SQL_Check_Player(iFail_State, Handle:SQL_Query, szError[], iError, szData
 
 	if (SQL_MoreResults(SQL_Query))
 	{
-		g_iGloabal_Indexes[iPlayer] = SQL_ReadResult(SQL_Query, 0);
+		g_iGlobal_Indexes[iPlayer] = SQL_ReadResult(SQL_Query, 0);
 
 		zp_ammopacks_set(iPlayer, SQL_ReadResult(SQL_Query, 2));
 	}
@@ -115,14 +114,14 @@ public SQL_Check_Player(iFail_State, Handle:SQL_Query, szError[], iError, szData
 		new Handle:SQL_Query_Add_Data = SQL_PrepareQuery
 		(
 			g_SQL_Connect,
-			"INSERT INTO `zp_ammo` VALUES (NULL, '%s', 0)",
+			"INSERT INTO `zpe_ammo` VALUES (NULL, '%s', 0)",
 			szAuth_ID
 		);
 
 		SQL_Execute(SQL_Query_Add_Data);
 		SQL_FreeHandle(SQL_Query_Add_Data);
 
-		g_iGloabal_Indexes[iPlayer] = ++g_iLast_Index;
+		g_iGlobal_Indexes[iPlayer] = ++g_iLast_Index;
 	}
 }
 
@@ -131,15 +130,15 @@ public client_disconnected(iPlayer)
 	new Handle:SQL_Query_Update_Data = SQL_PrepareQuery
 	(
 		g_SQL_Connect,
-		"UPDATE `zp_ammo` SET `Ammo` = %d WHERE `Player_ID` = %d",
+		"UPDATE `zpe_ammo` SET `Ammo` = %d WHERE `Player_ID` = %d",
 		zp_ammopacks_get(iPlayer),
-		g_iGloabal_Indexes[iPlayer]
+		g_iGlobal_Indexes[iPlayer]
 	);
 
 	SQL_Execute(SQL_Query_Update_Data);
 	SQL_FreeHandle(SQL_Query_Update_Data);
 
-	g_iGloabal_Indexes[iPlayer] = 0;
+	g_iGlobal_Indexes[iPlayer] = 0;
 }
 
 public plugin_end()
@@ -150,7 +149,7 @@ public plugin_end()
 
 stock SQL_Get_Last_Index()
 {
-	new Handle:SQL_Query_Get_Last_Index = SQL_PrepareQuery(g_SQL_Connect, "SELECT `Player_ID` FROM `zp_ammo` ORDER BY `Player_ID` DESC;");
+	new Handle:SQL_Query_Get_Last_Index = SQL_PrepareQuery(g_SQL_Connect, "SELECT `Player_ID` FROM `zpe_ammo` ORDER BY `Player_ID` DESC;");
 
 	SQL_Execute(SQL_Query_Get_Last_Index);
 

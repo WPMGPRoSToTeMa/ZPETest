@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Buy Zones.
+*	[ZPE] Buy Zones.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,19 +7,16 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "buy zones"
-#define VERSION "5.2.6.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
-
-new const g_Sound_Buy_Ammo[][] =
-{
-	"items/9mmclip1.wav"
-};
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #include <amxmodx>
 #include <cs_util>
@@ -33,6 +30,11 @@ new const g_Sound_Buy_Ammo[][] =
 #include <ck_zp50_ammopacks>
 
 #define SOUND_MAX_LENGTH 64
+
+new const g_Sound_Buy_Ammo[][] =
+{
+	"items/9mmclip1.wav"
+};
 
 // Max BP ammo for weapons
 new const g_Max_BP_Ammo[] =
@@ -164,21 +166,21 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Buyzone_Time = register_cvar("zm_buy_zone_time", "15.0");
-	g_pCvar_Buyzone_Humans = register_cvar("zm_buy_zone_humans", "1");
-	g_pCvar_Buyzone_Zombies = register_cvar("zm_buy_zone_zombies", "0");
+	g_pCvar_Buyzone_Time = register_cvar("zpe_buy_zone_time", "15.0");
+	g_pCvar_Buyzone_Humans = register_cvar("zpe_buy_zone_humans", "1");
+	g_pCvar_Buyzone_Zombies = register_cvar("zpe_buy_zone_zombies", "0");
 
-	g_pCvar_Buy_Ammo_Human = register_cvar("zm_buy_ammo_human", "1");
-	g_pCvar_Buy_Ammo_Cost_Ammopacks = register_cvar("zm_buy_ammo_cost_ammopacks", "1");
-	g_pCvar_Buy_Ammo_Cost_Money = register_cvar("zm_buy_ammo_cost_money", "100");
+	g_pCvar_Buy_Ammo_Human = register_cvar("zpe_buy_ammo_human", "1");
+	g_pCvar_Buy_Ammo_Cost_Ammopacks = register_cvar("zpe_buy_ammo_cost_ammopacks", "1");
+	g_pCvar_Buy_Ammo_Cost_Money = register_cvar("zpe_buy_ammo_cost_money", "100");
 
 	unregister_forward(FM_Spawn, g_fwSpawn);
 
 	RegisterHookChain(RG_CBasePlayer_PreThink, "RG_CBasePlayer_PreThink_");
 
 	// Client commands
-	register_clcmd("buyammo1", "Client_Command_Buyammo");
-	register_clcmd("buyammo2", "Client_Command_Buyammo");
+	register_clcmd("buyammo1", "Client_Command_Buy_Ammo");
+	register_clcmd("buyammo2", "Client_Command_Buy_Ammo");
 }
 
 public plugin_precache()
@@ -187,18 +189,7 @@ public plugin_precache()
 	g_aSound_Buy_Ammo = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "BUY AMMO", g_aSound_Buy_Ammo);
-
-	if (ArraySize(g_aSound_Buy_Ammo) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Buy_Ammo; i++)
-		{
-			ArrayPushString(g_aSound_Buy_Ammo, g_Sound_Buy_Ammo[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "BUY AMMO", g_aSound_Buy_Ammo);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "BUY AMMO", g_aSound_Buy_Ammo);
 
 	// Custom buyzones for all players
 	g_Buyzone_Entity = rg_create_entity("func_buyzone");
@@ -255,7 +246,7 @@ public native_filter(const szName[], iIndex, iTrap)
 
 public plugin_cfg()
 {
-	// Prevents CS buytime messing up ZP buytime cvar
+	// Prevents CS buytime messing up ZPE buytime cvar
 	server_cmd("mp_buytime 99");
 }
 
@@ -336,7 +327,7 @@ public RG_CBasePlayer_PreThink_(iPlayer)
 }
 
 // Buy BP Ammo
-public Client_Command_Buyammo(iPlayer)
+public Client_Command_Buy_Ammo(iPlayer)
 {
 	// Setting disabled, player dead or zombie
 	if (!get_pcvar_num(g_pCvar_Buy_Ammo_Human) || BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer))
@@ -355,7 +346,7 @@ public Client_Command_Buyammo(iPlayer)
 	{
 		if (zp_ammopacks_get(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks))
 		{
-			zp_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
 
 			return;
 		}
@@ -365,7 +356,7 @@ public Client_Command_Buyammo(iPlayer)
 	{
 		if (CS_GET_USER_MONEY(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money))
 		{
-			zp_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_MONEY", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_MONEY", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
 
 			return;
 		}
@@ -415,7 +406,7 @@ public Client_Command_Buyammo(iPlayer)
 	// Play clip purchase sound, and notify player
 	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[random_num(0, sizeof g_Sound_Buy_Ammo - 1)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
-	zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT");
+	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT");
 }
 
 public client_disconnected(iPlayer)
@@ -423,12 +414,12 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

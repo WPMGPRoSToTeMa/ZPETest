@@ -791,7 +791,7 @@ public client_disconnected(iPlayer)
 
 #if GLOBAL_MODES == 2
 
-	public zp_fw_kill_pre_bit_sub(iPlayer)
+	public zpe_fw_kill_pre_bit_sub(iPlayer)
 	{
 		Remove_Tasks(iPlayer);
 	}

@@ -232,7 +232,7 @@ public Show_Menu_Humanclass(iPlayer)
 	// No classes to display?
 	if (menu_items(iMenu_ID) <= 0)
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "NO_CLASSES");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "NO_CLASSES");
 
 		menu_destroy(iMenu_ID);
 
@@ -309,9 +309,9 @@ public Menu_Humanclass(iPlayer, iMenu_ID, iItem)
 	}
 
 	// Show selected human class
-	zp_client_print_color(iPlayer, print_team_default, "%L: %s", iPlayer, "HUMAN_SELECT", szName);
+	zpe_client_print_color(iPlayer, print_team_default, "%L: %s", iPlayer, "HUMAN_SELECT", szName);
 
-	zp_client_print_color
+	zpe_client_print_color
 	(
 		iPlayer, print_team_default, "%L: %d %L: %d %L: %d %L: %.2fx",
 		iPlayer, "ZOMBIE_ATTRIB1", ArrayGetCell(g_aHuman_Class_Health, g_Human_Class_Next[iPlayer]),
@@ -800,12 +800,12 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }
