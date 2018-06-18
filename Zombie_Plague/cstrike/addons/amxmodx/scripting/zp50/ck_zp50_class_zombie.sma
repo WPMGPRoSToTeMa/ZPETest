@@ -211,7 +211,7 @@ public Show_Menu_Zombieclass(iPlayer)
 	// No classes to display?
 	if (menu_items(iMenu_ID) <= 0)
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "NO_CLASSES");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "NO_CLASSES");
 
 		menu_destroy(iMenu_ID);
 
@@ -289,9 +289,9 @@ public Menu_Zombieclass(iPlayer, iMenu_ID, iItem)
 	}
 
 	// Show selected zombie class
-	zp_client_print_color(iPlayer, print_team_default, "%L: %s", iPlayer, "ZOMBIE_SELECT", szName);
+	zpe_client_print_color(iPlayer, print_team_default, "%L: %s", iPlayer, "ZOMBIE_SELECT", szName);
 
-	zp_client_print_color
+	zpe_client_print_color
 	(
 		iPlayer, print_team_default, "%L: %d %L: %d %L: %.2fx %L %.2fx",
 		iPlayer, "ZOMBIE_ATTRIB1", ArrayGetCell(g_aZombie_Class_Health, g_Zombie_Class_Next[iPlayer]),

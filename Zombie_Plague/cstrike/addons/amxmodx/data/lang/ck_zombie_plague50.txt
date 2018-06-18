@@ -96,7 +96,7 @@ NOT_ENOUGH_AMMO = You dont have enough ammo packs.
 AMMO_BOUGHT = You purchased extra ammo for your guns.
 
 ZOMBIE_SELECT = Your zombie class after the next infection will be
-BUY_ENABLED = Your buy menu has been re-enabled.
+BUY_ENABLED_COLOR = Your buy menu has been re-enabled.
 
 AMMO_PACKS1 = Ammo packs:
 SPECTATING = Spectating:
@@ -114,7 +114,7 @@ CMD_START_GAME_MODE_COLOR = start Game Mode
 CMD_START_GAME_MODE_LOG = start Game Mode
 
 CANT_BUY_WEAPONS_DEAD = You can't buy weapons when dead.
-BUY_MENU_TIME_EXPIRED = Buy menu time has expired.
+BUY_MENU_TIME_EXPIRED_COLOR = Buy menu time has expired.
 CANT_BUY_ITEMS_DEAD = You can't buy extra items when dead.
 CMD_NOT_HCLASSES = Human Classes are disabled.
 

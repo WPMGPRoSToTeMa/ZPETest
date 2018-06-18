@@ -30,26 +30,6 @@
 #define PLAYER_MODELS_MAX_LENGTH 32
 #define MODELS_MAX_LENGTH 64
 
-new const g_Admin_Models_Human_Player[][] =
-{
-	"vip"
-};
-
-new const g_Admin_Models_Human_Knife[][] =
-{
-	"models/v_knife.mdl"
-};
-
-new const g_Admin_Models_Zombie_Player[][] =
-{
-	"zombie_source"
-};
-
-new const g_Admin_Models_Zombie_Knife[][] =
-{
-	"models/zombie_plague/v_knife_zombie.mdl"
-};
-
 #define ACCESS_FLAG_MAX_LENGTH 2
 
 // Access flags
@@ -94,11 +74,11 @@ public plugin_precache()
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Player Models", "ADMIN ZOMBIE", g_aAdmin_Models_Zombie_Player);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Weapon Models", "V_KNIFE ADMIN ZOMBIE", g_aAdmin_Models_Zombie_Knife);
 
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS HUMAN PLAYER", g_Access_Admin_Models_Human_Player, charsmax(g_Access_Admin_Models_Human_Player))
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS HUMAN KNIFE", g_Access_Admin_Models_Human_Knife, charsmax(g_Access_Admin_Models_Human_Knife))
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS HUMAN PLAYER", g_Access_Admin_Models_Human_Player, charsmax(g_Access_Admin_Models_Human_Player));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS HUMAN KNIFE", g_Access_Admin_Models_Human_Knife, charsmax(g_Access_Admin_Models_Human_Knife));
 
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS ZOMBIE PLAYER", g_Access_Admin_Models_Zombie_Player, charsmax(g_Access_Admin_Models_Zombie_Player))
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS ZOMBIE KNIFE", g_Access_Admin_Models_Zombie_Knife, charsmax(g_Access_Admin_Models_Zombie_Knife))
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS ZOMBIE PLAYER", g_Access_Admin_Models_Zombie_Player, charsmax(g_Access_Admin_Models_Zombie_Player));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS ZOMBIE KNIFE", g_Access_Admin_Models_Zombie_Knife, charsmax(g_Access_Admin_Models_Zombie_Knife));
 
 	new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
 	new szModel[MODELS_MAX_LENGTH];
@@ -135,49 +115,6 @@ public plugin_precache()
 		ArrayGetString(g_aAdmin_Models_Zombie_Knife, i, szModel, charsmax(szModel));
 
 		precache_model(szModel);
-	}
-}
-
-public zp_fw_core_infect_post(iPlayer, iAttacker)
-{
-	// Skip for Nemesis
-	if (zp_class_nemesis_get(iPlayer))
-	{
-		return;
-	}
-
-	// Skip for Assassin
-	else if (zp_class_assassin_get(iPlayer))
-	{
-		return;
-	}
-
-	new iUser_Flags = get_user_flags(iPlayer);
-
-	// Apply admin zombie player model?
-	if (get_pcvar_num(g_pCvar_Admin_Models_Zombie_Player))
-	{
-		if (iUser_Flags & read_flags(g_Access_Admin_Models_Zombie_Player))
-		{
-			new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
-
-			ArrayGetString(g_aAdmin_Models_Zombie_Player, random_num(0, ArraySize(g_aAdmin_Models_Zombie_Player) - 1), szPlayer_Model, charsmax(szPlayer_Model));
-
-			rg_set_user_model(iPlayer, szPlayer_Model);
-		}
-	}
-
-	// Apply admin zombie claw model?
-	if (get_pcvar_num(g_pCvar_Admin_Models_Zombie_Knife))
-	{
-		if (iUser_Flags & read_flags(g_Access_Admin_Models_Zombie_Knife))
-		{
-			new szModel[MODELS_MAX_LENGTH];
-
-			ArrayGetString(g_aAdmin_Models_Zombie_Knife, random_num(0, ArraySize(g_aAdmin_Models_Zombie_Knife) - 1), szModel, charsmax(szModel));
-
-			cs_set_player_view_model(iPlayer, CSW_KNIFE, szModel);
-		}
 	}
 }
 
@@ -218,6 +155,49 @@ public zp_fw_core_cure_post(iPlayer, iAttacker)
 			new szModel[MODELS_MAX_LENGTH];
 
 			ArrayGetString(g_aAdmin_Models_Human_Knife, random_num(0, ArraySize(g_aAdmin_Models_Human_Knife) - 1), szModel, charsmax(szModel));
+
+			cs_set_player_view_model(iPlayer, CSW_KNIFE, szModel);
+		}
+	}
+}
+
+public zp_fw_core_infect_post(iPlayer, iAttacker)
+{
+	// Skip for Nemesis
+	if (zp_class_nemesis_get(iPlayer))
+	{
+		return;
+	}
+
+	// Skip for Assassin
+	else if (zp_class_assassin_get(iPlayer))
+	{
+		return;
+	}
+
+	new iUser_Flags = get_user_flags(iPlayer);
+
+	// Apply admin zombie player model?
+	if (get_pcvar_num(g_pCvar_Admin_Models_Zombie_Player))
+	{
+		if (iUser_Flags & read_flags(g_Access_Admin_Models_Zombie_Player))
+		{
+			new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
+
+			ArrayGetString(g_aAdmin_Models_Zombie_Player, random_num(0, ArraySize(g_aAdmin_Models_Zombie_Player) - 1), szPlayer_Model, charsmax(szPlayer_Model));
+
+			rg_set_user_model(iPlayer, szPlayer_Model);
+		}
+	}
+
+	// Apply admin zombie claw model?
+	if (get_pcvar_num(g_pCvar_Admin_Models_Zombie_Knife))
+	{
+		if (iUser_Flags & read_flags(g_Access_Admin_Models_Zombie_Knife))
+		{
+			new szModel[MODELS_MAX_LENGTH];
+
+			ArrayGetString(g_aAdmin_Models_Zombie_Knife, random_num(0, ArraySize(g_aAdmin_Models_Zombie_Knife) - 1), szModel, charsmax(szModel));
 
 			cs_set_player_view_model(iPlayer, CSW_KNIFE, szModel);
 		}

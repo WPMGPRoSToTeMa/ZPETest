@@ -316,12 +316,12 @@ public Madness_Aura(iTask_ID)
 	message_end();
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	// Remove zombie madness from a previous round
 	remove_task(iPlayer + TASK_MADNESS);

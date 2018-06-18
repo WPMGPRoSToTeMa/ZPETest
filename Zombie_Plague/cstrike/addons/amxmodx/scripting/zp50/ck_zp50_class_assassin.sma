@@ -626,7 +626,7 @@ public FM_ClientDisconnect_Post(iPlayer)
 	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Assassin);
 }
 
-public zp_fw_kill_pre_bit_sub(iVictim)
+public zpe_fw_kill_pre_bit_sub(iVictim)
 {
 	if (BIT_VALID(g_iBit_Assassin, iVictim))
 	{
@@ -646,7 +646,7 @@ public zp_fw_kill_pre_bit_sub(iVictim)
 	BIT_SUB(g_iBit_Alive, iVictim);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

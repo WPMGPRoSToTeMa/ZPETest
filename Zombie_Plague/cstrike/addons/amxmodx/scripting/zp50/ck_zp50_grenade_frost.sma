@@ -421,7 +421,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker)
 	return HC_CONTINUE;
 }
 
-public zp_fw_kill_pre_bit_sub(iVictim)
+public zpe_fw_kill_pre_bit_sub(iVictim)
 {
 	// Frozen player being killed (usually caused by a 3rd party plugin, e.g. lasermines)
 	if (BIT_VALID(g_Is_Frozen, iVictim))
@@ -548,7 +548,7 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

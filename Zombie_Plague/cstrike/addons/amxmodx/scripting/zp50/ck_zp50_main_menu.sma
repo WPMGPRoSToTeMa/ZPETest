@@ -90,10 +90,10 @@ public native_filter(const szName[], iIndex, iTrap)
 
 public plugin_cfg()
 {
-	g_pCvar_Buy_Custom_Primary = get_cvar_pointer("zm_buy_custom_primary");
-	g_pCvar_Buy_Custom_Secondary = get_cvar_pointer("zm_buy_custom_secondary");
-	g_pCvar_Buy_Custom_Grenades = get_cvar_pointer("zm_buy_custom_grenades");
-	g_pCvar_Random_Spawning = get_cvar_pointer("zm_random_spawning_csdm");
+	g_pCvar_Buy_Custom_Primary = get_cvar_pointer("zpe_buy_custom_primary");
+	g_pCvar_Buy_Custom_Secondary = get_cvar_pointer("zpe_buy_custom_secondary");
+	g_pCvar_Buy_Custom_Grenades = get_cvar_pointer("zpe_buy_custom_grenades");
+	g_pCvar_Random_Spawning = get_cvar_pointer("zpe_random_spawning_csdm");
 }
 
 public Client_Command_Chooseteam(iPlayer)
@@ -223,13 +223,13 @@ public Menu_Main(iPlayer, iKey)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CANT_BUY_WEAPONS_DEAD");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CANT_BUY_WEAPONS_DEAD");
 				}
 			}
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CUSTOM_BUY_DISABLED");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CUSTOM_BUY_DISABLED");
 			}
 		}
 
@@ -246,13 +246,13 @@ public Menu_Main(iPlayer, iKey)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CANT_BUY_ITEMS_DEAD");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CANT_BUY_ITEMS_DEAD");
 				}
 			}
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_EXTRAS");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_EXTRAS");
 			}
 		}
 
@@ -265,7 +265,7 @@ public Menu_Main(iPlayer, iKey)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ZCLASSES");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_ZCLASSES");
 			}
 		}
 
@@ -278,7 +278,7 @@ public Menu_Main(iPlayer, iKey)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_HCLASSES");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_HCLASSES");
 			}
 		}
 
@@ -303,13 +303,13 @@ public Menu_Main(iPlayer, iKey)
 
 				else
 				{
-					zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_STUCK");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT_STUCK");
 				}
 			}
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CMD_NOT");
 			}
 		}
 
@@ -329,7 +329,7 @@ public Menu_Main(iPlayer, iKey)
 
 			else
 			{
-				zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "NO_ADMIN_MENU");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "NO_ADMIN_MENU");
 			}
 		}
 	}
@@ -356,12 +356,12 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

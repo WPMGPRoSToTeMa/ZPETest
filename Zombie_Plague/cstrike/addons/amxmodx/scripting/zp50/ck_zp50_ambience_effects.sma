@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Ambience Effects.
+*	[ZPE] Ambience Effects.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,14 +7,16 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "ambience effects"
-#define VERSION "5.0.4.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #include <amxmodx>
 #include <cs_util>
@@ -30,7 +32,7 @@ new const g_Ambience_Entity[][] =
 	"env_snow"
 };
 
-new g_Amience_Rain = 0;
+new g_Ambience_Rain = 0;
 new g_Ambience_Snow = 0;
 new g_Ambience_Fog = 1;
 new g_Ambience_Fog_Density[FOG_VALUE_MAX_LENGTH] = "0.0018";
@@ -47,30 +49,22 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Load from external file, save if not found
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weather Effects", "FOG DENSITY", g_Ambience_Fog_Density, charsmax(g_Ambience_Fog_Density)))
+	// Load from external file
+	amx_load_setting_int(ZPE_SETTINGS_FILE, "Weather Effects", "RAIN", g_Ambience_Rain);
+	amx_load_setting_int(ZPE_SETTINGS_FILE, "Weather Effects", "SNOW", g_Ambience_Snow);
+	amx_load_setting_int(ZPE_SETTINGS_FILE, "Weather Effects", "FOG", g_Ambience_Fog);
+
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weather Effects", "FOG DENSITY", g_Ambience_Fog_Density, charsmax(g_Ambience_Fog_Density));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weather Effects", "FOG COLOR", g_Ambience_Fog_Color, charsmax(g_Ambience_Fog_Color));
+
+	if (g_Ambience_Rain)
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weather Effects", "FOG DENSITY", g_Ambience_Fog_Density);
+		rg_create_entity("env_rain");
 	}
 
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weather Effects", "FOG COLOR", g_Ambience_Fog_Color, charsmax(g_Ambience_Fog_Color)))
+	if (g_Ambience_Snow)
 	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weather Effects", "FOG COLOR", g_Ambience_Fog_Color);
-	}
-
-	if (!amx_load_setting_int(ZP_SETTINGS_FILE, "Weather Effects", "FOG", g_Ambience_Fog))
-	{
-		amx_save_setting_int(ZP_SETTINGS_FILE, "Weather Effects", "FOG", g_Ambience_Fog);
-	}
-
-	if (!amx_load_setting_int(ZP_SETTINGS_FILE, "Weather Effects", "SNOW", g_Ambience_Snow))
-	{
-		amx_save_setting_int(ZP_SETTINGS_FILE, "Weather Effects", "SNOW", g_Ambience_Snow);
-	}
-
-	if (!amx_load_setting_int(ZP_SETTINGS_FILE, "Weather Effects", "RAIN", g_Amience_Rain))
-	{
-		amx_save_setting_int(ZP_SETTINGS_FILE, "Weather Effects", "RAIN", g_Amience_Rain);
+		rg_create_entity("env_snow");
 	}
 
 	if (g_Ambience_Fog)
@@ -82,16 +76,6 @@ public plugin_precache()
 			Fm_Set_Kvd(iEntity, "density", g_Ambience_Fog_Density, "env_fog");
 			Fm_Set_Kvd(iEntity, "rendercolor", g_Ambience_Fog_Color, "env_fog");
 		}
-	}
-
-	if (g_Amience_Rain)
-	{
-		rg_create_entity("env_rain");
-	}
-
-	if (g_Ambience_Snow)
-	{
-		rg_create_entity("env_snow");
 	}
 
 	g_fwSpawn = register_forward(FM_Spawn, "Forward_Spawn");

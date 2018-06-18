@@ -213,7 +213,7 @@ public FM_Spawn_(iEntity)
 	return FMRES_IGNORED;
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	// Remove respawn task
 	remove_task(iPlayer + TASK_RESPAWN);
@@ -463,7 +463,7 @@ public Message_Health(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	set_msg_arg_int(1, get_msg_argtype(1), 255);
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
