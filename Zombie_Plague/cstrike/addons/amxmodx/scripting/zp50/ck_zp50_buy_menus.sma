@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Buy Menus.
+*	[ZPE] Buy Menus.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,20 +7,21 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "buy menus"
-#define VERSION "5.1.5.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #include <amxmodx>
 #include <amxmisc>
 #include <cs_util>
 #include <amx_settings_api>
-#include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
@@ -135,50 +136,14 @@ new const g_Max_BP_Ammo[] =
 	100
 };
 
-// Ammo Type Names for weapons
-new const g_Ammo_Type[][] =
-{
-	"",
-	"357sig",
-	"",
-	"762nato",
-	"",
-	"buckshot",
-	"",
-	"45acp",
-	"556nato",
-	"",
-	"9mm",
-	"57mm",
-	"45acp",
-	"556nato",
-	"556nato",
-	"556nato",
-	"45acp",
-	"9mm",
-	"338magnum",
-	"9mm",
-	"556natobox",
-	"buckshot",
-	"556nato",
-	"9mm",
-	"762nato",
-	"",
-	"50ae",
-	"556nato",
-	"762nato",
-	"",
-	"57mm"
-};
-
 // For weapon buy menu handlers
-#define WPN_STARTID(%0) g_Menu_Data[%0][0]
-#define WPN_MAXIDS (sizeof g_Primary_Items)
-#define WPN_SELECTION(%1,%2) (g_Menu_Data[%1][1] + %2)
-#define WPN_AUTO_ON(%2) g_Menu_Data[%2][2]
-#define WPN_AUTO_PRIMARY(%3) g_Menu_Data[%3][3]
-#define WPN_AUTO_SECONDARY(%4) g_Menu_Data[%4][4]
-#define WPN_AUTO_GRENADE(%5) g_Menu_Data[%5][5]
+#define WEAPON_START_ID(%0) g_Menu_Data[%0][0]
+#define WEAPON_MAX_IDS (sizeof g_Primary_Items)
+#define WEAPON_SELECTION(%1,%2) (g_Menu_Data[%1][1] + %2)
+#define WEAPON_AUTO_ON(%2) g_Menu_Data[%2][2]
+#define WEAPON_AUTO_PRIMARY(%3) g_Menu_Data[%3][3]
+#define WEAPON_AUTO_SECONDARY(%4) g_Menu_Data[%4][4]
+#define WEAPON_AUTO_GRENADE(%5) g_Menu_Data[%5][5]
 
 #define WEAPON_ITEM_MAX_LENGTH 32
 
@@ -225,19 +190,19 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Random_Primary = register_cvar("zm_random_primary", "0");
-	g_pCvar_Random_Secondary = register_cvar("zm_random_secondary", "0");
-	g_pCvar_Random_Grenades = register_cvar("zm_random_grenades", "0");
+	g_pCvar_Random_Primary = register_cvar("zpe_random_primary", "0");
+	g_pCvar_Random_Secondary = register_cvar("zpe_random_secondary", "0");
+	g_pCvar_Random_Grenades = register_cvar("zpe_random_grenades", "0");
 
-	g_pCvar_Buy_Custom_Time_Primary = register_cvar("zm_buy_custom_time_primary", "15.0");
-	g_pCvar_Buy_Custom_Time_Secondary = register_cvar("zm_buy_custom_time_secondary", "15.0");
-	g_pCvar_Buy_Custom_Time_Grenades = register_cvar("zm_buy_custom_time_grenades", "15.0");
+	g_pCvar_Buy_Custom_Primary = register_cvar("zpe_buy_custom_primary", "1");
+	g_pCvar_Buy_Custom_Secondary = register_cvar("zpe_buy_custom_secondary", "1");
+	g_pCvar_Buy_Custom_Grenades = register_cvar("zpe_buy_custom_grenades", "0");
 
-	g_pCvar_Buy_Custom_Primary = register_cvar("zm_buy_custom_primary", "1");
-	g_pCvar_Buy_Custom_Secondary = register_cvar("zm_buy_custom_secondary", "1");
-	g_pCvar_Buy_Custom_Grenades = register_cvar("zm_buy_custom_grenades", "0");
+	g_pCvar_Give_All_Grenades = register_cvar("zpe_give_all_grenades", "1");
 
-	g_pCvar_Give_All_Grenades = register_cvar("zm_give_all_grenades", "1");
+	g_pCvar_Buy_Custom_Time_Primary = register_cvar("zpe_buy_custom_time_primary", "15.0");
+	g_pCvar_Buy_Custom_Time_Secondary = register_cvar("zpe_buy_custom_time_secondary", "15.0");
+	g_pCvar_Buy_Custom_Time_Grenades = register_cvar("zpe_buy_custom_time_grenades", "15.0");
 
 	register_clcmd("say /buy", "Client_Command_Buy");
 	register_clcmd("say buy", "Client_Command_Buy");
@@ -258,43 +223,9 @@ public plugin_precache()
 	g_aGrenades_Items = ArrayCreate(WEAPON_ITEM_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Buy Menu Weapons", "PRIMARY", g_aPrimary_Items);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Buy Menu Weapons", "SECONDARY", g_aSecondary_Items);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Buy Menu Weapons", "GRENADES", g_aGrenades_Items);
-
-	// If we couldn't load from file, use and save default ones
-	if (ArraySize(g_aPrimary_Items) == 0)
-	{
-		for (new i = 0; i < sizeof g_Primary_Items; i++)
-		{
-			ArrayPushString(g_aPrimary_Items, g_Primary_Items[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Buy Menu Weapons", "PRIMARY", g_aPrimary_Items);
-	}
-
-	if (ArraySize(g_aSecondary_Items) == 0)
-	{
-		for (new i = 0; i < sizeof g_Secondary_Items; i++)
-		{
-			ArrayPushString(g_aSecondary_Items, g_Secondary_Items[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Buy Menu Weapons", "SECONDARY", g_aSecondary_Items);
-	}
-
-	if (ArraySize(g_aGrenades_Items) == 0)
-	{
-		for (new i = 0; i < sizeof g_Grenades_Items; i++)
-		{
-			ArrayPushString(g_aGrenades_Items, g_Grenades_Items[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Buy Menu Weapons", "GRENADES", g_aGrenades_Items);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Buy Menu Weapons", "PRIMARY", g_aPrimary_Items);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Buy Menu Weapons", "SECONDARY", g_aSecondary_Items);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Buy Menu Weapons", "GRENADES", g_aGrenades_Items);
 }
 
 public plugin_natives()
@@ -322,11 +253,11 @@ public native_buy_menus_show(iPlugin_ID, iNum_Params)
 
 public Client_Command_Buy(iPlayer)
 {
-	if (WPN_AUTO_ON(iPlayer))
+	if (WEAPON_AUTO_ON(iPlayer))
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_ENABLED");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_ENABLED_COLOR");
 
-		WPN_AUTO_ON(iPlayer) = 0;
+		WEAPON_AUTO_ON(iPlayer) = 0;
 	}
 
 	// Player dead or zombie
@@ -336,6 +267,14 @@ public Client_Command_Buy(iPlayer)
 	}
 
 	Show_Available_Buy_Menus(iPlayer);
+}
+
+public zp_fw_core_cure_post(iPlayer)
+{
+	// Buyzone time starts when player is set to human
+	g_fBuy_Time_Start[iPlayer] = get_gametime();
+
+	Human_Weapons(iPlayer);
 }
 
 public Human_Weapons(iPlayer)
@@ -377,9 +316,9 @@ public Human_Weapons(iPlayer)
 	{
 		BIT_ADD(g_Can_Buy_Primary, iPlayer);
 
-		if (WPN_AUTO_ON(iPlayer))
+		if (WEAPON_AUTO_ON(iPlayer))
 		{
-			Buy_Primary_Weapon(iPlayer, WPN_AUTO_PRIMARY(iPlayer));
+			Buy_Primary_Weapon(iPlayer, WEAPON_AUTO_PRIMARY(iPlayer));
 		}
 	}
 
@@ -387,9 +326,9 @@ public Human_Weapons(iPlayer)
 	{
 		BIT_ADD(g_Can_Buy_Secondary, iPlayer);
 
-		if (WPN_AUTO_ON(iPlayer))
+		if (WEAPON_AUTO_ON(iPlayer))
 		{
-			Buy_Secondary_Weapon(iPlayer, WPN_AUTO_SECONDARY(iPlayer));
+			Buy_Secondary_Weapon(iPlayer, WEAPON_AUTO_SECONDARY(iPlayer));
 		}
 	}
 
@@ -397,9 +336,9 @@ public Human_Weapons(iPlayer)
 	{
 		BIT_ADD(g_Can_Buy_Grenades, iPlayer);
 
-		if (WPN_AUTO_ON(iPlayer))
+		if (WEAPON_AUTO_ON(iPlayer))
 		{
-			Buy_Grenades(iPlayer, WPN_AUTO_GRENADE(iPlayer));
+			Buy_Grenades(iPlayer, WEAPON_AUTO_GRENADE(iPlayer));
 		}
 	}
 
@@ -442,7 +381,7 @@ Show_Menu_Buy_Primary(iPlayer)
 
 	if (iMenu_Time <= 0)
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_MENU_TIME_EXPIRED");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_MENU_TIME_EXPIRED_COLOR");
 
 		return;
 	}
@@ -450,19 +389,19 @@ Show_Menu_Buy_Primary(iPlayer)
 	static szMenu[512];
 
 	new iLen;
-	new iMaxloops = min(WPN_STARTID(iPlayer) + 7, WPN_MAXIDS);
+	new iMaxloops = min(WEAPON_START_ID(iPlayer) + 7, WEAPON_MAX_IDS);
 
 	// Title
-	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\y %L \r [%d - %d] ^n ^n", iPlayer, "MENU_BUY1_TITLE", WPN_STARTID(iPlayer) + 1, min(WPN_STARTID(iPlayer) + 7, WPN_MAXIDS));
+	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\y %L \r [%d - %d] ^n ^n", iPlayer, "MENU_BUY1_TITLE", WEAPON_START_ID(iPlayer) + 1, min(WEAPON_START_ID(iPlayer) + 7, WEAPON_MAX_IDS));
 
 	// 1-7. Weapon List
-	for (new i = WPN_STARTID(iPlayer); i < iMaxloops; i++)
+	for (new i = WEAPON_START_ID(iPlayer); i < iMaxloops; i++)
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r %d. \w %s ^n", i - WPN_STARTID(iPlayer) + 1, g_Weapon_Names[rg_get_weapon_info(g_Primary_Items[i], WI_ID)]);
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r %d. \w %s ^n", i - WEAPON_START_ID(iPlayer) + 1, g_Weapon_Names[rg_get_weapon_info(g_Primary_Items[i], WI_ID)]);
 	}
 
 	// 8. Auto Select
-	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n \r 8. \w %L \y [%L]", iPlayer, "MENU_AUTOSELECT", iPlayer, (WPN_AUTO_ON(iPlayer)) ? "MOTD_ENABLED" : "MOTD_DISABLED");
+	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n \r 8. \w %L \y [%L]", iPlayer, "MENU_AUTOSELECT", iPlayer, (WEAPON_AUTO_ON(iPlayer)) ? "MOTD_ENABLED" : "MOTD_DISABLED");
 
 	// 9. Next/Back - 0. Exit
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n ^n \r 9. \w %L / %L ^n ^n \r 0. \w %L", iPlayer, "MENU_NEXT", iPlayer, "MENU_BACK", iPlayer, "MENU_EXIT");
@@ -477,7 +416,7 @@ Show_Menu_Buy_Secondary(iPlayer)
 
 	if (iMenu_Time <= 0)
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_MENU_TIME_EXPIRED");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_MENU_TIME_EXPIRED_COLOR");
 
 		return;
 	}
@@ -497,7 +436,7 @@ Show_Menu_Buy_Secondary(iPlayer)
 	}
 
 	// 8. Auto Select
-	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n ^n \r 8. \w %L \y [%L]", iPlayer, "MENU_AUTOSELECT", iPlayer, (WPN_AUTO_ON(iPlayer)) ? "MOTD_ENABLED" : "MOTD_DISABLED");
+	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n ^n \r 8. \w %L \y [%L]", iPlayer, "MENU_AUTOSELECT", iPlayer, (WEAPON_AUTO_ON(iPlayer)) ? "MOTD_ENABLED" : "MOTD_DISABLED");
 
 	// 0. Exit
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n ^n \r 0. \w %L", iPlayer, "MENU_EXIT");
@@ -512,7 +451,7 @@ Show_Menu_Buy_Grenades(iPlayer)
 
 	if (iMenu_Time <= 0)
 	{
-		zp_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_MENU_TIME_EXPIRED");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "BUY_MENU_TIME_EXPIRED_COLOR");
 
 		return;
 	}
@@ -532,7 +471,7 @@ Show_Menu_Buy_Grenades(iPlayer)
 	}
 
 	// 8. Auto Select
-	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n ^n \r 8. \w %L \y [%L]", iPlayer, "MENU_AUTOSELECT", iPlayer, (WPN_AUTO_ON(iPlayer)) ? "MOTD_ENABLED" : "MOTD_DISABLED");
+	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n ^n \r 8. \w %L \y [%L]", iPlayer, "MENU_AUTOSELECT", iPlayer, (WEAPON_AUTO_ON(iPlayer)) ? "MOTD_ENABLED" : "MOTD_DISABLED");
 
 	// 0. Exit
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n ^n \r 0. \w %L", iPlayer, "MENU_EXIT");
@@ -550,25 +489,25 @@ public Menu_Buy_Primary(iPlayer, iKey)
 	}
 
 	// Special keys / weapon list exceeded
-	if (iKey >= MENU_KEY_AUTOSELECT || WPN_SELECTION(iPlayer, iKey) >= WPN_MAXIDS)
+	if (iKey >= MENU_KEY_AUTOSELECT || WEAPON_SELECTION(iPlayer, iKey) >= WEAPON_MAX_IDS)
 	{
 		switch (iKey)
 		{
 			case MENU_KEY_AUTOSELECT: // Toggle auto select
 			{
-				WPN_AUTO_ON(iPlayer) = 1 - WPN_AUTO_ON(iPlayer);
+				WEAPON_AUTO_ON(iPlayer) = 1 - WEAPON_AUTO_ON(iPlayer);
 			}
 
 			case MENU_KEY_NEXT: // Next/back
 			{
-				if (WPN_STARTID(iPlayer) + 7 < WPN_MAXIDS)
+				if (WEAPON_START_ID(iPlayer) + 7 < WEAPON_MAX_IDS)
 				{
-					WPN_STARTID(iPlayer) += 7;
+					WEAPON_START_ID(iPlayer) += 7;
 				}
 
 				else
 				{
-					WPN_STARTID(iPlayer) = 0;
+					WEAPON_START_ID(iPlayer) = 0;
 				}
 			}
 
@@ -585,10 +524,10 @@ public Menu_Buy_Primary(iPlayer, iKey)
 	}
 
 	// Store selected weapon id
-	WPN_AUTO_PRIMARY(iPlayer) = WPN_SELECTION(iPlayer, iKey + WPN_STARTID(iPlayer));
+	WEAPON_AUTO_PRIMARY(iPlayer) = WEAPON_SELECTION(iPlayer, iKey + WEAPON_START_ID(iPlayer));
 
 	// Buy primary weapon
-	Buy_Primary_Weapon(iPlayer, WPN_AUTO_PRIMARY(iPlayer));
+	Buy_Primary_Weapon(iPlayer, WEAPON_AUTO_PRIMARY(iPlayer));
 
 	// Show next buy menu
 	Show_Available_Buy_Menus(iPlayer);
@@ -605,7 +544,7 @@ Buy_Primary_Weapon(iPlayer, iSelection)
 	// Give the new weapon and full ammo
 	rg_give_item(iPlayer, g_Primary_Items[iSelection], GT_DROP_AND_REPLACE);
 
-	ExecuteHamB(Ham_GiveAmmo, iPlayer, g_Max_BP_Ammo[iWeapon_ID], g_Ammo_Type[iWeapon_ID], g_Max_BP_Ammo[iWeapon_ID]);
+	rg_set_user_bpammo(iPlayer, WeaponIdType:iWeapon_ID, g_Max_BP_Ammo[iWeapon_ID]);
 
 	// Primary bought
 	BIT_SUB(g_Can_Buy_Primary, iPlayer);
@@ -626,7 +565,7 @@ public Menu_Buy_Secondary(iPlayer, iKey)
 		// Toggle autoselect
 		if (iKey == MENU_KEY_AUTOSELECT)
 		{
-			WPN_AUTO_ON(iPlayer) = 1 - WPN_AUTO_ON(iPlayer);
+			WEAPON_AUTO_ON(iPlayer) = 1 - WEAPON_AUTO_ON(iPlayer);
 		}
 
 		// Reshow menu unless user exited
@@ -639,7 +578,7 @@ public Menu_Buy_Secondary(iPlayer, iKey)
 	}
 
 	// Store selected weapon id
-	WPN_AUTO_SECONDARY(iPlayer) = iKey;
+	WEAPON_AUTO_SECONDARY(iPlayer) = iKey;
 
 	// Buy secondary weapon
 	Buy_Secondary_Weapon(iPlayer, iKey);
@@ -659,7 +598,7 @@ Buy_Secondary_Weapon(iPlayer, iSelection)
 	// Give the new weapon and full ammo
 	rg_give_item(iPlayer, g_Secondary_Items[iSelection], GT_DROP_AND_REPLACE);
 
-	ExecuteHamB(Ham_GiveAmmo, iPlayer, g_Max_BP_Ammo[iWeapon_ID], g_Ammo_Type[iWeapon_ID], g_Max_BP_Ammo[iWeapon_ID]);
+	rg_set_user_bpammo(iPlayer, WeaponIdType:iWeapon_ID, g_Max_BP_Ammo[iWeapon_ID]);
 
 	// Secondary bought
 	BIT_SUB(g_Can_Buy_Secondary, iPlayer);
@@ -680,7 +619,7 @@ public Menu_Buy_Grenades(iPlayer, iKey)
 		// Toggle autoselect
 		if (iKey == MENU_KEY_AUTOSELECT)
 		{
-			WPN_AUTO_ON(iPlayer) = 1 - WPN_AUTO_ON(iPlayer);
+			WEAPON_AUTO_ON(iPlayer) = 1 - WEAPON_AUTO_ON(iPlayer);
 		}
 
 		// Reshow menu unless user exited
@@ -693,7 +632,7 @@ public Menu_Buy_Grenades(iPlayer, iKey)
 	}
 
 	// Store selected grenade
-	WPN_AUTO_GRENADE(iPlayer) = iKey;
+	WEAPON_AUTO_GRENADE(iPlayer) = iKey;
 
 	// Buy selected grenade
 	Buy_Grenades(iPlayer, iKey);
@@ -718,27 +657,19 @@ public client_putinserver(iPlayer)
 
 public client_disconnected(iPlayer)
 {
-	WPN_AUTO_ON(iPlayer) = 0;
-	WPN_STARTID(iPlayer) = 0;
+	WEAPON_AUTO_ON(iPlayer) = 0;
+	WEAPON_START_ID(iPlayer) = 0;
 
 	BIT_SUB(g_iBit_Alive, iPlayer);
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zp_fw_kill_pre_bit_sub(iPlayer)
+public zpe_fw_kill_pre_bit_sub(iPlayer)
 {
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_add_bit(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
-}
-
-public zp_fw_core_cure_post(iPlayer)
-{
-	// Buyzone time starts when player is set to human
-	g_fBuy_Time_Start[iPlayer] = get_gametime();
-
-	Human_Weapons(iPlayer);
 }
