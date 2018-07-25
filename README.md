@@ -6,7 +6,8 @@
 - ReHLDS + ReGameDLL + ReAPI
 - AMXModX 1.8.3
 - Metamod r
-- no bots on the server
+- No bots on the server
+- Required location of AMXModX: addons/amxmodx
 
 
 ### Системные требования: ###
@@ -15,4 +16,5 @@
 - ReHLDS + ReGameDLL + ReAPI
 - AMXModX 1.8.3
 - Metamod r
-- отсутствие ботов на сервере
+- Отсутствие ботов на сервере
+- Обязательный путь расположения AMXModX: addons/amxmodx
