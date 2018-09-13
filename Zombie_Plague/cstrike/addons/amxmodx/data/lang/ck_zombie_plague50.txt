@@ -75,11 +75,11 @@ MOTD_ENABLED = Enabled
 MOTD_DISABLED = Disabled
 MOTD_DM_ZOMBIE = Respawn as zombie
 
-ZOMBIE_ATTRIB1 = Health
-ZOMBIE_ATTRIB2 = Speed
-ZOMBIE_ATTRIB3 = Gravity
-ZOMBIE_ATTRIB4 = Knockback
-ZOMBIE_ATTRIB5 = Armor
+ZOMBIE_ATTRIB1_COLOR = Health
+ZOMBIE_ATTRIB2_COLOR = Speed
+ZOMBIE_ATTRIB3_COLOR = Gravity
+ZOMBIE_ATTRIB4_COLOR = Knockback
+ZOMBIE_ATTRIB5_COLOR = Armor
 
 CLASS_CLASS = Class:
 CLASS_HUMAN = Human
@@ -89,13 +89,13 @@ CLASS_SNIPER = Sniper
 CLASS_NEMESIS = Nemesis
 CLASS_ASSASSIN = Assasin
 
-LAST_ZOMBIE_LEFT = The last zombie has left, %s is the new zombie.
-LAST_HUMAN_LEFT = The last human has left, %s is the new human.
+LAST_ZOMBIE_LEFT_COLOR = The last zombie has left, %s is the new zombie.
+LAST_HUMAN_LEFT_COLOR = The last human has left, %s is the new human.
 
-NOT_ENOUGH_AMMO = You dont have enough ammo packs.
-AMMO_BOUGHT = You purchased extra ammo for your guns.
+NOT_ENOUGH_AMMO_COLOR = You dont have enough ammo packs.
+AMMO_BOUGHT_COLOR = You purchased extra ammo for your guns.
 
-ZOMBIE_SELECT = Your zombie class after the next infection will be
+ZOMBIE_SELECT_COLOR = Your zombie class after the next infection will be
 BUY_ENABLED_COLOR = Your buy menu has been re-enabled.
 
 AMMO_PACKS1 = Ammo packs:
@@ -119,45 +119,45 @@ CANT_BUY_ITEMS_DEAD = You can't buy extra items when dead.
 CMD_NOT_HCLASSES = Human Classes are disabled.
 
 NO_ADMIN_MENU = Admin menu not available.
-NO_CLASSES = No classes are currently available to you.
+NO_CLASSES_COLOR = No classes are currently available to you.
 NO_EXTRA_ITEMS = No extra items are currently available to you.
 
-CANT_CHANGE_TEAM = You can't change team right now.
-NOT_ENOUGH_MONEY = You dont have enough money.
+CANT_CHANGE_TEAM_COLOR = You can't change team right now.
+NOT_ENOUGH_MONEY_COLOR = You dont have enough money.
 REQUIRED_AMOUNT = %d required
-HUMAN_SELECT = Your next human class will be
+HUMAN_SELECT_COLOR = Your next human class will be
 MONEY1 = Money:
 
 MENU_BUY3_TITLE = Grenades
-MENU_HCLASS = Choose Human Class
+MENU_CLASS_HUMAN = Choose Human Class
 MENU_CHOOSE_TEAM = Choose Team
 MENU_ADMIN_START_GAME_MODE = Start Game Mode (use at roundstart)
 
 NOTICE_ARMAGEDDON = Armageddon Mode !!!
 
-ZOMBIENAME Classic Zombie = Classic Zombie
-ZOMBIEDESC Classic Zombie = =Balanced=
+ZOMBIE_NAME Classic Zombie = Classic Zombie
+ZOMBIE_DESCRIPTION Classic Zombie = =Balanced=
 
-ZOMBIENAME Raptor Zombie = Raptor Zombie
-ZOMBIEDESC Raptor Zombie = HP-- Speed++ Knockback++
+ZOMBIE_NAME Raptor Zombie = Raptor Zombie
+ZOMBIE_DESCRIPTION Raptor Zombie = HP-- Speed++ Knockback++
 
-ZOMBIENAME Light Zombie = Light Zombie
-ZOMBIEDESC Light Zombie = HP- Jump+ Knockback+
+ZOMBIE_NAME Light Zombie = Light Zombie
+ZOMBIE_DESCRIPTION Light Zombie = HP- Jump+ Knockback+
 
-ZOMBIENAME Fat Zombie = Fat Zombie
-ZOMBIEDESC Fat Zombie = HP++ Speed- Knockback--
+ZOMBIE_NAME Fat Zombie = Fat Zombie
+ZOMBIE_DESCRIPTION Fat Zombie = HP++ Speed- Knockback--
 
-ZOMBIENAME Leech Zombie = Leech Zombie
-ZOMBIEDESC Leech Zombie = HP- Knockback+ Leech++
+ZOMBIE_NAME Leech Zombie = Leech Zombie
+ZOMBIE_DESCRIPTION Leech Zombie = HP- Knockback+ Leech++
 
-ZOMBIENAME Rage Zombie = Rage Zombie
-ZOMBIEDESC Rage Zombie = HP+ Speed+ Radioactivity++
+ZOMBIE_NAME Rage Zombie = Rage Zombie
+ZOMBIE_DESCRIPTION Rage Zombie = HP+ Speed+ Radioactivity++
 
-HUMANNAME Classic Human = Classic Human
-HUMANDESC Classic Human = =Balanced=
+HUMAN_NAME Classic Human = Classic Human
+HUMAN_DESCRIPTION Classic Human = =Balanced=
 
-HUMANNAME Raptor Human = Raptor Human
-HUMANDESC Raptor Human = HP-- Speed+ Gravity+
+HUMAN_NAME Raptor Human = Raptor Human
+HUMAN_DESCRIPTION Raptor Human = HP-- Speed+ Gravity+
 
 ITEMNAME Nightvision = Nightvision
 

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Flashlight.
+*	[ZPE] Flashlight.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,19 +7,16 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "flashlight"
-#define VERSION "5.3.7.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
-
-new const g_Sound_Flashlight[][] =
-{
-	"items/flashlight1.wav"
-};
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #include <amxmodx>
 #include <cs_util>
@@ -37,6 +34,11 @@ new const g_Sound_Flashlight[][] =
 #define ID_CHARGE (iTask_ID - TASK_CHARGE)
 
 #define IMPULSE_FLASHLIGHT 100
+
+new const g_Sound_Flashlight[][] =
+{
+	"items/flashlight1.wav"
+};
 
 new Float:g_fFlashlight_Last_Time[33];
 
@@ -68,18 +70,18 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Flashlight_Starting_Charge = register_cvar("zm_flashlight_starting_charge", "100");
-	g_pCvar_Flashlight_Custom = register_cvar("zm_flashlight_custom", "0");
-	g_pCvar_Flashlight_Radius = register_cvar("zm_flashlight_radius", "10");
-	g_pCvar_Flashlight_Distance = register_cvar("zm_flashlight_distance", "1000");
-	g_pCvar_Flashlight_Show_All = register_cvar("zm_flashlight_show_all", "1");
-	g_pCvar_Flashlight_Drain_Rate = register_cvar("zm_flashlight_drain_rate", "1");
-	g_pCvar_Flashlight_Charge_Rate = register_cvar("zm_flashlight_charge_rate", "5");
-	g_pCvar_Flashlight_Color_R = register_cvar("zm_flashlight_color_R", "100");
-	g_pCvar_Flashlight_Color_G = register_cvar("zm_flashlight_color_G", "100");
-	g_pCvar_Flashlight_Color_B = register_cvar("zm_flashlight_color_B", "100");
-	g_pCvar_Flashlight_Life = register_cvar("zm_flashlight_life", "3");
-	g_pCvar_Flashlight_Decay_Rate = register_cvar("zm_flashlight_decay_rate", "0");
+	g_pCvar_Flashlight_Starting_Charge = register_cvar("zpe_flashlight_starting_charge", "100");
+	g_pCvar_Flashlight_Custom = register_cvar("zpe_flashlight_custom", "0");
+	g_pCvar_Flashlight_Radius = register_cvar("zpe_flashlight_radius", "10");
+	g_pCvar_Flashlight_Distance = register_cvar("zpe_flashlight_distance", "1000");
+	g_pCvar_Flashlight_Show_All = register_cvar("zpe_flashlight_show_all", "1");
+	g_pCvar_Flashlight_Drain_Rate = register_cvar("zpe_flashlight_drain_rate", "1");
+	g_pCvar_Flashlight_Charge_Rate = register_cvar("zpe_flashlight_charge_rate", "5");
+	g_pCvar_Flashlight_Color_R = register_cvar("zpe_flashlight_color_r", "100");
+	g_pCvar_Flashlight_Color_G = register_cvar("zpe_flashlight_color_g", "100");
+	g_pCvar_Flashlight_Color_B = register_cvar("zpe_flashlight_color_b", "100");
+	g_pCvar_Flashlight_Life = register_cvar("zpe_flashlight_life", "3");
+	g_pCvar_Flashlight_Decay_Rate = register_cvar("zpe_flashlight_decay_rate", "0");
 
 	register_forward(FM_CmdStart, "FM_CmdStart_Post", 1);
 
@@ -95,18 +97,7 @@ public plugin_precache()
 	g_aSound_Flashlight = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "FLASHLIGHT", g_aSound_Flashlight);
-
-	if (ArraySize(g_aSound_Flashlight) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Flashlight; i++)
-		{
-			ArrayPushString(g_aSound_Flashlight, g_Sound_Flashlight[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "FLASHLIGHT", g_aSound_Flashlight);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FLASHLIGHT", g_aSound_Flashlight);
 
 	for (new i = 0; i < sizeof g_Sound_Flashlight; i++)
 	{
@@ -338,15 +329,14 @@ public Custom_Flashlight_Task(iTask_ID)
 {
 	// Get player and aiming origins
 	static Float:fOrigin[3];
-
-	new Float:fDestorigin[3];
+	new Float:fDest_Origin[3];
 
 	get_entvar(ID_FLASHLIGHT, var_origin, fOrigin);
 
-	UTIL_fm_get_aim_origin(ID_FLASHLIGHT, fDestorigin);
+	UTIL_fm_get_aim_origin(ID_FLASHLIGHT, fDest_Origin);
 
 	// Max distance check
-	if (get_distance_f(fOrigin, fDestorigin) > get_pcvar_float(g_pCvar_Flashlight_Distance))
+	if (get_distance_f(fOrigin, fDest_Origin) > get_pcvar_float(g_pCvar_Flashlight_Distance))
 	{
 		return;
 	}
@@ -354,7 +344,7 @@ public Custom_Flashlight_Task(iTask_ID)
 	// Send to all players?
 	if (get_pcvar_num(g_pCvar_Flashlight_Show_All))
 	{
-		engfunc(EngFunc_MessageBegin, MSG_PVS, SVC_TEMPENTITY, fDestorigin, 0);
+		engfunc(EngFunc_MessageBegin, MSG_PVS, SVC_TEMPENTITY, fDest_Origin, 0);
 	}
 
 	else
@@ -364,13 +354,13 @@ public Custom_Flashlight_Task(iTask_ID)
 
 	// Flashlight
 	write_byte(TE_DLIGHT); // TE player
-	engfunc(EngFunc_WriteCoord, fDestorigin[0]); // x
-	engfunc(EngFunc_WriteCoord, fDestorigin[1]); // y
-	engfunc(EngFunc_WriteCoord, fDestorigin[2]); // z
-	write_byte(get_pcvar_num(g_pCvar_Flashlight_Radius)) // radius
-	write_byte(get_pcvar_num(g_pCvar_Flashlight_Color_R)) // r
-	write_byte(get_pcvar_num(g_pCvar_Flashlight_Color_G)) // g
-	write_byte(get_pcvar_num(g_pCvar_Flashlight_Color_B)) // b
+	engfunc(EngFunc_WriteCoord, fDest_Origin[0]); // x
+	engfunc(EngFunc_WriteCoord, fDest_Origin[1]); // y
+	engfunc(EngFunc_WriteCoord, fDest_Origin[2]); // z
+	write_byte(get_pcvar_num(g_pCvar_Flashlight_Radius)); // radius
+	write_byte(get_pcvar_num(g_pCvar_Flashlight_Color_R)); // r
+	write_byte(get_pcvar_num(g_pCvar_Flashlight_Color_G)); // g
+	write_byte(get_pcvar_num(g_pCvar_Flashlight_Color_B)); // b
 	write_byte(get_pcvar_num(g_pCvar_Flashlight_Life)); // life
 	write_byte(get_pcvar_num(g_pCvar_Flashlight_Decay_Rate)); // decay rate
 	message_end();

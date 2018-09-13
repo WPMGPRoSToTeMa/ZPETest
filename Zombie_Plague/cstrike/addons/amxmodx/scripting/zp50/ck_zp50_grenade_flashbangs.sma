@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Grenade Flashbang.
+*	[ZPE] Grenade Flashbang.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,19 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "grenade flashbang"
-#define VERSION "5.1.4.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_items.ini"
-
-
-new g_V_Model_Grenade_Flashbang[64] = "models/v_flashbang.mdl";
-new g_P_Model_Grenade_Flashbang[64] = "models/p_flashbang.mdl";
-new g_W_Model_Grenade_Flashbang[64] = "models/w_flashbang.mdl";
 
 #include <amxmodx>
 #include <cs_util>
@@ -30,11 +25,19 @@ new g_W_Model_Grenade_Flashbang[64] = "models/w_flashbang.mdl";
 #include <ck_zp50_class_nemesis>
 #include <ck_zp50_class_assassin>
 
+#define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
+
 // HACK: var_ field used to store custom nade types and their values
 #define PEV_NADE_TYPE var_flTimeStepSound
 #define NADE_TYPE_FLASHBANG 3334
 
+#define MODEL_MAX_LENGTH 64
+
 #define GRENADE_FLASHBANG_SPRITE_TRAIL "sprites/laserbeam.spr"
+
+new g_V_Model_Grenade_Flashbang[MODEL_MAX_LENGTH] = "models/v_flashbang.mdl";
+new g_P_Model_Grenade_Flashbang[MODEL_MAX_LENGTH] = "models/p_flashbang.mdl";
+new g_W_Model_Grenade_Flashbang[MODEL_MAX_LENGTH] = "models/w_flashbang.mdl";
 
 new g_pCvar_Grenade_Flashbang_Color_R;
 new g_pCvar_Grenade_Flashbang_Color_G;
@@ -57,20 +60,20 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Grenade_Flashbang_Color_R = register_cvar("zm_grenade_flashbang_color_r", "0")
-	g_pCvar_Grenade_Flashbang_Color_G = register_cvar("zm_grenade_flashbang_color_g", "150")
-	g_pCvar_Grenade_Flashbang_Color_B = register_cvar("zm_grenade_flashbang_color_b", "0")
+	g_pCvar_Grenade_Flashbang_Color_R = register_cvar("zpe_grenade_flashbang_color_r", "0");
+	g_pCvar_Grenade_Flashbang_Color_G = register_cvar("zpe_grenade_flashbang_color_g", "150");
+	g_pCvar_Grenade_Flashbang_Color_B = register_cvar("zpe_grenade_flashbang_color_b", "0");
 
-	g_pCvar_Grenade_Flashbang_Glow_Rendering_R = register_cvar("zm_grenade_flashbang_glow_rendering_r", "0");
-	g_pCvar_Grenade_Flashbang_Glow_Rendering_G = register_cvar("zm_grenade_flashbang_glow_rendering_g", "0");
-	g_pCvar_Grenade_Flashbang_Glow_Rendering_B = register_cvar("zm_grenade_flashbang_glow_rendering_b", "0");
+	g_pCvar_Grenade_Flashbang_Glow_Rendering_R = register_cvar("zpe_grenade_flashbang_glow_rendering_r", "0");
+	g_pCvar_Grenade_Flashbang_Glow_Rendering_G = register_cvar("zpe_grenade_flashbang_glow_rendering_g", "0");
+	g_pCvar_Grenade_Flashbang_Glow_Rendering_B = register_cvar("zpe_grenade_flashbang_glow_rendering_b", "0");
 
-	g_pCvar_Grenade_Flashbang_Trail_Rendering_R = register_cvar("zm_grenade_flashbang_trail_rendering_r", "0");
-	g_pCvar_Grenade_Flashbang_Trail_Rendering_G = register_cvar("zm_grenade_flashbang_trail_rendering_g", "0");
-	g_pCvar_Grenade_Flashbang_Trail_Rendering_B = register_cvar("zm_grenade_flashbang_trail_rendering_b", "0");
+	g_pCvar_Grenade_Flashbang_Trail_Rendering_R = register_cvar("zpe_grenade_flashbang_trail_rendering_r", "0");
+	g_pCvar_Grenade_Flashbang_Trail_Rendering_G = register_cvar("zpe_grenade_flashbang_trail_rendering_g", "0");
+	g_pCvar_Grenade_Flashbang_Trail_Rendering_B = register_cvar("zpe_grenade_flashbang_trail_rendering_b", "0");
 
-	g_pCvar_Grenade_Flashbang_Nemesis = register_cvar("zm_grenade_flashbang_nemesis", "0");
-	g_pCvar_Grenade_Flashbang_Assassin = register_cvar("zm_grenade_flashbang_assassin", "0");
+	g_pCvar_Grenade_Flashbang_Nemesis = register_cvar("zpe_grenade_flashbang_nemesis", "0");
+	g_pCvar_Grenade_Flashbang_Assassin = register_cvar("zpe_grenade_flashbang_assassin", "0");
 
 	register_message(get_user_msgid("ScreenFade"), "Message_ScreenFade");
 
@@ -79,21 +82,10 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Load from external file, save if not found
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "V GRENADE FLASHBANG", g_V_Model_Grenade_Flashbang, charsmax(g_V_Model_Grenade_Flashbang)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "V GRENADE FLASHBANG", g_V_Model_Grenade_Flashbang);
-	}
-
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "P GRENADE FLASHBANG", g_P_Model_Grenade_Flashbang, charsmax(g_P_Model_Grenade_Flashbang)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "P GRENADE FLASHBANG", g_P_Model_Grenade_Flashbang);
-	}
-
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "W GRENADE FLASHBANG", g_W_Model_Grenade_Flashbang, charsmax(g_W_Model_Grenade_Flashbang)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "W GRENADE FLASHBANG", g_W_Model_Grenade_Flashbang);
-	}
+	// Load from external file
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE FLASHBANG", g_V_Model_Grenade_Flashbang, charsmax(g_V_Model_Grenade_Flashbang));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE FLASHBANG", g_P_Model_Grenade_Flashbang, charsmax(g_P_Model_Grenade_Flashbang));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE FLASHBANG", g_W_Model_Grenade_Flashbang, charsmax(g_W_Model_Grenade_Flashbang));
 
 	// Precache models
 	precache_model(g_V_Model_Grenade_Flashbang);
@@ -174,7 +166,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	if (sModel[9] == 'f' && sModel[10] == 'l')
 	{
 		// Give it a glow
-		rh_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Flashbang_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Flashbang_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Flashbang_Glow_Rendering_B), kRenderNormal, 16);
+		rg_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Flashbang_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Flashbang_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Flashbang_Glow_Rendering_B), kRenderNormal, 16);
 
 		// And a colored trail
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);

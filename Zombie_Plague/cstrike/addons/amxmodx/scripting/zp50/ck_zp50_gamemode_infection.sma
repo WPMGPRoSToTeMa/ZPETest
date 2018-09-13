@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Gamemode Infection.
+*	[ZPE] Gamemode Infection.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,24 +7,26 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "gamemode infection"
-#define VERSION "5.2.8.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
 #include <cs_util>
-#include <fun>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
 
+#define CHANCE(%0) (random(100) < (%0))
+
 new g_pCvar_Infection_Chance;
 new g_pCvar_Infection_Min_Players;
-
 new g_pCvar_Infection_Allow_Respawn;
-new g_pCvar_Respawn_After_Last_Human;
+new g_pCvar_Infection_Respawn_After_Last_Human;
 new g_pCvar_Zombie_First_HP_Multiplier;
 
 new g_pCvar_Notice_Infection_Show_Hud;
@@ -46,36 +48,41 @@ new g_pCvar_All_Messages_Converted;
 
 new g_iTarget_Player;
 
-public plugin_precache()
+public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_pCvar_Infection_Chance = register_cvar("zpe_infection_chance", "1");
+	g_pCvar_Infection_Min_Players = register_cvar("zpe_infection_min_players", "0");
+	g_pCvar_Infection_Allow_Respawn = register_cvar("zpe_infection_allow_respawn", "1");
+	g_pCvar_Infection_Respawn_After_Last_Human = register_cvar("zpe_infection_respawn_after_last_human", "1");
+	g_pCvar_Zombie_First_HP_Multiplier = register_cvar("zpe_zombie_first_hp_multiplier", "2.0");
+
+	g_pCvar_Notice_Infection_Show_Hud = register_cvar("zpe_notice_infection_show_hud", "1");
+
+	g_pCvar_Message_Notice_Infection_Converted = register_cvar("zpe_notice_infection_message_converted", "0");
+	g_pCvar_Message_Notice_Infection_R = register_cvar("zpe_notice_infection_message_r", "0");
+	g_pCvar_Message_Notice_Infection_G = register_cvar("zpe_notice_infection_message_g", "250");
+	g_pCvar_Message_Notice_Infection_B = register_cvar("zpe_notice_infection_message_b", "0");
+	g_pCvar_Message_Notice_Infection_X = register_cvar("zpe_notice_infection_message_x", "-1.0");
+	g_pCvar_Message_Notice_Infection_Y = register_cvar("zpe_notice_infection_message_y", "0.75");
+	g_pCvar_Message_Notice_Infection_Effects = register_cvar("zpe_notice_infection_message_effects", "0");
+	g_pCvar_Message_Notice_Infection_Fxtime = register_cvar("zpe_notice_infection_message_fxtime", "0.1");
+	g_pCvar_Message_Notice_Infection_Holdtime = register_cvar("zpe_notice_infection_message_holdtime", "1.5");
+	g_pCvar_Message_Notice_Infection_Fadeintime = register_cvar("zpe_notice_infection_message_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Infection_Fadeouttime = register_cvar("zpe_notice_infection_message_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Infection_Channel = register_cvar("zpe_notice_infection_message_channel", "-1");
+
+	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+}
+
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_infection.cfg");
 
 	new iGame_Mode_ID = zp_gamemodes_register("Infection Mode");
 
 	zp_gamemodes_set_default(iGame_Mode_ID);
-
-	g_pCvar_Infection_Chance = register_cvar("zm_infection_chance", "1");
-	g_pCvar_Infection_Min_Players = register_cvar("zm_infection_min_players", "0");
-	g_pCvar_Infection_Allow_Respawn = register_cvar("zm_infection_allow_respawn", "1");
-	g_pCvar_Respawn_After_Last_Human = register_cvar("zm_infection_respawn_after_last_human", "1");
-	g_pCvar_Zombie_First_HP_Multiplier = register_cvar("zm_zombie_first_hp_multiplier", "2.0");
-
-	g_pCvar_Notice_Infection_Show_Hud = register_cvar("zm_notice_infection_show_hud", "1");
-
-	g_pCvar_Message_Notice_Infection_Converted = register_cvar("zm_notice_infection_message_converted", "0");
-	g_pCvar_Message_Notice_Infection_R = register_cvar("zm_notice_infection_message_r", "0");
-	g_pCvar_Message_Notice_Infection_G = register_cvar("zm_notice_infection_message_g", "250");
-	g_pCvar_Message_Notice_Infection_B = register_cvar("zm_notice_infection_message_b", "0");
-	g_pCvar_Message_Notice_Infection_X = register_cvar("zm_notice_infection_message_x", "-1.0");
-	g_pCvar_Message_Notice_Infection_Y = register_cvar("zm_notice_infection_message_y", "0.75");
-	g_pCvar_Message_Notice_Infection_Effects = register_cvar("zm_notice_infection_message_effects", "0");
-	g_pCvar_Message_Notice_Infection_Fxtime = register_cvar("zm_notice_infection_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Infection_Holdtime = register_cvar("zm_notice_infection_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Infection_Fadeintime = register_cvar("zm_notice_infection_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Infection_Fadeouttime = register_cvar("zm_notice_infection_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Infection_Channel = register_cvar("zm_notice_infection_message_channel", "-1");
-
-	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
 }
 
 // Deathmatch module's player respawn forward
@@ -88,7 +95,7 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	}
 
 	// Respawn if only the last human is left?
-	if (!get_pcvar_num(g_pCvar_Respawn_After_Last_Human) && zp_core_get_human_count() == 1)
+	if (!get_pcvar_num(g_pCvar_Infection_Respawn_After_Last_Human) && zp_core_get_human_count() == 1)
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -100,7 +107,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	if (!iSkipchecks)
 	{
-		if (random_num(1, get_pcvar_num(g_pCvar_Infection_Chance)) != 1)
+		if (CHANCE(get_pcvar_num(g_pCvar_Infection_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}
@@ -125,12 +132,12 @@ public zp_fw_gamemodes_start()
 
 	zp_core_infect(g_iTarget_Player, g_iTarget_Player);
 
-	set_user_health(g_iTarget_Player, get_user_health(g_iTarget_Player) * floatround(get_pcvar_float(g_pCvar_Zombie_First_HP_Multiplier)));
+	SET_USER_HEALTH(g_iTarget_Player, GET_USER_HEALTH(g_iTarget_Player) * get_pcvar_float(g_pCvar_Zombie_First_HP_Multiplier));
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
 		// Not alive
-		if (!is_user_alive(i))
+		if (!is_user_alive(i)) // Use bit - invalid player
 		{
 			continue;
 		}
@@ -197,7 +204,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i))
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iAlive++;
 		}
@@ -213,7 +220,7 @@ Get_Random_Alive_Player()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i))
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iPlayers[iCount++] = i;
 		}

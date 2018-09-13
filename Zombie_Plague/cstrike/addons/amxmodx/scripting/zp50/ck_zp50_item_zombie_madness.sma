@@ -27,8 +27,6 @@ new const g_szDefault_Sound_Zombie_Madness[] = "zombie_plague/zombie_madness1.wa
 #include <ck_zp50_kernel>
 #include <ck_zp50_items>
 #include <ck_zp50_class_zombie>
-
-#define LIBRARY_GRENADE_FROST "ck_zp50_grenade_frost"
 #include <ck_zp50_grenade_frost>
 #include <ck_zp50_grenade_fire>
 #include <ck_zp50_class_nemesis>

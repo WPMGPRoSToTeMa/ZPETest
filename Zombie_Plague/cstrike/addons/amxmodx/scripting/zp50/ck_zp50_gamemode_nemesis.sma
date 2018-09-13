@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Gamemode nemesis.
+*	[ZPE] Gamemode nemesis.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,20 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "gamemode nemesis"
-#define VERSION "5.2.8.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
-
-new const g_Sound_Nemesis[][] =
-{
-	"zombie_plague/nemesis1.wav",
-	"zombie_plague/nemesis2.wav"
-};
 
 #include <amxmodx>
 #include <cs_util>
@@ -29,7 +23,17 @@ new const g_Sound_Nemesis[][] =
 #include <ck_zp50_gamemodes>
 #include <ck_zp50_class_nemesis>
 
+#define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_nemesis.ini"
+
 #define SOUND_MAX_LENGTH 64
+
+#define CHANCE(%0) (random(100) < (%0))
+
+new const g_Sound_Nemesis[][] =
+{
+	"zombie_plague/nemesis1.wav",
+	"zombie_plague/nemesis2.wav"
+};
 
 new Array:g_aSound_Nemesis;
 
@@ -57,56 +61,53 @@ new g_pCvar_All_Messages_Converted;
 
 new g_iTarget_Player;
 
-public plugin_precache()
+public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	zp_gamemodes_register("Nemesis Mode");
+	g_pCvar_Nemesis_Chance = register_cvar("zpe_nemesis_chance", "20");
+	g_pCvar_Nemesis_Min_Players = register_cvar("zpe_nemesis_min_players", "0");
+	g_pCvar_Nemesis_Sounds = register_cvar("zpe_nemesis_sounds", "1");
+	g_pCvar_Nemesis_Allow_Respawn = register_cvar("zpe_nemesis_allow_respawn", "0");
 
-	g_pCvar_Nemesis_Chance = register_cvar("zm_nemesis_chance", "20");
-	g_pCvar_Nemesis_Min_Players = register_cvar("zm_nemesis_min_players", "0");
-	g_pCvar_Nemesis_Sounds = register_cvar("zm_nemesis_sounds", "1");
-	g_pCvar_Nemesis_Allow_Respawn = register_cvar("zm_nemesis_allow_respawn", "0");
+	g_pCvar_Notice_Nemesis_Show_Hud = register_cvar("zpe_notice_nemesis_show_hud", "1");
 
-	g_pCvar_Notice_Nemesis_Show_Hud = register_cvar("zm_notice_nemesis_show_hud", "1");
+	g_pCvar_Message_Notice_Nemesis_Converted = register_cvar("zpe_notice_nemesis_message_converted", "0");
+	g_pCvar_Message_Notice_Nemesis_R = register_cvar("zpe_notice_nemesis_message_r", "0");
+	g_pCvar_Message_Notice_Nemesis_G = register_cvar("zpe_notice_nemesis_message_g", "250");
+	g_pCvar_Message_Notice_Nemesis_B = register_cvar("zpe_notice_nemesis_message_b", "0");
+	g_pCvar_Message_Notice_Nemesis_X = register_cvar("zpe_notice_nemesis_message_x", "-1.0");
+	g_pCvar_Message_Notice_Nemesis_Y = register_cvar("zpe_notice_nemesis_message_y", "0.75");
+	g_pCvar_Message_Notice_Nemesis_Effects = register_cvar("zpe_notice_nemesis_message_effects", "0");
+	g_pCvar_Message_Notice_Nemesis_Fxtime = register_cvar("zpe_notice_nemesis_message_fxtime", "0.1");
+	g_pCvar_Message_Notice_Nemesis_Holdtime = register_cvar("zpe_notice_nemesis_message_holdtime", "1.5");
+	g_pCvar_Message_Notice_Nemesis_Fadeintime = register_cvar("zpe_notice_nemesis_message_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Nemesis_Fadeouttime = register_cvar("zpe_notice_nemesis_message_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Nemesis_Channel = register_cvar("zpe_notice_nemesis_message_channel", "-1");
 
-	g_pCvar_Message_Notice_Nemesis_Converted = register_cvar("zm_notice_nemesis_message_converted", "0");
-	g_pCvar_Message_Notice_Nemesis_R = register_cvar("zm_notice_nemesis_message_r", "0");
-	g_pCvar_Message_Notice_Nemesis_G = register_cvar("zm_notice_nemesis_message_g", "250");
-	g_pCvar_Message_Notice_Nemesis_B = register_cvar("zm_notice_nemesis_message_b", "0");
-	g_pCvar_Message_Notice_Nemesis_X = register_cvar("zm_notice_nemesis_message_x", "-1.0");
-	g_pCvar_Message_Notice_Nemesis_Y = register_cvar("zm_notice_nemesis_message_y", "0.75");
-	g_pCvar_Message_Notice_Nemesis_Effects = register_cvar("zm_notice_nemesis_message_effects", "0");
-	g_pCvar_Message_Notice_Nemesis_Fxtime = register_cvar("zm_notice_nemesis_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Nemesis_Holdtime = register_cvar("zm_notice_nemesis_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Nemesis_Fadeintime = register_cvar("zm_notice_nemesis_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Nemesis_Fadeouttime = register_cvar("zm_notice_nemesis_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Nemesis_Channel = register_cvar("zm_notice_nemesis_message_channel", "-1");
+	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+}
 
-	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
-
+public plugin_precache()
+{
 	// Initialize arrays
 	g_aSound_Nemesis = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND NEMESIS", g_aSound_Nemesis);
-
-	// If we couldn't load custom sounds from file, use and save default ones
-	if (ArraySize(g_aSound_Nemesis) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis, g_Sound_Nemesis[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND NEMESIS", g_aSound_Nemesis);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND NEMESIS", g_aSound_Nemesis);
 
 	for (new i = 0; i < sizeof g_Sound_Nemesis; i++)
 	{
 		precache_sound(g_Sound_Nemesis[i]);
 	}
+}
+
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_nemesis.cfg");
+
+	// Register game mode at plugin_cfg (plugin gets paused after this)
+	zp_gamemodes_register("Nemesis Mode");
 }
 
 // Deathmatch module's player respawn forward
@@ -131,7 +132,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	if (!iSkipchecks)
 	{
 		// Random chance
-		if (random_num(1, get_pcvar_num(g_pCvar_Nemesis_Chance)) != 1)
+		if (CHANCE(get_pcvar_num(g_pCvar_Nemesis_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}
@@ -158,7 +159,7 @@ public zp_fw_gamemodes_start()
 	for (new i = 1; i <= MaxClients; i++)
 	{
 		// Not alive
-		if (!is_user_alive(i))
+		if (!is_user_alive(i)) // Use bit - invalid player
 		{
 			continue;
 		}
@@ -243,7 +244,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i))
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iAlive++;
 		}
@@ -259,7 +260,7 @@ Get_Random_Alive_Player()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i))
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iPlayers[iCount++] = i;
 		}

@@ -346,7 +346,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	{
 		if (zp_ammopacks_get(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks))
 		{
-			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
 
 			return;
 		}
@@ -356,7 +356,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	{
 		if (CS_GET_USER_MONEY(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money))
 		{
-			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_MONEY", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_MONEY_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
 
 			return;
 		}
@@ -404,9 +404,9 @@ public Client_Command_Buy_Ammo(iPlayer)
 	}
 
 	// Play clip purchase sound, and notify player
-	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[random_num(0, sizeof g_Sound_Buy_Ammo - 1)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[random(sizeof g_Sound_Buy_Ammo)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
-	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT");
+	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT_COLOR");
 }
 
 public client_disconnected(iPlayer)

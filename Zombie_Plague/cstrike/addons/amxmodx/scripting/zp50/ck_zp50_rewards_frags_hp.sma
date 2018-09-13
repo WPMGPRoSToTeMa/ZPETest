@@ -135,7 +135,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 		// Reward health
 		if (BIT_VALID(g_iBit_Alive, iAttacker))
 		{
-			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker) + get_pcvar_num(g_pCvar_Infection_Health_Bonus));
+			SET_USER_HEALTH(iAttacker, GET_USER_HEALTH(iAttacker) + get_pcvar_float(g_pCvar_Infection_Health_Bonus));
 		}
 	}
 }
@@ -155,7 +155,7 @@ public zp_fw_core_last_human(iPlayer)
 {
 	if (g_Game_Mode_Started && !g_Last_Human_Health_Rewarded)
 	{
-		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) + get_pcvar_num(g_pCvar_Human_Last_Health_Bonus));
+		SET_USER_HEALTH(iPlayer, GET_USER_HEALTH(iPlayer) + get_pcvar_float(g_pCvar_Human_Last_Health_Bonus));
 
 		g_Last_Human_Health_Rewarded = true;
 	}

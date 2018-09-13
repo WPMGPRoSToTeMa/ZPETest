@@ -59,6 +59,11 @@ public plugin_init()
 	g_Forwards[FW_ITEM_SELECT_POST] = CreateMultiForward("zp_fw_items_select_post", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL);
 }
 
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/zpe_items.cfg");
+}
+
 public plugin_natives()
 {
 	register_library("ck_zp50_items");

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Class Human Classic.
+*	[ZPE] Class Human Classic.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,15 +7,16 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "class human classic"
-#define VERSION "5.0.2.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
-#include <amx_settings_api>
 #include <ck_zp50_class_human>
 
 #define CLASS_HUMAN_CLASSIC_NAME "Classic Human"

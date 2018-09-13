@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Human Ammo.
+*	[ZPE] Human Ammo.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "human ammo"
-#define VERSION "5.1.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -150,7 +152,7 @@ new const g_Max_Clip[] =
 };
 
 // BP Ammo Refill task
-#define REFILL_WEAPONID iArgs[0]
+#define REFILL_WEAPON_ID iArgs[0]
 
 new g_Message_Ammo_Pickup;
 
@@ -164,10 +166,10 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Human_Unlimited_Ammo = register_cvar("zm_human_unlimited_ammo", "0"); // 1-bp ammo // 2-clip ammo
+	g_pCvar_Human_Unlimited_Ammo = register_cvar("zpe_human_unlimited_ammo", "0"); // 1-bp ammo // 2-clip ammo
 
-	g_pCvar_Survivor_Unlimited_Ammo = register_cvar("zm_survivor_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
-	g_pCvar_Sniper_Unlimited_Ammo = register_cvar("zm_sniper_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
+	g_pCvar_Survivor_Unlimited_Ammo = register_cvar("zpe_survivor_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
+	g_pCvar_Sniper_Unlimited_Ammo = register_cvar("zpe_sniper_unlimited_ammo", "1"); // 1-bp ammo // 2-clip ammo
 
 	register_event("AmmoX", "Event_Ammo_X", "be");
 
@@ -189,7 +191,7 @@ public Event_Ammo_X(iPlayer)
 	if (zp_class_survivor_get(iPlayer))
 	{
 		// Unlimited BP ammo enabled for survivor?
-		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) < 1)
+		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) != 1)
 		{
 			return;
 		}
@@ -199,7 +201,7 @@ public Event_Ammo_X(iPlayer)
 	else if (zp_class_sniper_get(iPlayer))
 	{
 		// Unlimited BP ammo enabled for sniper?
-		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) < 1)
+		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) != 1)
 		{
 			return;
 		}
@@ -208,7 +210,7 @@ public Event_Ammo_X(iPlayer)
 	else
 	{
 		// Unlimited BP ammo enabled for humans?
-		if (get_pcvar_num(g_pCvar_Human_Unlimited_Ammo) < 1)
+		if (get_pcvar_num(g_pCvar_Human_Unlimited_Ammo) != 1)
 		{
 			return;
 		}
@@ -246,7 +248,7 @@ public Event_Ammo_X(iPlayer)
 
 		set_msg_block(g_Message_Ammo_Pickup, BLOCK_ONCE);
 
-		ExecuteHamB(Ham_GiveAmmo, iPlayer, g_Max_BP_Ammo[REFILL_WEAPONID], g_Ammo_Type[REFILL_WEAPONID], g_Max_BP_Ammo[REFILL_WEAPONID]);
+		ExecuteHamB(Ham_GiveAmmo, iPlayer, g_Max_BP_Ammo[REFILL_WEAPON_ID], g_Ammo_Type[REFILL_WEAPON_ID], g_Max_BP_Ammo[REFILL_WEAPON_ID]);
 
 		set_msg_block(g_Message_Ammo_Pickup, iBlock_Status);
 	}
@@ -265,7 +267,7 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	if (zp_class_survivor_get(iMessage_Entity))
 	{
 		// Unlimited Clip ammo enabled for humans?
-		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) < 2)
+		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) != 2)
 		{
 			return;
 		}
@@ -275,7 +277,7 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	else if (zp_class_sniper_get(iMessage_Entity))
 	{
 		// Unlimited Clip ammo enabled for humans?
-		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) < 2)
+		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) != 2)
 		{
 			return;
 		}
@@ -284,7 +286,7 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	else
 	{
 		// Unlimited Clip ammo enabled for humans?
-		if (get_pcvar_num(g_pCvar_Human_Unlimited_Ammo) < 2)
+		if (get_pcvar_num(g_pCvar_Human_Unlimited_Ammo) != 2)
 		{
 			return;
 		}

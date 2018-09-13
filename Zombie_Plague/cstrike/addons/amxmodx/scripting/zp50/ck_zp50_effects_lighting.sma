@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Effects Lighting.
+*	[ZPE] Effects Lighting.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,14 +7,16 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "effects lighting"
-#define VERSION "5.1.5.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 new const g_Sky_Names[][] =
 {
@@ -66,9 +68,9 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Lighting = register_cvar("zm_lighting", "d");
-	g_pCvar_Thunder_Time = register_cvar("zm_thunder_time", "0.0");
-	g_pCvar_Triggered_Lights = register_cvar("zm_triggered_lights", "1");
+	g_pCvar_Lighting = register_cvar("zpe_lighting", "d");
+	g_pCvar_Thunder_Time = register_cvar("zpe_thunder_time", "0");
+	g_pCvar_Triggered_Lights = register_cvar("zpe_triggered_lights", "1");
 
 	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
 
@@ -86,49 +88,9 @@ public plugin_precache()
 	g_aThunder_Lights = ArrayCreate(LIGHTS_MAX_LENGTH, 1);
 	g_aSound_Thunder = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
-	// Load from external file
-	if (!amx_load_setting_int(ZP_SETTINGS_FILE, "Custom Skies", "ENABLE", g_Sky_Custom_Enable))
-	{
-		amx_save_setting_int(ZP_SETTINGS_FILE, "Custom Skies", "ENABLE", g_Sky_Custom_Enable);
-	}
-
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Custom Skies", "SKY NAMES", g_aSky_Names);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Lightning Lights Cycle", "LIGHTS", g_aThunder_Lights);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "THUNDER", g_aSound_Thunder);
-
-	// If we couldn't load from file, use and save default ones
-	if (ArraySize(g_aSky_Names) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sky_Names; i++)
-		{
-			ArrayPushString(g_aSky_Names, g_Sky_Names[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Custom Skies", "SKY NAMES", g_aSky_Names);
-	}
-
-	if (ArraySize(g_aThunder_Lights) == 0)
-	{
-		for (new i = 0; i < sizeof g_Thunder_Lights; i++)
-		{
-			ArrayPushString(g_aThunder_Lights, g_Thunder_Lights[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Lightning Lights Cycle", "LIGHTS", g_aThunder_Lights);
-	}
-
-	if (ArraySize(g_aSound_Thunder) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Thunder; i++)
-		{
-			ArrayPushString(g_aSound_Thunder, g_Sound_Thunder[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "THUNDER", g_aSound_Thunder);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Custom Skies", "SKY NAMES", g_aSky_Names);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Lightning Lights Cycle", "LIGHTS", g_aThunder_Lights);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "THUNDER", g_aSound_Thunder);
 
 	// Choose random sky and precache sky files
 	if (g_Sky_Custom_Enable)
@@ -168,7 +130,7 @@ public plugin_cfg()
 	// Get lighting style
 	new szLighting[2];
 
-	get_pcvar_string(g_pCvar_Lighting, szLighting, charsmax(szLighting))
+	get_pcvar_string(g_pCvar_Lighting, szLighting, charsmax(szLighting));
 
 	set_lights(szLighting);
 
@@ -209,7 +171,7 @@ public Remove_Lights()
 public Lighting_Task()
 {
 	// Set thunder task if enabled and not already in place
-	if (get_pcvar_float(g_pCvar_Thunder_Time) > 0.0 && !task_exists(TASK_THUNDER) && !task_exists(TASK_THUNDER_LIGHTS))
+	if (get_pcvar_float(g_pCvar_Thunder_Time) > 0 && !task_exists(TASK_THUNDER) && !task_exists(TASK_THUNDER_LIGHTS))
 	{
 		g_Thunder_Light_Index = 0;
 

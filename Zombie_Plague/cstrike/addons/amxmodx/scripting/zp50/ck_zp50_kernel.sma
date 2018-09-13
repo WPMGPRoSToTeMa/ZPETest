@@ -85,14 +85,7 @@ public plugin_init()
 
 public plugin_cfg()
 {
-	// Get configs dir
-	new szConfiguration_Directory[32];
-
-	get_configsdir(szConfiguration_Directory, charsmax(szConfiguration_Directory));
-
-	server_cmd("exec %s/zm_settings.cfg", szConfiguration_Directory);
-	server_cmd("exec %s/zm_modes_settings.cfg", szConfiguration_Directory);
-	server_cmd("exec %s/zm_items.cfg", szConfiguration_Directory);
+	server_cmd("exec addons/amxmodx/configs/ZPE/zpe_settings.cfg");
 }
 
 public plugin_natives()

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Class Nemesis.
+*	[ZPE] Class Nemesis.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,14 +7,30 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "class nemesis"
-#define VERSION "5.3.2.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
+#include <amxmodx>
+#include <cs_util>
+#include <amx_settings_api>
+#include <ck_cs_maxspeed_api>
+#include <ck_cs_weap_models_api>
+#include <ck_zp50_kernel>
+
+#define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_nemesis.ini"
+
+#define TASK_AURA 100
+#define ID_AURA (iTask_ID - TASK_AURA)
+
+#define PLAYERMODEL_MAX_LENGTH 32
+#define MODEL_MAX_LENGTH 64
+#define SOUND_MAX_LENGTH 64
 
 new const g_Models_Nemesis_Player[][] =
 {
@@ -67,20 +83,6 @@ new const g_Sound_Nemesis_Hit_Stab[][] =
 	"zombie_plague/zombie_sounds/zombie_hit_stab0.wav"
 };
 
-#include <amxmodx>
-#include <cs_util>
-#include <amx_settings_api>
-#include <ck_cs_maxspeed_api>
-#include <ck_cs_weap_models_api>
-#include <ck_zp50_kernel>
-
-#define TASK_AURA 100
-#define ID_AURA (iTask_ID - TASK_AURA)
-
-#define PLAYERMODEL_MAX_LENGTH 32
-#define MODEL_MAX_LENGTH 64
-#define SOUND_MAX_LENGTH 64
-
 new Array:g_aModels_Nemesis_Player;
 new Array:g_aModels_Nemesis_Claw;
 
@@ -124,31 +126,31 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Nemesis_Health = register_cvar("zm_nemesis_health", "0");
-	g_pCvar_Nemesis_Base_Health = register_cvar("zm_nemesis_base_health", "2000");
-	g_pCvar_Nemesis_Speed = register_cvar("zm_nemesis_speed", "1.05");
-	g_pCvar_Nemesis_Gravity = register_cvar("zm_nemesis_gravity", "0.5");
+	g_pCvar_Nemesis_Health = register_cvar("zpe_nemesis_health", "0");
+	g_pCvar_Nemesis_Base_Health = register_cvar("zpe_nemesis_base_health", "2000");
+	g_pCvar_Nemesis_Speed = register_cvar("zpe_nemesis_speed", "1.05");
+	g_pCvar_Nemesis_Gravity = register_cvar("zpe_nemesis_gravity", "0.5");
 
-	g_pCvar_Nemesis_Glow = register_cvar("zm_nemesis_glow", "1");
-	g_pCvar_Nemesis_Aura = register_cvar("zm_nemesis_aura", "1");
-	g_pCvar_Nemesis_Aura_Radius = register_cvar("zm_nemesis_aura_radius", "1");
-	g_pCvar_Nemesis_Aura_Color_R = register_cvar("zm_nemesis_aura_color_R", "150");
-	g_pCvar_Nemesis_Aura_Color_G = register_cvar("zm_nemesis_aura_color_G", "0");
-	g_pCvar_Nemesis_Aura_Color_B = register_cvar("zm_nemesis_aura_color_B", "0");
-	g_pCvar_Nemesis_Aura_Life = register_cvar("zm_nemesis_aura_life", "2");
-	g_pCvar_Nemesis_Aura_Decay_Rate = register_cvar("zm_nemesis_aura_decay_rate", "0");
+	g_pCvar_Nemesis_Glow = register_cvar("zpe_nemesis_glow", "1");
+	g_pCvar_Nemesis_Aura = register_cvar("zpe_nemesis_aura", "1");
+	g_pCvar_Nemesis_Aura_Radius = register_cvar("zpe_nemesis_aura_radius", "1");
+	g_pCvar_Nemesis_Aura_Color_R = register_cvar("zpe_nemesis_aura_color_R", "150");
+	g_pCvar_Nemesis_Aura_Color_G = register_cvar("zpe_nemesis_aura_color_G", "0");
+	g_pCvar_Nemesis_Aura_Color_B = register_cvar("zpe_nemesis_aura_color_B", "0");
+	g_pCvar_Nemesis_Aura_Life = register_cvar("zpe_nemesis_aura_life", "2");
+	g_pCvar_Nemesis_Aura_Decay_Rate = register_cvar("zpe_nemesis_aura_decay_rate", "0");
 
-	g_pCvar_Nemesis_Damage = register_cvar("zm_nemesis_damage", "2.0");
-	g_pCvar_Nemesis_Kill_Explode = register_cvar("zm_nemesis_kill_explode", "1");
+	g_pCvar_Nemesis_Damage = register_cvar("zpe_nemesis_damage", "2.0");
+	g_pCvar_Nemesis_Kill_Explode = register_cvar("zpe_nemesis_kill_explode", "1");
 
-	g_pCvar_Nemesis_Grenade_Frost = register_cvar("zm_nemesis_grenade_frost", "0");
-	g_pCvar_Nemesis_Grenade_Fire = register_cvar("zm_nemesis_grenade_fire", "1");
+	g_pCvar_Nemesis_Grenade_Frost = register_cvar("zpe_nemesis_grenade_frost", "0");
+	g_pCvar_Nemesis_Grenade_Fire = register_cvar("zpe_nemesis_grenade_fire", "1");
 
 	g_Forward = CreateMultiForward("zp_fw_class_nemesis_bit_change", ET_CONTINUE, FP_CELL);
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
 
-	// TODO: Dont use ReAPI, in the form of code - load.
+	// Dont use ReAPI, in the form of code - load
 	register_forward(FM_EmitSound, "FM_EmitSound_");
 
 	register_forward(FM_ClientDisconnect, "FM_ClientDisconnect_Post", 1);
@@ -169,116 +171,16 @@ public plugin_precache()
 	g_aSound_Nemesis_Hit_Stab = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Player Models", "NEMESIS", g_aModels_Nemesis_Player);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Weapon Models", "V_KNIFE NEMESIS", g_aModels_Nemesis_Claw);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Player Models", "NEMESIS", g_aModels_Nemesis_Player);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Weapon Models", "V_KNIFE NEMESIS", g_aModels_Nemesis_Claw);
 
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS DIE", g_aSound_Nemesis_Die);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS FALL", g_aSound_Nemesis_Fall);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS PAIN", g_aSound_Nemesis_Pain);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS MISS SLASH", g_aSound_Nemesis_Miss_Slash);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS MISS WALL", g_aSound_Nemesis_Miss_Wall);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS HIT NORMAL", g_aSound_Nemesis_Hit_Normal);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS HIT STAB", g_aSound_Nemesis_Hit_Stab);
-
-	// If we couldn't load from file, use and save default ones
-	if (ArraySize(g_aModels_Nemesis_Player) == 0)
-	{
-		for (new i = 0; i < sizeof g_Models_Nemesis_Player; i++)
-		{
-			ArrayPushString(g_aModels_Nemesis_Player, g_Models_Nemesis_Player[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Player Models", "NEMESIS", g_aModels_Nemesis_Player);
-	}
-
-	if (ArraySize(g_aModels_Nemesis_Claw) == 0)
-	{
-		for (new i = 0; i < sizeof g_Models_Nemesis_Claw; i++)
-		{
-			ArrayPushString(g_aModels_Nemesis_Claw, g_Models_Nemesis_Claw[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Weapon Models", "V_KNIFE NEMESIS", g_aModels_Nemesis_Claw);
-	}
-
-	if (ArraySize(g_aSound_Nemesis_Die) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis_Die; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis_Die, g_Sound_Nemesis_Die[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS DIE", g_aSound_Nemesis_Die);
-	}
-
-	if (ArraySize(g_aSound_Nemesis_Fall) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis_Fall; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis_Fall, g_Sound_Nemesis_Fall[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS FALL", g_aSound_Nemesis_Fall);
-	}
-
-	if (ArraySize(g_aSound_Nemesis_Pain) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis_Pain; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis_Pain, g_Sound_Nemesis_Pain[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS PAIN", g_aSound_Nemesis_Pain);
-	}
-
-	if (ArraySize(g_aSound_Nemesis_Miss_Slash) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis_Miss_Slash; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis_Miss_Slash, g_Sound_Nemesis_Miss_Slash[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS MISS SLASH", g_aSound_Nemesis_Miss_Slash);
-	}
-
-	if (ArraySize(g_aSound_Nemesis_Miss_Wall) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis_Miss_Wall; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis_Miss_Wall, g_Sound_Nemesis_Miss_Wall[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS MISS WALL", g_aSound_Nemesis_Miss_Wall);
-	}
-
-	if (ArraySize(g_aSound_Nemesis_Hit_Normal) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis_Hit_Normal; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis_Hit_Normal, g_Sound_Nemesis_Hit_Normal[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS HIT NORMAL", g_aSound_Nemesis_Hit_Normal);
-	}
-
-	if (ArraySize(g_aSound_Nemesis_Hit_Stab) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Nemesis_Hit_Stab; i++)
-		{
-			ArrayPushString(g_aSound_Nemesis_Hit_Stab, g_Sound_Nemesis_Hit_Stab[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "NEMESIS HIT STAB", g_aSound_Nemesis_Hit_Stab);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS DIE", g_aSound_Nemesis_Die);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS FALL", g_aSound_Nemesis_Fall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS PAIN", g_aSound_Nemesis_Pain);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS MISS SLASH", g_aSound_Nemesis_Miss_Slash);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS MISS WALL", g_aSound_Nemesis_Miss_Wall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT NORMAL", g_aSound_Nemesis_Hit_Normal);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT STAB", g_aSound_Nemesis_Hit_Stab);
 
 	new szBuffer[128];
 
@@ -328,6 +230,11 @@ public plugin_precache()
 	{
 		precache_sound(g_Sound_Nemesis_Hit_Stab[i]);
 	}
+}
+
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/classes/other/zpe_nemesis.cfg");
 }
 
 public plugin_natives()
@@ -390,7 +297,7 @@ public zp_fw_core_spawn_post(iPlayer)
 		// Remove nemesis glow
 		if (get_pcvar_num(g_pCvar_Nemesis_Glow))
 		{
-			rh_set_user_rendering(iPlayer);
+			rg_set_user_rendering(iPlayer);
 		}
 
 		// Remove nemesis aura
@@ -413,7 +320,7 @@ public zp_fw_core_cure(iPlayer)
 		// Remove nemesis glow
 		if (get_pcvar_num(g_pCvar_Nemesis_Glow))
 		{
-			rh_set_user_rendering(iPlayer);
+			rg_set_user_rendering(iPlayer);
 		}
 
 		// Remove nemesis aura
@@ -440,12 +347,12 @@ public zp_fw_core_infect_post(iPlayer)
 	// Health
 	if (get_pcvar_num(g_pCvar_Nemesis_Health) == 0)
 	{
-		SET_USER_HEALTH(iPlayer, float(get_pcvar_num(g_pCvar_Nemesis_Base_Health)) * Get_Alive_Count());
+		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Base_Health) * Get_Alive_Count());
 	}
 
 	else
 	{
-		SET_USER_HEALTH(iPlayer, float(get_pcvar_num(g_pCvar_Nemesis_Base_Health)));
+		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Base_Health));
 	}
 
 	// Gravity
@@ -455,15 +362,15 @@ public zp_fw_core_infect_post(iPlayer)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Speed));
 
 	// Apply nemesis player model
-	rg_set_user_model(iPlayer, g_Models_Nemesis_Player[random_num(0, sizeof g_Models_Nemesis_Player - 1)]);
+	rg_set_user_model(iPlayer, g_Models_Nemesis_Player[random(sizeof g_Models_Nemesis_Player)]);
 
 	// Apply nemesis claw model
-	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_Models_Nemesis_Claw[random_num(0, sizeof g_Models_Nemesis_Claw - 1)]);
+	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_Models_Nemesis_Claw[random(sizeof g_Models_Nemesis_Claw)]);
 
 	// Nemesis glow
 	if (get_pcvar_num(g_pCvar_Nemesis_Glow))
 	{
-		rh_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Nemesis_Aura_Color_R), get_pcvar_num(g_pCvar_Nemesis_Aura_Color_G), get_pcvar_num(g_pCvar_Nemesis_Aura_Color_B), kRenderNormal, 25);
+		rg_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Nemesis_Aura_Color_R), get_pcvar_num(g_pCvar_Nemesis_Aura_Color_G), get_pcvar_num(g_pCvar_Nemesis_Aura_Color_B), kRenderNormal, 25);
 	}
 
 	// Nemesis aura task
@@ -528,7 +435,7 @@ public Nemesis_Aura(iTask_ID)
 	message_end();
 }
 
-public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
+public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
 	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zp_core_is_zombie(iPlayer))
 	{
@@ -624,6 +531,7 @@ public FM_ClientDisconnect_Post(iPlayer)
 	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Nemesis);
 }
 
+// This is RG_CSGameRules_PlayerKilled Pre. Simply optimization.
 public zpe_fw_kill_pre_bit_sub(iVictim)
 {
 	if (BIT_VALID(g_iBit_Nemesis, iVictim))

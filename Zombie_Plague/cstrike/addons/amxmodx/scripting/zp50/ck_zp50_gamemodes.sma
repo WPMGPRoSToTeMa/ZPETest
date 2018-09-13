@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Kernel gamemodes.
+*	[ZPE] Kernel gamemodes.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "kernel gamemodes"
-#define VERSION "5.2.7.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -28,6 +30,8 @@
 
 // Some constants
 #define DMG_HEGRENADE (1 << 24)
+
+#define CHANCE(%0) (random(100) < (%0))
 
 enum _:TOTAL_FORWARDS
 {
@@ -81,25 +85,25 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Gamemode_Delay = register_cvar("zm_gamemode_delay", "10");
-	g_pCvar_Prevent_Consecutive = register_cvar("zm_prevent_consecutive_modes", "1");
+	g_pCvar_Gamemode_Delay = register_cvar("zpe_gamemode_delay", "10");
+	g_pCvar_Prevent_Consecutive = register_cvar("zpe_prevent_consecutive_modes", "1");
 
-	g_pCvar_Notice_Gamemodes_Start_Show_Hud = register_cvar("zm_notice_gamemodes_start_show_hud", "1");
+	g_pCvar_Notice_Gamemodes_Start_Show_Hud = register_cvar("zpe_notice_gamemodes_start_show_hud", "1");
 
-	g_pCvar_Message_Notice_Gamemodes_Start_Converted = register_cvar("zm_notice_gamemodes_start_message_converted", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_R = register_cvar("zm_notice_gamemodes_start_message_r", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_G = register_cvar("zm_notice_gamemodes_start_message_g", "250");
-	g_pCvar_Message_Notice_Gamemodes_Start_B = register_cvar("zm_notice_gamemodes_start_message_b", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_X = register_cvar("zm_notice_gamemodes_start_message_x", "-1.0");
-	g_pCvar_Message_Notice_Gamemodes_Start_Y = register_cvar("zm_notice_gamemodes_start_message_y", "0.75");
-	g_pCvar_Message_Notice_Gamemodes_Start_Effects = register_cvar("zm_notice_gamemodes_start_message_effects", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_Fxtime = register_cvar("zm_notice_gamemodes_start_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Gamemodes_Start_Holdtime = register_cvar("zm_notice_gamemodes_start_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Gamemodes_Start_Fadeintime = register_cvar("zm_notice_gamemodes_start_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Gamemodes_Start_Fadeouttime = register_cvar("zm_notice_gamemodes_start_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Gamemodes_Start_Channel = register_cvar("zm_notice_gamemodes_start_message_channel", "-1");
+	g_pCvar_Message_Notice_Gamemodes_Start_Converted = register_cvar("zpe_notice_gamemodes_start_message_converted", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_R = register_cvar("zpe_notice_gamemodes_start_message_r", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_G = register_cvar("zpe_notice_gamemodes_start_message_g", "250");
+	g_pCvar_Message_Notice_Gamemodes_Start_B = register_cvar("zpe_notice_gamemodes_start_message_b", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_X = register_cvar("zpe_notice_gamemodes_start_message_x", "-1.0");
+	g_pCvar_Message_Notice_Gamemodes_Start_Y = register_cvar("zpe_notice_gamemodes_start_message_y", "0.75");
+	g_pCvar_Message_Notice_Gamemodes_Start_Effects = register_cvar("zpe_notice_gamemodes_start_message_effects", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_Fxtime = register_cvar("zpe_notice_gamemodes_start_message_fxtime", "0.1");
+	g_pCvar_Message_Notice_Gamemodes_Start_Holdtime = register_cvar("zpe_notice_gamemodes_start_message_holdtime", "1.5");
+	g_pCvar_Message_Notice_Gamemodes_Start_Fadeintime = register_cvar("zpe_notice_gamemodes_start_message_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Gamemodes_Start_Fadeouttime = register_cvar("zpe_notice_gamemodes_start_message_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Gamemodes_Start_Channel = register_cvar("zpe_notice_gamemodes_start_message_channel", "-1");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
 
 	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
 	register_event("TextMsg", "Event_Game_Restart", "a", "2=#Game_will_restart_in");
@@ -118,6 +122,11 @@ public plugin_init()
 	g_Forwards[FW_GAME_MODE_CHOOSE_POST] = CreateMultiForward("zp_fw_gamemodes_choose_post", ET_IGNORE, FP_CELL, FP_CELL);
 	g_Forwards[FW_GAME_MODE_START] = CreateMultiForward("zp_fw_gamemodes_start", ET_IGNORE, FP_CELL);
 	g_Forwards[FW_GAME_MODE_END] = CreateMultiForward("zp_fw_gamemodes_end", ET_IGNORE, FP_CELL);
+}
+
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_gamemode_kernel.cfg");
 }
 
 public plugin_natives()
@@ -143,13 +152,13 @@ public plugin_natives()
 
 public native_gamemodes_register(iPlugin_ID, iNum_Params)
 {
-	new szPlayer_Name[32];
+	new szGame_Name[32];
 	new szFilename[64];
 
-	get_string(1, szPlayer_Name, charsmax(szPlayer_Name));
+	get_string(1, szGame_Name, charsmax(szGame_Name));
 	get_plugin(iPlugin_ID, szFilename, charsmax(szFilename));
 
-	if (strlen(szPlayer_Name) < 1)
+	if (strlen(szGame_Name) < 1)
 	{
 		log_error(AMX_ERR_NATIVE, "Can't register game mode with an empty name");
 
@@ -162,15 +171,15 @@ public native_gamemodes_register(iPlugin_ID, iNum_Params)
 	{
 		ArrayGetString(g_aGame_Mode_Name, i, szGamemode_Name, charsmax(szGamemode_Name));
 
-		if (equali(szPlayer_Name, szGamemode_Name))
+		if (equali(szGame_Name, szGamemode_Name))
 		{
-			log_error(AMX_ERR_NATIVE, "Game mode already registered (%s)", szPlayer_Name);
+			log_error(AMX_ERR_NATIVE, "Game mode already registered (%s)", szGame_Name);
 
 			return ZP_INVALID_GAME_MODE;
 		}
 	}
 
-	ArrayPushString(g_aGame_Mode_Name, szPlayer_Name);
+	ArrayPushString(g_aGame_Mode_Name, szGame_Name);
 	ArrayPushString(g_aGame_Mode_File_Name, szFilename);
 
 	// Pause game mode plugin after registering
@@ -214,9 +223,9 @@ public native_gamemodes_get_current(iPlugin_ID, iNum_Params)
 
 public native_gamemodes_get_id(iPlugin_ID, iNum_Params)
 {
-	new szPlayer_Name[32];
+	new szGame_Name[32];
 
-	get_string(1, szPlayer_Name, charsmax(szPlayer_Name));
+	get_string(1, szGame_Name, charsmax(szGame_Name));
 
 	// Loop through every game mode
 	new szGamemode_Name[32];
@@ -225,7 +234,7 @@ public native_gamemodes_get_id(iPlugin_ID, iNum_Params)
 	{
 		ArrayGetString(g_aGame_Mode_Name, i, szGamemode_Name, charsmax(szGamemode_Name));
 
-		if (equali(szPlayer_Name, szGamemode_Name))
+		if (equali(szGame_Name, szGamemode_Name))
 		{
 			return i;
 		}
@@ -245,13 +254,13 @@ public native_gamemodes_get_name(iPlugin_ID, iNum_Params)
 		return false;
 	}
 
-	new szPlayer_Name[32];
+	new szGame_Name[32];
 
-	ArrayGetString(g_aGame_Mode_Name, iGame_Mode_ID, szPlayer_Name, charsmax(szPlayer_Name));
+	ArrayGetString(g_aGame_Mode_Name, iGame_Mode_ID, szGame_Name, charsmax(szGame_Name));
 
 	new sLen = get_param(3);
 
-	set_string(2, szPlayer_Name, sLen);
+	set_string(2, szGame_Name, sLen);
 
 	return true;
 }
@@ -766,7 +775,7 @@ Balance_Teams()
 		}
 
 		// Random chance
-		if (random_num(0, 1))
+		if (CHANCE(50))
 		{
 			rg_set_user_team(iPlayer, TEAM_TERRORIST, MODEL_AUTO, false);
 

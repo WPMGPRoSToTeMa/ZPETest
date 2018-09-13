@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Gameplay fixes.
+*	[ZPE] Gameplay fixes.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,19 +7,18 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "gameplay fixes"
-#define VERSION "5.2.8.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
 
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <fakemeta>
 #include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
@@ -28,7 +27,11 @@
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
 
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
+
 #define STATIONARY_USING 2
+
+#define CLASSNAME_MAX_LENGTH 32
 
 #define TASK_RESPAWN 100
 #define ID_RESPAWN (Task_ID - TASK_RESPAWN)
@@ -38,8 +41,6 @@ new const g_Gameplay_Entity[][] =
 	"func_vehicle",
 	"item_longjump"
 };
-
-#define CLASSNAME_MAX_LENGTH 32
 
 new Array:g_aGameplay_Entitys;
 
@@ -61,12 +62,12 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Remove_Doors = register_cvar("zm_remove_doors", "0");
-	g_pCvar_Block_Pushables = register_cvar("zm_block_pushables", "1");
-	g_pCvar_Block_Suicide = register_cvar("zm_block_suicide", "1");
-	g_pCvar_Worldspawn_Kill_Respawn = register_cvar("zm_worldspawn_kill_respawn", "1");
-	g_pCvar_Disable_Minmodels = register_cvar("zm_disable_minmodels", "1");
-	g_pCvar_Keep_HP_On_Disconnect = register_cvar("zm_keep_hp_on_disconnect", "1");
+	g_pCvar_Remove_Doors = register_cvar("zpe_remove_doors", "0");
+	g_pCvar_Block_Pushables = register_cvar("zpe_block_pushables", "1");
+	g_pCvar_Block_Suicide = register_cvar("zpe_block_suicide", "1");
+	g_pCvar_Worldspawn_Kill_Respawn = register_cvar("zpe_worldspawn_kill_respawn", "1");
+	g_pCvar_Disable_Minmodels = register_cvar("zpe_disable_minmodels", "1");
+	g_pCvar_Keep_HP_On_Disconnect = register_cvar("zpe_keep_hp_on_disconnect", "1");
 
 	register_clcmd("chooseteam", "Client_Command_Changeteam");
 	register_clcmd("jointeam", "Client_Command_Changeteam");
@@ -93,19 +94,7 @@ public plugin_precache()
 	g_aGameplay_Entitys = ArrayCreate(CLASSNAME_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Objective Entities", "GAMEPLAY", g_aGameplay_Entitys);
-
-	// If we couldn't load from file, use and save default ones
-	if (ArraySize(g_aGameplay_Entitys) == 0)
-	{
-		for (new i = 0; i < sizeof g_Gameplay_Entity; i++)
-		{
-			ArrayPushString(g_aGameplay_Entitys, g_Gameplay_Entity[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Objective Entities", "GAMEPLAY", g_aGameplay_Entitys);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Objective Entities", "GAMEPLAY", g_aGameplay_Entitys);
 
 	// Prevent gameplay entities from spawning
 	g_unfwSpawn = register_forward(FM_Spawn, "FM_Spawn_");
@@ -141,7 +130,7 @@ public Client_Command_Changeteam(iPlayer)
 	// Block suicides by choosing a different team
 	if (get_pcvar_num(g_pCvar_Block_Suicide) && g_Game_Mode_Started && BIT_VALID(g_iBit_Alive, iPlayer))
 	{
-		client_print(iPlayer, print_chat, "%L", LANG_PLAYER, "CANT_CHANGE_TEAM");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", LANG_PLAYER, "CANT_CHANGE_TEAM_COLOR");
 
 		return PLUGIN_HANDLED;
 	}
@@ -154,7 +143,7 @@ public Event_Round_Start()
 	g_Round_Ended = false;
 
 	// Remove doors?
-	if (get_pcvar_num(g_pCvar_Remove_Doors) > 0)
+	if (get_pcvar_num(g_pCvar_Remove_Doors))
 	{
 		set_task(0.1, "Remove_Doors");
 	}
@@ -168,19 +157,20 @@ public Remove_Doors()
 
 	iEntity = -1;
 
-	while ((iEntity = engfunc(EngFunc_FindEntityByString, iEntity, "classname", "func_door_rotating")) != 0)
-	{
-		engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0 ,8192.0 ,8192.0});
-	}
-
 	// Remove all doors?
-	if (get_pcvar_num(g_pCvar_Remove_Doors) > 1)
+	if (get_pcvar_num(g_pCvar_Remove_Doors) == 2)
 	{
-		iEntity = -1;
-
 		while ((iEntity = engfunc(EngFunc_FindEntityByString, iEntity, "classname", "func_door")) != 0)
 		{
-			engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0 ,8192.0 ,8192.0});
+			engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0, 8192.0, 8192.0});
+		}
+	}
+
+	else
+	{
+		while ((iEntity = engfunc(EngFunc_FindEntityByString, iEntity, "classname", "func_door_rotating")) != 0)
+		{
+			engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0, 8192.0, 8192.0});
 		}
 	}
 }
@@ -312,7 +302,7 @@ public client_disconnected(iLeaving_Player)
 
 			GET_USER_NAME(iPlayer, szPlayer_Name, charsmax(szPlayer_Name));
 
-			client_print(0, print_chat, "%L", LANG_PLAYER, "LAST_ZOMBIE_LEFT", szPlayer_Name);
+			zpe_client_print_color(0, print_team_default, "%L", LANG_PLAYER, "LAST_ZOMBIE_LEFT_COLOR", szPlayer_Name);
 
 			if (zp_class_nemesis_get(iLeaving_Player))
 			{
@@ -356,7 +346,7 @@ public client_disconnected(iLeaving_Player)
 
 			GET_USER_NAME(iPlayer, szPlayer_Name, charsmax(szPlayer_Name));
 
-			client_print(0, print_chat, "%L", LANG_PLAYER, "LAST_HUMAN_LEFT", szPlayer_Name);
+			zpe_client_print_color(0, print_team_default, "%L", LANG_PLAYER, "LAST_HUMAN_LEFT_COLOR", szPlayer_Name);
 
 			if (zp_class_survivor_get(iLeaving_Player))
 			{

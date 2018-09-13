@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Gamemode plague.
+*	[ZPE] Gamemode plague.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,31 +7,34 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "gamemode plague"
-#define VERSION "5.2.7.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
-
-new const g_Sound_Plague[][] =
-{
-	"zombie_plague/nemesis1.wav",
-	"zombie_plague/survivor1.wav"
-};
 
 #include <amxmodx>
 #include <cs_util>
-#include <fun>
 #include <amx_settings_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
 #include <ck_zp50_class_nemesis>
 #include <ck_zp50_class_survivor>
 
+#define ZPE_SETTINGS_INI "ZPE/gamemode/zpe_plague.ini"
+
 #define SOUND_MAX_LENGTH 64
+
+#define CHANCE(%0) (random(100) < (%0))
+
+new const g_Sound_Plague[][] =
+{
+	"zombie_plague/nemesis1.wav",
+	"zombie_plague/survivor1.wav"
+};
 
 new Array:g_aSound_Plague;
 
@@ -62,61 +65,58 @@ new g_pCvar_Message_Notice_Plague_Channel;
 
 new g_pCvar_All_Messages_Converted;
 
-public plugin_precache()
+public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	zp_gamemodes_register("Plague Mode");
+	g_pCvar_Plague_Chance = register_cvar("zpe_plague_chance", "20");
+	g_pCvar_Plague_Min_Players = register_cvar("zpe_plague_min_players", "0");
+	g_pCvar_Plague_Ratio = register_cvar("zpe_plague_ratio", "0.5");
+	g_pCvar_Plague_Nemesis_Count = register_cvar("zpe_plague_nemesis_count", "1");
+	g_pCvar_Plague_Nemesis_HP_Multi = register_cvar("zpe_plague_nemesis_hp_multi", "0.5");
+	g_pCvar_Plague_Survivor_Count = register_cvar("zpe_plague_survivor_count", "1");
+	g_pCvar_Plague_Survivor_HP_Multi = register_cvar("zpe_plague_survivor_hp_multi", "0.5");
+	g_pCvar_Plague_Sounds = register_cvar("zpe_plague_sounds", "1");
+	g_pCvar_Plague_Allow_Respawn = register_cvar("zpe_plague_allow_respawn", "0");
 
-	g_pCvar_Plague_Chance = register_cvar("zm_plague_chance", "20");
-	g_pCvar_Plague_Min_Players = register_cvar("zm_plague_min_players", "0");
-	g_pCvar_Plague_Ratio = register_cvar("zm_plague_ratio", "0.5");
-	g_pCvar_Plague_Nemesis_Count = register_cvar("zm_plague_nemesis_count", "1");
-	g_pCvar_Plague_Nemesis_HP_Multi = register_cvar("zm_plague_nemesis_hp_multi", "0.5");
-	g_pCvar_Plague_Survivor_Count = register_cvar("zm_plague_survivor_count", "1");
-	g_pCvar_Plague_Survivor_HP_Multi = register_cvar("zm_plague_survivor_hp_multi", "0.5");
-	g_pCvar_Plague_Sounds = register_cvar("zm_plague_sounds", "1");
-	g_pCvar_Plague_Allow_Respawn = register_cvar("zm_plague_allow_respawn", "0");
+	g_pCvar_Notice_Plague_Show_Hud = register_cvar("zpe_notice_plague_show_hud", "1");
 
-	g_pCvar_Notice_Plague_Show_Hud = register_cvar("zm_notice_plague_show_hud", "1");
+	g_pCvar_Message_Notice_Plague_Converted = register_cvar("zpe_notice_plague_message_converted", "0");
+	g_pCvar_Message_Notice_Plague_R = register_cvar("zpe_notice_plague_message_r", "0");
+	g_pCvar_Message_Notice_Plague_G = register_cvar("zpe_notice_plague_message_g", "250");
+	g_pCvar_Message_Notice_Plague_B = register_cvar("zpe_notice_plague_message_b", "0");
+	g_pCvar_Message_Notice_Plague_X = register_cvar("zpe_notice_plague_message_x", "-1.0");
+	g_pCvar_Message_Notice_Plague_Y = register_cvar("zpe_notice_plague_message_y", "0.75");
+	g_pCvar_Message_Notice_Plague_Effects = register_cvar("zpe_notice_plague_message_effects", "0");
+	g_pCvar_Message_Notice_Plague_Fxtime = register_cvar("zpe_notice_plague_message_fxtime", "0.1");
+	g_pCvar_Message_Notice_Plague_Holdtime = register_cvar("zpe_notice_plague_message_holdtime", "1.5");
+	g_pCvar_Message_Notice_Plague_Fadeintime = register_cvar("zpe_notice_plague_message_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Plague_Fadeouttime = register_cvar("zpe_notice_plague_message_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Plague_Channel = register_cvar("zpe_notice_plague_message_channel", "-1");
 
-	g_pCvar_Message_Notice_Plague_Converted = register_cvar("zm_notice_plague_message_converted", "0");
-	g_pCvar_Message_Notice_Plague_R = register_cvar("zm_notice_plague_message_r", "0");
-	g_pCvar_Message_Notice_Plague_G = register_cvar("zm_notice_plague_message_g", "250");
-	g_pCvar_Message_Notice_Plague_B = register_cvar("zm_notice_plague_message_b", "0");
-	g_pCvar_Message_Notice_Plague_X = register_cvar("zm_notice_plague_message_x", "-1.0");
-	g_pCvar_Message_Notice_Plague_Y = register_cvar("zm_notice_plague_message_y", "0.75");
-	g_pCvar_Message_Notice_Plague_Effects = register_cvar("zm_notice_plague_message_effects", "0");
-	g_pCvar_Message_Notice_Plague_Fxtime = register_cvar("zm_notice_plague_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Plague_Holdtime = register_cvar("zm_notice_plague_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Plague_Fadeintime = register_cvar("zm_notice_plague_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Plague_Fadeouttime = register_cvar("zm_notice_plague_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Plague_Channel = register_cvar("zm_notice_plague_message_channel", "-1");
+	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+}
 
-	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
-
+public plugin_precache()
+{
 	// Initialize arrays
 	g_aSound_Plague = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND PLAGUE", g_aSound_Plague);
-
-	// If we couldn't load custom sounds from file, use and save default ones
-	if (ArraySize(g_aSound_Plague) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Plague; i++)
-		{
-			ArrayPushString(g_aSound_Plague, g_Sound_Plague[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND PLAGUE", g_aSound_Plague);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_INI, "Sounds", "ROUND PLAGUE", g_aSound_Plague);
 
 	for (new i = 0; i < sizeof g_Sound_Plague; i++)
 	{
 		precache_sound(g_Sound_Plague[i]);
 	}
+}
+
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_plague.cfg");
+
+	// Register game mode at plugin_cfg (plugin gets paused after this)
+	zp_gamemodes_register("Plague Mode");
 }
 
 // Deathmatch module's player respawn forward
@@ -138,7 +138,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	if (!iSkipchecks)
 	{
 		// Random chance
-		if (random_num(1, get_pcvar_num(g_pCvar_Plague_Chance)) != 1)
+		if (CHANCE(get_pcvar_num(g_pCvar_Plague_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}
@@ -183,7 +183,7 @@ public zp_fw_gamemodes_start()
 
 		iSurvivors++;
 
-		set_user_health(iPlayer, get_user_health(iPlayer) * floatround(get_pcvar_float(g_pCvar_Plague_Survivor_HP_Multi)));
+		SET_USER_HEALTH(iPlayer, GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Survivor_HP_Multi));
 	}
 
 	new iNemesis;
@@ -202,7 +202,7 @@ public zp_fw_gamemodes_start()
 
 		iNemesis++;
 
-		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Nemesis_HP_Multi));
+		SET_USER_HEALTH(iPlayer, GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Nemesis_HP_Multi));
 	}
 
 	new iZombies;
@@ -224,7 +224,7 @@ public zp_fw_gamemodes_start()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (!is_user_alive(i))
+		if (!is_user_alive(i)) // Use bit - invalid player
 		{
 			continue;
 		}
@@ -305,7 +305,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i))
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iAlive++;
 		}
@@ -321,7 +321,7 @@ Get_Random_Alive_Player()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i))
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iPlayers[iCount++] = i;
 		}

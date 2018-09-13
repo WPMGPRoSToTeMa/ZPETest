@@ -12,7 +12,7 @@
  * Returns a player's current human class ID.
  *
  * @param id		Player index.
- * @return			Internal human class ID, or ZP_INVALID_HUMAN_CLASS if not yet chosen.
+ * @return			Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not yet chosen.
  */
 native zp_class_human_get_current(id)
 
@@ -20,7 +20,7 @@ native zp_class_human_get_current(id)
  * Returns a player's next human class ID (for the next infection).
  *
  * @param id		Player index.
- * @return			Internal human class ID, or ZP_INVALID_HUMAN_CLASS if not yet chosen.
+ * @return			Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not yet chosen.
  */
 native zp_class_human_get_next(id)
 
@@ -55,7 +55,7 @@ native zp_class_human_get_max_health(id, classid)
  * @param health		Class health.
  * @param speed			Class maxspeed (can be a multiplier).
  * @param gravity		Class gravity multiplier.
- * @return				An internal human class ID, or ZP_INVALID_HUMAN_CLASS on failure.
+ * @return				An internal human class ID, or ZPE_INVALID_CLASS_HUMAN on failure.
  */
 native zp_class_human_register(const name[], const description[], health, armor, Float:speed, Float:gravity)
 
@@ -72,7 +72,7 @@ native zp_class_human_register_model(classid, const model[])
  * Returns a human class' ID.
  *
  * @param name		Class name to look for.
- * @return			Internal human class ID, or ZP_INVALID_HUMAN_CLASS if not found.
+ * @return			Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not found.
  */
 native zp_class_human_get_id(const real_name[])
 

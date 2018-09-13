@@ -17,7 +17,7 @@
 
 new stock g_iBit_Assassin;
 
-public zp_fw_class_asassin_bit_change(iBit_Sum)
+public zpe_fw_class_asassin_bit_change(iBit_Sum)
 {
 	g_iBit_Assassin = iBit_Sum;
 }

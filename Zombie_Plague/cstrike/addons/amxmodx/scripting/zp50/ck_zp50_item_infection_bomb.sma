@@ -302,7 +302,7 @@ public FM_SetModel_(iEntity, const szModel[])
 	if (szModel[9] == 'h' && szModel[10] == 'e')
 	{
 		// Give it a glow
-		rh_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_B), kRenderNormal, 16);
+		rg_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_B), kRenderNormal, 16);
 
 		// And a colored trail
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);

@@ -201,7 +201,7 @@ stock fm_set_kvd(iEntity, const szClassName[], const szKeyName[], const szValue[
 	return dllfunc(DLLFunc_KeyValue, iEntity, 0);
 }
 
-stock rh_set_user_rendering(iEntity, iFx = kRenderFxNone, r = 255, g = 255, b = 255, iRender = kRenderNormal, iAmount = 16)
+stock rg_set_user_rendering(iEntity, iFx = kRenderFxNone, r = 255, g = 255, b = 255, iRender = kRenderNormal, iAmount = 16)
 {
 	new Float:fRender_Color[3];
 

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Class Zombie Light.
+*	[ZPE] Class Zombie Light.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "class zombie light"
-#define VERSION "5.1.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -35,21 +37,30 @@ new const g_Class_Zombie_Light_Clawmodels[][] =
 	"models/zombie_plague/v_knife_zombie.mdl"
 };
 
+new g_Class_Zombie_ID;
+
 public plugin_precache()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	new iClass_Zombie_ID = zp_class_zombie_register(CLASS_ZOMBIE_LIGHT_NAME, CLASS_ZOMBIE_LIGHT_INFO, CLASS_ZOMBIE_LIGHT_HEALTH, CLASS_ZOMBIE_LIGHT_SPEED, CLASS_ZOMBIE_LIGHT_GRAVITY);
+	g_Class_Zombie_ID = zp_class_zombie_register
+	(
+		CLASS_ZOMBIE_LIGHT_NAME,
+		CLASS_ZOMBIE_LIGHT_INFO,
+		CLASS_ZOMBIE_LIGHT_HEALTH,
+		CLASS_ZOMBIE_LIGHT_SPEED,
+		CLASS_ZOMBIE_LIGHT_GRAVITY
+	);
 
-	zp_class_zombie_register_kb(iClass_Zombie_ID, CLASS_ZOMBIE_LIGHT_KNOCKBACK);
+	zp_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_LIGHT_KNOCKBACK);
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Light_Models; i++)
 	{
-		zp_class_zombie_register_model(iClass_Zombie_ID, g_Class_Zombie_Light_Models[i]);
+		zp_class_zombie_register_model(g_Class_Zombie_ID, g_Class_Zombie_Light_Models[i]);
 	}
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Light_Clawmodels; i++)
 	{
-		zp_class_zombie_register_claw(iClass_Zombie_ID, g_Class_Zombie_Light_Clawmodels[i]);
+		zp_class_zombie_register_claw(g_Class_Zombie_ID, g_Class_Zombie_Light_Clawmodels[i]);
 	}
 }
