@@ -567,14 +567,14 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	ArrayPushCell(g_aClass_Human_Models_Handle, aClass_Human_Models);
 
 	// Health
-	new iHealth = get_param(3);
+	new Float:fHealth = get_param_f(3);
 
-	if (!amx_load_setting_int(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", iHealth))
+	if (!amx_load_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", fHealth))
 	{
-		amx_save_setting_int(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", iHealth);
+		amx_save_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", fHealth);
 	}
 
-	ArrayPushCell(g_aClass_Human_Health, iHealth);
+	ArrayPushCell(g_aClass_Human_Health, fHealth);
 
 	// Armor
 	new iArmor = get_param(4);

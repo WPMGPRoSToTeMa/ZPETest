@@ -572,14 +572,14 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	ArrayPushCell(g_aClass_Zombie_Claws_Handle, aClass_Claws);
 
 	// Health
-	new iHealth = get_param(3);
+	new Float:fHealth = get_param_f(3);
 
-	if (!amx_load_setting_int(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "HEALTH", iHealth))
+	if (!amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "HEALTH", fHealth))
 	{
-		amx_save_setting_int(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "HEALTH", iHealth);
+		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "HEALTH", fHealth);
 	}
 
-	ArrayPushCell(g_aClass_Zombie_Health, iHealth);
+	ArrayPushCell(g_aClass_Zombie_Health, fHealth);
 
 	// Speed
 	new Float:fSpeed = get_param_f(4);
