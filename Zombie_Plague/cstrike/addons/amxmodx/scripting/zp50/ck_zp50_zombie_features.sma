@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Zombie Features.
+*	[ZPE] Zombie Features.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,14 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "zombie features"
-#define VERSION "5.2.6.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
 
 #include <amxmodx>
 #include <cs_util>
@@ -22,6 +22,8 @@
 #include <ck_zp50_kernel>
 #include <ck_zp50_class_nemesis>
 #include <ck_zp50_class_assassin>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 new const g_Bleeding_Decals[] =
 {
@@ -57,9 +59,9 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Zombie_Fov = register_cvar("zm_zombie_fov", "110");
-	g_pCvar_Zombie_Silent = register_cvar("zm_zombie_silent", "1");
-	g_pCvar_Zombie_Bleeding = register_cvar("zm_zombie_bleeding", "1");
+	g_pCvar_Zombie_Fov = register_cvar("zpe_zombie_fov", "110");
+	g_pCvar_Zombie_Silent = register_cvar("zpe_zombie_silent", "1");
+	g_pCvar_Zombie_Bleeding = register_cvar("zpe_zombie_bleeding", "1");
 
 	g_Message_Set_Fov = get_user_msgid("SetFOV");
 
@@ -83,19 +85,7 @@ public plugin_precache()
 	g_aBleeding_Decals = ArrayCreate(1, 1);
 
 	// Load from external file
-	amx_load_setting_int_arr(ZP_SETTINGS_FILE, "Zombie Decals", "DECALS", g_aBleeding_Decals);
-
-	// If we couldn't load from file, use and save default ones
-	if (ArraySize(g_aBleeding_Decals) == 0)
-	{
-		for (new i = 0; i < sizeof g_Bleeding_Decals; i++)
-		{
-			ArrayPushCell(g_aBleeding_Decals, g_Bleeding_Decals[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_int_arr(ZP_SETTINGS_FILE, "Zombie Decals", "DECALS", g_aBleeding_Decals);
-	}
+	amx_load_setting_int_arr(ZPE_SETTINGS_FILE, "Zombie Decals", "DECALS", g_aBleeding_Decals);
 }
 
 public RG_CSGameRules_PlayerKilled_Post(iVictim)
@@ -128,7 +118,7 @@ public zp_fw_core_infect_post(iPlayer)
 	remove_task(iPlayer + TASK_BLOOD);
 
 	// Nemesis Class loaded?
-	if (!zp_class_nemesis_get(iPlayer))
+	if (zp_class_nemesis_get(iPlayer))
 	{
 		// Set silent footsteps?
 		if (get_pcvar_num(g_pCvar_Zombie_Silent))
@@ -144,7 +134,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 
 	// Assassin Class loaded?
-	else if (!zp_class_assassin_get(iPlayer))
+	else if (zp_class_assassin_get(iPlayer))
 	{
 		// Set silent footsteps?
 		if (get_pcvar_num(g_pCvar_Zombie_Silent))
@@ -234,7 +224,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

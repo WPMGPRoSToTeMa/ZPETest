@@ -16,8 +16,6 @@
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
-
 #include <amxmodx>
 #include <amxmisc>
 #include <cs_util>
@@ -29,6 +27,8 @@
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
 #include <ck_zp50_admin_commands>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 // For players/mode list menu handlers
 #define PL_ACTION(%0) g_Menu_Data[%0][0]
@@ -999,7 +999,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

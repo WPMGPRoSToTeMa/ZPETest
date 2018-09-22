@@ -16,12 +16,12 @@
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
-
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
 #include <fakemeta>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #define FOG_VALUE_MAX_LENGTH 16
 

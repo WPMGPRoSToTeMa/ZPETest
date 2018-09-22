@@ -183,7 +183,7 @@ public zp_fw_gamemodes_start()
 
 		iSurvivors++;
 
-		SET_USER_HEALTH(iPlayer, GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Survivor_HP_Multi));
+		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Survivor_HP_Multi));
 	}
 
 	new iNemesis;
@@ -202,7 +202,7 @@ public zp_fw_gamemodes_start()
 
 		iNemesis++;
 
-		SET_USER_HEALTH(iPlayer, GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Nemesis_HP_Multi));
+		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) * get_pcvar_float(g_pCvar_Plague_Nemesis_HP_Multi));
 	}
 
 	new iZombies;

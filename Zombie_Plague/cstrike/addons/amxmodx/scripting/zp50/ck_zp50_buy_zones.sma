@@ -16,8 +16,6 @@
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
-
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
@@ -28,6 +26,8 @@
 
 #define LIBRARY_AMMOPACKS "ck_zp50_ammopacks"
 #include <ck_zp50_ammopacks>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #define SOUND_MAX_LENGTH 64
 
@@ -419,7 +419,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

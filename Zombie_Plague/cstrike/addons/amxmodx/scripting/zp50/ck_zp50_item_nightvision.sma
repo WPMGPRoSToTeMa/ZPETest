@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Item Nightvision.
+*	[ZPE] Item night vision.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,23 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
-#define PLUGIN "item nightvision"
-#define VERSION "5.1.3.0"
+#define PLUGIN "item night vision"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-/*												zp50_item_nightvision.sma																	*/
-
-//	[RU] Название айтема.
-//	[EN] Item szName.
-#define ITEM_NIGHTVISION_NAME "Nightvision"
-
-
-//	[RU] Цена айтема.
-//	[EN] Item cost.
-#define ITEM_NIGHTVISION_COST 15
 
 #include <amxmodx>
 #include <cs_util>
@@ -35,13 +26,16 @@
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
 
+#define ITEM_NIGHT_VISION_NAME "Night vision"
+#define ITEM_NIGHT_VISION_COST 15
+
 new g_Item_ID;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_Item_ID = zp_items_register(ITEM_NIGHTVISION_NAME, ITEM_NIGHTVISION_COST);
+	g_Item_ID = zp_items_register(ITEM_NIGHT_VISION_NAME, ITEM_NIGHT_VISION_COST);
 }
 
 public zp_fw_items_select_pre(iPlayer, iItem_ID)
@@ -52,7 +46,7 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID)
 		return ZP_ITEM_AVAILABLE;
 	}
 
-	// Nightvision only available to humans
+	// Night vision only available to humans
 	if (zp_class_nemesis_get(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
@@ -78,7 +72,7 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID)
 		return ZP_ITEM_DONT_SHOW;
 	}
 
-	// Player already has nightvision
+	// Player already has night vision
 	if (cs_get_user_nvg(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
@@ -95,7 +89,7 @@ public zp_fw_items_select_post(iPlayer, iItem_ID)
 		return;
 	}
 
-	// Give player nightvision and enable it automatically
+	// Give player night vision and enable it automatically
 	cs_set_user_nvg(iPlayer, 1);
 
 	client_cmd(iPlayer, "nightvision");

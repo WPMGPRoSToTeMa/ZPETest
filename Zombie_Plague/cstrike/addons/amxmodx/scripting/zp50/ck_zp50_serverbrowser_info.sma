@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Serverbrowser info.
+*	[ZPE] Serverbrowser info.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,18 +7,20 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "serverbrowser info"
-#define VERSION "5.1.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
 #include <fakemeta>
 #include <ck_zp50_kernel>
 
-new g_Mod_Name[64];
+new g_Mode_Name[64];
 
 new g_pCvar_Mode_Name;
 
@@ -26,7 +28,7 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Mode_Name = register_cvar("zm_mode_name", "");
+	g_pCvar_Mode_Name = register_cvar("zpe_mode_name", "");
 
 	register_forward(FM_GetGameDescription, "FM_GetGameDescription_");
 
@@ -34,14 +36,14 @@ public plugin_init()
 
 	get_pcvar_string(g_pCvar_Mode_Name, szMode_Name, charsmax(szMode_Name));
 
-	formatex(g_Mod_Name, charsmax(g_Mod_Name), szMode_Name);
+	formatex(g_Mode_Name, charsmax(g_Mode_Name), szMode_Name);
 }
 
 // Forward Get Game Description
 public FM_GetGameDescription_()
 {
 	// Return the mod name so it can be easily identified
-	forward_return(FMV_STRING, g_Mod_Name);
+	forward_return(FMV_STRING, g_Mode_Name);
 
 	return FMRES_SUPERCEDE;
 }

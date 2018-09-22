@@ -1,8 +1,8 @@
 [en]
 
-ZP_PREFIX = [ZP]
+ZP_PREFIX = [ZPE]
 
-MENU_TITLE = \y Zombie Plague 6.0 ^n ^n
+MENU_TITLE = \y Zombie Plague Enteprise ^n ^n
 
 NOTICE_VIRUS_FREE = The T-Virus has been set loose...
 NOTICE_FIRST = %s is the first zombie !!
@@ -43,14 +43,15 @@ CMD_RESPAWN_LOG = respawned
 
 CMD_NOT_COLOR = Unavailable command.
 CMD_HUMAN_ONLY = This is only available to humans.
-CMD_NOT_STUCK = You are not stuck.
+CMD_NOT_STUCK_COLOR = You are not stuck.
 CMD_NOT_ACCESS_COLOR = You have no access.
-CMD_NOT_EXTRAS = Extra Items are disabled.
-CMD_NOT_ZCLASSES = Zombie Classes are disabled.
+CMD_NOT_EXTRAS_COLOR = Extra Items are disabled.
+CMD_NOT_CLASSES_ZOMBIE_COLOR = Zombie Classes are disabled.
 
 MENU_BUY = Buy Weapons
-MENU_EXTRABUY = Buy Extra Items
-MENU_ZCLASS = Choose Zombie Class
+MENU_EXTRA_BUY = Buy Extra Items
+MENU_CLASS_ZOMBIE = Choose Class Zombie
+MENU_CLASS_HUMAN = Choose Class Human
 MENU_UNSTUCK = Unstuck
 MENU_ADMIN = Admin Menu
 MENU_BUY1_TITLE = Primary Weapon
@@ -63,7 +64,7 @@ MENU_ADMIN4 = Make Survivor
 MENU_ADMIN5 = Make Sniper
 MENU_ADMIN6 = Respawn Someone
 
-CUSTOM_BUY_DISABLED = Custom buy menus are disabled.
+CUSTOM_BUY_DISABLED_COLOR = Custom buy menus are disabled.
 
 MENU_AUTOSELECT = Remember Selection
 
@@ -113,14 +114,14 @@ INVALID_GAME_MODE = Invalid game mode id
 CMD_START_GAME_MODE_COLOR = start Game Mode
 CMD_START_GAME_MODE_LOG = start Game Mode
 
-CANT_BUY_WEAPONS_DEAD = You can't buy weapons when dead.
+CANT_BUY_WEAPONS_DEAD_COLOR = You can't buy weapons when dead.
 BUY_MENU_TIME_EXPIRED_COLOR = Buy menu time has expired.
-CANT_BUY_ITEMS_DEAD = You can't buy extra items when dead.
-CMD_NOT_HCLASSES = Human Classes are disabled.
+CANT_BUY_ITEMS_DEAD_COLOR = You can't buy extra items when dead.
+CMD_NOT_CLASSES_HUMAN_COLOR = Human Classes are disabled.
 
-NO_ADMIN_MENU = Admin menu not available.
+NO_ADMIN_MENU_COLOR = Admin menu not available.
 NO_CLASSES_COLOR = No classes are currently available to you.
-NO_EXTRA_ITEMS = No extra items are currently available to you.
+NO_EXTRA_ITEMS_COLOR = No extra items are currently available to you.
 
 CANT_CHANGE_TEAM_COLOR = You can't change team right now.
 NOT_ENOUGH_MONEY_COLOR = You dont have enough money.
@@ -159,7 +160,7 @@ HUMAN_DESCRIPTION Classic Human = =Balanced=
 HUMAN_NAME Raptor Human = Raptor Human
 HUMAN_DESCRIPTION Raptor Human = HP-- Speed+ Gravity+
 
-ITEMNAME Nightvision = Nightvision
+ITEM_NAME Nightvision = Nightvision
 
 MODENAME Infection Mode = Infection Mode
 MODENAME Nemesis Mode = Nemesis Mode

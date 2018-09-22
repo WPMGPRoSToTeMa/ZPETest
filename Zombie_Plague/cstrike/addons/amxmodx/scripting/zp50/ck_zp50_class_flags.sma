@@ -18,7 +18,7 @@
 #include <ck_zp50_class_human>
 
 #define PLUGIN "class flags"
-#define VERSION "1.0.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"

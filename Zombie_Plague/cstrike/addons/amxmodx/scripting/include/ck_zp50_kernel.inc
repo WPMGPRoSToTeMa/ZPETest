@@ -144,5 +144,5 @@ forward zp_fw_core_last_human(id)
  */
 forward zp_fw_core_spawn_post(id)
 
-forward zp_fw_spawn_post_add_bit(iPlayer);
+forward zp_fw_spawn_post_bit_add(iPlayer);
 forward zp_fw_kill_pre_bit_sub(iPlayer, iAttacker);

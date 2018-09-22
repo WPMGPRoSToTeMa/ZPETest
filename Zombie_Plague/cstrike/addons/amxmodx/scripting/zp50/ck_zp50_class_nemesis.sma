@@ -420,7 +420,7 @@ public Nemesis_Aura(iTask_ID)
 
 	get_user_origin(ID_AURA, iOrigin);
 
-	// Colored Aura
+	// Colored aura
 	message_begin(MSG_PVS, SVC_TEMPENTITY, iOrigin);
 	write_byte(TE_DLIGHT); // TE player
 	write_coord(iOrigin[0]); // x
@@ -552,7 +552,7 @@ public zpe_fw_kill_pre_bit_sub(iVictim)
 	BIT_SUB(g_iBit_Alive, iVictim);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

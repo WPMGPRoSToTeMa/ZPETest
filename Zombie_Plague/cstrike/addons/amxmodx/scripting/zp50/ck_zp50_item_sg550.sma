@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Item SG550 Auto-Sniper.
+*	[ZPE] Item SG550 Auto-Sniper.
 *	Author: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,24 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "item sg550"
-#define VERSION "5.1.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-
-/*												zp50_item_sg550.sma																	*/
-
-//	[RU] Название айтема.
-//	[EN] Item name.
-#define ITEM_SG550_NAME "SG550 Auto-Sniper"
-
-
-//	[RU] Цена айтема.
-//	[EN] Item cost.
-#define ITEM_SG550_COST 12
 
 #include <amxmodx>
 #include <cs_util>
@@ -32,6 +22,9 @@
 #include <ck_zp50_items>
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
+
+#define ITEM_SG550_NAME "SG550 Auto-Sniper"
+#define ITEM_SG550_COST 12
 
 new g_Item_ID;
 

@@ -203,7 +203,7 @@ public FM_Spawn_(iEntity)
 	return FMRES_IGNORED;
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	// Remove respawn task
 	remove_task(iPlayer + TASK_RESPAWN);

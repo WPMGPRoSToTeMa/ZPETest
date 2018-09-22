@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Knockback.
+*	[ZPE] Knockback.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,14 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "knockback"
-#define VERSION "5.2.7.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
 
 #include <amxmodx>
 #include <cs_util>
@@ -25,6 +25,8 @@
 #include <ck_zp50_class_zombie>
 #include <ck_zp50_class_nemesis>
 #include <ck_zp50_class_assassin>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 // Knockback Power values for weapons
 // Note: negative values will disable knockback power for the weapon
@@ -64,11 +66,14 @@ new Float:g_fKnockback_Weapon_Power[] =
 };
 
 // Weapon entity names (uppercase)
-new const g_Weapon_Entity_Names_UP[][] = { "", "WEAPON_P228", "", "WEAPON_SCOUT", "WEAPON_HEGRENADE", "WEAPON_XM1014", "WEAPON_C4", "WEAPON_MAC10",
-			"WEAPON_AUG", "WEAPON_SMOKEGRENADE", "WEAPON_ELITE", "WEAPON_FIVESEVEN", "WEAPON_UMP45", "WEAPON_SG550",
-			"WEAPON_GALIL", "WEAPON_FAMAS", "WEAPON_USP", "WEAPON_GLOCK18", "WEAPON_AWP", "WEAPON_MP5NAVY", "WEAPON_M249",
-			"WEAPON_M3", "WEAPON_M4A1", "WEAPON_TMP", "WEAPON_G3SG1", "WEAPON_FLASHBANG", "WEAPON_DEAGLE", "WEAPON_SG552",
-			"WEAPON_AK47", "WEAPON_KNIFE", "WEAPON_P90" };
+new const g_Weapon_Entity_Names_UP[][] =
+{
+	"", "WEAPON_P228", "", "WEAPON_SCOUT", "WEAPON_HEGRENADE", "WEAPON_XM1014", "WEAPON_C4", "WEAPON_MAC10",
+	"WEAPON_AUG", "WEAPON_SMOKEGRENADE", "WEAPON_ELITE", "WEAPON_FIVESEVEN", "WEAPON_UMP45", "WEAPON_SG550",
+	"WEAPON_GALIL", "WEAPON_FAMAS", "WEAPON_USP", "WEAPON_GLOCK18", "WEAPON_AWP", "WEAPON_MP5NAVY", "WEAPON_M249",
+	"WEAPON_M3", "WEAPON_M4A1", "WEAPON_TMP", "WEAPON_G3SG1", "WEAPON_FLASHBANG", "WEAPON_DEAGLE", "WEAPON_SG552",
+	"WEAPON_AK47", "WEAPON_KNIFE", "WEAPON_P90"
+};
 
 new g_pCvar_Knockback_Damage;
 new g_pCvar_Knockback_Power;
@@ -86,17 +91,16 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Knockback_Damage = register_cvar("zm_knockback_damage", "1");
-	g_pCvar_Knockback_Power = register_cvar("zm_knockback_power", "1");
-	g_pCvar_Knockback_Obey_Class = register_cvar("zm_knockback_obey_class", "1");
-	g_pCvar_Knockback_Zvel = register_cvar("zm_knockback_zvel", "0");
-	g_pCvar_Knockback_Ducking = register_cvar("zm_knockback_ducking", "0.25");
-	g_pCvar_Knockback_Distance = register_cvar("zm_knockback_distance", "500");
+	g_pCvar_Knockback_Damage = register_cvar("zpe_knockback_damage", "1");
+	g_pCvar_Knockback_Power = register_cvar("zpe_knockback_power", "1");
+	g_pCvar_Knockback_Obey_Class = register_cvar("zpe_knockback_obey_class", "1");
+	g_pCvar_Knockback_Zvel = register_cvar("zpe_knockback_zvel", "0");
+	g_pCvar_Knockback_Ducking = register_cvar("zpe_knockback_ducking", "0.25");
+	g_pCvar_Knockback_Distance = register_cvar("zpe_knockback_distance", "500");
 
-	g_pCvar_Knockback_Nemesis = register_cvar("zm_knockback_nemesis", "0.25");
-	g_pCvar_Knockback_Assassin = register_cvar("zm_knockback_assassin", "0.25");
+	g_pCvar_Knockback_Nemesis = register_cvar("zpe_knockback_nemesis", "0.25");
+	g_pCvar_Knockback_Assassin = register_cvar("zpe_knockback_assassin", "0.25");
 
-	// TODO: use reapi
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttack_Player_Post", 1);
 }
 
@@ -109,10 +113,7 @@ public plugin_precache()
 			continue;
 		}
 
-		if (!amx_load_setting_float(ZP_SETTINGS_FILE, "Knockback Power for Weapons", g_Weapon_Entity_Names_UP[i][7], g_fKnockback_Weapon_Power[i]))
-		{
-			amx_save_setting_float(ZP_SETTINGS_FILE, "Knockback Power for Weapons", g_Weapon_Entity_Names_UP[i][7], g_fKnockback_Weapon_Power[i]);
-		}
+		amx_load_setting_float(ZPE_SETTINGS_FILE, "Knockback Power for Weapons", g_Weapon_Entity_Names_UP[i][7], g_fKnockback_Weapon_Power[i]);
 	}
 }
 
@@ -246,7 +247,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

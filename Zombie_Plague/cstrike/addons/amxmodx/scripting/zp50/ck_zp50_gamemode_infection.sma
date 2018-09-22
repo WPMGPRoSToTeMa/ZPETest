@@ -132,7 +132,7 @@ public zp_fw_gamemodes_start()
 
 	zp_core_infect(g_iTarget_Player, g_iTarget_Player);
 
-	SET_USER_HEALTH(g_iTarget_Player, GET_USER_HEALTH(g_iTarget_Player) * get_pcvar_float(g_pCvar_Zombie_First_HP_Multiplier));
+	SET_USER_HEALTH(g_iTarget_Player, Float:GET_USER_HEALTH(g_iTarget_Player) * get_pcvar_float(g_pCvar_Zombie_First_HP_Multiplier));
 
 	for (new i = 1; i <= MaxClients; i++)
 	{

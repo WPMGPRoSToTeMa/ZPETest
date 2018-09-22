@@ -93,7 +93,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 		// Leech Zombie infection hp bonus
 		if (zp_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
 		{
-			SET_USER_HEALTH(iAttacker, GET_USER_HEALTH(iAttacker) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward));
+			SET_USER_HEALTH(iAttacker, floatround(GET_USER_HEALTH(iAttacker)) + get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward));
 		}
 	}
 }
@@ -112,7 +112,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 		// Unless nemesis and assassin
 		if (!zp_class_nemesis_get(iAttacker) || !zp_class_assassin_get(iAttacker))
 		{
-			SET_USER_HEALTH(iAttacker, GET_USER_HEALTH(iAttacker) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward));
+			SET_USER_HEALTH(iAttacker, floatround(GET_USER_HEALTH(iAttacker)) + get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward));
 		}
 	}
 }
@@ -127,7 +127,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

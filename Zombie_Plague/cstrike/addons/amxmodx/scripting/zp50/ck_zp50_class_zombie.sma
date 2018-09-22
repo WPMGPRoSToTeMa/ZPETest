@@ -150,7 +150,7 @@ public Show_Menu_Class_Zombie(iPlayer)
 	new iMenu_ID;
 	new iItemdata[2];
 
-	formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ZCLASS");
+	formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_CLASS_ZOMBIE");
 
 	iMenu_ID = menu_create(szMenu, "Menu_Class_Zombie");
 

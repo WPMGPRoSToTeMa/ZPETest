@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Item Antidote.
+*	[ZPE] Item Antidote.
 *	Author: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,21 +7,23 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "item antidote"
-#define VERSION "1.1.0.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ITEM_NAME "Antidote"
-#define ITEM_COST 15
 
 #include <amxmodx>
 #include <cs_util>
 #include <ck_zp50_kernel>
 #include <ck_zp50_items>
 #include <ck_zp50_gamemodes>
+
+#define ITEM_NAME "Antidote"
+#define ITEM_COST 15
 
 new g_Item_ID;
 
@@ -38,7 +40,7 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Antidote_Round_Limit = register_cvar("zm_antidote_round_limit", "3");
+	g_pCvar_Antidote_Round_Limit = register_cvar("zpe_antidote_round_limit", "3");
 
 	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
 
@@ -50,8 +52,8 @@ public plugin_cfg()
 	g_Game_Mode_Infection_ID = zp_gamemodes_get_id("Infection Mode");
 	g_Game_Mode_Multi_ID = zp_gamemodes_get_id("Multiple Infection Mode");
 
-	g_pCvar_Deathmatch = get_cvar_pointer("zm_deathmatch");
-	g_pCvar_Respawn_After_Last_Human = get_cvar_pointer("zm_respawn_after_last_human");
+	g_pCvar_Deathmatch = get_cvar_pointer("zpe_deathmatch");
+	g_pCvar_Respawn_After_Last_Human = get_cvar_pointer("zpe_respawn_after_last_human");
 }
 
 public Event_Round_Start()

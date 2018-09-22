@@ -130,9 +130,9 @@ public plugin_init()
 	g_pCvar_Grenade_Fire_Slowdown_Nemesis = register_cvar("zpe_grenade_fire_slowdown_nemesis", "0.5");
 	g_pCvar_Grenade_Fire_Slowdown_Assassin = register_cvar("zpe_grenade_fire_slowdown_assassin", "0.5");
 
-	g_pCvar_Grenade_Fire_Damage_Nemesis = register_cvar("zpe_grenade_fire_damage_nemesis", "5");
-	g_pCvar_Grenade_Fire_Damage_Assassin = register_cvar("zpe_grenade_fire_damage_assassin", "5");
-	g_pCvar_Grenade_Fire_Damage_Zombie = register_cvar("zpe_grenade_fire_damage_zombie", "5");
+	g_pCvar_Grenade_Fire_Damage_Nemesis = register_cvar("zpe_grenade_fire_damage_nemesis", "5.0");
+	g_pCvar_Grenade_Fire_Damage_Assassin = register_cvar("zpe_grenade_fire_damage_assassin", "5.0");
+	g_pCvar_Grenade_Fire_Damage_Zombie = register_cvar("zpe_grenade_fire_damage_zombie", "5.0");
 
 	g_pCvar_Grenade_Fire_Hudicon_Player = register_cvar("zpe_grenade_fire_hudicon_player", "1");
 	g_pCvar_Grenade_Fire_Hudicon_Enemy = register_cvar("zpe_grenade_fire_hudicon_enemy", "1");
@@ -418,7 +418,7 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }
@@ -557,7 +557,7 @@ public Burning_Flame(iTask_ID)
 			set_entvar(ID_BURN, var_velocity, fVelocity);
 		}
 
-		new Float:fHealth_After_Damage = GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Nemesis);
+		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Nemesis);
 
 		// Take damage from the fire
 		if (fHealth_After_Damage > 0.0)
@@ -581,7 +581,7 @@ public Burning_Flame(iTask_ID)
 			set_entvar(ID_BURN, var_velocity, fVelocity);
 		}
 
-		new Float:fHealth_After_Damage = GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Assassin);
+		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Assassin);
 
 		// Take damage from the fire
 		if (fHealth_After_Damage > 0.0)
@@ -592,7 +592,7 @@ public Burning_Flame(iTask_ID)
 
 	else
 	{
-		new Float:fHealth_After_Damage = GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Zombie);
+		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Zombie);
 
 		// Take damage from the fire
 		if (fHealth_After_Damage > 0.0)

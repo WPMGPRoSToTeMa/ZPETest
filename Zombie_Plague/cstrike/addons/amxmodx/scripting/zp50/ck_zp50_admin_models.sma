@@ -16,8 +16,6 @@
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
-
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
@@ -26,6 +24,8 @@
 #include <ck_zp50_class_assassin>
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #define PLAYER_MODELS_MAX_LENGTH 32
 #define MODELS_MAX_LENGTH 64
