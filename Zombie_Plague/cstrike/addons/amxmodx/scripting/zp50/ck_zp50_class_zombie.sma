@@ -326,7 +326,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 
 	// Apply zombie attributes
-	SET_USER_HEALTH(iPlayer, float(ArrayGetCell(g_aClass_Zombie_Health, g_Class_Zombie[iPlayer])));
+	SET_USER_HEALTH(iPlayer, ArrayGetCell(g_aClass_Zombie_Health, g_Class_Zombie[iPlayer]));
 	SET_USER_GRAVITY(iPlayer, Float:ArrayGetCell(g_aClass_Zombie_Gravity, g_Class_Zombie[iPlayer]));
 	cs_set_player_maxspeed_auto(iPlayer, Float:ArrayGetCell(g_aClass_Zombie_Speed, g_Class_Zombie[iPlayer]));
 
