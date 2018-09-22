@@ -126,8 +126,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Assassin_Health = register_cvar("zpe_assassin_health", "0");
-	g_pCvar_Assassin_Base_Health = register_cvar("zpe_assassin_base_health", "2000");
+	g_pCvar_Assassin_Health = register_cvar("zpe_assassin_health", "0.0");
+	g_pCvar_Assassin_Base_Health = register_cvar("zpe_assassin_base_health", "2000.0");
 	g_pCvar_Assassin_Speed = register_cvar("zpe_assassin_speed", "1.05");
 	g_pCvar_Assassin_Gravity = register_cvar("zpe_assassin_gravity", "0.5");
 
@@ -413,7 +413,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 
 	// Health
-	if (get_pcvar_num(g_pCvar_Assassin_Health) == 0)
+	if (get_pcvar_float(g_pCvar_Assassin_Health) == 0.0)
 	{
 		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Assassin_Base_Health) * Get_Alive_Count());
 	}
