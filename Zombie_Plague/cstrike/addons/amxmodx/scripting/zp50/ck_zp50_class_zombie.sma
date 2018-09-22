@@ -380,7 +380,7 @@ public native_class_zombie_get_current(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
 
-	if (!is_user_connected(iPlayer)) // Use bit = invalid player.
+	if (!is_user_connected(iPlayer)) // Use bit = invalid player
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 

@@ -88,6 +88,7 @@ public plugin_precache()
 	g_aThunder_Lights = ArrayCreate(LIGHTS_MAX_LENGTH, 1);
 	g_aSound_Thunder = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
+	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Custom Skies", "SKY NAMES", g_aSky_Names);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Lightning Lights Cycle", "LIGHTS", g_aThunder_Lights);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "THUNDER", g_aSound_Thunder);
@@ -171,7 +172,7 @@ public Remove_Lights()
 public Lighting_Task()
 {
 	// Set thunder task if enabled and not already in place
-	if (get_pcvar_float(g_pCvar_Thunder_Time) > 0 && !task_exists(TASK_THUNDER) && !task_exists(TASK_THUNDER_LIGHTS))
+	if (get_pcvar_float(g_pCvar_Thunder_Time) > 0.0 && !task_exists(TASK_THUNDER) && !task_exists(TASK_THUNDER_LIGHTS))
 	{
 		g_Thunder_Light_Index = 0;
 

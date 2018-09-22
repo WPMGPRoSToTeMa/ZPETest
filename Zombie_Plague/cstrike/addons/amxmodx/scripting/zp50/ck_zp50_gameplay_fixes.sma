@@ -157,18 +157,17 @@ public Remove_Doors()
 
 	iEntity = -1;
 
+	while ((iEntity = engfunc(EngFunc_FindEntityByString, iEntity, "classname", "func_door_rotating")) != 0)
+	{
+		engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0, 8192.0, 8192.0});
+	}
+
 	// Remove all doors?
 	if (get_pcvar_num(g_pCvar_Remove_Doors) == 2)
 	{
-		while ((iEntity = engfunc(EngFunc_FindEntityByString, iEntity, "classname", "func_door")) != 0)
-		{
-			engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0, 8192.0, 8192.0});
-		}
-	}
+		iEntity = -1;
 
-	else
-	{
-		while ((iEntity = engfunc(EngFunc_FindEntityByString, iEntity, "classname", "func_door_rotating")) != 0)
+		while ((iEntity = engfunc(EngFunc_FindEntityByString, iEntity, "classname", "func_door")) != 0)
 		{
 			engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0, 8192.0, 8192.0});
 		}

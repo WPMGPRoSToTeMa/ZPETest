@@ -36,10 +36,10 @@ new g_Forward_Result;
 new g_Game_Mode_Started;
 
 new g_pCvar_Deathmatch;
-new g_pCvar_Respawn_On_Suicide;
+new g_pCvar_Respawn_Delay;
 new g_pCvar_Respawn_Zombies;
 new g_pCvar_Respawn_Humans;
-new g_pCvar_Respawn_Delay;
+new g_pCvar_Respawn_On_Suicide;
 
 new g_iBit_Alive;
 new g_iBit_Connected;
