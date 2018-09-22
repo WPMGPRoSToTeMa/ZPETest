@@ -51,7 +51,7 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Class_Zombie_Leech_HP_Reward = register_cvar("zpe_class_zombie_leech_hp_reward", "200");
+	g_pCvar_Class_Zombie_Leech_HP_Reward = register_cvar("zpe_class_zombie_leech_hp_reward", "200.0");
 
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 }
@@ -93,7 +93,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 		// Leech Zombie infection hp bonus
 		if (zp_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
 		{
-			SET_USER_HEALTH(iAttacker, floatround(GET_USER_HEALTH(iAttacker)) + get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward));
+			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward);
 		}
 	}
 }
@@ -112,7 +112,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 		// Unless nemesis and assassin
 		if (!zp_class_nemesis_get(iAttacker) || !zp_class_assassin_get(iAttacker))
 		{
-			SET_USER_HEALTH(iAttacker, floatround(GET_USER_HEALTH(iAttacker)) + get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward));
+			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward);
 		}
 	}
 }

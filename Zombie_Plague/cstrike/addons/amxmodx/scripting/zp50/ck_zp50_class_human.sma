@@ -26,7 +26,7 @@
 
 #define HUMANS_DEFAULT_NAME "Human"
 #define HUMANS_DEFAULT_DESCRIPTION "Default"
-#define HUMANS_DEFAULT_HEALTH 100
+#define HUMANS_DEFAULT_HEALTH 100.0
 #define HUMANS_DEFAULT_SPEED 1.0
 #define HUMANS_DEFAULT_GRAVITY 1.0
 #define HUMANS_DEFAULT_ARMOR 0
@@ -352,7 +352,7 @@ public zp_fw_core_cure_post(iPlayer)
 	}
 
 	// Apply human attributes
-	SET_USER_HEALTH(iPlayer, float(ArrayGetCell(g_aClass_Human_Health, g_Class_Human[iPlayer])));
+	SET_USER_HEALTH(iPlayer, ArrayGetCell(g_aClass_Human_Health, g_Class_Human[iPlayer]));
 
 	if (get_pcvar_num(g_pCvar_Human_Armor_Type))
 	{
