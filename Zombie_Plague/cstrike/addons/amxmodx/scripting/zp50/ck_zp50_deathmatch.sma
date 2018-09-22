@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Deathmatch.
+*	[ZPE] Deathmatch.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "deathmatch"
-#define VERSION "5.2.4.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -46,15 +48,15 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Deathmatch = register_cvar("zm_deathmatch", "0");
-	g_pCvar_Respawn_Delay = register_cvar("zm_respawn_delay", "5.0");
-	g_pCvar_Respawn_Zombies = register_cvar("zm_respawn_zombies", "1");
-	g_pCvar_Respawn_Humans = register_cvar("zm_respawn_humans", "1");
-	g_pCvar_Respawn_On_Suicide = register_cvar("zm_respawn_on_suicide", "0");
+	g_pCvar_Deathmatch = register_cvar("zpe_deathmatch", "0");
+	g_pCvar_Respawn_Delay = register_cvar("zpe_respawn_delay", "5.0");
+	g_pCvar_Respawn_Zombies = register_cvar("zpe_respawn_zombies", "1");
+	g_pCvar_Respawn_Humans = register_cvar("zpe_respawn_humans", "1");
+	g_pCvar_Respawn_On_Suicide = register_cvar("zpe_respawn_on_suicide", "0");
 
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
-	g_Forwards[FW_USER_RESPAWN_PRE] = CreateMultiForward("zm_fw_deathmatch_respawn_pre", ET_CONTINUE, FP_CELL);
+	g_Forwards[FW_USER_RESPAWN_PRE] = CreateMultiForward("zp_fw_deathmatch_respawn_pre", ET_CONTINUE, FP_CELL);
 }
 
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
@@ -153,7 +155,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	remove_task(iPlayer + TASK_RESPAWN);
 

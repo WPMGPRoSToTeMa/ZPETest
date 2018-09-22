@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Rewards Frags HP.
+*	[ZPE] Rewards Frags HP.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,18 +7,18 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "rewards frags hp"
-#define VERSION "5.2.8.1"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
 #include <cs_util>
 #include <cstrike>
-#include <fun>
-#include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
 #include <ck_zp50_class_nemesis>
@@ -43,25 +43,25 @@ new g_pCvar_Frags_Sniper_Ignore;
 new g_pCvar_Infection_Health_Bonus;
 new g_pCvar_Human_Last_Health_Bonus;
 
-new g_iBit_Connected;
 new g_iBit_Alive;
+new g_iBit_Connected;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Frags_Zombie_Killed = register_cvar("zm_frags_zombie_killed", "1");
-	g_pCvar_Frags_Human_Killed = register_cvar("zm_frags_human_killed", "1");
+	g_pCvar_Frags_Zombie_Killed = register_cvar("zpe_frags_zombie_killed", "1");
+	g_pCvar_Frags_Human_Killed = register_cvar("zpe_frags_human_killed", "1");
 
-	g_pCvar_Frags_Human_Infected = register_cvar("zm_frags_human_infected", "1");
+	g_pCvar_Frags_Human_Infected = register_cvar("zpe_frags_human_infected", "1");
 
-	g_pCvar_Frags_Nemesis_Ignore = register_cvar("zm_frags_nemesis_ignore", "0");
-	g_pCvar_Frags_Assassin_Ignore = register_cvar("zm_frags_assassin_ignore", "0");
-	g_pCvar_Frags_Survivor_Ignore = register_cvar("zm_frags_survivor_ignore", "0");
-	g_pCvar_Frags_Sniper_Ignore = register_cvar("zm_frags_sniper_ignore", "0");
+	g_pCvar_Frags_Nemesis_Ignore = register_cvar("zpe_frags_nemesis_ignore", "0");
+	g_pCvar_Frags_Assassin_Ignore = register_cvar("zpe_frags_assassin_ignore", "0");
+	g_pCvar_Frags_Survivor_Ignore = register_cvar("zpe_frags_survivor_ignore", "0");
+	g_pCvar_Frags_Sniper_Ignore = register_cvar("zpe_frags_sniper_ignore", "0");
 
-	g_pCvar_Infection_Health_Bonus = register_cvar("zm_infection_health_bonus", "100");
-	g_pCvar_Human_Last_Health_Bonus = register_cvar("zm_human_last_health_bonus", "50");
+	g_pCvar_Infection_Health_Bonus = register_cvar("zpe_infection_health_bonus", "100.0");
+	g_pCvar_Human_Last_Health_Bonus = register_cvar("zpe_human_last_health_bonus", "50.0");
 
 	g_Message_Score_Info = get_user_msgid("ScoreInfo");
 
@@ -88,7 +88,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	// Assassin Class loaded?
 	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Assassin_Ignore))
 	{
-		// Ignore nemesis frags
+		// Ignore assassin frags
 		Remove_Frags(iAttacker, iVictim);
 
 		return;
@@ -135,7 +135,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 		// Reward health
 		if (BIT_VALID(g_iBit_Alive, iAttacker))
 		{
-			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker) + get_pcvar_num(g_pCvar_Infection_Health_Bonus));
+			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Infection_Health_Bonus);
 		}
 	}
 }
@@ -155,7 +155,7 @@ public zp_fw_core_last_human(iPlayer)
 {
 	if (g_Game_Mode_Started && !g_Last_Human_Health_Rewarded)
 	{
-		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer) + get_pcvar_num(g_pCvar_Human_Last_Health_Bonus));
+		SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iPlayer)) + get_pcvar_float(g_pCvar_Human_Last_Health_Bonus);
 
 		g_Last_Human_Health_Rewarded = true;
 	}
@@ -164,13 +164,13 @@ public zp_fw_core_last_human(iPlayer)
 // Update player frags and deaths
 Update_Frags(iAttacker, iVictim, iFrags, iDeaths, iScoreboard)
 {
-	// Set iAttacker frags
+	// Set attacker frags
 	set_entvar(iAttacker, var_frags, get_entvar(iAttacker, var_frags) + float(iFrags));
 
 	// Set victim deaths
 	cs_set_user_deaths(iVictim, cs_get_user_deaths(iVictim) + iDeaths);
 
-	// Update scoreboard with iAttacker and victim info
+	// Update scoreboard with attacker and victim info
 	if (iScoreboard)
 	{
 		message_begin(MSG_BROADCAST, g_Message_Score_Info);
@@ -217,7 +217,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

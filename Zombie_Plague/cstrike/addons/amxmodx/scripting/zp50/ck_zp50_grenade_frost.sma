@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Greande Frost.
+*	[ZPE] Greande Frost.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,33 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "grenade frost"
-#define VERSION "5.1.7.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_items.ini"
-
-new g_V_Model_Grenade_Frost[64] = "models/zombie_plague/v_grenade_frost.mdl";
-new g_P_Model_Grenade_Frost[64] = "models/p_flashbang.mdl";
-new g_W_Model_Grenade_Frost[64] = "models/w_flashbang.mdl";
-
-new const g_Sound_Grenade_Frost_Explode[][] =
-{
-	"warcraft3/frostnova.wav"
-};
-
-new const g_Sound_Grenade_Frost_Player[][] =
-{
-	"warcraft3/impalehit.wav"
-};
-
-new const g_Sound_Grenade_Frost_Break[][] =
-{
-	"warcraft3/impalelaunch1.wav"
-};
 
 #include <amxmodx>
 #include <cs_util>
@@ -43,6 +24,8 @@ new const g_Sound_Grenade_Frost_Break[][] =
 #include <hamsandwich>
 #include <ck_cs_weap_models_api>
 #include <ck_zp50_kernel>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 
 #define GRAVITY_HIGH 999999.9
 #define GRAVITY_NONE 0.000001
@@ -67,6 +50,25 @@ new const g_Sound_Grenade_Frost_Break[][] =
 #define SPRITE_GRENADE_TRAIL "sprites/laserbeam.spr"
 #define SPRITE_GRENADE_RING "sprites/shockwave.spr"
 #define SPRITE_GRENADE_GLASS "models/glassgibs.mdl"
+
+new g_V_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_frost.mdl";
+new g_P_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/p_flashbang.mdl";
+new g_W_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/w_flashbang.mdl";
+
+new const g_Sound_Grenade_Frost_Explode[][] =
+{
+	"warcraft3/frostnova.wav"
+};
+
+new const g_Sound_Grenade_Frost_Player[][] =
+{
+	"warcraft3/impalehit.wav"
+};
+
+new const g_Sound_Grenade_Frost_Break[][] =
+{
+	"warcraft3/impalelaunch1.wav"
+};
 
 // Hack to be able to use Ham_Player_ResetMaxSpeed (by joaquimandrade)
 new Ham:Ham_Player_ResetMaxSpeed = Ham_Item_PreFrame;
@@ -99,13 +101,13 @@ new g_Message_Screen_Fade;
 new g_iStatus_Icon;
 
 new g_Trail_Sprite;
-new g_Explode_Sprite_;
+new g_Explode_Sprite;
 new g_Glass_Sprite;
 
 new g_pCvar_Grenade_Frost_Duration;
 new g_pCvar_Grenade_Frost_Hudicon_Player;
 new g_pCvar_Grenade_Frost_Hudicon_Enemy;
-new g_pCvar_Grenade_Frost_Frozenhit;
+new g_pCvar_Grenade_Frost_Frozen_Hit;
 
 new g_pCvar_Grenade_Frost_Explosion_Radius;
 
@@ -143,40 +145,40 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Grenade_Frost_Duration = register_cvar("zm_grenade_frost_duration", "3");
-	g_pCvar_Grenade_Frost_Hudicon_Player = register_cvar("zm_grenade_fire_hudicon_player", "1");
-	g_pCvar_Grenade_Frost_Hudicon_Enemy = register_cvar("zm_grenade_frost_hudicon_enemy", "1");
-	g_pCvar_Grenade_Frost_Frozenhit = register_cvar("zm_grenade_frost_hit", "1");
+	g_pCvar_Grenade_Frost_Duration = register_cvar("zpe_grenade_frost_duration", "3.0");
+	g_pCvar_Grenade_Frost_Hudicon_Player = register_cvar("zpe_grenade_frost_hudicon_player", "1");
+	g_pCvar_Grenade_Frost_Hudicon_Enemy = register_cvar("zpe_grenade_frost_hudicon_enemy", "1");
+	g_pCvar_Grenade_Frost_Frozen_Hit = register_cvar("zpe_grenade_frost_frozen_hit", "1");
 
-	g_pCvar_Grenade_Frost_Explosion_Radius = register_cvar("zm_grenade_frost_explosion_radius", "240");
+	g_pCvar_Grenade_Frost_Explosion_Radius = register_cvar("zpe_grenade_frost_explosion_radius", "240");
 
-	g_pCvar_Grenade_Frost_Hudicon_Player_Color_R = register_cvar("zm_grenade_frost_hudicon_player_color_r", "100");
-	g_pCvar_Grenade_Frost_Hudicon_Player_Color_G = register_cvar("zm_grenade_frost_hudicon_player_color_g", "149");
-	g_pCvar_Grenade_Frost_Hudicon_Player_Color_B = register_cvar("zm_grenade_frost_hudicon_player_color_b", "237");
+	g_pCvar_Grenade_Frost_Hudicon_Player_Color_R = register_cvar("zpe_grenade_frost_hudicon_player_color_r", "100");
+	g_pCvar_Grenade_Frost_Hudicon_Player_Color_G = register_cvar("zpe_grenade_frost_hudicon_player_color_g", "149");
+	g_pCvar_Grenade_Frost_Hudicon_Player_Color_B = register_cvar("zpe_grenade_frost_hudicon_player_color_b", "237");
 
-	g_pCvar_Grenade_Frost_Small_Ring_Rendering_R = register_cvar("zm_grenade_frost_small_ring_rendering_r", "0");
-	g_pCvar_Grenade_Frost_Small_Ring_Rendering_G = register_cvar("zm_grenade_frost_small_ring_rendering_g", "100");
-	g_pCvar_Grenade_Frost_Small_Ring_Rendering_B = register_cvar("zm_grenade_frost_small_ring_rendering_b", "200");
+	g_pCvar_Grenade_Frost_Small_Ring_Rendering_R = register_cvar("zpe_grenade_frost_small_ring_rendering_r", "0");
+	g_pCvar_Grenade_Frost_Small_Ring_Rendering_G = register_cvar("zpe_grenade_frost_small_ring_rendering_g", "100");
+	g_pCvar_Grenade_Frost_Small_Ring_Rendering_B = register_cvar("zpe_grenade_frost_small_ring_rendering_b", "200");
 
-	g_pCvar_Grenade_Frost_Medium_Ring_Rendering_R = register_cvar("zm_grenade_frost_medium_ring_rendering_r", "0");
-	g_pCvar_Grenade_Frost_Medium_Ring_Rendering_G = register_cvar("zm_grenade_frost_medium_ring_rendering_g", "100");
-	g_pCvar_Grenade_Frost_Medium_Ring_Rendering_B = register_cvar("zm_grenade_frost_medium_ring_rendering_b", "200");
+	g_pCvar_Grenade_Frost_Medium_Ring_Rendering_R = register_cvar("zpe_grenade_frost_medium_ring_rendering_r", "0");
+	g_pCvar_Grenade_Frost_Medium_Ring_Rendering_G = register_cvar("zpe_grenade_frost_medium_ring_rendering_g", "100");
+	g_pCvar_Grenade_Frost_Medium_Ring_Rendering_B = register_cvar("zpe_grenade_frost_medium_ring_rendering_b", "200");
 
-	g_pCvar_Grenade_Frost_Largest_Ring_Rendering_R = register_cvar("zm_grenade_frost_largest_ring_rendering_r", "0");
-	g_pCvar_Grenade_Frost_Largest_Ring_Rendering_G = register_cvar("zm_grenade_frost_largest_ring_rendering_g", "100");
-	g_pCvar_Grenade_Frost_Largest_Ring_Rendering_B = register_cvar("zm_grenade_frost_largest_ring_rendering_b", "200");
+	g_pCvar_Grenade_Frost_Largest_Ring_Rendering_R = register_cvar("zpe_grenade_frost_largest_ring_rendering_r", "0");
+	g_pCvar_Grenade_Frost_Largest_Ring_Rendering_G = register_cvar("zpe_grenade_frost_largest_ring_rendering_g", "100");
+	g_pCvar_Grenade_Frost_Largest_Ring_Rendering_B = register_cvar("zpe_grenade_frost_largest_ring_rendering_b", "200");
 
-	g_pCvar_Grenade_Frost_Glow_Rendering_R = register_cvar("zm_grenade_frost_glow_rendering_r", "0");
-	g_pCvar_Grenade_Frost_Glow_Rendering_G = register_cvar("zm_grenade_frost_glow_rendering_g", "100");
-	g_pCvar_Grenade_Frost_Glow_Rendering_B = register_cvar("zm_grenade_frost_glow_rendering_b", "200");
+	g_pCvar_Grenade_Frost_Glow_Rendering_R = register_cvar("zpe_grenade_frost_glow_rendering_r", "0");
+	g_pCvar_Grenade_Frost_Glow_Rendering_G = register_cvar("zpe_grenade_frost_glow_rendering_g", "100");
+	g_pCvar_Grenade_Frost_Glow_Rendering_B = register_cvar("zpe_grenade_frost_glow_rendering_b", "200");
 
-	g_pCvar_Grenade_Frost_Trail_Rendering_R = register_cvar("zm_grenade_frost_trail_rendering_r", "0");
-	g_pCvar_Grenade_Frost_Trail_Rendering_G = register_cvar("zm_grenade_frost_trail_rendering_g", "100");
-	g_pCvar_Grenade_Frost_Trail_Rendering_B = register_cvar("zm_grenade_frost_trail_rendering_b", "200");
+	g_pCvar_Grenade_Frost_Trail_Rendering_R = register_cvar("zpe_grenade_frost_trail_rendering_r", "0");
+	g_pCvar_Grenade_Frost_Trail_Rendering_G = register_cvar("zpe_grenade_frost_trail_rendering_g", "100");
+	g_pCvar_Grenade_Frost_Trail_Rendering_B = register_cvar("zpe_grenade_frost_trail_rendering_b", "200");
 
-	g_pCvar_Grenade_Frost_Screen_Rendering_R = register_cvar("zm_grenade_frost_screen_rendering_r", "0");
-	g_pCvar_Grenade_Frost_Screen_Rendering_G = register_cvar("zm_grenade_frost_screen_rendering_g", "255");
-	g_pCvar_Grenade_Frost_Screen_Rendering_B = register_cvar("zm_grenade_frost_screen_rendering_b", "0");
+	g_pCvar_Grenade_Frost_Screen_Rendering_R = register_cvar("zpe_grenade_frost_screen_rendering_r", "0");
+	g_pCvar_Grenade_Frost_Screen_Rendering_G = register_cvar("zpe_grenade_frost_screen_rendering_g", "255");
+	g_pCvar_Grenade_Frost_Screen_Rendering_B = register_cvar("zpe_grenade_frost_screen_rendering_b", "0");
 
 	RegisterHookChain(RG_CBasePlayer_TraceAttack, "RG_CBasePlayer_TraceAttack_");
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
@@ -196,6 +198,47 @@ public plugin_init()
 
 	g_Forwards[FW_USER_FREEZE_PRE] = CreateMultiForward("zp_fw_grenade_frost_pre", ET_CONTINUE, FP_CELL);
 	g_Forwards[FW_USER_UNFROZEN] = CreateMultiForward("zp_fw_grenade_frost_unfreeze", ET_IGNORE, FP_CELL);
+}
+
+public plugin_precache()
+{
+	// Initialize arrays
+	g_aSound_Grenade_Frost_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Grenade_Frost_Player = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Grenade_Frost_Break = ArrayCreate(SOUND_MAX_LENGTH, 1);
+
+	// Load from external file
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FROST EXPLODE", g_aSound_Grenade_Frost_Explode);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FROST PLAYER", g_aSound_Grenade_Frost_Player);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FROST BREAK", g_aSound_Grenade_Frost_Break);
+
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE FROST", g_V_Model_Grenade_Frost, charsmax(g_V_Model_Grenade_Frost));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE FROST", g_P_Model_Grenade_Frost, charsmax(g_P_Model_Grenade_Frost));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE FROST", g_W_Model_Grenade_Frost, charsmax(g_W_Model_Grenade_Frost));
+
+	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Explode; i++)
+	{
+		precache_sound(g_Sound_Grenade_Frost_Explode[i]);
+	}
+
+	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Player; i++)
+	{
+		precache_sound(g_Sound_Grenade_Frost_Player[i]);
+	}
+
+	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Break; i++)
+	{
+		precache_sound(g_Sound_Grenade_Frost_Break[i]);
+	}
+
+	// Precache models
+	precache_model(g_V_Model_Grenade_Frost);
+	precache_model(g_P_Model_Grenade_Frost);
+	precache_model(g_W_Model_Grenade_Frost);
+
+	g_Trail_Sprite = precache_model(SPRITE_GRENADE_TRAIL);
+	g_Explode_Sprite = precache_model(SPRITE_GRENADE_RING);
+	g_Glass_Sprite = precache_model(SPRITE_GRENADE_GLASS);
 }
 
 public plugin_natives()
@@ -250,93 +293,6 @@ public native_grenade_frost_set(iPlugin_ID, iNum_Params)
 	}
 
 	return Set_Freeze(iPlayer);
-}
-
-public plugin_precache()
-{
-	// Initialize arrays
-	g_aSound_Grenade_Frost_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
-	g_aSound_Grenade_Frost_Player = ArrayCreate(SOUND_MAX_LENGTH, 1);
-	g_aSound_Grenade_Frost_Break = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE FROST EXPLODE", g_aSound_Grenade_Frost_Explode);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE FROST PLAYER", g_aSound_Grenade_Frost_Player);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE FROST BREAK", g_aSound_Grenade_Frost_Break);
-
-	// If we couldn't load custom sounds from file, use and save default ones
-	if (ArraySize(g_aSound_Grenade_Frost_Explode) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Explode; i++)
-		{
-			ArrayPushString(g_aSound_Grenade_Frost_Explode, g_Sound_Grenade_Frost_Explode[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE FROST EXPLODE", g_aSound_Grenade_Frost_Explode);
-	}
-
-	if (ArraySize(g_aSound_Grenade_Frost_Player) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Player; i++)
-		{
-			ArrayPushString(g_aSound_Grenade_Frost_Player, g_Sound_Grenade_Frost_Player[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE FROST PLAYER", g_aSound_Grenade_Frost_Player);
-	}
-
-	if (ArraySize(g_aSound_Grenade_Frost_Break) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Break; i++)
-		{
-			ArrayPushString(g_aSound_Grenade_Frost_Break, g_Sound_Grenade_Frost_Break[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE FROST BREAK", g_aSound_Grenade_Frost_Break);
-	}
-
-	// Load from external file, save if not found
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "V GRENADE FROST", g_V_Model_Grenade_Frost, charsmax(g_V_Model_Grenade_Frost)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "V GRENADE FROST", g_V_Model_Grenade_Frost);
-	}
-
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "P GRENADE FROST", g_P_Model_Grenade_Frost, charsmax(g_P_Model_Grenade_Frost)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "P GRENADE FROST", g_P_Model_Grenade_Frost);
-	}
-
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "W GRENADE FROST", g_W_Model_Grenade_Frost, charsmax(g_W_Model_Grenade_Frost)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "W GRENADE FROST", g_W_Model_Grenade_Frost);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Break; i++)
-	{
-		precache_sound(g_Sound_Grenade_Frost_Break[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Explode; i++)
-	{
-		precache_sound(g_Sound_Grenade_Frost_Explode[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Player; i++)
-	{
-		precache_sound(g_Sound_Grenade_Frost_Player[i]);
-	}
-
-	// Precache models
-	precache_model(g_V_Model_Grenade_Frost);
-	precache_model(g_P_Model_Grenade_Frost);
-	precache_model(g_W_Model_Grenade_Frost);
-
-	g_Trail_Sprite = precache_model(SPRITE_GRENADE_TRAIL);
-	g_Explode_Sprite_ = precache_model(SPRITE_GRENADE_RING);
-	g_Glass_Sprite = precache_model(SPRITE_GRENADE_GLASS);
 }
 
 public zp_fw_core_cure_post(iPlayer)
@@ -395,7 +351,7 @@ public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 	}
 
 	// Block damage while frozen, as it makes killing zombies too easy
-	if (BIT_VALID(g_Is_Frozen, iVictim) && !(get_pcvar_num(g_pCvar_Grenade_Frost_Frozenhit)))
+	if (BIT_VALID(g_Is_Frozen, iVictim) && !(get_pcvar_num(g_pCvar_Grenade_Frost_Frozen_Hit)))
 	{
 		return HC_SUPERCEDE;
 	}
@@ -413,7 +369,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker)
 	}
 
 	// Block damage while frozen, as it makes killing zombies too easy
-	if (BIT_VALID(g_Is_Frozen, iVictim) && !(get_pcvar_num(g_pCvar_Grenade_Frost_Frozenhit)))
+	if (BIT_VALID(g_Is_Frozen, iVictim) && !(get_pcvar_num(g_pCvar_Grenade_Frost_Frozen_Hit)))
 	{
 		return HC_SUPERCEDE;
 	}
@@ -483,7 +439,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	if (sModel[9] == 'f' && sModel[10] == 'l')
 	{
 		// Give it a glow
-		rh_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_B), kRenderNormal, 16);
+		rg_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_B), kRenderNormal, 16);
 
 		// And a colored trail
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
@@ -548,7 +504,7 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }
@@ -596,18 +552,18 @@ Set_Freeze(iVictim)
 	if (g_Forward_Result >= PLUGIN_HANDLED)
 	{
 		// Get player's origin
-		static iOrigin2[3];
+		static iOrigin[3];
 
-		get_user_origin(iVictim, iOrigin2);
+		get_user_origin(iVictim, iOrigin);
 
 		emit_sound(iVictim, CHAN_VOICE, g_Sound_Grenade_Frost_Break[random(sizeof g_Sound_Grenade_Frost_Break)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 		// Glass shatter
-		message_begin(MSG_PVS, SVC_TEMPENTITY, iOrigin2);
+		message_begin(MSG_PVS, SVC_TEMPENTITY, iOrigin);
 		write_byte(TE_BREAKMODEL); // TE player
-		write_coord(iOrigin2[0]); // x
-		write_coord(iOrigin2[1]); // y
-		write_coord(iOrigin2[2] + 24); // z
+		write_coord(iOrigin[0]); // x
+		write_coord(iOrigin[1]); // y
+		write_coord(iOrigin[2] + 24); // z
 		write_coord(16); // size x
 		write_coord(16); // size y
 		write_coord(16); // size z
@@ -630,7 +586,7 @@ Set_Freeze(iVictim)
 		message_begin(MSG_ONE_UNRELIABLE, g_Message_Damage, _, iVictim);
 		write_byte(0); // damage save
 		write_byte(0); // damage take
-		write_long(DMG_DROWN); // damage type - DMG_FREEZE
+		write_long(DMG_DROWN); // damage type
 		write_coord(0); // x
 		write_coord(0); // y
 		write_coord(0); // z
@@ -664,7 +620,7 @@ Set_Freeze(iVictim)
 	ExecuteHamB(Ham_Player_ResetMaxSpeed, iVictim);
 
 	// Set a task to remove the freeze
-	set_task(float(get_pcvar_num(g_pCvar_Grenade_Frost_Duration)), "Remove_Freeze", iVictim + TASK_FROST_REMOVE);
+	set_task(get_pcvar_float(g_pCvar_Grenade_Frost_Duration), "Remove_Freeze", iVictim + TASK_FROST_REMOVE);
 
 	return true;
 }
@@ -734,7 +690,7 @@ Apply_Frozen_Rendering(iPlayer)
 	get_entvar(iPlayer, var_renderamt, g_fFrozen_Rendering_Amount[iPlayer]);
 
 	// Light blue glow while frozen
-	rh_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_B), kRenderNormal, 25);
+	rg_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Frost_Glow_Rendering_B), kRenderNormal, 25);
 }
 
 // Remove freeze task
@@ -844,7 +800,7 @@ Create_Blast3(const Float:fOrigin[3])
 	engfunc(EngFunc_WriteCoord, fOrigin[0]); // x axis
 	engfunc(EngFunc_WriteCoord, fOrigin[1]); // y axis
 	engfunc(EngFunc_WriteCoord, fOrigin[2] + 385.0); // z axis
-	write_short(g_Explode_Sprite_); // sprite
+	write_short(g_Explode_Sprite); // sprite
 	write_byte(0); // startframe
 	write_byte(0); // framerate
 	write_byte(4); // life
@@ -866,7 +822,7 @@ Create_Blast3(const Float:fOrigin[3])
 	engfunc(EngFunc_WriteCoord, fOrigin[0]); // x axis
 	engfunc(EngFunc_WriteCoord, fOrigin[1]); // y axis
 	engfunc(EngFunc_WriteCoord, fOrigin[2] + 470.0); // z axis
-	write_short(g_Explode_Sprite_); // sprite
+	write_short(g_Explode_Sprite); // sprite
 	write_byte(0); // startframe
 	write_byte(0); // framerate
 	write_byte(4); // life
@@ -888,7 +844,7 @@ Create_Blast3(const Float:fOrigin[3])
 	engfunc(EngFunc_WriteCoord, fOrigin[0]); // x axis
 	engfunc(EngFunc_WriteCoord, fOrigin[1]); // y axis
 	engfunc(EngFunc_WriteCoord, fOrigin[2] + 555.0); // z axis
-	write_short(g_Explode_Sprite_); // sprite
+	write_short(g_Explode_Sprite); // sprite
 	write_byte(0); // startframe
 	write_byte(0); // framerate
 	write_byte(4); // life

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Weapon Drop Strip.
+*	[ZPE] Weapon Drop Strip.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "weapon drop strip"
-#define VERSION "5.2.5.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -29,8 +31,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Zombie_Strip_Armor = register_cvar("zm_zombie_strip_armor", "1");
-	g_pCvar_Remove_Dropped_Weapons = register_cvar("zm_remove_dropped_weapons", "0");
+	g_pCvar_Zombie_Strip_Armor = register_cvar("zpe_zombie_strip_armor", "1");
+	g_pCvar_Remove_Dropped_Weapons = register_cvar("zpe_remove_dropped_weapons", "0");
 
 	RegisterHam(Ham_Touch, "weaponbox", "Ham_Touch_");
 	RegisterHam(Ham_Touch, "armoury_entity", "Ham_Touch_");
@@ -96,7 +98,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

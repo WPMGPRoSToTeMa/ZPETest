@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Human Armor.
+*	[ZPE] Human Armor.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,34 +7,35 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "human armor"
-#define VERSION "5.1.5.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
-
-new const g_Sound_Armor_Hit[][] =
-{
-	"player/bhit_helmet-1.wav"
-};
 
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <fakemeta>
 #include <ck_zp50_kernel>
 #include <ck_zp50_class_nemesis>
 #include <ck_zp50_class_assassin>
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
 
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
+
 // Some constants
 #define DMG_HEGRENADE (1 << 24)
 
 #define SOUND_MAX_LENGTH 64
+
+new const g_Sound_Armor_Hit[][] =
+{
+	"player/bhit_helmet-1.wav"
+};
 
 new Array:g_aSound_Armor_Hit;
 
@@ -52,13 +53,13 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Human_Armor_Protect = register_cvar("zm_human_armor_protect", "1");
-	g_pCvar_Human_Armor_Default = register_cvar("zm_human_armor_default", "0");
+	g_pCvar_Human_Armor_Protect = register_cvar("zpe_human_armor_protect", "1");
+	g_pCvar_Human_Armor_Default = register_cvar("zpe_human_armor_default", "0");
 
-	g_pCvar_Armor_Protect_Nemesis = register_cvar("zm_armor_protect_nemesis", "1");
-	g_pCvar_Armor_Protect_Assassin = register_cvar("zm_armor_protect_assassin", "1");
-	g_pCvar_Armor_Protect_Survivor = register_cvar("zm_armor_protect_survivor", "1");
-	g_pCvar_Armor_Protect_Sniper = register_cvar("zm_armor_protect_sniper", "1")
+	g_pCvar_Armor_Protect_Nemesis = register_cvar("zpe_armor_protect_nemesis", "1");
+	g_pCvar_Armor_Protect_Assassin = register_cvar("zpe_armor_protect_assassin", "1");
+	g_pCvar_Armor_Protect_Survivor = register_cvar("zpe_armor_protect_survivor", "1");
+	g_pCvar_Armor_Protect_Sniper = register_cvar("zpe_armor_protect_sniper", "1")
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
 }
@@ -69,19 +70,7 @@ public plugin_precache()
 	g_aSound_Armor_Hit = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Armor_Hit);
-
-	// If we couldn't load custom sounds from file, use and save default ones
-	if (ArraySize(g_aSound_Armor_Hit) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Armor_Hit; i++)
-		{
-			ArrayPushString(g_aSound_Armor_Hit, g_Sound_Armor_Hit[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Armor_Hit);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Armor_Hit);
 
 	for (new i = 0; i < sizeof g_Sound_Armor_Hit; i++)
 	{
@@ -189,7 +178,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

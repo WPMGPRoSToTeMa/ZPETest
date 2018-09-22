@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Rewards Ammopacks.
+*	[ZPE] Rewards ammo packs.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
-#define PLUGIN "rewards ammopacks"
-#define VERSION "5.1.8.0"
+#define PLUGIN "rewards ammo packs"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -28,7 +30,7 @@ new Float:g_fDamage_Dealt_To_Zombies[MAX_PLAYERS + 1];
 new Float:g_fDamage_Dealt_To_Humans[MAX_PLAYERS + 1];
 
 new g_pCvar_Ammo_Packs_For_Winner;
-new g_pCvar_Ammo_Packs_For_Looser;
+new g_pCvar_Ammo_Packs_For_Loser;
 
 new g_pCvar_Ammo_Packs_Damage;
 new g_pCvar_Ammo_Packs_Zombie_Damaged_HP;
@@ -51,22 +53,22 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Ammo_Packs_For_Winner = register_cvar("zm_ammo_packs_winner", "3");
-	g_pCvar_Ammo_Packs_For_Looser = register_cvar("zm_ammo_packs_loser", "1");
+	g_pCvar_Ammo_Packs_For_Winner = register_cvar("zpe_ammo_packs_for_winner", "3");
+	g_pCvar_Ammo_Packs_For_Loser = register_cvar("zpe_ammo_packs_for_loser", "1");
 
-	g_pCvar_Ammo_Packs_Damage = register_cvar("zm_ammo_packs_damage", "1");
-	g_pCvar_Ammo_Packs_Zombie_Damaged_HP = register_cvar("zm_ammo_packs_zombie_damaged_hp", "500");
-	g_pCvar_Ammo_Packs_Human_Damaged_HP = register_cvar("zm_ammo_packs_human_damaged_hp", "250");
+	g_pCvar_Ammo_Packs_Damage = register_cvar("zpe_ammo_packs_damage", "1");
+	g_pCvar_Ammo_Packs_Zombie_Damaged_HP = register_cvar("zpe_ammo_packs_zombie_damaged_hp", "500.0");
+	g_pCvar_Ammo_Packs_Human_Damaged_HP = register_cvar("zpe_ammo_packs_human_damaged_hp", "250.0");
 
-	g_pCvar_Ammo_Packs_Zombie_Killed = register_cvar("zm_ammo_packs_zombie_killed", "1");
-	g_pCvar_Ammo_Packs_Human_Killed = register_cvar("zm_ammo_packs_human_killed", "1");
+	g_pCvar_Ammo_Packs_Zombie_Killed = register_cvar("zpe_ammo_packs_zombie_killed", "1");
+	g_pCvar_Ammo_Packs_Human_Killed = register_cvar("zpe_ammo_packs_human_killed", "1");
 
-	g_pCvar_Ammo_Packs_Human_Infected = register_cvar("zm_ammo_packs_human_infected", "1");
+	g_pCvar_Ammo_Packs_Human_Infected = register_cvar("zpe_ammo_packs_human_infected", "1");
 
-	g_pCvar_Ammo_Packs_Nemesis_Ignore = register_cvar("zm_ammo_packs_nemesis_ignore", "0");
-	g_pCvar_Ammo_Packs_Assassin_Ignore = register_cvar("zm_ammo_packs_assassin_ignore", "0");
-	g_pCvar_Ammo_Packs_Survivor_Ignore = register_cvar("zm_ammo_packs_survivor_ignore", "0");
-	g_pCvar_Ammo_Packs_Sniper_Ignore = register_cvar("zm_ammo_packs_sniper_ignore", "0");
+	g_pCvar_Ammo_Packs_Nemesis_Ignore = register_cvar("zpe_ammo_packs_nemesis_ignore", "0");
+	g_pCvar_Ammo_Packs_Assassin_Ignore = register_cvar("zpe_ammo_packs_assassin_ignore", "0");
+	g_pCvar_Ammo_Packs_Survivor_Ignore = register_cvar("zpe_ammo_packs_survivor_ignore", "0");
+	g_pCvar_Ammo_Packs_Sniper_Ignore = register_cvar("zpe_ammo_packs_sniper_ignore", "0");
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_Post", 1);
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
@@ -215,7 +217,7 @@ public zp_fw_gamemodes_end()
 
 			if (zp_core_is_zombie(i))
 			{
-				zp_ammopacks_set(i, zp_ammopacks_get(i) + get_pcvar_num(g_pCvar_Ammo_Packs_For_Looser));
+				zp_ammopacks_set(i, zp_ammopacks_get(i) + get_pcvar_num(g_pCvar_Ammo_Packs_For_Loser));
 			}
 
 			else
@@ -242,7 +244,7 @@ public zp_fw_gamemodes_end()
 
 			else
 			{
-				zp_ammopacks_set(i, zp_ammopacks_get(i) + get_pcvar_num(g_pCvar_Ammo_Packs_For_Looser));
+				zp_ammopacks_set(i, zp_ammopacks_get(i) + get_pcvar_num(g_pCvar_Ammo_Packs_For_Loser));
 			}
 		}
 	}
@@ -257,7 +259,7 @@ public zp_fw_gamemodes_end()
 				continue;
 			}
 
-			zp_ammopacks_set(i, zp_ammopacks_get(i) + get_pcvar_num(g_pCvar_Ammo_Packs_For_Looser));
+			zp_ammopacks_set(i, zp_ammopacks_get(i) + get_pcvar_num(g_pCvar_Ammo_Packs_For_Loser));
 		}
 	}
 }
@@ -282,7 +284,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

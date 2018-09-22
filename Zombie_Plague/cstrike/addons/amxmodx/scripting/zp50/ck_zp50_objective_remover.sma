@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Objective remover.
+*	[ZPE] Objective remover.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,21 +7,25 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "objective remover"
-#define VERSION "5.1.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
 
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
 #include <fakemeta>
 
-new const g_Objective_Entitys[][] =
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
+
+#define CLASSNAME_MAX_LENGTH 32
+
+new const g_Objective_Entities[][] =
 {
 	"func_bomb_target",
 	"info_bomb_target",
@@ -34,9 +38,7 @@ new const g_Objective_Entitys[][] =
 	"info_hostage_rescue"
 };
 
-#define CLASSNAME_MAX_LENGTH 32
-
-new Array:g_aObjective_Entitys;
+new Array:g_aObjective_Entities;
 
 new g_unfwSpawn;
 new g_unfwPrecache_Sound;
@@ -51,35 +53,23 @@ public plugin_init()
 	register_forward(FM_EmitSound, "FM_EmitSound_");
 
 	register_message(get_user_msgid("Scenario"), "Message_Scenario");
-	register_message(get_user_msgid("HostagePos"), "Message_Hostagepos");
+	register_message(get_user_msgid("HostagePos"), "Message_HostagePos");
 }
 
 public plugin_precache()
 {
 	// Initialize arrays
-	g_aObjective_Entitys = ArrayCreate(CLASSNAME_MAX_LENGTH, 1);
+	g_aObjective_Entities = ArrayCreate(CLASSNAME_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Objective Entities", "OBJECTIVES", g_aObjective_Entitys);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Objective Entities", "OBJECTIVES", g_aObjective_Entities);
 
-	// If we couldn't load from file, use and save default ones
-	if (ArraySize(g_aObjective_Entitys) == 0)
-	{
-		for (new i = 0; i < sizeof g_Objective_Entitys; i++)
-		{
-			ArrayPushString(g_aObjective_Entitys, g_Objective_Entitys[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Objective Entities", "OBJECTIVES", g_aObjective_Entitys);
-	}
-
-	// Fake Hostage (to force round ending)
+	// Fake hostage (to force round ending)
 	new iEntity = engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, "hostage_entity"));
 
 	if (is_entity(iEntity))
 	{
-		engfunc(EngFunc_SetOrigin, iEntity, Float:{ 8192.0, 8192.0, 8192.0 });
+		engfunc(EngFunc_SetOrigin, iEntity, Float:{8192.0, 8192.0, 8192.0});
 
 		dllfunc(DLLFunc_Spawn, iEntity);
 	}
@@ -106,9 +96,9 @@ public FM_Spawn_(iEntity)
 	get_entvar(iEntity, var_classname, szClassname, charsmax(szClassname));
 
 	// Check whether it needs to be removed
-	for (new i = 0; i < sizeof g_Objective_Entitys; i++)
+	for (new i = 0; i < sizeof g_Objective_Entities; i++)
 	{
-		if (equal(szClassname, g_Objective_Entitys[i]))
+		if (equal(szClassname, g_Objective_Entities[i]))
 		{
 			engfunc(EngFunc_RemoveEntity, iEntity);
 
@@ -122,7 +112,7 @@ public FM_Spawn_(iEntity)
 // Sound Precache Forward
 public FM_PrecacheSound_(const szSound[])
 {
-	// Block all those unneeeded hostage sounds
+	// Block all those unneeded hostage sounds
 	if (equal(szSound, "hostage", 7))
 	{
 		return FMRES_SUPERCEDE;
@@ -134,7 +124,7 @@ public FM_PrecacheSound_(const szSound[])
 // Emit Sound Forward
 public FM_EmitSound_(iPlayer, iChannel, const szSample[])
 {
-	// Block all those unneeeded hostage sounds
+	// Block all those unneeded hostage sounds
 	if (szSample[0] == 'h' && szSample[1] == 'o' && szSample[2] == 's' && szSample[3] == 't' && szSample[4] == 'a' && szSample[5] == 'g' && szSample[6] == 'e')
 	{
 		return FMRES_SUPERCEDE;
@@ -162,7 +152,7 @@ public Message_Scenario()
 }
 
 // Block hostages from appearing on radar
-public Message_Hostagepos()
+public Message_HostagePos()
 {
 	return PLUGIN_HANDLED;
 }

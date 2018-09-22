@@ -16,8 +16,6 @@
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
-
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
@@ -28,6 +26,8 @@
 
 #define LIBRARY_AMMOPACKS "ck_zp50_ammopacks"
 #include <ck_zp50_ammopacks>
+
+#define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
 #define SOUND_MAX_LENGTH 64
 
@@ -346,7 +346,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	{
 		if (zp_ammopacks_get(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks))
 		{
-			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
 
 			return;
 		}
@@ -356,7 +356,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	{
 		if (CS_GET_USER_MONEY(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money))
 		{
-			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_MONEY", iPlayer, "REQUIRED_AMOUNT", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_MONEY_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
 
 			return;
 		}
@@ -404,9 +404,9 @@ public Client_Command_Buy_Ammo(iPlayer)
 	}
 
 	// Play clip purchase sound, and notify player
-	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[random_num(0, sizeof g_Sound_Buy_Ammo - 1)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[random(sizeof g_Sound_Buy_Ammo)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
-	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT");
+	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT_COLOR");
 }
 
 public client_disconnected(iPlayer)
@@ -419,7 +419,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

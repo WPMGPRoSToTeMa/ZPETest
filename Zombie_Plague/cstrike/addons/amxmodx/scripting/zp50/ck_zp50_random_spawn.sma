@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Random Spawn.
+*	[ZPE] Random Spawn.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "random spawn"
-#define VERSION "5.2.5.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -26,12 +28,12 @@
 #define SPAWN_DATA_ANGLES_X 3
 #define SPAWN_DATA_ANGLES_Y 4
 #define SPAWN_DATA_ANGLES_Z 5
-#define SPAWN_DATA_V_ANGLES_X 6
-#define SPAWN_DATA_V_ANGLES_Y 7
-#define SPAWN_DATA_V_ANGLES_Z 8
+#define SPAWN_DATA_VIEW_ANGLES_X 6
+#define SPAWN_DATA_VIEW_ANGLES_Y 7
+#define SPAWN_DATA_VIEW_ANGLES_Z 8
 
-new Float:g_fSpawns_CSDM[128][SPAWN_DATA_V_ANGLES_Z + 1];
-new Float:g_fSpawns_Regular[128][SPAWN_DATA_V_ANGLES_Z + 1];
+new Float:g_fSpawns_CSDM[128][SPAWN_DATA_VIEW_ANGLES_Z + 1];
+new Float:g_fSpawns_Regular[128][SPAWN_DATA_VIEW_ANGLES_Z + 1];
 
 new g_Spawn_Count_CSDM;
 new g_Spawn_Count_Regular;
@@ -44,7 +46,7 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Random_Spawning = register_cvar("zm_random_spawning_csdm", "1"); // 1-use CSDM spawns // 0-use regular spawns
+	g_pCvar_Random_Spawning = register_cvar("zpe_random_spawning_csdm", "1"); // 1-use CSDM spawns // 0-use regular spawns
 
 	// Collect random spawn points
 	Load_Spawns();
@@ -75,7 +77,7 @@ public native_random_spawn_do(iPlugin_ID, iNum_Params)
 	return true;
 }
 
-// ZP Player Spawn Post Forward
+// ZPE Player Spawn Post Forward
 public zp_fw_core_spawn_post(iPlayer)
 {
 	Do_Random_Spawn(iPlayer, get_pcvar_num(g_pCvar_Random_Spawning));
@@ -107,31 +109,31 @@ Do_Random_Spawn(iPlayer, iCSDM_Spawns = true)
 			}
 
 			// Fetch spawn data: origin
-			static Float:fSpawndata[3];
+			static Float:fSpawn_Data[3];
 
-			fSpawndata[0] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ORIGIN_X];
-			fSpawndata[1] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ORIGIN_Y];
-			fSpawndata[2] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ORIGIN_Z];
+			fSpawn_Data[0] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ORIGIN_X];
+			fSpawn_Data[1] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ORIGIN_Y];
+			fSpawn_Data[2] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ORIGIN_Z];
 
 			// Free spawn space?
-			if (Is_Hull_Vacant(fSpawndata, iHull))
+			if (Is_Hull_Vacant(fSpawn_Data, iHull))
 			{
 				// Engfunc_SetOrigin is used so entity's mins and maxs get updated instantly
-				engfunc(EngFunc_SetOrigin, iPlayer, fSpawndata);
+				engfunc(EngFunc_SetOrigin, iPlayer, fSpawn_Data);
 
 				// Fetch spawn data: angles
-				fSpawndata[0] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ANGLES_X];
-				fSpawndata[1] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ANGLES_Y];
-				fSpawndata[2] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ANGLES_Z];
+				fSpawn_Data[0] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ANGLES_X];
+				fSpawn_Data[1] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ANGLES_Y];
+				fSpawn_Data[2] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_ANGLES_Z];
 
-				set_entvar(iPlayer, var_angles, fSpawndata);
+				set_entvar(iPlayer, var_angles, fSpawn_Data);
 
 				// Fetch spawn data: view angles
-				fSpawndata[0] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_V_ANGLES_X];
-				fSpawndata[1] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_V_ANGLES_Y];
-				fSpawndata[2] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_V_ANGLES_Z];
+				fSpawn_Data[0] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_VIEW_ANGLES_X];
+				fSpawn_Data[1] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_VIEW_ANGLES_Y];
+				fSpawn_Data[2] = g_fSpawns_CSDM[iCurrent_Index][SPAWN_DATA_VIEW_ANGLES_Z];
 
-				set_entvar(iPlayer, var_v_angle, fSpawndata);
+				set_entvar(iPlayer, var_v_angle, fSpawn_Data);
 
 				break;
 			}
@@ -159,31 +161,31 @@ Do_Random_Spawn(iPlayer, iCSDM_Spawns = true)
 			}
 
 			// Fetch spawn data: origin
-			static Float:fSpawndata[3];
+			static Float:fSpawn_Data[3];
 
-			fSpawndata[0] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ORIGIN_X];
-			fSpawndata[1] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ORIGIN_Y];
-			fSpawndata[2] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ORIGIN_Z];
+			fSpawn_Data[0] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ORIGIN_X];
+			fSpawn_Data[1] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ORIGIN_Y];
+			fSpawn_Data[2] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ORIGIN_Z];
 
 			// Free spawn space?
-			if (Is_Hull_Vacant(fSpawndata, iHull))
+			if (Is_Hull_Vacant(fSpawn_Data, iHull))
 			{
 				// Engfunc_SetOrigin is used so entity's mins and maxs get updated instantly
-				engfunc(EngFunc_SetOrigin, iPlayer, fSpawndata);
+				engfunc(EngFunc_SetOrigin, iPlayer, fSpawn_Data);
 
 				// Fetch spawn data: angles
-				fSpawndata[0] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ANGLES_X];
-				fSpawndata[1] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ANGLES_Y];
-				fSpawndata[2] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ANGLES_Z];
+				fSpawn_Data[0] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ANGLES_X];
+				fSpawn_Data[1] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ANGLES_Y];
+				fSpawn_Data[2] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_ANGLES_Z];
 
-				set_entvar(iPlayer, var_angles, fSpawndata);
+				set_entvar(iPlayer, var_angles, fSpawn_Data);
 
 				// Fetch spawn data: view angles
-				fSpawndata[0] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_V_ANGLES_X];
-				fSpawndata[1] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_V_ANGLES_Y];
-				fSpawndata[2] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_V_ANGLES_Z];
+				fSpawn_Data[0] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_VIEW_ANGLES_X];
+				fSpawn_Data[1] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_VIEW_ANGLES_Y];
+				fSpawn_Data[2] = g_fSpawns_Regular[iCurrent_Index][SPAWN_DATA_VIEW_ANGLES_Z];
 
-				set_entvar(iPlayer, var_v_angle, fSpawndata);
+				set_entvar(iPlayer, var_v_angle, fSpawn_Data);
 
 				break;
 			}
@@ -223,9 +225,9 @@ stock Collect_Spawns_Entity(const szClassname[])
 		// View angles
 		get_entvar(iEntity, var_v_angle, fData);
 
-		g_fSpawns_Regular[g_Spawn_Count_Regular][SPAWN_DATA_V_ANGLES_X] = fData[0];
-		g_fSpawns_Regular[g_Spawn_Count_Regular][SPAWN_DATA_V_ANGLES_Y] = fData[1];
-		g_fSpawns_Regular[g_Spawn_Count_Regular][SPAWN_DATA_V_ANGLES_Z] = fData[2];
+		g_fSpawns_Regular[g_Spawn_Count_Regular][SPAWN_DATA_VIEW_ANGLES_X] = fData[0];
+		g_fSpawns_Regular[g_Spawn_Count_Regular][SPAWN_DATA_VIEW_ANGLES_Y] = fData[1];
+		g_fSpawns_Regular[g_Spawn_Count_Regular][SPAWN_DATA_VIEW_ANGLES_Z] = fData[2];
 
 		// Increase spawn count
 		g_Spawn_Count_Regular++;
@@ -242,34 +244,34 @@ stock Load_Spawns()
 {
 	// Check for CSDM spawns of the current map
 	new szConfig_Directory[32];
-	new szMapname[32];
-	new szFilepath[100];
-	new szLinedata[64];
+	new szMap_Name[32];
+	new szFile_Path[100];
+	new szLine_data[64];
 
 	get_configsdir(szConfig_Directory, charsmax(szConfig_Directory));
-	get_mapname(szMapname, charsmax(szMapname));
+	get_mapname(szMap_Name, charsmax(szMap_Name));
 
-	formatex(szFilepath, charsmax(szFilepath), "%s/csdm/%s.spawns.cfg", szConfig_Directory, szMapname);
+	formatex(szFile_Path, charsmax(szFile_Path), "%s/csdm/%s.spawns.cfg", szConfig_Directory, szMap_Name);
 
 	// Load CSDM spawns if present
-	if (file_exists(szFilepath))
+	if (file_exists(szFile_Path))
 	{
 		new fCSDM_Data[10][6];
 
-		new iFile = fopen(szFilepath, "rt");
+		new iFile = fopen(szFile_Path, "rt");
 
 		while (iFile && !feof(iFile))
 		{
-			fgets(iFile, szLinedata, charsmax(szLinedata));
+			fgets(iFile, szLine_data, charsmax(szLine_data));
 
 			// Invalid spawn
-			if (!szLinedata[0] || Str_Count(szLinedata, ' ') < 2)
+			if (!szLine_data[0] || Str_Count(szLine_data, ' ') < 2)
 			{
 				continue;
 			}
 
 			// Get spawn point data
-			parse(szLinedata, fCSDM_Data[0], 5, fCSDM_Data[1], 5, fCSDM_Data[2], 5, fCSDM_Data[3], 5, fCSDM_Data[4], 5, fCSDM_Data[5], 5, fCSDM_Data[6], 5, fCSDM_Data[7], 5, fCSDM_Data[8], 5, fCSDM_Data[9], 5);
+			parse(szLine_data, fCSDM_Data[0], 5, fCSDM_Data[1], 5, fCSDM_Data[2], 5, fCSDM_Data[3], 5, fCSDM_Data[4], 5, fCSDM_Data[5], 5, fCSDM_Data[6], 5, fCSDM_Data[7], 5, fCSDM_Data[8], 5, fCSDM_Data[9], 5);
 
 			// Origin
 			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_ORIGIN_X] = floatstr(fCSDM_Data[0]);
@@ -282,9 +284,9 @@ stock Load_Spawns()
 			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_ANGLES_Z] = floatstr(fCSDM_Data[5]);
 
 			// View angles
-			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_V_ANGLES_X] = floatstr(fCSDM_Data[7]);
-			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_V_ANGLES_Y] = floatstr(fCSDM_Data[8]);
-			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_V_ANGLES_Z] = floatstr(fCSDM_Data[9]);
+			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_VIEW_ANGLES_X] = floatstr(fCSDM_Data[7]);
+			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_VIEW_ANGLES_Y] = floatstr(fCSDM_Data[8]);
+			g_fSpawns_CSDM[g_Spawn_Count_CSDM][SPAWN_DATA_VIEW_ANGLES_Z] = floatstr(fCSDM_Data[9]);
 
 			// Increase spawn count
 			g_Spawn_Count_CSDM++;
@@ -319,7 +321,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

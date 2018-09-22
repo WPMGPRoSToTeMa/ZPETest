@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Class Sniper.
+*	[ZPE] Class Sniper.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,14 +7,29 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "class sniper"
-#define VERSION "5.3.2.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-#define ZP_SETTINGS_FILE "zm_settings.ini"
+#include <amxmodx>
+#include <cs_util>
+#include <amx_settings_api>
+#include <ck_cs_maxspeed_api>
+#include <ck_zp50_kernel>
+#include <ck_zp50_items>
+
+#define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_sniper.ini"
+
+#define TASK_AURA 100
+#define ID_AURA (iTask_ID - TASK_AURA)
+
+#define PLAYERMODEL_MAX_LENGTH 32
+#define SOUND_MAX_LENGTH 64
 
 new const g_Models_Sniper_Player[][] =
 {
@@ -36,19 +51,6 @@ new const g_Sound_Sniper_Pain[][] =
 {
 	"player/pl_pain7.wav"
 };
-
-#include <amxmodx>
-#include <cs_util>
-#include <amx_settings_api>
-#include <ck_cs_maxspeed_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_items>
-
-#define TASK_AURA 100
-#define ID_AURA (iTask_ID - TASK_AURA)
-
-#define PLAYERMODEL_MAX_LENGTH 32
-#define SOUND_MAX_LENGTH 64
 
 new Array:g_aModels_Sniper_Player;
 
@@ -88,25 +90,25 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Sniper_Health = register_cvar("zm_sniper_health", "0");
-	g_pCvar_Sniper_Base_Health = register_cvar("zm_sniper_base_health", "100");
-	g_pCvar_Sniper_Speed = register_cvar("zm_sniper_speed", "0.95");
-	g_pCvar_Sniper_Gravity = register_cvar("zm_sniper_gravity", "0.75");
+	g_pCvar_Sniper_Health = register_cvar("zpe_sniper_health", "0.0");
+	g_pCvar_Sniper_Base_Health = register_cvar("zpe_sniper_base_health", "100.0");
+	g_pCvar_Sniper_Speed = register_cvar("zpe_sniper_speed", "0.95");
+	g_pCvar_Sniper_Gravity = register_cvar("zpe_sniper_gravity", "0.75");
 
-	g_pCvar_Sniper_Glow = register_cvar("zm_sniper_glow", "1");
-	g_pCvar_Sniper_Aura = register_cvar("zm_sniper_aura", "1");
-	g_pCvar_Sniper_Aura_Radius = register_cvar("zm_sniper_aura_radius", "20");
-	g_pCvar_Sniper_Aura_Color_R = register_cvar("zm_sniper_aura_color_R", "200");
-	g_pCvar_Sniper_Aura_Color_G = register_cvar("zm_sniper_aura_color_G", "200");
-	g_pCvar_Sniper_Aura_Color_B = register_cvar("zm_sniper_aura_color_B", "0");
-	g_pCvar_Sniper_Aura_Life = register_cvar("zm_sniper_aura_life", "2");
-	g_pCvar_Sniper_Aura_Decay_Rate = register_cvar("zm_sniper_aura_decay_rate", "0");
+	g_pCvar_Sniper_Glow = register_cvar("zpe_sniper_glow", "1");
+	g_pCvar_Sniper_Aura = register_cvar("zpe_sniper_aura", "1");
+	g_pCvar_Sniper_Aura_Radius = register_cvar("zpe_sniper_aura_radius", "20");
+	g_pCvar_Sniper_Aura_Color_R = register_cvar("zpe_sniper_aura_color_R", "200");
+	g_pCvar_Sniper_Aura_Color_G = register_cvar("zpe_sniper_aura_color_G", "200");
+	g_pCvar_Sniper_Aura_Color_B = register_cvar("zpe_sniper_aura_color_B", "0");
+	g_pCvar_Sniper_Aura_Life = register_cvar("zpe_sniper_aura_life", "2");
+	g_pCvar_Sniper_Aura_Decay_Rate = register_cvar("zpe_sniper_aura_decay_rate", "0");
 
-	g_pCvar_Sniper_Damage = register_cvar("zm_sniper_damage", "55555");
-	g_pCvar_Sniper_Kill_Explode = register_cvar("zm_sniper_kill_explode", "0");
+	g_pCvar_Sniper_Damage = register_cvar("zpe_sniper_damage", "55555");
+	g_pCvar_Sniper_Kill_Explode = register_cvar("zpe_sniper_kill_explode", "0");
 
-	g_pCvar_Sniper_Weapon_Block = register_cvar("zm_sniper_weapon_block", "1");
-	g_pCvar_Sniper_Weapon_Ammo = register_cvar("zm_sniper_weapon_ammo", "30");
+	g_pCvar_Sniper_Weapon_Block = register_cvar("zpe_sniper_weapon_block", "1");
+	g_pCvar_Sniper_Weapon_Ammo = register_cvar("zpe_sniper_weapon_ammo", "30");
 
 	g_Forward = CreateMultiForward("zp_fw_class_sniper_bit_change", ET_CONTINUE, FP_CELL);
 
@@ -115,7 +117,7 @@ public plugin_init()
 	RegisterHookChain(RG_CSGameRules_CanHavePlayerItem, "RG_CSGameRules_CanHavePlayerItem_");
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
 
-	// TODO: Dont use ReAPI, in the form of code - load.
+	// Dont use ReAPI, in the form of code - load
 	register_forward(FM_EmitSound, "FM_EmitSound_");
 
 	register_forward(FM_ClientDisconnect, "FM_ClientDisconnect_Post", 1);
@@ -131,55 +133,11 @@ public plugin_precache()
 	g_aSound_Sniper_Pain = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Player Models", "SNIPER", g_aModels_Sniper_Player);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Player Models", "SNIPER", g_aModels_Sniper_Player);
 
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "SNIPER DIE", g_aSound_Sniper_Die);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "SNIPER FALL", g_aSound_Sniper_Fall);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "SNIPER PAIN", g_aSound_Sniper_Pain);
-
-	if (ArraySize(g_aModels_Sniper_Player) == 0)
-	{
-		for (new i = 0; i < sizeof g_Models_Sniper_Player; i++)
-		{
-			ArrayPushString(g_aModels_Sniper_Player, g_Models_Sniper_Player[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Player Models", "SNIPER", g_aModels_Sniper_Player);
-	}
-
-	if (ArraySize(g_aSound_Sniper_Die) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Sniper_Die; i++)
-		{
-			ArrayPushString(g_aSound_Sniper_Die, g_Sound_Sniper_Die[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "SNIPER DIE", g_aSound_Sniper_Die);
-	}
-
-	if (ArraySize(g_aSound_Sniper_Fall) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Sniper_Fall; i++)
-		{
-			ArrayPushString(g_aSound_Sniper_Fall, g_Sound_Sniper_Fall[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "SNIPER FALL", g_aSound_Sniper_Fall);
-	}
-
-	if (ArraySize(g_aSound_Sniper_Pain) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Sniper_Pain; i++)
-		{
-			ArrayPushString(g_aSound_Sniper_Pain, g_Sound_Sniper_Pain[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "SNIPER PAIN", g_aSound_Sniper_Pain);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER DIE", g_aSound_Sniper_Die);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER FALL", g_aSound_Sniper_Fall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER PAIN", g_aSound_Sniper_Pain);
 
 	new szBuffer[128];
 
@@ -206,6 +164,11 @@ public plugin_precache()
 	}
 }
 
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/classes/other/zpe_sniper.cfg");
+}
+
 public plugin_natives()
 {
 	register_library("ck_zp50_class_sniper");
@@ -217,7 +180,7 @@ public plugin_natives()
 public Client_Command_Drop(iPlayer)
 {
 	// Should sniper stick to his weapon?
-	if (BIT_VALID(g_iBit_Sniper, iPlayer) && get_pcvar_num(g_pCvar_Sniper_Weapon_Block))
+	if (get_pcvar_num(g_pCvar_Sniper_Weapon_Block) && BIT_VALID(g_iBit_Sniper, iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -228,7 +191,7 @@ public Client_Command_Drop(iPlayer)
 public RG_CSGameRules_CanHavePlayerItem_(iWeapon, iPlayer)
 {
 	// Should sniper stick to his weapon?
-	if (get_pcvar_num(g_pCvar_Sniper_Weapon_Block) && BIT_VALID(g_iBit_Alive, iPlayer) && BIT_VALID(g_iBit_Sniper, iPlayer))
+	if (get_pcvar_num(g_pCvar_Sniper_Weapon_Block) && BIT_VALID(g_iBit_Sniper, iPlayer) && BIT_VALID(g_iBit_Alive, iPlayer))
 	{
 		return HC_SUPERCEDE;
 	}
@@ -243,7 +206,7 @@ public zp_fw_core_spawn_post(iPlayer)
 		// Remove sniper glow
 		if (get_pcvar_num(g_pCvar_Sniper_Glow))
 		{
-			rh_set_user_rendering(iPlayer);
+			rg_set_user_rendering(iPlayer);
 		}
 
 		// Remove sniper aura
@@ -266,7 +229,7 @@ public zp_fw_core_infect(iPlayer)
 		// Remove sniper glow
 		if (get_pcvar_num(g_pCvar_Sniper_Glow))
 		{
-			rh_set_user_rendering(iPlayer);
+			rg_set_user_rendering(iPlayer);
 		}
 
 		// Remove sniper aura
@@ -299,7 +262,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
 		{
 			if (CS_GET_WEAPON_ID(iAttacker) == CSW_AWP)
 			{
-				SetHookChainArg(4, ATYPE_FLOAT, fDamage * float(get_pcvar_num(g_pCvar_Sniper_Damage)));
+				SetHookChainArg(4, ATYPE_FLOAT, fDamage * get_pcvar_float(g_pCvar_Sniper_Damage));
 			}
 		}
 	}
@@ -316,14 +279,14 @@ public zp_fw_core_cure_post(iPlayer, iAttacker)
 	}
 
 	// Health
-	if (get_pcvar_num(g_pCvar_Sniper_Health) == 0)
+	if (get_pcvar_float(g_pCvar_Sniper_Health) == 0.0)
 	{
-		SET_USER_HEALTH(iPlayer, float(get_pcvar_num(g_pCvar_Sniper_Base_Health)) * Get_Alive_Count());
+		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Sniper_Base_Health) * Get_Alive_Count());
 	}
 
 	else
 	{
-		SET_USER_HEALTH(iPlayer, float(get_pcvar_num(g_pCvar_Sniper_Health)));
+		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Sniper_Health));
 	}
 
 	// Gravity
@@ -338,7 +301,7 @@ public zp_fw_core_cure_post(iPlayer, iAttacker)
 	// Sniper glow
 	if (get_pcvar_num(g_pCvar_Sniper_Glow))
 	{
-		rh_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Sniper_Aura_Color_R), get_pcvar_num(g_pCvar_Sniper_Aura_Color_G), get_pcvar_num(g_pCvar_Sniper_Aura_Color_B), kRenderNormal, 25);
+		rg_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Sniper_Aura_Color_R), get_pcvar_num(g_pCvar_Sniper_Aura_Color_G), get_pcvar_num(g_pCvar_Sniper_Aura_Color_B), kRenderNormal, 25);
 	}
 
 	// Sniper aura task
@@ -391,7 +354,7 @@ public Sniper_Aura(iTask_ID)
 
 	get_user_origin(ID_AURA, iOrigin);
 
-	// Colored Aura
+	// Colored aura
 	message_begin(MSG_PVS, SVC_TEMPENTITY, iOrigin);
 	write_byte(TE_DLIGHT); // TE player
 	write_coord(iOrigin[0]); // x
@@ -406,7 +369,7 @@ public Sniper_Aura(iTask_ID)
 	message_end();
 }
 
-public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
+public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
 	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zp_core_is_zombie(iPlayer))
 	{
@@ -417,14 +380,14 @@ public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:f
 	{
 		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Die[random_num(0, sizeof g_Sound_Sniper_Die - 1)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Die[random(sizeof g_Sound_Sniper_Die)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Fall[random_num(0, sizeof g_Sound_Sniper_Fall - 1)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Fall[random(sizeof g_Sound_Sniper_Fall)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
@@ -468,6 +431,7 @@ public FM_ClientDisconnect_Post(iPlayer)
 	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Sniper);
 }
 
+// This is RG_CSGameRules_PlayerKilled Pre. Simply optimization.
 public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 {
 	if (BIT_VALID(g_iBit_Sniper, iVictim))
@@ -501,7 +465,7 @@ public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 	BIT_SUB(g_iBit_Alive, iVictim);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

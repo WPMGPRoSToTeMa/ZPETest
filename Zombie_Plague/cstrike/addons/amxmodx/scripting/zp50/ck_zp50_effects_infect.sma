@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Effects Infect.
+*	[ZPE] Effects Infect.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "effects infect"
-#define VERSION "5.2.7.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -33,9 +35,7 @@ new g_pCvar_Infect_Screen_Fade_G;
 new g_pCvar_Infect_Screen_Fade_B;
 
 new g_Cvar_Infect_Screen_Shake;
-
 new g_pCvar_Infect_Hud_Icon;
-
 new g_pCvar_Infect_Tracers;
 new g_pCvar_Infect_Particles;
 
@@ -83,50 +83,51 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Infect_Show_Hud = register_cvar("zm_infect_show_hud", "1");
-	g_pCvar_Infect_Show_Notice = register_cvar("zm_infect_show_notice", "1");
+	g_pCvar_Infect_Show_Hud = register_cvar("zpe_infect_show_hud", "1");
+	g_pCvar_Infect_Show_Notice = register_cvar("zpe_infect_show_notice", "1");
 
-	g_pCvar_Infect_Screen_Fade = register_cvar("zm_infect_screen_fade", "1");
-	g_pCvar_Infect_Screen_Fade_R = register_cvar("zm_infect_screen_fade_R", "0");
-	g_pCvar_Infect_Screen_Fade_G = register_cvar("zm_infect_screen_fade_G", "150");
-	g_pCvar_Infect_Screen_Fade_B = register_cvar("zm_infect_screen_fade_B", "0");
+	g_pCvar_Infect_Screen_Fade = register_cvar("zpe_infect_screen_fade", "1");
+	g_pCvar_Infect_Screen_Fade_R = register_cvar("zpe_infect_screen_fade_r", "0");
+	g_pCvar_Infect_Screen_Fade_G = register_cvar("zpe_infect_screen_fade_g", "150");
+	g_pCvar_Infect_Screen_Fade_B = register_cvar("zpe_infect_screen_fade_b", "0");
 
-	g_Cvar_Infect_Screen_Shake = register_cvar("zm_infect_screen_shake", "1");
-	g_pCvar_Infect_Hud_Icon = register_cvar("zm_infect_hud_icon", "1");
-	g_pCvar_Infect_Tracers = register_cvar("zm_infect_tracers", "1");
-	g_pCvar_Infect_Particles = register_cvar("zm_infect_particles", "1");
-	g_pCvar_Infect_Sparkle = register_cvar("zm_infect_sparkle", "1");
-	g_pCvar_Infect_Sparkle_R = register_cvar("zm_infect_sparkle_R", "0");
-	g_pCvar_Infect_Sparkle_G = register_cvar("zm_infect_sparkle_G", "150");
-	g_pCvar_Infect_Sparkle_B = register_cvar("zm_infect_sparkle_B", "0");
+	g_Cvar_Infect_Screen_Shake = register_cvar("zpe_infect_screen_shake", "1");
+	g_pCvar_Infect_Hud_Icon = register_cvar("zpe_infect_hud_icon", "1");
+	g_pCvar_Infect_Tracers = register_cvar("zpe_infect_tracers", "1");
+	g_pCvar_Infect_Particles = register_cvar("zpe_infect_particles", "1");
 
-	g_pCvar_Message_Global_Infection_Converted = register_cvar("zm_global_infection_message_converted", "0");
-	g_pCvar_Message_Global_Infection_R = register_cvar("zm_global_infection_message_r", "0");
-	g_pCvar_Message_Global_Infection_G = register_cvar("zm_global_infection_message_g", "250");
-	g_pCvar_Message_Global_Infection_B = register_cvar("zm_global_infection_message_b", "0");
-	g_pCvar_Message_Global_Infection_X = register_cvar("zm_global_infection_message_x", "-1.0");
-	g_pCvar_Message_Global_Infection_Y = register_cvar("zm_global_infection_message_y", "0.75");
-	g_pCvar_Message_Global_Infection_Effects = register_cvar("zm_global_infection_message_effects", "0");
-	g_pCvar_Message_Global_Infection_Fxtime = register_cvar("zm_global_infection_message_fxtime", "0.1");
-	g_pCvar_Message_Global_Infection_Holdtime = register_cvar("zm_global_infection_message_holdtime", "1.5");
-	g_pCvar_Message_Global_Infection_Fadeintime = register_cvar("zm_global_infection_message_fadeintime", "2.0");
-	g_pCvar_Message_Global_Infection_Fadeouttime = register_cvar("zm_global_infection_message_fadeouttime", "1.5");
-	g_pCvar_Message_Global_Infection_Channel = register_cvar("zm_global_infection_message_channel", "-1");
+	g_pCvar_Infect_Sparkle = register_cvar("zpe_infect_sparkle", "1");
+	g_pCvar_Infect_Sparkle_R = register_cvar("zpe_infect_sparkle_r", "0");
+	g_pCvar_Infect_Sparkle_G = register_cvar("zpe_infect_sparkle_g", "150");
+	g_pCvar_Infect_Sparkle_B = register_cvar("zpe_infect_sparkle_b", "0");
 
-	g_pCvar_Message_Infection_Converted = register_cvar("zm_infection_message_converted", "0");
-	g_pCvar_Message_Infection_R = register_cvar("zm_infection_message_r", "0");
-	g_pCvar_Message_Infection_G = register_cvar("zm_infection_message_g", "250");
-	g_pCvar_Message_Infection_B = register_cvar("zm_infection_message_b", "0");
-	g_pCvar_Message_Infection_X = register_cvar("zm_infection_message_x", "-1.0");
-	g_pCvar_Message_Infection_Y = register_cvar("zm_infection_message_y", "0.75");
-	g_pCvar_Message_Infection_Effects = register_cvar("zm_infection_message_effects", "0");
-	g_pCvar_Message_Infection_Fxtime = register_cvar("zm_infection_message_fxtime", "0.1");
-	g_pCvar_Message_Infection_Holdtime = register_cvar("zm_infection_message_holdtime", "1.5");
-	g_pCvar_Message_Infection_Fadeintime = register_cvar("zm_infection_message_fadeintime", "2.0");
-	g_pCvar_Message_Infection_Fadeouttime = register_cvar("zm_infection_message_fadeouttime", "1.5");
-	g_pCvar_Message_Infection_Channel = register_cvar("zm_infection_message_channel", "-1");
+	g_pCvar_Message_Global_Infection_Converted = register_cvar("zpe_global_infection_message_converted", "0");
+	g_pCvar_Message_Global_Infection_R = register_cvar("zpe_global_infection_message_r", "0");
+	g_pCvar_Message_Global_Infection_G = register_cvar("zpe_global_infection_message_g", "250");
+	g_pCvar_Message_Global_Infection_B = register_cvar("zpe_global_infection_message_b", "0");
+	g_pCvar_Message_Global_Infection_X = register_cvar("zpe_global_infection_message_x", "-1.0");
+	g_pCvar_Message_Global_Infection_Y = register_cvar("zpe_global_infection_message_y", "0.75");
+	g_pCvar_Message_Global_Infection_Effects = register_cvar("zpe_global_infection_message_effects", "0");
+	g_pCvar_Message_Global_Infection_Fxtime = register_cvar("zpe_global_infection_message_fxtime", "0.1");
+	g_pCvar_Message_Global_Infection_Holdtime = register_cvar("zpe_global_infection_message_holdtime", "1.5");
+	g_pCvar_Message_Global_Infection_Fadeintime = register_cvar("zpe_global_infection_message_fadeintime", "2.0");
+	g_pCvar_Message_Global_Infection_Fadeouttime = register_cvar("zpe_global_infection_message_fadeouttime", "1.5");
+	g_pCvar_Message_Global_Infection_Channel = register_cvar("zpe_global_infection_message_channel", "-1");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
+	g_pCvar_Message_Infection_Converted = register_cvar("zpe_infection_message_converted", "0");
+	g_pCvar_Message_Infection_R = register_cvar("zpe_infection_message_r", "0");
+	g_pCvar_Message_Infection_G = register_cvar("zpe_infection_message_g", "250");
+	g_pCvar_Message_Infection_B = register_cvar("zpe_infection_message_b", "0");
+	g_pCvar_Message_Infection_X = register_cvar("zpe_infection_message_x", "-1.0");
+	g_pCvar_Message_Infection_Y = register_cvar("zpe_infection_message_y", "0.75");
+	g_pCvar_Message_Infection_Effects = register_cvar("zpe_infection_message_effects", "0");
+	g_pCvar_Message_Infection_Fxtime = register_cvar("zpe_infection_message_fxtime", "0.1");
+	g_pCvar_Message_Infection_Holdtime = register_cvar("zpe_infection_message_holdtime", "1.5");
+	g_pCvar_Message_Infection_Fadeintime = register_cvar("zpe_infection_message_fadeintime", "2.0");
+	g_pCvar_Message_Infection_Fadeouttime = register_cvar("zpe_infection_message_fadeouttime", "1.5");
+	g_pCvar_Message_Infection_Channel = register_cvar("zpe_infection_message_channel", "-1");
+
+	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
 
 	g_Message_Death = get_user_msgid("DeathMsg");
 	g_Message_Score_Attrib = get_user_msgid("ScoreAttrib");

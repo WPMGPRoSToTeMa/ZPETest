@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Kernel Items.
+*	[ZPE] Kernel Items.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,20 +7,22 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "kernel items"
-#define VERSION "5.2.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_EXTRAITEMS_FILE "zm_extraitems.ini"
 
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_zp50_kernel>
 #include <ck_zp50_items_const>
+
+#define ZPE_EXTRAITEMS_FILE "ZPE/zpe_extraitems.ini"
 
 // For item list menu handlers
 #define MENU_PAGE_ITEMS(%0) g_Menu_Data[%0]
@@ -59,6 +61,11 @@ public plugin_init()
 	g_Forwards[FW_ITEM_SELECT_POST] = CreateMultiForward("zp_fw_items_select_post", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL);
 }
 
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/zpe_items.cfg");
+}
+
 public plugin_natives()
 {
 	register_library("ck_zp50_items");
@@ -83,28 +90,26 @@ public plugin_natives()
 
 public native_items_register(iPlugin_ID, iNum_Params)
 {
-	new szPlayer_Name[32];
+	new szItem_Name[32];
 
-	new iCost = get_param(2);
+	get_string(1, szItem_Name, charsmax(szItem_Name));
 
-	get_string(1, szPlayer_Name, charsmax(szPlayer_Name));
-
-	if (strlen(szPlayer_Name) < 1)
+	if (strlen(szItem_Name) < 1)
 	{
 		log_error(AMX_ERR_NATIVE, "Can't register item with an empty name");
 
 		return ZP_INVALID_ITEM;
 	}
 
-	new szItem_Name[32];
+	new szOther_Item_Name[32];
 
 	for (new i = 0; i < g_Item_Count; i++)
 	{
-		ArrayGetString(g_aItem_Real_Name, i, szItem_Name, charsmax(szItem_Name));
+		ArrayGetString(g_aItem_Real_Name, i, szOther_Item_Name, charsmax(szOther_Item_Name));
 
-		if (equali(szPlayer_Name, szItem_Name))
+		if (equali(szItem_Name, szOther_Item_Name))
 		{
-			log_error(AMX_ERR_NATIVE, "Item already registered (%s)", szPlayer_Name);
+			log_error(AMX_ERR_NATIVE, "Item already registered (%s)", szItem_Name);
 
 			return ZP_INVALID_ITEM;
 		}
@@ -113,22 +118,24 @@ public native_items_register(iPlugin_ID, iNum_Params)
 	// Load settings from extra items file
 	new szReal_Name[32];
 
-	copy(szReal_Name, charsmax(szReal_Name), szPlayer_Name);
+	copy(szReal_Name, charsmax(szReal_Name), szItem_Name);
 
 	ArrayPushString(g_aItem_Real_Name, szReal_Name);
 
 	// Name
-	if (!amx_load_setting_string(ZP_EXTRAITEMS_FILE, szReal_Name, "NAME", szPlayer_Name, charsmax(szPlayer_Name)))
+	if (!amx_load_setting_string(ZPE_EXTRAITEMS_FILE, szReal_Name, "NAME", szItem_Name, charsmax(szItem_Name)))
 	{
-		amx_save_setting_string(ZP_EXTRAITEMS_FILE, szReal_Name, "NAME", szPlayer_Name);
+		amx_save_setting_string(ZPE_EXTRAITEMS_FILE, szReal_Name, "NAME", szItem_Name);
 	}
 
-	ArrayPushString(g_aItem_Name, szPlayer_Name);
+	ArrayPushString(g_aItem_Name, szItem_Name);
+
+	new iCost = get_param(2);
 
 	// Cost
-	if (!amx_load_setting_int(ZP_EXTRAITEMS_FILE, szReal_Name, "COST", iCost))
+	if (!amx_load_setting_int(ZPE_EXTRAITEMS_FILE, szReal_Name, "COST", iCost))
 	{
-		amx_save_setting_int(ZP_EXTRAITEMS_FILE, szReal_Name, "COST", iCost);
+		amx_save_setting_int(ZPE_EXTRAITEMS_FILE, szReal_Name, "COST", iCost);
 	}
 
 	ArrayPushCell(g_aItem_Cost, iCost);
@@ -171,13 +178,13 @@ public native_items_get_name(iPlugin_ID, iNum_Params)
 		return false;
 	}
 
-	new szPlayer_Name[32];
+	new szItem_Name[32];
 
-	ArrayGetString(g_aItem_Name, iItem_ID, szPlayer_Name, charsmax(szPlayer_Name));
+	ArrayGetString(g_aItem_Name, iItem_ID, szItem_Name, charsmax(szItem_Name));
 
 	new sLen = get_param(3);
 
-	set_string(2, szPlayer_Name, sLen);
+	set_string(2, szItem_Name, sLen);
 
 	return true;
 }
@@ -254,9 +261,9 @@ public native_items_force_buy(iPlugin_ID, iNum_Params)
 		return false;
 	}
 
-	new iIgnorecost = get_param(3);
+	new iIgnore_Cost = get_param(3);
 
-	Buy_Item(iPlayer, iItem_ID, iIgnorecost);
+	Buy_Item(iPlayer, iItem_ID, iIgnore_Cost);
 
 	return true;
 }
@@ -281,7 +288,7 @@ public native_items_available(iPlugin_ID, iNum_Params)
 
 	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid player (%d)", iPlayer);
+		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 
 		return false;
 	}
@@ -290,7 +297,7 @@ public native_items_available(iPlugin_ID, iNum_Params)
 
 	if (iItem_ID < 0 || iItem_ID >= g_Item_Count)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZP] Invalid item (%d)", iItem_ID);
+		log_error(AMX_ERR_NATIVE, "Invalid item (%d)", iItem_ID);
 
 		return false;
 	}
@@ -317,17 +324,17 @@ public Client_Command_Items(iPlayer)
 Show_Items_Menu(iPlayer)
 {
 	static szMenu[256];
-	static szTranskey[64];
-	static szPlayer_Name[32];
+	static szTrans_Key[64];
+	static szItem_Name[32];
 
 	static iCost;
 
 	new iMenu_ID;
-	new iItemdata[2];
+	new iItem_Data[2];
 
 	// Title
-	formatex(szMenu, charsmax(szMenu), "%L: \r", iPlayer, "MENU_EXTRABUY");
-	iMenu_ID = menu_create(szMenu, "Menu_Extraitems");
+	formatex(szMenu, charsmax(szMenu), "%L: \r", iPlayer, "MENU_EXTRA_BUY");
+	iMenu_ID = menu_create(szMenu, "Menu_Extra_Items");
 
 	// Item List
 	for (new i = 0; i < g_Item_Count; i++)
@@ -344,40 +351,40 @@ Show_Items_Menu(iPlayer)
 			continue;
 		}
 
-		// Add item name and cсost
-		ArrayGetString(g_aItem_Name, i, szPlayer_Name, charsmax(szPlayer_Name));
+		// Add item name and cost
+		ArrayGetString(g_aItem_Name, i, szItem_Name, charsmax(szItem_Name));
 
 		iCost = ArrayGetCell(g_aItem_Cost, i);
 
 		// ML support for item mame
-		formatex(szTranskey, charsmax(szTranskey), "ITEMNAME %s", szPlayer_Name);
+		formatex(szTrans_Key, charsmax(szTrans_Key), "ITEM_NAME %s", szItem_Name);
 
-		if (GetLangTransKey(szTranskey) != TransKey_Bad)
+		if (GetLangTransKey(szTrans_Key) != TransKey_Bad)
 		{
-			formatex(szPlayer_Name, charsmax(szPlayer_Name), "%L", iPlayer, szTranskey);
+			formatex(szItem_Name, charsmax(szItem_Name), "%L", iPlayer, szTrans_Key);
 		}
 
 		// Item available to player?
 		if (g_Forward_Result >= ZP_ITEM_NOT_AVAILABLE)
 		{
-			formatex(szMenu, charsmax(szMenu), "\d %s %d %s", szPlayer_Name, iCost, g_Additional_Menu_Text);
+			formatex(szMenu, charsmax(szMenu), "\d %s %d %s", szItem_Name, iCost, g_Additional_Menu_Text);
 		}
 
 		else
 		{
-			formatex(szMenu, charsmax(szMenu), "%s \y %d \w %s", szPlayer_Name, iCost, g_Additional_Menu_Text);
+			formatex(szMenu, charsmax(szMenu), "%s \y %d \w %s", szItem_Name, iCost, g_Additional_Menu_Text);
 		}
 
-		iItemdata[0] = i;
-		iItemdata[1] = 0;
+		iItem_Data[0] = i;
+		iItem_Data[1] = 0;
 
-		menu_additem(iMenu_ID, szMenu, iItemdata);
+		menu_additem(iMenu_ID, szMenu, iItem_Data);
 	}
 
 	// No items to display?
 	if (menu_items(iMenu_ID) <= 0)
 	{
-		client_print(iPlayer, print_chat, "%L", LANG_PLAYER, "NO_EXTRA_ITEMS");
+		zpe_client_print_color(iPlayer, print_team_default, "%L", LANG_PLAYER, "NO_EXTRA_ITEMS_COLOR");
 
 		menu_destroy(iMenu_ID);
 
@@ -401,7 +408,7 @@ Show_Items_Menu(iPlayer)
 }
 
 // Items Menu
-public Menu_Extraitems(iPlayer, iMenu_ID, iItem)
+public Menu_Extra_Items(iPlayer, iMenu_ID, iItem)
 {
 	// Menu was closed
 	if (iItem == MENU_EXIT)
@@ -425,14 +432,14 @@ public Menu_Extraitems(iPlayer, iMenu_ID, iItem)
 	}
 
 	// Retrieve item player
-	new iItemdata[2];
+	new iItem_Data[2];
 
 	new iDummy;
 	new iItem_ID;
 
-	menu_item_getinfo(iMenu_ID, iItem, iDummy, iItemdata, charsmax(iItemdata), _, _, iDummy);
+	menu_item_getinfo(iMenu_ID, iItem, iDummy, iItem_Data, charsmax(iItem_Data), _, _, iDummy);
 
-	iItem_ID = iItemdata[0];
+	iItem_ID = iItem_Data[0];
 
 	// Attempt to buy the item
 	Buy_Item(iPlayer, iItem_ID);
@@ -443,10 +450,10 @@ public Menu_Extraitems(iPlayer, iMenu_ID, iItem)
 }
 
 // Buy Item
-Buy_Item(iPlayer, iItem_ID, iIgnorecost = 0)
+Buy_Item(iPlayer, iItem_ID, iIgnore_Cost = 0)
 {
 	// Execute item select attempt forward
-	ExecuteForward(g_Forwards[FW_ITEM_SELECT_PRE], g_Forward_Result, iPlayer, iItem_ID, iIgnorecost);
+	ExecuteForward(g_Forwards[FW_ITEM_SELECT_PRE], g_Forward_Result, iPlayer, iItem_ID, iIgnore_Cost);
 
 	// Item available to player?
 	if (g_Forward_Result >= ZP_ITEM_NOT_AVAILABLE)
@@ -455,7 +462,7 @@ Buy_Item(iPlayer, iItem_ID, iIgnorecost = 0)
 	}
 
 	// Execute item selected forward
-	ExecuteForward(g_Forwards[FW_ITEM_SELECT_POST], g_Forward_Result, iPlayer, iItem_ID, iIgnorecost);
+	ExecuteForward(g_Forwards[FW_ITEM_SELECT_POST], g_Forward_Result, iPlayer, iItem_ID, iIgnore_Cost);
 }
 
 public client_putinserver(iPlayer)
@@ -477,7 +484,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

@@ -8,7 +8,7 @@
 
 
 /* Human Class ID constants */
-#define ZP_INVALID_HUMAN_CLASS -1
+#define ZPE_INVALID_CLASS_HUMAN -1
 
 /* Class selection constants */
 #define ZP_CLASS_AVAILABLE 0

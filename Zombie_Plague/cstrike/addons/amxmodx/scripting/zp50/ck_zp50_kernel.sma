@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Kernel.
+*	[ZPE] Kernel.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,17 +7,17 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "kernel"
-#define VERSION "5.2.3.2"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
-#include <amxmisc>
 #include <cs_util>
-#include <fakemeta>
 
 // Custom Forwards
 enum TOTAL_FORWARDS
@@ -31,7 +31,7 @@ enum TOTAL_FORWARDS
 	FW_USER_LAST_ZOMBIE,
 	FW_USER_LAST_HUMAN,
 	FW_USER_SPAWN_POST,
-	FW_USER_ADD_BIT,
+	FW_USER_BIT_ADD,
 	FW_USER_BIT_SUB
 };
 
@@ -56,7 +56,7 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	register_dictionary("ck_zombie_plague50.txt");
+	register_dictionary("zombie_plague_enterprise.txt");
 
 	g_Forward = CreateMultiForward("zp_fw_class_zombie_bit_change", ET_CONTINUE, FP_CELL);
 
@@ -73,7 +73,7 @@ public plugin_init()
 
 	g_Forwards[FW_USER_SPAWN_POST] = CreateMultiForward("zp_fw_core_spawn_post", ET_IGNORE, FP_CELL);
 
-	g_Forwards[FW_USER_ADD_BIT] = CreateMultiForward("zpe_fw_spawn_post_add_bit", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_USER_BIT_ADD] = CreateMultiForward("zpe_fw_spawn_post_bit_add", ET_IGNORE, FP_CELL);
 	g_Forwards[FW_USER_BIT_SUB] = CreateMultiForward("zpe_fw_kill_pre_bit_sub", ET_IGNORE, FP_CELL);
 
 	RegisterHookChain(RG_CSGameRules_PlayerSpawn, "RG_CSGameRules_PlayerSpawn_Post", 1);
@@ -85,14 +85,7 @@ public plugin_init()
 
 public plugin_cfg()
 {
-	// Get configs dir
-	new szConfiguration_Directory[32];
-
-	get_configsdir(szConfiguration_Directory, charsmax(szConfiguration_Directory));
-
-	server_cmd("exec %s/zm_settings.cfg", szConfiguration_Directory);
-	server_cmd("exec %s/zm_modes_settings.cfg", szConfiguration_Directory);
-	server_cmd("exec %s/zm_items.cfg", szConfiguration_Directory);
+	server_cmd("exec addons/amxmodx/configs/ZPE/zpe_settings.cfg");
 }
 
 public plugin_natives()
@@ -121,10 +114,10 @@ public RG_CSGameRules_PlayerSpawn_Post(iPlayer)
 
 	BIT_ADD(g_iBit_Alive, iPlayer);
 
-	// ZP Spawn Forward
+	// ZPE Spawn Forward
 	ExecuteForward(g_Forwards[FW_USER_SPAWN_POST], g_Forward_Result, iPlayer);
 
-	ExecuteForward(g_Forwards[FW_USER_ADD_BIT], g_Forward_Result, iPlayer);
+	ExecuteForward(g_Forwards[FW_USER_BIT_ADD], g_Forward_Result, iPlayer);
 
 	// Set zombie/human attributes upon respawn
 	if (BIT_VALID(g_Respawn_As_Zombie, iPlayer))
@@ -296,7 +289,7 @@ public native_core_is_last_zombie(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
 
-	if (!is_user_connected(iPlayer)) // Fix: use bit = invalid player.
+	if (!is_user_connected(iPlayer)) // Use bit = invalid player
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 
@@ -334,7 +327,7 @@ public native_core_infect(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
 
-	if (!is_user_alive(iPlayer)) // Fix: use bit = invalid player.
+	if (!is_user_alive(iPlayer)) // Use bit = invalid player
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 
@@ -350,7 +343,7 @@ public native_core_infect(iPlugin_ID, iNum_Params)
 
 	new iAttacker = get_param(2);
 
-	if (iAttacker && !is_user_alive(iAttacker)) // Fix: use bit = invalid player.
+	if (iAttacker && !is_user_alive(iAttacker)) // Use bit = invalid player
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iAttacker);
 

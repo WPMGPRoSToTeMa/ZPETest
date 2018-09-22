@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Items Money.
+*	[ZPE] Items Money.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "items money"
-#define VERSION "5.1.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -23,10 +25,10 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 }
 
-public zp_fw_items_select_pre(iPlayer, iItem_ID, iIgnorecost)
+public zp_fw_items_select_pre(iPlayer, iItem_ID, iIgnore_Cost)
 {
 	// Ignore item costs?
-	if (iIgnorecost)
+	if (iIgnore_Cost)
 	{
 		return ZP_ITEM_AVAILABLE;
 	}
@@ -44,10 +46,10 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID, iIgnorecost)
 	return ZP_ITEM_AVAILABLE;
 }
 
-public zp_fw_items_select_post(iPlayer, iItem_ID, iIgnorecost)
+public zp_fw_items_select_post(iPlayer, iItem_ID, iIgnore_Cost)
 {
 	// Ignore item costs?
-	if (iIgnorecost)
+	if (iIgnore_Cost)
 	{
 		return;
 	}

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Item Infection Bomb.
+*	[ZPE] Item Infection Grenade.
 *	Author: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,56 +7,58 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "grenade infection"
-#define VERSION "1.0.0.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_items.ini"
-
-new g_V_Model_Grenade_Infection[64] = "models/zombie_plague/v_grenade_infect.mdl"
-new g_P_Model_Grenade_Infection[64] = "models/p_hegrenade.mdl";
-new g_W_Model_Grenade_Infection[64] = "models/w_hegrenade.mdl";
-
-// Default sounds
-new const g_Sound_Grenade_Infect_Explode[][] =
-{
-	"zombie_plague/grenade_infect.wav"
-};
-
-new const g_Sound_Grenade_Infect_Player[][] =
-{
-	"scientist/scream20.wav",
-	"scientist/scream22.wav",
-	"scientist/scream05.wav"
-};
-
-#define ITEM_NAME "Infection Bomb"
-#define ITEM_COST 1
-
-#define GRENADE_INFECTION_SPRITE_TRAIL "sprites/laserbeam.spr"
-#define GRENADE_INFECTION_SPRITE_RING "sprites/shockwave.spr"
 
 #include <amxmodx>
 #include <cs_util>
 #include <ck_cs_weap_models_api>
 #include <amx_settings_api>
-#include <fakemeta>
 #include <hamsandwich>
 #include <ck_zp50_kernel>
 #include <ck_zp50_items>
 #include <ck_zp50_gamemodes>
 
+#define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
+
+#define ITEM_NAME "Infection Grenade"
+#define ITEM_COST 15
+
+#define MODEL_MAX_LENGTH 64
 #define SOUND_MAX_LENGTH 64
 
 // HACK: var_ field used to store custom nade types and their values
 #define PEV_NADE_TYPE var_flTimeStepSound
 #define NADE_TYPE_INFECTION 1111
 
-new Array:g_aSound_Grenade_Infect_Explode;
-new Array:g_aSound_Grenade_Infect_Player;
+#define GRENADE_INFECTION_SPRITE_TRAIL "sprites/laserbeam.spr"
+#define GRENADE_INFECTION_SPRITE_RING "sprites/shockwave.spr"
+
+new g_V_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_infect.mdl"
+new g_P_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/p_hegrenade.mdl";
+new g_W_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/w_hegrenade.mdl";
+
+// Default sounds
+new const g_Sound_Grenade_Infection_Explode[][] =
+{
+	"zombie_plague/grenade_infect.wav"
+};
+
+new const g_Sound_Grenade_Infection_Player[][] =
+{
+	"scientist/scream20.wav",
+	"scientist/scream22.wav",
+	"scientist/scream05.wav"
+};
+
+new Array:g_aSound_Grenade_Infection_Explode;
+new Array:g_aSound_Grenade_Infection_Player;
 
 new g_Trail_Sprite;
 new g_Explode_Sprite;
@@ -66,7 +68,7 @@ new g_Item_ID;
 new g_Game_Mode_Infection_ID;
 new g_Game_Mode_Multi_ID;
 
-new g_Infection_Bomb_Counter;
+new g_Grenade_Infection_Counter;
 
 new g_pCvar_Grenade_Infection_Explosion_Radius;
 
@@ -97,27 +99,27 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Grenade_Infection_Explosion_Radius = register_cvar("zm_grenade_infection_explosion_radius", "240");
+	g_pCvar_Grenade_Infection_Glow_Rendering_R = register_cvar("zpe_grenade_infection_glow_rendering_r", "0");
+	g_pCvar_Grenade_Infection_Glow_Rendering_G = register_cvar("zpe_grenade_infection_glow_rendering_g", "200");
+	g_pCvar_Grenade_Infection_Glow_Rendering_B = register_cvar("zpe_grenade_infection_glow_rendering_b", "0");
 
-	g_pCvar_Grenade_Infection_Glow_Rendering_R = register_cvar("zm_grenade_infection_glow_rendering_r", "0");
-	g_pCvar_Grenade_Infection_Glow_Rendering_G = register_cvar("zm_grenade_infection_glow_rendering_g", "200");
-	g_pCvar_Grenade_Infection_Glow_Rendering_B = register_cvar("zm_grenade_infection_glow_rendering_b", "0");
+	g_pCvar_Grenade_Infection_Trail_Rendering_R = register_cvar("zpe_grenade_infection_trail_rendering_r", "0");
+	g_pCvar_Grenade_Infection_Trail_Rendering_G = register_cvar("zpe_grenade_infection_trail_rendering_g", "200");
+	g_pCvar_Grenade_Infection_Trail_Rendering_B = register_cvar("zpe_grenade_infection_trail_rendering_b", "0");
 
-	g_pCvar_Grenade_Infection_Trail_Rendering_R = register_cvar("zm_grenade_infection_trail_rendering_r", "0");
-	g_pCvar_Grenade_Infection_Trail_Rendering_G = register_cvar("zm_grenade_infection_trail_rendering_g", "200");
-	g_pCvar_Grenade_Infection_Trail_Rendering_B = register_cvar("zm_grenade_infection_trail_rendering_b", "0");
+	g_pCvar_Grenade_Infection_Small_Ring_Rendering_R = register_cvar("zpe_grenade_infection_small_ring_rendering_r", "0");
+	g_pCvar_Grenade_Infection_Small_Ring_Rendering_G = register_cvar("zpe_grenade_infection_small_ring_rendering_g", "200");
+	g_pCvar_Grenade_Infection_Small_Ring_Rendering_B = register_cvar("zpe_grenade_infection_small_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Infection_Small_Ring_Rendering_R = register_cvar("zm_grenade_infection_small_ring_rendering_r", "0");
-	g_pCvar_Grenade_Infection_Small_Ring_Rendering_G = register_cvar("zm_grenade_infection_small_ring_rendering_g", "200");
-	g_pCvar_Grenade_Infection_Small_Ring_Rendering_B = register_cvar("zm_grenade_infection_small_ring_rendering_b", "0");
+	g_pCvar_Grenade_Infection_Medium_Ring_Rendering_R = register_cvar("zpe_grenade_infection_medium_ring_rendering_r", "0");
+	g_pCvar_Grenade_Infection_Medium_Ring_Rendering_G = register_cvar("zpe_grenade_infection_medium_ring_rendering_g", "200");
+	g_pCvar_Grenade_Infection_Medium_Ring_Rendering_B = register_cvar("zpe_grenade_infection_medium_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Infection_Medium_Ring_Rendering_R = register_cvar("zm_grenade_infection_medium_ring_rendering_r", "0");
-	g_pCvar_Grenade_Infection_Medium_Ring_Rendering_G = register_cvar("zm_grenade_infection_medium_ring_rendering_g", "200");
-	g_pCvar_Grenade_Infection_Medium_Ring_Rendering_B = register_cvar("zm_grenade_infection_medium_ring_rendering_b", "0");
+	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_R = register_cvar("zpe_grenade_infection_largest_ring_rendering_r", "0");
+	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_G = register_cvar("zpe_grenade_infection_largest_ring_rendering_g", "200");
+	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_B = register_cvar("zpe_grenade_infection_largest_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_R = register_cvar("zm_grenade_infection_largest_ring_rendering_r", "0");
-	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_G = register_cvar("zm_grenade_infection_largest_ring_rendering_g", "200");
-	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_B = register_cvar("zm_grenade_infection_largest_ring_rendering_b", "0");
+	g_pCvar_Grenade_Infection_Explosion_Radius = register_cvar("zpe_grenade_infection_explosion_radius", "240");
 
 	RegisterHam(Ham_Think, "grenade", "Ham_Think_Grenade_");
 
@@ -131,67 +133,26 @@ public plugin_init()
 public plugin_precache()
 {
 	// Initialize arrays
-	g_aSound_Grenade_Infect_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
-	g_aSound_Grenade_Infect_Player = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Grenade_Infection_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Grenade_Infection_Player = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE INFECTION EXPLODE", g_aSound_Grenade_Infect_Explode);
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE INFECTION PLAYER", g_aSound_Grenade_Infect_Player);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE INFECTION EXPLODE", g_aSound_Grenade_Infection_Explode);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE INFECTION PLAYER", g_aSound_Grenade_Infection_Player);
 
-	// Load from external file, save if not found
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "V GRENADE INFECTION", g_V_Model_Grenade_Infection, charsmax(g_V_Model_Grenade_Infection)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "V GRENADE INFECTION", g_V_Model_Grenade_Infection);
-	}
-
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "P GRENADE INFECTION", g_P_Model_Grenade_Infection, charsmax(g_P_Model_Grenade_Infection)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "P GRENADE INFECTION", g_P_Model_Grenade_Infection);
-	}
-
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "W GRENADE INFECTION", g_W_Model_Grenade_Infection, charsmax(g_W_Model_Grenade_Infection)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "W GRENADE INFECTION", g_W_Model_Grenade_Infection);
-	}
-
-	// If we couldn't load custom sounds from file, use and save default ones
-	if (ArraySize(g_aSound_Grenade_Infect_Explode) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Grenade_Infect_Explode; i++)
-		{
-			ArrayPushString(g_aSound_Grenade_Infect_Explode, g_Sound_Grenade_Infect_Explode[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE INFECTION EXPLODE", g_aSound_Grenade_Infect_Explode);
-	}
-
-	if (ArraySize(g_aSound_Grenade_Infect_Player) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sound_Grenade_Infect_Player; i++)
-		{
-			ArrayPushString(g_aSound_Grenade_Infect_Player, g_Sound_Grenade_Infect_Player[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "GRENADE INFECTION PLAYER", g_aSound_Grenade_Infect_Player);
-	}
-
-	// Load from external file, save if not found
-	if (!amx_load_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "GRENADE INFECTION", g_V_Model_Grenade_Infection, charsmax(g_V_Model_Grenade_Infection)))
-	{
-		amx_save_setting_string(ZP_SETTINGS_FILE, "Weapon Models", "GRENADE INFECTION", g_V_Model_Grenade_Infection);
-	}
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE INFECTION", g_V_Model_Grenade_Infection, charsmax(g_V_Model_Grenade_Infection));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE INFECTION", g_P_Model_Grenade_Infection, charsmax(g_P_Model_Grenade_Infection));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE INFECTION", g_W_Model_Grenade_Infection, charsmax(g_W_Model_Grenade_Infection));
 
 	// Precache sounds
-	for (new i = 0; i < sizeof g_Sound_Grenade_Infect_Explode; i++)
+	for (new i = 0; i < sizeof g_Sound_Grenade_Infection_Explode; i++)
 	{
-		precache_sound(g_Sound_Grenade_Infect_Explode[i]);
+		precache_sound(g_Sound_Grenade_Infection_Explode[i]);
 	}
 
-	for (new i = 0; i < sizeof g_Sound_Grenade_Infect_Player; i++)
+	for (new i = 0; i < sizeof g_Sound_Grenade_Infection_Player; i++)
 	{
-		precache_sound(g_Sound_Grenade_Infect_Player[i]);
+		precache_sound(g_Sound_Grenade_Infection_Player[i]);
 	}
 
 	// Precache models
@@ -211,7 +172,7 @@ public plugin_cfg()
 
 public Event_Round_Start()
 {
-	g_Infection_Bomb_Counter = 0;
+	g_Grenade_Infection_Counter = 0;
 }
 
 public zp_fw_items_select_pre(iPlayer, iItem_ID)
@@ -222,7 +183,7 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID)
 		return ZP_ITEM_AVAILABLE;
 	}
 
-	// Infection bomb only available during infection modes
+	// Infection grenade only available during infection modes
 	new iCurrent_Mode = zp_gamemodes_get_current();
 
 	if (iCurrent_Mode != g_Game_Mode_Infection_ID && iCurrent_Mode != g_Game_Mode_Multi_ID)
@@ -230,7 +191,7 @@ public zp_fw_items_select_pre(iPlayer, iItem_ID)
 		return ZP_ITEM_DONT_SHOW;
 	}
 
-	// Infection bomb only available to zombies
+	// Infection grenade only available to zombies
 	if (!zp_core_is_zombie(iPlayer))
 	{
 		return ZP_ITEM_DONT_SHOW;
@@ -247,10 +208,10 @@ public zp_fw_items_select_post(iPlayer, iItem_ID)
 		return;
 	}
 
-	// Give infection bomb
+	// Give infection grenade
 	rg_give_item(iPlayer, "weapon_hegrenade");
 
-	g_Infection_Bomb_Counter++;
+	g_Grenade_Infection_Counter++;
 }
 
 public zp_fw_core_cure(iPlayer, iAttacker)
@@ -302,7 +263,7 @@ public FM_SetModel_(iEntity, const szModel[])
 	if (szModel[9] == 'h' && szModel[10] == 'e')
 	{
 		// Give it a glow
-		rh_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_B), kRenderNormal, 16);
+		rg_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Infection_Glow_Rendering_B), kRenderNormal, 16);
 
 		// And a colored trail
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
@@ -346,7 +307,7 @@ public Ham_Think_Grenade_(iEntity)
 	// Check if it's one of our custom nades
 	switch (get_entvar(iEntity, PEV_NADE_TYPE))
 	{
-		case NADE_TYPE_INFECTION: // Infection Bomb
+		case NADE_TYPE_INFECTION: // Infection Grenade
 		{
 			Infection_Explode(iEntity);
 
@@ -357,7 +318,7 @@ public Ham_Think_Grenade_(iEntity)
 	return HAM_IGNORED;
 }
 
-// Infection Bomb Explosion
+// Infection Grenade Explosion
 Infection_Explode(iEntity)
 {
 	// Round ended
@@ -378,12 +339,12 @@ Infection_Explode(iEntity)
 	Create_Blast(fOrigin);
 
 	// Infection nade explode sound
-	emit_sound(iEntity, CHAN_WEAPON, g_Sound_Grenade_Infect_Explode[random(sizeof g_Sound_Grenade_Infect_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(iEntity, CHAN_WEAPON, g_Sound_Grenade_Infection_Explode[random(sizeof g_Sound_Grenade_Infection_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Get attacker
 	new iAttacker = get_entvar(iEntity, var_owner);
 
-	// Infection bomb owner disconnected or not zombie anymore?
+	// Infection grenade owner disconnected or not zombie anymore?
 	if (BIT_NOT_VALID(g_iBit_Connected, iAttacker) || !zp_core_is_zombie(iAttacker))
 	{
 		// Get rid of the grenade
@@ -415,14 +376,14 @@ Infection_Explode(iEntity)
 		zp_core_infect(iVctim, iAttacker);
 
 		// Victim's sound
-		emit_sound(iVctim, CHAN_VOICE, g_Sound_Grenade_Infect_Player[random(sizeof g_Sound_Grenade_Infect_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(iVctim, CHAN_VOICE, g_Sound_Grenade_Infection_Player[random(sizeof g_Sound_Grenade_Infection_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Get rid of the grenade
 	engfunc(EngFunc_RemoveEntity, iEntity);
 }
 
-// Infection Bomb: Green Blast
+// Infection Grenade: Green Blast
 Create_Blast(const Float:fOrigin[3])
 {
 	// Smallest ring
@@ -508,7 +469,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

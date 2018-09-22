@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Hud Information.
+*	[ZPE] Hud Information.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "hud information"
-#define VERSION "5.2.6.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -35,34 +37,34 @@
 
 new g_pCvar_Global_Hud_Informer;
 
-new g_pCvar_Message_Stats_X;
-new g_pCvar_Message_Stats_Y;
-new g_pCvar_Message_Stats_Effects;
-new g_pCvar_Message_Stats_Fxtime;
-new g_pCvar_Message_Stats_Holdtime;
-new g_pCvar_Message_Stats_Fadeintime;
-new g_pCvar_Message_Stats_Fadeouttime;
-new g_pCvar_Message_Stats_Channel;
+new g_pCvar_Global_Hud_Informer_X;
+new g_pCvar_Global_Hud_Informer_Y;
+new g_pCvar_Global_Hud_Informer_Effects;
+new g_pCvar_Global_Hud_Informer_Fxtime;
+new g_pCvar_Global_Hud_Informer_Holdtime;
+new g_pCvar_Global_Hud_Informer_Fadeintime;
+new g_pCvar_Global_Hud_Informer_Fadeouttime;
+new g_pCvar_Global_Hud_Informer_Channel;
 
-new g_pCvar_Message_Stats_Spectator_R;
-new g_pCvar_Message_Stats_Spectator_G;
-new g_pCvar_Message_Stats_Spectator_B;
-new g_pCvar_Message_Stats_Spectator_X;
-new g_pCvar_Message_Stats_Spectator_Y;
-new g_pCvar_Message_Stats_Spectator_Effects;
-new g_pCvar_Message_Stats_Spectator_Fxtime;
-new g_pCvar_Message_Stats_Spectator_Holdtime;
-new g_pCvar_Message_Stats_Spectator_Fadeintime;
-new g_pCvar_Message_Stats_Spectator_Fadeouttime;
-new g_pCvar_Message_Stats_Spectator_Channel;
+new g_pCvar_Global_Hud_Informer_Spectator_R;
+new g_pCvar_Global_Hud_Informer_Spectator_G;
+new g_pCvar_Global_Hud_Informer_Spectator_B;
+new g_pCvar_Global_Hud_Informer_Spectator_X;
+new g_pCvar_Global_Hud_Informer_Spectator_Y;
+new g_pCvar_Global_Hud_Informer_Spectator_Effects;
+new g_pCvar_Global_Hud_Informer_Spectator_Fxtime;
+new g_pCvar_Global_Hud_Informer_Spectator_Holdtime;
+new g_pCvar_Global_Hud_Informer_Spectator_Fadeintime;
+new g_pCvar_Global_Hud_Informer_Spectator_Fadeouttime;
+new g_pCvar_Global_Hud_Informer_Spectator_Channel;
 
-new g_pCvar_Message_Stats_Zombie_R;
-new g_pCvar_Message_Stats_Zombie_G;
-new g_pCvar_Message_Stats_Zombie_B;
+new g_pCvar_Global_Hud_Informer_Zombie_R;
+new g_pCvar_Global_Hud_Informer_Zombie_G;
+new g_pCvar_Global_Hud_Informer_Zombie_B;
 
-new g_pCvar_Message_Stats_Human_R;
-new g_pCvar_Message_Stats_Human_G;
-new g_pCvar_Message_Stats_Human_B;
+new g_pCvar_Global_Hud_Informer_Human_R;
+new g_pCvar_Global_Hud_Informer_Human_G;
+new g_pCvar_Global_Hud_Informer_Human_B;
 
 new g_pCvar_All_Messages_Converted;
 
@@ -75,38 +77,38 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Global_Hud_Informer = register_cvar("zm_global_hud_informer", "1");
+	g_pCvar_Global_Hud_Informer = register_cvar("zpe_global_hud_informer", "1");
 
-	g_pCvar_Message_Stats_X = register_cvar("zm_stats_message_x", "0.02");
-	g_pCvar_Message_Stats_Y = register_cvar("zm_stats_message_y", "0.9");
-	g_pCvar_Message_Stats_Effects = register_cvar("zm_stats_message_effects", "0");
-	g_pCvar_Message_Stats_Fxtime = register_cvar("zm_stats_message_fxtime", "6.0");
-	g_pCvar_Message_Stats_Holdtime = register_cvar("zm_stats_message_holdtime", "1.1");
-	g_pCvar_Message_Stats_Fadeintime = register_cvar("zm_stats_message_fadeintime", "0.0");
-	g_pCvar_Message_Stats_Fadeouttime = register_cvar("zm_stats_message_fadeouttime", "0.0");
-	g_pCvar_Message_Stats_Channel = register_cvar("zm_stats_message_channel", "-1");
+	g_pCvar_Global_Hud_Informer_X = register_cvar("zpe_global_hud_informer_x", "0.02");
+	g_pCvar_Global_Hud_Informer_Y = register_cvar("zpe_global_hud_informer_y", "0.9");
+	g_pCvar_Global_Hud_Informer_Effects = register_cvar("zpe_global_hud_informer_effects", "0");
+	g_pCvar_Global_Hud_Informer_Fxtime = register_cvar("zpe_global_hud_informer_fxtime", "6.0");
+	g_pCvar_Global_Hud_Informer_Holdtime = register_cvar("zpe_global_hud_informer_holdtime", "1.1");
+	g_pCvar_Global_Hud_Informer_Fadeintime = register_cvar("zpe_global_hud_informer_fadeintime", "0.0");
+	g_pCvar_Global_Hud_Informer_Fadeouttime = register_cvar("zpe_global_hud_informer_fadeouttime", "0.0");
+	g_pCvar_Global_Hud_Informer_Channel = register_cvar("zpe_global_hud_informer_channel", "-1");
 
-	g_pCvar_Message_Stats_Spectator_R = register_cvar("zm_stats_spectator_message_r", "255");
-	g_pCvar_Message_Stats_Spectator_G = register_cvar("zm_stats_spectator_message_g", "255");
-	g_pCvar_Message_Stats_Spectator_B = register_cvar("zm_stats_spectator_message_b", "255");
-	g_pCvar_Message_Stats_Spectator_X = register_cvar("zm_stats_spectator_message_x", "0.6");
-	g_pCvar_Message_Stats_Spectator_Y = register_cvar("zm_stats_spectator_message_y", "0.8");
-	g_pCvar_Message_Stats_Spectator_Effects = register_cvar("zm_stats_spectator_message_effects", "0");
-	g_pCvar_Message_Stats_Spectator_Fxtime = register_cvar("zm_stats_spectator_message_fxtime", "6.0");
-	g_pCvar_Message_Stats_Spectator_Holdtime = register_cvar("zm_stats_spectator_message_holdtime", "1.1");
-	g_pCvar_Message_Stats_Spectator_Fadeintime = register_cvar("zm_stats_spectator_message_fadeintime", "0.0");
-	g_pCvar_Message_Stats_Spectator_Fadeouttime = register_cvar("zm_stats_spectator_message_fadeouttime", "0.0");
-	g_pCvar_Message_Stats_Spectator_Channel = register_cvar("zm_stats_spectator_message_channel", "-1");
+	g_pCvar_Global_Hud_Informer_Spectator_R = register_cvar("zpe_global_hud_informer_spectator_r", "255");
+	g_pCvar_Global_Hud_Informer_Spectator_G = register_cvar("zpe_global_hud_informer_spectator_g", "255");
+	g_pCvar_Global_Hud_Informer_Spectator_B = register_cvar("zpe_global_hud_informer_spectator_b", "255");
+	g_pCvar_Global_Hud_Informer_Spectator_X = register_cvar("zpe_global_hud_informer_spectator_x", "0.6");
+	g_pCvar_Global_Hud_Informer_Spectator_Y = register_cvar("zpe_global_hud_informer_spectator_y", "0.8");
+	g_pCvar_Global_Hud_Informer_Spectator_Effects = register_cvar("zpe_global_hud_informer_spectator_effects", "0");
+	g_pCvar_Global_Hud_Informer_Spectator_Fxtime = register_cvar("zpe_global_hud_informer_spectator_fxtime", "6.0");
+	g_pCvar_Global_Hud_Informer_Spectator_Holdtime = register_cvar("zpe_global_hud_informer_spectator_holdtime", "1.1");
+	g_pCvar_Global_Hud_Informer_Spectator_Fadeintime = register_cvar("zpe_global_hud_informer_spectator_fadeintime", "0.0");
+	g_pCvar_Global_Hud_Informer_Spectator_Fadeouttime = register_cvar("zpe_global_hud_informer_spectator_fadeouttime", "0.0");
+	g_pCvar_Global_Hud_Informer_Spectator_Channel = register_cvar("zpe_global_hud_informer_spectator_channel", "-1");
 
-	g_pCvar_Message_Stats_Zombie_R = register_cvar("zm_stats_zombie_message_r", "200");
-	g_pCvar_Message_Stats_Zombie_G = register_cvar("zm_stats_zombie_message_g", "250");
-	g_pCvar_Message_Stats_Zombie_B = register_cvar("zm_stats_zombie_message_b", "0");
+	g_pCvar_Global_Hud_Informer_Zombie_R = register_cvar("zpe_global_hud_informer_zombie_r", "200");
+	g_pCvar_Global_Hud_Informer_Zombie_G = register_cvar("zpe_global_hud_informer_zombie_g", "250");
+	g_pCvar_Global_Hud_Informer_Zombie_B = register_cvar("zpe_global_hud_informer_zombie_b", "0");
 
-	g_pCvar_Message_Stats_Human_R = register_cvar("zm_stats_human_message_r", "0");
-	g_pCvar_Message_Stats_Human_G = register_cvar("zm_stats_human_message_g", "200");
-	g_pCvar_Message_Stats_Human_B = register_cvar("zm_stats_human_message_b", "250");
+	g_pCvar_Global_Hud_Informer_Human_R = register_cvar("zpe_global_hud_informer_human_r", "0");
+	g_pCvar_Global_Hud_Informer_Human_G = register_cvar("zpe_global_hud_informer_human_g", "200");
+	g_pCvar_Global_Hud_Informer_Human_B = register_cvar("zpe_global_hud_informer_human_b", "250");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
 
 	g_Message_Sync = CreateHudSyncObj();
 }
@@ -139,10 +141,10 @@ public native_filter(const szName[], iIndex, iTrap)
 
 public client_putinserver(iPlayer)
 {
-	BIT_ADD(g_iBit_Connected, iPlayer);
-
 	// Set the custom HUD display task
 	set_task(1.0, "Show_HUD", iPlayer + TASK_SHOWHUD, _, _, "b");
+
+	BIT_ADD(g_iBit_Connected, iPlayer);
 }
 
 // Show HUD Task
@@ -173,9 +175,9 @@ public Show_HUD(iTask_ID)
 
 	if (zp_core_is_zombie(iPlayer)) // zombies
 	{
-		iRed = get_pcvar_num(g_pCvar_Message_Stats_Zombie_R);
-		iGreen = get_pcvar_num(g_pCvar_Message_Stats_Zombie_G);
-		iBlue = get_pcvar_num(g_pCvar_Message_Stats_Zombie_B);
+		iRed = get_pcvar_num(g_pCvar_Global_Hud_Informer_Zombie_R);
+		iGreen = get_pcvar_num(g_pCvar_Global_Hud_Informer_Zombie_G);
+		iBlue = get_pcvar_num(g_pCvar_Global_Hud_Informer_Zombie_B);
 
 		// Nemesis Class loaded?
 		if (zp_class_nemesis_get(iPlayer))
@@ -194,7 +196,7 @@ public Show_HUD(iTask_ID)
 			zp_class_zombie_get_name(zp_class_zombie_get_current(iPlayer), szClass_Name, charsmax(szClass_Name));
 
 			// ML support for class name
-			formatex(szTranskey, charsmax(szTranskey), "ZOMBIENAME %s", szClass_Name);
+			formatex(szTranskey, charsmax(szTranskey), "ZOMBIE_NAME %s", szClass_Name);
 
 			if (GetLangTransKey(szTranskey) != TransKey_Bad)
 			{
@@ -205,9 +207,9 @@ public Show_HUD(iTask_ID)
 
 	else // humans
 	{
-		iRed = get_pcvar_num(g_pCvar_Message_Stats_Human_R);
-		iGreen = get_pcvar_num(g_pCvar_Message_Stats_Human_G);
-		iBlue = get_pcvar_num(g_pCvar_Message_Stats_Human_B);
+		iRed = get_pcvar_num(g_pCvar_Global_Hud_Informer_Human_R);
+		iGreen = get_pcvar_num(g_pCvar_Global_Hud_Informer_Human_G);
+		iBlue = get_pcvar_num(g_pCvar_Global_Hud_Informer_Human_B);
 
 		// Survivor Class loaded?
 		if (zp_class_survivor_get(iPlayer))
@@ -226,7 +228,7 @@ public Show_HUD(iTask_ID)
 			zp_class_human_get_name(zp_class_human_get_current(iPlayer), szClass_Name, charsmax(szClass_Name));
 
 			// ML support for class name
-			formatex(szTranskey, charsmax(szTranskey), "HUMANNAME %s", szClass_Name);
+			formatex(szTranskey, charsmax(szTranskey), "HUMAN_NAME %s", szClass_Name);
 
 			if (GetLangTransKey(szTranskey) != TransKey_Bad)
 			{
@@ -242,22 +244,22 @@ public Show_HUD(iTask_ID)
 
 		GET_USER_NAME(iPlayer, szPlayer_Name, charsmax(szPlayer_Name));
 
-		// Show szName, health, class, and money
+		// Show name, health, class, and money
 		if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
 		{
 			set_hudmessage
 			(
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_R),
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_G),
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_B),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_X),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Y),
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_Effects),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Fxtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Holdtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Fadeintime),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Fadeouttime),
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_Channel)
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_R),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_G),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_B),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_X),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Y),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_Effects),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Fxtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Holdtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Fadeintime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Fadeouttime),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_Channel)
 			);
 		}
 
@@ -265,16 +267,16 @@ public Show_HUD(iTask_ID)
 		{
 			set_dhudmessage
 			(
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_R),
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_G),
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_B),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_X),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Y),
-				get_pcvar_num(g_pCvar_Message_Stats_Spectator_Effects),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Fxtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Holdtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Fadeintime),
-				get_pcvar_float(g_pCvar_Message_Stats_Spectator_Fadeouttime)
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_R),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_G),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_B),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_X),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Y),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Spectator_Effects),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Fxtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Holdtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Fadeintime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Spectator_Fadeouttime)
 			);
 		}
 
@@ -315,14 +317,14 @@ public Show_HUD(iTask_ID)
 				iRed,
 				iGreen,
 				iBlue,
-				get_pcvar_float(g_pCvar_Message_Stats_X),
-				get_pcvar_float(g_pCvar_Message_Stats_Y),
-				get_pcvar_num(g_pCvar_Message_Stats_Effects),
-				get_pcvar_float(g_pCvar_Message_Stats_Fxtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Holdtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Fadeintime),
-				get_pcvar_float(g_pCvar_Message_Stats_Fadeouttime),
-				get_pcvar_num(g_pCvar_Message_Stats_Channel)
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_X),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Y),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Effects),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Fxtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Holdtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Fadeintime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Fadeouttime),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Channel)
 			);
 		}
 
@@ -333,13 +335,13 @@ public Show_HUD(iTask_ID)
 				iRed,
 				iGreen,
 				iBlue,
-				get_pcvar_float(g_pCvar_Message_Stats_X),
-				get_pcvar_float(g_pCvar_Message_Stats_Y),
-				get_pcvar_num(g_pCvar_Message_Stats_Effects),
-				get_pcvar_float(g_pCvar_Message_Stats_Fxtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Holdtime),
-				get_pcvar_float(g_pCvar_Message_Stats_Fadeintime),
-				get_pcvar_float(g_pCvar_Message_Stats_Fadeouttime)
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_X),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Y),
+				get_pcvar_num(g_pCvar_Global_Hud_Informer_Effects),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Fxtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Holdtime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Fadeintime),
+				get_pcvar_float(g_pCvar_Global_Hud_Informer_Fadeouttime)
 			);
 		}
 
@@ -376,7 +378,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Class Zombie Leech.
+*	[ZPE] Class Zombie Leech.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "class zombie leech"
-#define VERSION "5.2.3.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -24,7 +26,7 @@
 
 #define CLASS_ZOMBIE_LEECH_NAME "Leech Zombie"
 #define CLASS_ZOMBIE_LEECH_INFO "HP- Knockback+ Leech++"
-#define CLASS_ZOMBIE_LEECH_HEALTH 1300
+#define CLASS_ZOMBIE_LEECH_HEALTH 1300.0
 #define CLASS_ZOMBIE_LEECH_SPEED 0.75
 #define CLASS_ZOMBIE_LEECH_GRAVITY 1.0
 #define CLASS_ZOMBIE_LEECH_KNOCKBACK 1.25
@@ -45,9 +47,25 @@ new g_Class_Zombie_ID;
 
 new g_iBit_Alive;
 
+public plugin_init()
+{
+	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_pCvar_Class_Zombie_Leech_HP_Reward = register_cvar("zpe_class_zombie_leech_hp_reward", "200.0");
+
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
+}
+
 public plugin_precache()
 {
-	g_Class_Zombie_ID = zp_class_zombie_register(CLASS_ZOMBIE_LEECH_NAME, CLASS_ZOMBIE_LEECH_INFO, CLASS_ZOMBIE_LEECH_HEALTH, CLASS_ZOMBIE_LEECH_SPEED, CLASS_ZOMBIE_LEECH_GRAVITY);
+	g_Class_Zombie_ID = zp_class_zombie_register
+	(
+		CLASS_ZOMBIE_LEECH_NAME,
+		CLASS_ZOMBIE_LEECH_INFO,
+		CLASS_ZOMBIE_LEECH_HEALTH,
+		CLASS_ZOMBIE_LEECH_SPEED,
+		CLASS_ZOMBIE_LEECH_GRAVITY
+	);
 
 	zp_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_LEECH_KNOCKBACK);
 
@@ -62,13 +80,9 @@ public plugin_precache()
 	}
 }
 
-public plugin_init()
+public plugin_cfg()
 {
-	register_plugin(PLUGIN, VERSION, AUTHOR);
-
-	g_pCvar_Class_Zombie_Leech_HP_Reward = register_cvar("zm_class_zombie_leech_hp_reward", "200");
-
-	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
+	server_cmd("exec addons/amxmodx/configs/ZPE/classes/zombie/Leech_Zombie.cfg");
 }
 
 public zp_fw_core_infect_post(iPlayer, iAttacker)
@@ -79,7 +93,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 		// Leech Zombie infection hp bonus
 		if (zp_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
 		{
-			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker) + float(get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward)));
+			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward);
 		}
 	}
 }
@@ -98,7 +112,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 		// Unless nemesis and assassin
 		if (!zp_class_nemesis_get(iAttacker) || !zp_class_assassin_get(iAttacker))
 		{
-			SET_USER_HEALTH(iAttacker, GET_USER_HEALTH(iAttacker) + float(get_pcvar_num(g_pCvar_Class_Zombie_Leech_HP_Reward)));
+			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward);
 		}
 	}
 }
@@ -113,7 +127,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

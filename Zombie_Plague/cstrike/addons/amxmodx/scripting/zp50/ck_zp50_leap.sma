@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Leap.
+*	[ZPE] Leap.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "leap"
-#define VERSION "5.2.9.1"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -59,30 +61,30 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Leap_Zombie = register_cvar("zm_leap_zombie", "3"); // 1-all // 2-first only // 3-last only
-	g_pCvar_Leap_Zombie_Force = register_cvar("zm_leap_zombie_force", "500");
-	g_pCvar_Leap_Zombie_Height = register_cvar("zm_leap_zombie_height", "300");
-	g_pCvar_Leap_Zombie_Cooldown = register_cvar("zm_leap_zombie_cooldown", "10.0");
+	g_pCvar_Leap_Zombie = register_cvar("zpe_leap_zombie", "3"); // 1-all // 2-first only // 3-last only
+	g_pCvar_Leap_Zombie_Force = register_cvar("zpe_leap_zombie_force", "500");
+	g_pCvar_Leap_Zombie_Height = register_cvar("zpe_leap_zombie_height", "300");
+	g_pCvar_Leap_Zombie_Cooldown = register_cvar("zpe_leap_zombie_cooldown", "10.0");
 
-	g_pCvar_Leap_Nemesis = register_cvar("zm_leap_nemesis", "1");
-	g_pCvar_Leap_Nemesis_Force = register_cvar("zm_leap_nemesis_force", "500");
-	g_pCvar_Leap_Nemesis_Height = register_cvar("zm_leap_nemesis_height", "300");
-	g_pCvar_Leap_Nemesis_Cooldown = register_cvar("zm_leap_nemesis_cooldown", "5.0");
-	
-	g_pCvar_Leap_Assassin = register_cvar("zm_leap_assassin", "1");
-	g_pCvar_Leap_Assassin_Force = register_cvar("zm_leap_assassin_force", "500");
-	g_pCvar_Leap_Assassin_Height = register_cvar("zm_leap_assassin_height", "300");
-	g_pCvar_Leap_Assassin_Cooldown = register_cvar("zm_leap_assassin_cooldown", "5.0");
+	g_pCvar_Leap_Nemesis = register_cvar("zpe_leap_nemesis", "1");
+	g_pCvar_Leap_Nemesis_Force = register_cvar("zpe_leap_nemesis_force", "500");
+	g_pCvar_Leap_Nemesis_Height = register_cvar("zpe_leap_nemesis_height", "300");
+	g_pCvar_Leap_Nemesis_Cooldown = register_cvar("zpe_leap_nemesis_cooldown", "5.0");
 
-	g_pCvar_Leap_Survivor = register_cvar("zm_leap_survivor", "0");
-	g_pCvar_Leap_Survivor_Force = register_cvar("zm_leap_survivor_force", "500");
-	g_pCvar_Leap_Survivor_Height = register_cvar("zm_leap_survivor_height", "300");
-	g_pCvar_Leap_Survivor_Cooldown = register_cvar("zm_leap_survivor_cooldown", "5.0");
-	
-	g_pCvar_Leap_Sniper = register_cvar("zm_leap_sniper", "0");
-	g_pCvar_Leap_Sniper_Force = register_cvar("zm_leap_sniper_force", "500");
-	g_pCvar_Leap_Sniper_Height = register_cvar("zm_leap_sniper_height", "300");
-	g_pCvar_Leap_Sniper_Cooldown = register_cvar("zm_leap_sniper_cooldown", "5.0");
+	g_pCvar_Leap_Assassin = register_cvar("zpe_leap_assassin", "1");
+	g_pCvar_Leap_Assassin_Force = register_cvar("zpe_leap_assassin_force", "500");
+	g_pCvar_Leap_Assassin_Height = register_cvar("zpe_leap_assassin_height", "300");
+	g_pCvar_Leap_Assassin_Cooldown = register_cvar("zpe_leap_assassin_cooldown", "5.0");
+
+	g_pCvar_Leap_Survivor = register_cvar("zpe_leap_survivor", "0");
+	g_pCvar_Leap_Survivor_Force = register_cvar("zpe_leap_survivor_force", "500");
+	g_pCvar_Leap_Survivor_Height = register_cvar("zpe_leap_survivor_height", "300");
+	g_pCvar_Leap_Survivor_Cooldown = register_cvar("zpe_leap_survivor_cooldown", "5.0");
+
+	g_pCvar_Leap_Sniper = register_cvar("zpe_leap_sniper", "0");
+	g_pCvar_Leap_Sniper_Force = register_cvar("zpe_leap_sniper_force", "500");
+	g_pCvar_Leap_Sniper_Height = register_cvar("zpe_leap_sniper_height", "300");
+	g_pCvar_Leap_Sniper_Cooldown = register_cvar("zpe_leap_sniper_cooldown", "5.0");
 }
 
 public plugin_cfg()
@@ -104,10 +106,10 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 		return;
 	}
 
-	static Float:fCooldown;
-
 	new iForce;
 	new Float:fHeight;
+
+	static Float:fCooldown;
 
 	// Nemesis class loaded?
 	if (zp_class_nemesis_get(iPlayer))
@@ -117,9 +119,9 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 			return;
 		}
 
-		fCooldown = get_pcvar_float(g_pCvar_Leap_Nemesis_Cooldown);
 		iForce = get_pcvar_num(g_pCvar_Leap_Nemesis_Force);
 		fHeight = get_pcvar_float(g_pCvar_Leap_Nemesis_Height);
+		fCooldown = get_pcvar_float(g_pCvar_Leap_Nemesis_Cooldown);
 	}
 
 	// Assassin Class loaded?
@@ -131,9 +133,9 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 			return;
 		}
 
-		fCooldown = get_pcvar_float(g_pCvar_Leap_Assassin_Cooldown);
 		iForce = get_pcvar_num(g_pCvar_Leap_Assassin_Force);
 		fHeight = get_pcvar_float(g_pCvar_Leap_Assassin_Height);
+		fCooldown = get_pcvar_float(g_pCvar_Leap_Assassin_Cooldown);
 	}
 
 	// Survivor Class loaded?
@@ -145,9 +147,9 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 			return;
 		}
 
-		fCooldown = get_pcvar_float(g_pCvar_Leap_Survivor_Cooldown);
 		iForce = get_pcvar_num(g_pCvar_Leap_Survivor_Force);
 		fHeight = get_pcvar_float(g_pCvar_Leap_Survivor_Height);
+		fCooldown = get_pcvar_float(g_pCvar_Leap_Survivor_Cooldown);
 	}
 
 	// Sniper Class loaded?
@@ -159,19 +161,13 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 			return;
 		}
 
-		fCooldown = get_pcvar_float(g_pCvar_Leap_Sniper_Cooldown);
 		iForce =  get_pcvar_num(g_pCvar_Leap_Sniper_Force);
 		fHeight = get_pcvar_float(g_pCvar_Leap_Sniper_Height);
+		fCooldown = get_pcvar_float(g_pCvar_Leap_Sniper_Cooldown);
 	}
 
 	else
 	{
-		// Not a zombie
-		if (!zp_core_is_zombie(iPlayer))
-		{
-			return;
-		}
-
 		// Check if zombie should leap
 		switch (get_pcvar_num(g_pCvar_Leap_Zombie))
 		{
@@ -200,9 +196,9 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 			}
 		}
 
-		fCooldown = get_pcvar_float(g_pCvar_Leap_Zombie_Cooldown);
 		iForce = get_pcvar_num(g_pCvar_Leap_Zombie_Force);
 		fHeight = get_pcvar_float(g_pCvar_Leap_Zombie_Height);
+		fCooldown = get_pcvar_float(g_pCvar_Leap_Zombie_Cooldown);
 	}
 
 	static Float:fCurrent_Time;
@@ -254,7 +250,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }

@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Gamemode Armageddon.
+*	[ZPE] Gamemode Armageddon.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,20 +7,14 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "gamemode armageddon"
-#define VERSION "5.2.6.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
-
-#define ZP_SETTINGS_FILE "zm_settings.ini"
-
-new const g_Sounds_Armageddon[][] =
-{
-	"zombie_plague/nemesis1.wav",
-	"zombie_plague/survivor1.wav"
-};
 
 #include <amxmodx>
 #include <cs_util>
@@ -30,17 +24,25 @@ new const g_Sounds_Armageddon[][] =
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_deathmatch>
 
+#define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_armageddon.ini"
+
 #define SOUND_MAX_LENGTH 64
+
+#define CHANCE(%0) (random(100) < (%0))
+
+new const g_Sounds_Armageddon[][] =
+{
+	"zombie_plague/nemesis1.wav",
+	"zombie_plague/survivor1.wav"
+};
 
 new Array:g_aSound_Armageddon;
 
 new g_pCvar_Armageddon_Chance;
 new g_pCvar_Armageddon_Min_Players;
 new g_pCvar_Armageddon_Ratio;
-
 new g_pCvar_Armageddon_Nemesis_HP_Multi;
 new g_pCvar_Armageddon_Survivor_HP_Multi;
-
 new g_pCvar_Armageddon_Sounds;
 new g_pCvar_Armageddon_Allow_Respawn;
 
@@ -61,60 +63,56 @@ new g_pCvar_Message_Notice_Armageddon_Channel;
 
 new g_pCvar_All_Messages_Converted;
 
-public plugin_precache()
+public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	// Register game mode at precache (plugin gets paused after this)
-	zp_gamemodes_register("Armageddon Mode");
+	g_pCvar_Armageddon_Chance = register_cvar("zpe_armageddon_chance", "20");
+	g_pCvar_Armageddon_Min_Players = register_cvar("zpe_armageddon_min_players", "0");
+	g_pCvar_Armageddon_Ratio = register_cvar("zpe_armageddon_ratio", "0.5");
+	g_pCvar_Armageddon_Nemesis_HP_Multi = register_cvar("zpe_armageddon_nemesis_hp_multi", "0.25");
+	g_pCvar_Armageddon_Survivor_HP_Multi = register_cvar("zpe_armageddon_survivor_hp_multi", "0.25");
+	g_pCvar_Armageddon_Sounds = register_cvar("zpe_armageddon_sounds", "1");
+	g_pCvar_Armageddon_Allow_Respawn = register_cvar("zpe_armageddon_allow_respawn", "0");
 
-	g_pCvar_Armageddon_Chance = register_cvar("zm_armageddon_chance", "20");
-	g_pCvar_Armageddon_Min_Players = register_cvar("zm_armageddon_min_players", "0");
-	g_pCvar_Armageddon_Ratio = register_cvar("zm_armageddon_ratio", "0.5");
-	g_pCvar_Armageddon_Nemesis_HP_Multi = register_cvar("zm_armageddon_nemesis_hp_multi", "0.25");
-	g_pCvar_Armageddon_Survivor_HP_Multi = register_cvar("zm_armageddon_survivor_hp_multi", "0.25");
-	g_pCvar_Armageddon_Sounds = register_cvar("zm_armageddon_sounds", "1");
-	g_pCvar_Armageddon_Allow_Respawn = register_cvar("zm_armageddon_allow_respawn", "0");
+	g_pCvar_Notice_Armageddon_Show_Hud = register_cvar("zpe_notice_armageddon_show_hud", "1");
 
-	g_pCvar_Notice_Armageddon_Show_Hud = register_cvar("zm_notice_armageddon_show_hud", "1");
+	g_pCvar_Message_Notice_Armageddon_Converted = register_cvar("zpe_notice_armageddon_message_converted", "0");
+	g_pCvar_Message_Notice_Armageddon_R = register_cvar("zpe_notice_armageddon_message_r", "0");
+	g_pCvar_Message_Notice_Armageddon_G = register_cvar("zpe_notice_armageddon_message_g", "250");
+	g_pCvar_Message_Notice_Armageddon_B = register_cvar("zpe_notice_armageddon_message_b", "0");
+	g_pCvar_Message_Notice_Armageddon_X = register_cvar("zpe_notice_armageddon_message_x", "-1.0");
+	g_pCvar_Message_Notice_Armageddon_Y = register_cvar("zpe_notice_armageddon_message_y", "0.75");
+	g_pCvar_Message_Notice_Armageddon_Effects = register_cvar("zpe_notice_armageddon_message_effects", "0");
+	g_pCvar_Message_Notice_Armageddon_Fxtime = register_cvar("zpe_notice_armageddon_message_fxtime", "0.1");
+	g_pCvar_Message_Notice_Armageddon_Holdtime = register_cvar("zpe_notice_armageddon_message_holdtime", "1.5");
+	g_pCvar_Message_Notice_Armageddon_Fadeintime = register_cvar("zpe_notice_armageddon_message_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Armageddon_Fadeouttime = register_cvar("zpe_notice_armageddon_message_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Armageddon_Channel = register_cvar("zpe_notice_armageddon_message_channel", "-1");
 
-	g_pCvar_Message_Notice_Armageddon_Converted = register_cvar("zm_notice_armageddon_message_converted", "0");
-	g_pCvar_Message_Notice_Armageddon_R = register_cvar("zm_notice_armageddon_message_r", "0");
-	g_pCvar_Message_Notice_Armageddon_G = register_cvar("zm_notice_armageddon_message_g", "250");
-	g_pCvar_Message_Notice_Armageddon_B = register_cvar("zm_notice_armageddon_message_b", "0");
-	g_pCvar_Message_Notice_Armageddon_X = register_cvar("zm_notice_armageddon_message_x", "-1.0");
-	g_pCvar_Message_Notice_Armageddon_Y = register_cvar("zm_notice_armageddon_message_y", "0.75");
-	g_pCvar_Message_Notice_Armageddon_Effects = register_cvar("zm_notice_armageddon_message_effects", "0");
-	g_pCvar_Message_Notice_Armageddon_Fxtime = register_cvar("zm_notice_armageddon_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Armageddon_Holdtime = register_cvar("zm_notice_armageddon_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Armageddon_Fadeintime = register_cvar("zm_notice_armageddon_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Armageddon_Fadeouttime = register_cvar("zm_notice_armageddon_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Armageddon_Channel = register_cvar("zm_notice_armageddon_message_channel", "-1");
+	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+}
 
-	g_pCvar_All_Messages_Converted = register_cvar("zm_all_messages_are_converted_to_hud", "0");
-
+public plugin_precache()
+{
 	// Initialize arrays
 	g_aSound_Armageddon = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND ARMAGEDDON", g_aSound_Armageddon);
-
-	// If we couldn't load custom sounds from file, use and save default ones
-	if (ArraySize(g_aSound_Armageddon) == 0)
-	{
-		for (new i = 0; i < sizeof g_Sounds_Armageddon; i++)
-		{
-			ArrayPushString(g_aSound_Armageddon, g_Sounds_Armageddon[i]);
-		}
-
-		// Save to external file
-		amx_save_setting_string_arr(ZP_SETTINGS_FILE, "Sounds", "ROUND ARMAGEDDON", g_aSound_Armageddon);
-	}
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND ARMAGEDDON", g_aSound_Armageddon);
 
 	for (new i = 0; i < sizeof g_Sounds_Armageddon; i++)
 	{
 		precache_sound(g_Sounds_Armageddon[i]);
 	}
+}
+
+public plugin_cfg()
+{
+	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_armageddon.cfg");
+
+	// Register game mode at plugin_cfg (plugin gets paused after this)
+	zp_gamemodes_register("Armageddon Mode");
 }
 
 // Deathmatch module's player respawn forward
@@ -134,7 +132,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	if (!iSkipchecks)
 	{
 		// Random chance
-		if (random_num(1, get_pcvar_num(g_pCvar_Armageddon_Chance)) != 1)
+		if (CHANCE(get_pcvar_num(g_pCvar_Armageddon_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}
@@ -274,7 +272,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i)) // TODO: Fix: use bit = invalid player
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iAlive++;
 		}
@@ -290,7 +288,7 @@ Get_Random_Alive_Player()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i)) // TODO: Fix: use bit = invalid player
+		if (is_user_alive(i)) // Use bit - invalid player
 		{
 			iPlayers[iCount++] = i;
 		}

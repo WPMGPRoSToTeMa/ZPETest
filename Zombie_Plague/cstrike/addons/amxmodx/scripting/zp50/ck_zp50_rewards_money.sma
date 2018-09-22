@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Rewards Money.
+*	[ZPE] Rewards Money.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,16 +7,17 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
 #define PLUGIN "rewards money"
-#define VERSION "5.2.6.0"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
 #include <cs_util>
-#include <fakemeta>
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
 #include <ck_zp50_class_nemesis>
@@ -64,24 +65,24 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Money_Limit = register_cvar("zm_money_limit", "16000");
+	g_pCvar_Money_Limit = register_cvar("zpe_money_limit", "16000");
 
-	g_pCvar_Money_For_Winner = register_cvar("zm_money_for_winner", "1000");
-	g_pCvar_Money_For_Loser = register_cvar("zm_money_for_loser", "500");
+	g_pCvar_Money_For_Winner = register_cvar("zpe_money_for_winner", "1000");
+	g_pCvar_Money_For_Loser = register_cvar("zpe_money_for_loser", "500");
 
-	g_pCvar_Money_Damage = register_cvar("zm_money_damage", "100");
-	g_pCvar_Money_Zombie_Damaged_HP = register_cvar("zm_money_zombie_damaged_hp", "500");
-	g_pCvar_Money_Human_Damaged_HP = register_cvar("zm_money_human_damaged_hp", "250");
+	g_pCvar_Money_Damage = register_cvar("zpe_money_damage", "100");
+	g_pCvar_Money_Zombie_Damaged_HP = register_cvar("zpe_money_zombie_damaged_hp", "500.0");
+	g_pCvar_Money_Human_Damaged_HP = register_cvar("zpe_money_human_damaged_hp", "250.0");
 
-	g_pCvar_Money_Zombie_Killed = register_cvar("zm_money_zombie_killed", "200");
-	g_pCvar_Money_Human_Killed = register_cvar("zm_money_human_killed", "200");
+	g_pCvar_Money_Zombie_Killed = register_cvar("zpe_money_zombie_killed", "200");
+	g_pCvar_Money_Human_Killed = register_cvar("zpe_money_human_killed", "200");
 
-	g_pCvar_Money_Human_Infected = register_cvar("zm_money_human_infected", "200");
+	g_pCvar_Money_Human_Infected = register_cvar("zpe_money_human_infected", "200");
 
-	g_pCvar_Money_Nemesis_Ignore = register_cvar("zm_money_nemesis_ignore", "0");
-	g_pCvar_Money_Assassin_Ignore = register_cvar("zm_money_assassin_ignore", "0");
-	g_pCvar_Money_Survivor_Ignore = register_cvar("zm_money_survivor_ignore", "0");
-	g_pCvar_Money_Sniper_Ignore = register_cvar("zm_money_sniper_ignore", "0");
+	g_pCvar_Money_Nemesis_Ignore = register_cvar("zpe_money_nemesis_ignore", "0");
+	g_pCvar_Money_Assassin_Ignore = register_cvar("zpe_money_assassin_ignore", "0");
+	g_pCvar_Money_Survivor_Ignore = register_cvar("zpe_money_survivor_ignore", "0");
+	g_pCvar_Money_Sniper_Ignore = register_cvar("zpe_money_sniper_ignore", "0");
 
 	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
 	register_event("TextMsg", "Event_Game_Restart", "a", "2=#Game_will_restart_in");
@@ -160,6 +161,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	// Human attacking zombie...
 	else if (!zp_core_is_zombie(iAttacker) && zp_core_is_zombie(iVictim))
 	{
+		// Reward money to humans for damaging zombies?
 		if (get_pcvar_num(g_pCvar_Money_Damage) > 0)
 		{
 			// Store damage dealt
@@ -178,6 +180,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	}
 }
 
+// This is RG_CSGameRules_PlayerKilled Pre. Simply optimization.
 public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 {
 	// Non-player kill or self kill
@@ -380,7 +383,7 @@ public client_disconnected(iPlayer)
 	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zpe_fw_spawn_post_add_bit(iPlayer)
+public zpe_fw_spawn_post_bit_add(iPlayer)
 {
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }
