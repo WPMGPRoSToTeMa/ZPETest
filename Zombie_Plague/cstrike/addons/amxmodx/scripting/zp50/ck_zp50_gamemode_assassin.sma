@@ -61,7 +61,7 @@ new g_pCvar_Message_Notice_Assassin_Fadeintime;
 new g_pCvar_Message_Notice_Assassin_Fadeouttime;
 new g_pCvar_Message_Notice_Assassin_Channel;
 
-new g_pCvar_All_Messages_Converted;
+new g_pCvar_All_Messages_Are_Converted;
 
 new g_iTarget_Player;
 
@@ -91,7 +91,7 @@ public plugin_init()
 	g_pCvar_Message_Notice_Assassin_Fadeouttime = register_cvar("zpe_notice_assassin_message_fadeouttime", "1.5");
 	g_pCvar_Message_Notice_Assassin_Channel = register_cvar("zpe_notice_assassin_message_channel", "-1");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 }
 
 public plugin_precache()
@@ -189,7 +189,7 @@ public zp_fw_gamemodes_start()
 
 		GET_USER_NAME(g_iTarget_Player, szPlayer_Name, charsmax(szPlayer_Name));
 
-		if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Assassin_Converted))
+		if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Assassin_Converted))
 		{
 			set_hudmessage
 			(

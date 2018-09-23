@@ -63,7 +63,7 @@ new g_pCvar_Message_Notice_Plague_Fadeintime;
 new g_pCvar_Message_Notice_Plague_Fadeouttime;
 new g_pCvar_Message_Notice_Plague_Channel;
 
-new g_pCvar_All_Messages_Converted;
+new g_pCvar_All_Messages_Are_Converted;
 
 public plugin_init()
 {
@@ -94,7 +94,7 @@ public plugin_init()
 	g_pCvar_Message_Notice_Plague_Fadeouttime = register_cvar("zpe_notice_plague_message_fadeouttime", "1.5");
 	g_pCvar_Message_Notice_Plague_Channel = register_cvar("zpe_notice_plague_message_channel", "-1");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 }
 
 public plugin_precache()
@@ -244,7 +244,7 @@ public zp_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Notice_Plague_Show_Hud))
 	{
-		if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Plague_Converted))
+		if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Plague_Converted))
 		{
 			set_hudmessage
 			(

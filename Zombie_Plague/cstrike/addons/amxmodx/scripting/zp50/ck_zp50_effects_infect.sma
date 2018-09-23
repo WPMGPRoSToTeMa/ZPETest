@@ -70,7 +70,7 @@ new g_pCvar_Message_Infection_Fadeintime;
 new g_pCvar_Message_Infection_Fadeouttime;
 new g_pCvar_Message_Infection_Channel;
 
-new g_pCvar_All_Messages_Converted;
+new g_pCvar_All_Messages_Are_Converted;
 
 new g_Message_Death;
 new g_Message_Score_Attrib;
@@ -127,7 +127,7 @@ public plugin_init()
 	g_pCvar_Message_Infection_Fadeouttime = register_cvar("zpe_infection_message_fadeouttime", "1.5");
 	g_pCvar_Message_Infection_Channel = register_cvar("zpe_infection_message_channel", "-1");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 
 	g_Message_Death = get_user_msgid("DeathMsg");
 	g_Message_Score_Attrib = get_user_msgid("ScoreAttrib");
@@ -150,7 +150,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 
 				GET_USER_NAME(iPlayer, szVictim_Name, charsmax(szVictim_Name));
 
-				if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Global_Infection_Converted))
+				if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Global_Infection_Converted))
 				{
 					set_hudmessage
 					(
@@ -202,7 +202,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 				GET_USER_NAME(iAttacker, szAttacker_Name, charsmax(szAttacker_Name));
 				GET_USER_NAME(iPlayer, szVictim_Name, charsmax(szVictim_Name));
 
-				if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Infection_Converted))
+				if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Infection_Converted))
 				{
 					set_hudmessage
 					(
