@@ -16,15 +16,6 @@
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-//	[RU] “екущее количество классов зомби. [ целое число ]
-//	[EN] Current number of classes zombies. [ integer ]
-#define MAX_ZOMBIE_CLASSES 6
-
-
-// [RU] “екущее количество классов людей. [ целое число ]
-// [EN] Current number of classes humans. [ integer ]
-#define MAX_HUMAN_CLASSES 2
-
 
 	//	[RU] ѕериодичность воспроизведени€ звука горени€. [ врем€ указываетс€ в секундах ]
 	//	[EN] Periodicity of reproduction of sound burning. [ the time is in seconds ]
@@ -69,21 +60,17 @@
 #define ID_IDLE_SOUNDS (iTask_ID - TASK_IDLE_SOUNDS)
 #define ID_FLAME_SOUNDS (iTask_ID - TASK_FLAME_SOUNDS)
 
-new Array:g_aZombie_Sounds[MAX_ZOMBIE_CLASSES][ZOMBIE_SOUNDS];
-new Array:g_aHuman_Sounds[MAX_HUMAN_CLASSES][HUMAN_SOUNDS];
-
-new g_pCvar_Max_Zombie_Classes;
-new g_pCvar_Max_Human_Classes;
+new Array:g_aZombie_Sounds;
+new Array:g_aZombie_Indexes;
+new Array:g_aHuman_Sounds;
+new Array:g_aHuman_Indexes;
 
 new g_iBit_Connected;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-
-	g_pCvar_Max_Zombie_Classes = register_cvar("zpe_max_zombie_classes", "6");
-	g_pCvar_Max_Human_Classes = register_cvar("zpe_max_human_classes", "1");
-
+	
 	register_forward(FM_EmitSound, "FM_EmitSound_Zombie_");
 	register_forward(FM_EmitSound, "FM_EmitSound_Human_");
 }
@@ -383,28 +370,52 @@ public _zm_sound_zombie_register()
 {
 	new iClass = get_param(1);
 
-	if (iClass < 0 || iClass >= MAX_ZOMBIE_CLASSES)
+	if (iClass < 0 || iClass >= zp_class_zombie_get_count())
 	{
-		log_error(AMX_ERR_NATIVE, "[ZPE] Class Zombie out of range", iClass);
+		log_error(AMX_ERR_NATIVE, "[ZPE] Class zombie out of range %d", iClass);
 	}
 
-	new ZOMBIE_SOUNDS:iType = ZOMBIE_SOUNDS:get_param(2);
+	new iType = get_param(2);
 
-	if (iType < ZOMBIE_SOUND_PAIN || iType > ZOMBIE_SOUND_FLAME)
+	if (ZOMBIE_SOUNDS:iType < ZOMBIE_SOUND_PAIN || ZOMBIE_SOUNDS:iType > ZOMBIE_SOUND_FLAME)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZPE] Zombie Class out of range", iType);
+		log_error(AMX_ERR_NATIVE, "[ZPE] Zombie sound id out of range %d", iType);
 	}
-
-	if (g_aZombie_Sounds[iClass][iType] == Invalid_Array)
-	{
-		g_aZombie_Sounds[iClass][iType] = ArrayCreate(128);
-	}
-
+	
+	new Array:aSounds[_:ZOMBIE_SOUNDS];
+	
 	new szSound[128];
-
 	get_string(3, szSound, charsmax(szSound));
-
-	ArrayPushString(g_aZombie_Sounds[iClass][iType], szSound);
+	
+	if (g_aZombie_Indexes == Invalid_Array)
+	{
+		g_aZombie_Indexes = ArrayCreate(1, 0);
+		g_aZombie_Sounds = ArrayCreate(_:ZOMBIE_SOUNDS, 0);
+	}
+	
+	new iArray_Class_Index = ArrayFindValue(g_aZombie_Indexes, iClass);
+	
+	if (iArray_Class_Index == -1)
+	{
+		ArrayPushCell(g_aZombie_Indexes, iClass);
+		
+		aSounds[iType] = ArrayCreate(128, 0);
+		ArrayPushString(aSounds[iType], szSound);
+		ArrayPushArray(g_aZombie_Sounds, aSounds);
+	}
+	
+	else
+	{
+		ArrayGetArray(g_aZombie_Sounds, iArray_Class_Index, aSounds, sizeof aSounds);
+		
+		if (aSounds[iType] == Invalid_Array)
+		{
+			aSounds[iType] = ArrayCreate(128, 0);
+		}
+		
+		ArrayPushString(aSounds[iType], szSound);
+		ArraySetArray(g_aZombie_Sounds, iArray_Class_Index, aSounds);
+	}
 
 	precache_sound(szSound);
 }
@@ -413,53 +424,107 @@ public _zm_human_sound_register()
 {
 	new iClass = get_param(1);
 
-	if (iClass < 0 || iClass >= MAX_HUMAN_CLASSES)
+	if (iClass < 0 || iClass >= zp_class_human_get_count())
 	{
-		log_error(AMX_ERR_NATIVE, "[ZPE] Human Class out of range", iClass);
+		log_error(AMX_ERR_NATIVE, "[ZPE] Human class out of range", iClass);
 	}
 
-	new HUMAN_SOUNDS:iType = HUMAN_SOUNDS:get_param(2);
+	new iType = get_param(2);
 
-	if (iType < HUMAN_SOUND_PAIN || iType > HUMAN_SOUND_IDLE)
+	if (HUMAN_SOUNDS:iType < HUMAN_SOUND_PAIN || HUMAN_SOUNDS:iType > HUMAN_SOUND_IDLE)
 	{
-		log_error(AMX_ERR_NATIVE, "[ZPE] Human Class out of range", iType);
+		log_error(AMX_ERR_NATIVE, "[ZPE] Human Sound id out of range %d", iType);
 	}
-
-	if (g_aHuman_Sounds[iClass][iType] == Invalid_Array)
-	{
-		g_aHuman_Sounds[iClass][iType] = ArrayCreate(128);
-	}
+	
+	new Array:aSounds[_:HUMAN_SOUNDS];
 
 	new szSound[128];
-
 	get_string(3, szSound, charsmax(szSound));
-
-	ArrayPushString(g_aHuman_Sounds[iClass][iType], szSound);
+	
+	if (g_aHuman_Indexes == Invalid_Array)
+	{
+		g_aHuman_Indexes = ArrayCreate(1, 0);
+		g_aHuman_Sounds = ArrayCreate(_:HUMAN_SOUNDS, 0);
+	}
+	
+	new iArray_Class_Index = ArrayFindValue(g_aHuman_Indexes, iClass);
+	
+	if (iArray_Class_Index == -1)
+	{
+		ArrayPushCell(g_aHuman_Indexes, iClass);
+		
+		aSounds[iType] = ArrayCreate(128, 0);
+		ArrayPushString(aSounds[iType], szSound);
+		ArrayPushArray(g_aHuman_Sounds, aSounds);
+	}
+	
+	else
+	{
+		ArrayGetArray(g_aHuman_Sounds, iArray_Class_Index, aSounds, sizeof aSounds);
+		
+		if (aSounds[iType] == Invalid_Array)
+		{
+			aSounds[iType] = ArrayCreate(128, 0);
+		}
+		
+		ArrayPushString(aSounds[iType], szSound);
+		ArraySetArray(g_aHuman_Sounds, iArray_Class_Index, aSounds);
+	}
 
 	precache_sound(szSound);
 }
 
 bool:Get_Random_Zombie_Sounds(iClass, ZOMBIE_SOUNDS:iType, szSound[], iSize)
 {
-	if (g_aZombie_Sounds[iClass][iType] != Invalid_Array)
+	if (g_aZombie_Indexes == Invalid_Array)
 	{
-		ArrayGetString(g_aZombie_Sounds[iClass][iType], random(ArraySize(g_aZombie_Sounds[iClass][iType])), szSound, iSize);
-
-		return true;
+		return false;
 	}
 
+	new iArray_Class_Index = ArrayFindValue(g_aZombie_Indexes, iClass);
+	
+	if(iArray_Class_Index != -1)
+	{
+		new Array:aSounds[_:ZOMBIE_SOUNDS];
+		ArrayGetArray(g_aZombie_Sounds, iArray_Class_Index, aSounds, sizeof aSounds);
+		
+		new Array:aSound_Pack = aSounds[_:iType];
+		
+		if (aSound_Pack != Invalid_Array)
+		{
+			ArrayGetString(aSound_Pack, random(ArraySize(aSound_Pack)), szSound, iSize);
+			
+			return true;
+		}
+	}
+	
 	return false;
 }
 
 bool:Get_Random_Human_Sounds(iClass, HUMAN_SOUNDS:iType, szSound[], iSize)
 {
-	if (g_aHuman_Sounds[iClass][iType] != Invalid_Array)
+	if (g_aHuman_Indexes == Invalid_Array)
 	{
-		ArrayGetString(g_aHuman_Sounds[iClass][iType], random(ArraySize(g_aHuman_Sounds[iClass][iType])), szSound, iSize);
-
-		return true;
+		return false;
 	}
 
+	new iArray_Class_Index = ArrayFindValue(g_aHuman_Indexes, iClass);
+	
+	if (iArray_Class_Index != -1)
+	{
+		new Array:aSounds[_:ZOMBIE_SOUNDS];
+		ArrayGetArray(g_aHuman_Sounds, iArray_Class_Index, aSounds, sizeof aSounds);
+		
+		new Array:aSound_Pack = aSounds[_:iType];
+		
+		if (aSound_Pack != Invalid_Array)
+		{
+			ArrayGetString(aSound_Pack, random(ArraySize(aSound_Pack)), szSound, iSize);
+			
+			return true;
+		}
+	}
+	
 	return false;
 }
 
