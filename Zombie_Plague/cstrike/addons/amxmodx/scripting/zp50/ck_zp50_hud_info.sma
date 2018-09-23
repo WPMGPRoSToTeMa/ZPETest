@@ -66,7 +66,7 @@ new g_pCvar_Global_Hud_Informer_Human_R;
 new g_pCvar_Global_Hud_Informer_Human_G;
 new g_pCvar_Global_Hud_Informer_Human_B;
 
-new g_pCvar_All_Messages_Converted;
+new g_pCvar_All_Messages_Are_Converted;
 
 new g_Message_Sync;
 
@@ -108,7 +108,7 @@ public plugin_init()
 	g_pCvar_Global_Hud_Informer_Human_G = register_cvar("zpe_global_hud_informer_human_g", "200");
 	g_pCvar_Global_Hud_Informer_Human_B = register_cvar("zpe_global_hud_informer_human_b", "250");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 
 	g_Message_Sync = CreateHudSyncObj();
 }
@@ -245,7 +245,7 @@ public Show_HUD(iTask_ID)
 		GET_USER_NAME(iPlayer, szPlayer_Name, charsmax(szPlayer_Name));
 
 		// Show name, health, class, and money
-		if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
+		if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 		{
 			set_hudmessage
 			(
@@ -282,7 +282,7 @@ public Show_HUD(iTask_ID)
 
 		if (LibraryExists(LIBRARY_AMMOPACKS, LibType_Library))
 		{
-			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
+			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 			{
 				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(iPlayer));
 			}
@@ -295,7 +295,7 @@ public Show_HUD(iTask_ID)
 
 		else
 		{
-			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
+			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 			{
 				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L $ %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "MONEY1", CS_GET_USER_MONEY(iPlayer));
 			}
@@ -310,7 +310,7 @@ public Show_HUD(iTask_ID)
 	else
 	{
 		// Show health, class
-		if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
+		if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 		{
 			set_hudmessage
 			(
@@ -347,7 +347,7 @@ public Show_HUD(iTask_ID)
 
 		if (LibraryExists(LIBRARY_AMMOPACKS, LibType_Library))
 		{
-			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
+			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 			{
 				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s - %L %d", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(ID_SHOWHUD));
 			}
@@ -360,7 +360,7 @@ public Show_HUD(iTask_ID)
 
 		else
 		{
-			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Converted))
+			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 			{
 				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name);
 			}

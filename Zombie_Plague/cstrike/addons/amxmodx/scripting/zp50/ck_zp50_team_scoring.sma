@@ -98,7 +98,7 @@ new g_pCvar_Message_Win_No_One_Fadeintime;
 new g_pCvar_Message_Win_No_One_Fadeouttime;
 new g_pCvar_Message_Win_No_One_Channel;
 
-new g_pCvar_All_Messages_Converted;
+new g_pCvar_All_Messages_Are_Converted;
 
 new g_pCvar_Sounds_Win_Humans;
 new g_pCvar_Sounds_Win_Zombies;
@@ -155,7 +155,7 @@ public plugin_init()
 	g_pCvar_Message_Win_No_One_Fadeouttime = register_cvar("zpe_win_no_one_message_fadeouttime", "1.0");
 	g_pCvar_Message_Win_No_One_Channel = register_cvar("zpe_win_no_one_message_channel", "-1");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 
 	g_pCvar_Sounds_Win_Humans = register_cvar("zpe_sounds_win_humans", "1");
 	g_pCvar_Sounds_Win_Zombies = register_cvar("zpe_sounds_win_zombies", "1");
@@ -274,7 +274,7 @@ Message_Round_End()
 		{
 			if (get_pcvar_num(g_pCvar_Message_Win_Humans))
 			{
-				if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Team_Scoring_Converted) || get_pcvar_num(g_pCvar_Message_Win_Humans_Converted))
+				if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Team_Scoring_Converted) || get_pcvar_num(g_pCvar_Message_Win_Humans_Converted))
 				{
 					set_hudmessage
 					(
@@ -330,7 +330,7 @@ Message_Round_End()
 		{
 			if (get_pcvar_num(g_pCvar_Message_Win_Zombies))
 			{
-				if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Team_Scoring_Converted) || get_pcvar_num(g_pCvar_Message_Win_Zombies_Converted))
+				if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Team_Scoring_Converted) || get_pcvar_num(g_pCvar_Message_Win_Zombies_Converted))
 				{
 					set_hudmessage
 					(
@@ -386,7 +386,7 @@ Message_Round_End()
 		{
 			if (get_pcvar_num(g_pCvar_Message_Win_No_One))
 			{
-				if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Team_Scoring_Converted) || get_pcvar_num(g_pCvar_Message_Win_No_One_Converted))
+				if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Team_Scoring_Converted) || get_pcvar_num(g_pCvar_Message_Win_No_One_Converted))
 				{
 					set_hudmessage
 					(

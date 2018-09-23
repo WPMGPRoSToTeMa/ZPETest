@@ -76,7 +76,7 @@ new g_pCvar_Message_Notice_Gamemodes_Start_Fadeintime;
 new g_pCvar_Message_Notice_Gamemodes_Start_Fadeouttime;
 new g_pCvar_Message_Notice_Gamemodes_Start_Channel;
 
-new g_pCvar_All_Messages_Converted;
+new g_pCvar_All_Messages_Are_Converted;
 
 new g_iBit_Alive;
 new g_iBit_Connected;
@@ -103,7 +103,7 @@ public plugin_init()
 	g_pCvar_Message_Notice_Gamemodes_Start_Fadeouttime = register_cvar("zpe_notice_gamemodes_start_message_fadeouttime", "1.5");
 	g_pCvar_Message_Notice_Gamemodes_Start_Channel = register_cvar("zpe_notice_gamemodes_start_message_channel", "-1");
 
-	g_pCvar_All_Messages_Converted = register_cvar("zpe_all_messages_are_converted_to_hud", "0");
+	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 
 	register_event("HLTV", "Event_Round_Start", "a", "1=0", "2=0");
 	register_event("TextMsg", "Event_Game_Restart", "a", "2=#Game_will_restart_in");
@@ -423,7 +423,7 @@ public Event_Round_Start()
 	// Show T-virus HUD notice
 	if (get_pcvar_num(g_pCvar_Notice_Gamemodes_Start_Show_Hud))
 	{
-		if (get_pcvar_num(g_pCvar_All_Messages_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Gamemodes_Start_Converted))
+		if (get_pcvar_num(g_pCvar_All_Messages_Are_Converted) || get_pcvar_num(g_pCvar_Message_Notice_Gamemodes_Start_Converted))
 		{
 			set_hudmessage
 			(
