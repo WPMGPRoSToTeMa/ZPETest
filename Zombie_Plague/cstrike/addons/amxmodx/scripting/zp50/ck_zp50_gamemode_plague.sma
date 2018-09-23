@@ -81,18 +81,18 @@ public plugin_init()
 
 	g_pCvar_Notice_Plague_Show_Hud = register_cvar("zpe_notice_plague_show_hud", "1");
 
-	g_pCvar_Message_Notice_Plague_Converted = register_cvar("zpe_notice_plague_message_converted", "0");
-	g_pCvar_Message_Notice_Plague_R = register_cvar("zpe_notice_plague_message_r", "0");
-	g_pCvar_Message_Notice_Plague_G = register_cvar("zpe_notice_plague_message_g", "250");
-	g_pCvar_Message_Notice_Plague_B = register_cvar("zpe_notice_plague_message_b", "0");
-	g_pCvar_Message_Notice_Plague_X = register_cvar("zpe_notice_plague_message_x", "-1.0");
-	g_pCvar_Message_Notice_Plague_Y = register_cvar("zpe_notice_plague_message_y", "0.75");
-	g_pCvar_Message_Notice_Plague_Effects = register_cvar("zpe_notice_plague_message_effects", "0");
-	g_pCvar_Message_Notice_Plague_Fxtime = register_cvar("zpe_notice_plague_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Plague_Holdtime = register_cvar("zpe_notice_plague_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Plague_Fadeintime = register_cvar("zpe_notice_plague_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Plague_Fadeouttime = register_cvar("zpe_notice_plague_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Plague_Channel = register_cvar("zpe_notice_plague_message_channel", "-1");
+	g_pCvar_Message_Notice_Plague_Converted = register_cvar("zpe_message_notice_plague_converted", "0");
+	g_pCvar_Message_Notice_Plague_R = register_cvar("zpe_message_notice_plague_r", "0");
+	g_pCvar_Message_Notice_Plague_G = register_cvar("zpe_message_notice_plague_g", "250");
+	g_pCvar_Message_Notice_Plague_B = register_cvar("zpe_message_notice_plague_b", "0");
+	g_pCvar_Message_Notice_Plague_X = register_cvar("zpe_message_notice_plague_x", "-1.0");
+	g_pCvar_Message_Notice_Plague_Y = register_cvar("zpe_message_notice_plague_y", "0.75");
+	g_pCvar_Message_Notice_Plague_Effects = register_cvar("zpe_message_notice_plague_effects", "0");
+	g_pCvar_Message_Notice_Plague_Fxtime = register_cvar("zpe_message_notice_plague_fxtime", "0.1");
+	g_pCvar_Message_Notice_Plague_Holdtime = register_cvar("zpe_message_notice_plague_holdtime", "1.5");
+	g_pCvar_Message_Notice_Plague_Fadeintime = register_cvar("zpe_message_notice_plague_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Plague_Fadeouttime = register_cvar("zpe_message_notice_plague_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Plague_Channel = register_cvar("zpe_message_notice_plague_channel", "-1");
 
 	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 }

@@ -90,18 +90,18 @@ public plugin_init()
 
 	g_pCvar_Notice_Gamemodes_Start_Show_Hud = register_cvar("zpe_notice_gamemodes_start_show_hud", "1");
 
-	g_pCvar_Message_Notice_Gamemodes_Start_Converted = register_cvar("zpe_notice_gamemodes_start_message_converted", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_R = register_cvar("zpe_notice_gamemodes_start_message_r", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_G = register_cvar("zpe_notice_gamemodes_start_message_g", "250");
-	g_pCvar_Message_Notice_Gamemodes_Start_B = register_cvar("zpe_notice_gamemodes_start_message_b", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_X = register_cvar("zpe_notice_gamemodes_start_message_x", "-1.0");
-	g_pCvar_Message_Notice_Gamemodes_Start_Y = register_cvar("zpe_notice_gamemodes_start_message_y", "0.75");
-	g_pCvar_Message_Notice_Gamemodes_Start_Effects = register_cvar("zpe_notice_gamemodes_start_message_effects", "0");
-	g_pCvar_Message_Notice_Gamemodes_Start_Fxtime = register_cvar("zpe_notice_gamemodes_start_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Gamemodes_Start_Holdtime = register_cvar("zpe_notice_gamemodes_start_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Gamemodes_Start_Fadeintime = register_cvar("zpe_notice_gamemodes_start_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Gamemodes_Start_Fadeouttime = register_cvar("zpe_notice_gamemodes_start_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Gamemodes_Start_Channel = register_cvar("zpe_notice_gamemodes_start_message_channel", "-1");
+	g_pCvar_Message_Notice_Gamemodes_Start_Converted = register_cvar("zpe_message_notice_gamemodes_start_converted", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_R = register_cvar("zpe_message_notice_gamemodes_start_r", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_G = register_cvar("zpe_message_notice_gamemodes_start_g", "250");
+	g_pCvar_Message_Notice_Gamemodes_Start_B = register_cvar("zpe_message_notice_gamemodes_start_b", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_X = register_cvar("zpe_message_notice_gamemodes_start_x", "-1.0");
+	g_pCvar_Message_Notice_Gamemodes_Start_Y = register_cvar("zpe_message_notice_gamemodes_start_y", "0.75");
+	g_pCvar_Message_Notice_Gamemodes_Start_Effects = register_cvar("zpe_message_notice_gamemodes_start_effects", "0");
+	g_pCvar_Message_Notice_Gamemodes_Start_Fxtime = register_cvar("zpe_message_notice_gamemodes_start_fxtime", "0.1");
+	g_pCvar_Message_Notice_Gamemodes_Start_Holdtime = register_cvar("zpe_message_notice_gamemodes_start_holdtime", "1.5");
+	g_pCvar_Message_Notice_Gamemodes_Start_Fadeintime = register_cvar("zpe_message_notice_gamemodes_start_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Gamemodes_Start_Fadeouttime = register_cvar("zpe_message_notice_gamemodes_start_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Gamemodes_Start_Channel = register_cvar("zpe_message_notice_gamemodes_start_channel", "-1");
 
 	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 
