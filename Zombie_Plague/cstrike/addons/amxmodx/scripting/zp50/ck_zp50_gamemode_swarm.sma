@@ -68,18 +68,18 @@ public plugin_init()
 
 	g_pCvar_Notice_Swarm_Show_Hud = register_cvar("zpe_notice_swarm_show_hud", "1");
 
-	g_pCvar_Message_Notice_Swarm_Converted = register_cvar("zpe_notice_swarm_message_converted", "0");
-	g_pCvar_Message_Notice_Swarm_R = register_cvar("zpe_notice_swarm_message_r", "0");
-	g_pCvar_Message_Notice_Swarm_G = register_cvar("zpe_notice_swarm_message_g", "250");
-	g_pCvar_Message_Notice_Swarm_B = register_cvar("zpe_notice_swarm_message_b", "0");
-	g_pCvar_Message_Notice_Swarm_X = register_cvar("zpe_notice_swarm_message_x", "-1.0");
-	g_pCvar_Message_Notice_Swarm_Y = register_cvar("zpe_notice_swarm_message_y", "0.75");
-	g_pCvar_Message_Notice_Swarm_Effects = register_cvar("zpe_notice_swarm_message_effects", "0");
-	g_pCvar_Message_Notice_Swarm_Fxtime = register_cvar("zpe_notice_swarm_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Swarm_Holdtime = register_cvar("zpe_notice_swarm_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Swarm_Fadeintime = register_cvar("zpe_notice_swarm_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Swarm_Fadeouttime = register_cvar("zpe_notice_swarm_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Swarm_Channel = register_cvar("zpe_notice_swarm_message_channel", "-1");
+	g_pCvar_Message_Notice_Swarm_Converted = register_cvar("zpe_message_notice_swarm_converted", "0");
+	g_pCvar_Message_Notice_Swarm_R = register_cvar("zpe_message_notice_swarm_r", "0");
+	g_pCvar_Message_Notice_Swarm_G = register_cvar("zpe_message_notice_swarm_g", "250");
+	g_pCvar_Message_Notice_Swarm_B = register_cvar("zpe_message_notice_swarm_b", "0");
+	g_pCvar_Message_Notice_Swarm_X = register_cvar("zpe_message_notice_swarm_x", "-1.0");
+	g_pCvar_Message_Notice_Swarm_Y = register_cvar("zpe_message_notice_swarm_y", "0.75");
+	g_pCvar_Message_Notice_Swarm_Effects = register_cvar("zpe_message_notice_swarm_effects", "0");
+	g_pCvar_Message_Notice_Swarm_Fxtime = register_cvar("zpe_message_notice_swarm_fxtime", "0.1");
+	g_pCvar_Message_Notice_Swarm_Holdtime = register_cvar("zpe_message_notice_swarm_holdtime", "1.5");
+	g_pCvar_Message_Notice_Swarm_Fadeintime = register_cvar("zpe_message_notice_swarm_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Swarm_Fadeouttime = register_cvar("zpe_message_notice_swarm_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Swarm_Channel = register_cvar("zpe_message_notice_swarm_channel", "-1");
 
 	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 }

@@ -77,18 +77,18 @@ public plugin_init()
 
 	g_pCvar_Notice_Armageddon_Show_Hud = register_cvar("zpe_notice_armageddon_show_hud", "1");
 
-	g_pCvar_Message_Notice_Armageddon_Converted = register_cvar("zpe_notice_armageddon_message_converted", "0");
-	g_pCvar_Message_Notice_Armageddon_R = register_cvar("zpe_notice_armageddon_message_r", "0");
-	g_pCvar_Message_Notice_Armageddon_G = register_cvar("zpe_notice_armageddon_message_g", "250");
-	g_pCvar_Message_Notice_Armageddon_B = register_cvar("zpe_notice_armageddon_message_b", "0");
-	g_pCvar_Message_Notice_Armageddon_X = register_cvar("zpe_notice_armageddon_message_x", "-1.0");
-	g_pCvar_Message_Notice_Armageddon_Y = register_cvar("zpe_notice_armageddon_message_y", "0.75");
-	g_pCvar_Message_Notice_Armageddon_Effects = register_cvar("zpe_notice_armageddon_message_effects", "0");
-	g_pCvar_Message_Notice_Armageddon_Fxtime = register_cvar("zpe_notice_armageddon_message_fxtime", "0.1");
-	g_pCvar_Message_Notice_Armageddon_Holdtime = register_cvar("zpe_notice_armageddon_message_holdtime", "1.5");
-	g_pCvar_Message_Notice_Armageddon_Fadeintime = register_cvar("zpe_notice_armageddon_message_fadeintime", "2.0");
-	g_pCvar_Message_Notice_Armageddon_Fadeouttime = register_cvar("zpe_notice_armageddon_message_fadeouttime", "1.5");
-	g_pCvar_Message_Notice_Armageddon_Channel = register_cvar("zpe_notice_armageddon_message_channel", "-1");
+	g_pCvar_Message_Notice_Armageddon_Converted = register_cvar("zpe_message_notice_armageddon_converted", "0");
+	g_pCvar_Message_Notice_Armageddon_R = register_cvar("zpe_message_notice_armageddon_r", "0");
+	g_pCvar_Message_Notice_Armageddon_G = register_cvar("zpe_message_notice_armageddon_g", "250");
+	g_pCvar_Message_Notice_Armageddon_B = register_cvar("zpe_message_notice_armageddon_b", "0");
+	g_pCvar_Message_Notice_Armageddon_X = register_cvar("zpe_message_notice_armageddon_x", "-1.0");
+	g_pCvar_Message_Notice_Armageddon_Y = register_cvar("zpe_message_notice_armageddon_y", "0.75");
+	g_pCvar_Message_Notice_Armageddon_Effects = register_cvar("zpe_message_notice_armageddon_effects", "0");
+	g_pCvar_Message_Notice_Armageddon_Fxtime = register_cvar("zpe_message_notice_armageddon_fxtime", "0.1");
+	g_pCvar_Message_Notice_Armageddon_Holdtime = register_cvar("zpe_message_notice_armageddon_holdtime", "1.5");
+	g_pCvar_Message_Notice_Armageddon_Fadeintime = register_cvar("zpe_message_notice_armageddon_fadeintime", "2.0");
+	g_pCvar_Message_Notice_Armageddon_Fadeouttime = register_cvar("zpe_message_notice_armageddon_fadeouttime", "1.5");
+	g_pCvar_Message_Notice_Armageddon_Channel = register_cvar("zpe_message_notice_armageddon_channel", "-1");
 
 	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 }

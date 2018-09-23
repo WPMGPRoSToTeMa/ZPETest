@@ -101,31 +101,31 @@ public plugin_init()
 	g_pCvar_Infect_Sparkle_G = register_cvar("zpe_infect_sparkle_g", "150");
 	g_pCvar_Infect_Sparkle_B = register_cvar("zpe_infect_sparkle_b", "0");
 
-	g_pCvar_Message_Global_Infection_Converted = register_cvar("zpe_global_infection_message_converted", "0");
-	g_pCvar_Message_Global_Infection_R = register_cvar("zpe_global_infection_message_r", "0");
-	g_pCvar_Message_Global_Infection_G = register_cvar("zpe_global_infection_message_g", "250");
-	g_pCvar_Message_Global_Infection_B = register_cvar("zpe_global_infection_message_b", "0");
-	g_pCvar_Message_Global_Infection_X = register_cvar("zpe_global_infection_message_x", "-1.0");
-	g_pCvar_Message_Global_Infection_Y = register_cvar("zpe_global_infection_message_y", "0.75");
-	g_pCvar_Message_Global_Infection_Effects = register_cvar("zpe_global_infection_message_effects", "0");
-	g_pCvar_Message_Global_Infection_Fxtime = register_cvar("zpe_global_infection_message_fxtime", "0.1");
-	g_pCvar_Message_Global_Infection_Holdtime = register_cvar("zpe_global_infection_message_holdtime", "1.5");
-	g_pCvar_Message_Global_Infection_Fadeintime = register_cvar("zpe_global_infection_message_fadeintime", "2.0");
-	g_pCvar_Message_Global_Infection_Fadeouttime = register_cvar("zpe_global_infection_message_fadeouttime", "1.5");
-	g_pCvar_Message_Global_Infection_Channel = register_cvar("zpe_global_infection_message_channel", "-1");
+	g_pCvar_Message_Global_Infection_Converted = register_cvar("zpe_message_global_infection_converted", "0");
+	g_pCvar_Message_Global_Infection_R = register_cvar("zpe_message_global_infection_r", "0");
+	g_pCvar_Message_Global_Infection_G = register_cvar("zpe_message_global_infection_g", "250");
+	g_pCvar_Message_Global_Infection_B = register_cvar("zpe_message_global_infection_b", "0");
+	g_pCvar_Message_Global_Infection_X = register_cvar("zpe_message_global_infection_x", "-1.0");
+	g_pCvar_Message_Global_Infection_Y = register_cvar("zpe_message_global_infection_y", "0.75");
+	g_pCvar_Message_Global_Infection_Effects = register_cvar("zpe_message_global_infection_effects", "0");
+	g_pCvar_Message_Global_Infection_Fxtime = register_cvar("zpe_message_global_infection_fxtime", "0.1");
+	g_pCvar_Message_Global_Infection_Holdtime = register_cvar("zpe_message_global_infection_holdtime", "1.5");
+	g_pCvar_Message_Global_Infection_Fadeintime = register_cvar("zpe_message_global_infection_fadeintime", "2.0");
+	g_pCvar_Message_Global_Infection_Fadeouttime = register_cvar("zpe_message_global_infection_fadeouttime", "1.5");
+	g_pCvar_Message_Global_Infection_Channel = register_cvar("zpe_message_global_infection_channel", "-1");
 
-	g_pCvar_Message_Infection_Converted = register_cvar("zpe_infection_message_converted", "0");
-	g_pCvar_Message_Infection_R = register_cvar("zpe_infection_message_r", "0");
-	g_pCvar_Message_Infection_G = register_cvar("zpe_infection_message_g", "250");
-	g_pCvar_Message_Infection_B = register_cvar("zpe_infection_message_b", "0");
-	g_pCvar_Message_Infection_X = register_cvar("zpe_infection_message_x", "-1.0");
-	g_pCvar_Message_Infection_Y = register_cvar("zpe_infection_message_y", "0.75");
-	g_pCvar_Message_Infection_Effects = register_cvar("zpe_infection_message_effects", "0");
-	g_pCvar_Message_Infection_Fxtime = register_cvar("zpe_infection_message_fxtime", "0.1");
-	g_pCvar_Message_Infection_Holdtime = register_cvar("zpe_infection_message_holdtime", "1.5");
-	g_pCvar_Message_Infection_Fadeintime = register_cvar("zpe_infection_message_fadeintime", "2.0");
-	g_pCvar_Message_Infection_Fadeouttime = register_cvar("zpe_infection_message_fadeouttime", "1.5");
-	g_pCvar_Message_Infection_Channel = register_cvar("zpe_infection_message_channel", "-1");
+	g_pCvar_Message_Infection_Converted = register_cvar("zpe_message_infection_converted", "0");
+	g_pCvar_Message_Infection_R = register_cvar("zpe_message_infection_r", "0");
+	g_pCvar_Message_Infection_G = register_cvar("zpe_message_infection_g", "250");
+	g_pCvar_Message_Infection_B = register_cvar("zpe_message_infection_b", "0");
+	g_pCvar_Message_Infection_X = register_cvar("zpe_message_infection_x", "-1.0");
+	g_pCvar_Message_Infection_Y = register_cvar("zpe_message_infection_y", "0.75");
+	g_pCvar_Message_Infection_Effects = register_cvar("zpe_message_infection_effects", "0");
+	g_pCvar_Message_Infection_Fxtime = register_cvar("zpe_message_infection_fxtime", "0.1");
+	g_pCvar_Message_Infection_Holdtime = register_cvar("zpe_message_infection_holdtime", "1.5");
+	g_pCvar_Message_Infection_Fadeintime = register_cvar("zpe_message_infection_fadeintime", "2.0");
+	g_pCvar_Message_Infection_Fadeouttime = register_cvar("zpe_message_infection_fadeouttime", "1.5");
+	g_pCvar_Message_Infection_Channel = register_cvar("zpe_message_infection_channel", "-1");
 
 	g_pCvar_All_Messages_Are_Converted = register_cvar("zpe_all_messages_are_converted", "0");
 
