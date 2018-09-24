@@ -29,42 +29,54 @@ new const g_szSound_Section_Name[] = "Sounds";
 
 new const g_szZombie_Sound_Types[_:ZOMBIE_SOUNDS][] =
 {
-	"PAIN",
 	"DIE",
 	"FALL",
+	"PAIN",
 	"MISS SLASH",
 	"MISS WALL",
 	"HIT NORMAL",
 	"HIT STAB",
-	"IDLE",
 	"INFECT",
+	"IDLE",
 	"FLAME"
 };
 
 new const g_szDefault_Zombie_Sounds[_:ZOMBIE_SOUNDS][] =
 {
-	"zombie_plague/zombie_pain1.wav",
-	"zombie_plague/zombie_die1.wav",
+	"zombie_plague/zombie_sounds/zombie_die0.wav",
 	"zombie_plague/zombie_fall1.wav",
-	"weapons/knife_slash1.wav",
+	"zombie_plague/zombie_pain1.wav",
+	"zombie_plague/zombie_sounds/zombie_miss_slash0.wav",
 	"weapons/knife_hitwall1.wav",
 	"weapons/knife_hit1.wav",
 	"weapons/knife_stab.wav",
-	"zombie_plague/zombie_brains1.wav",
 	"zombie_plague/zombie_sounds/zombie_infect0.wav",
+	"zombie_plague/zombie_brains1.wav",
 	"zombie_plague/zombie_sounds/zombie_burn0.wav"
 };
 
 new const g_szHuman_Sound_Types[_:HUMAN_SOUNDS][] =
 {
-	"PAIN",
 	"DIE",
 	"FALL",
+	"PAIN",
 	"MISS SLASH",
 	"MISS WALL",
 	"HIT NORMAL",
 	"HIT STAB",
 	"IDLE"
+};
+
+new const g_szDefault_Human_Sounds[_:HUMAN_SOUNDS][] =
+{
+	"player/die1.wav",
+	"player/pl_fallpain1.wav",
+	"player/pl_pain2.wav",
+	"weapons/knife_slash1.wav",
+	"weapons/knife_hitwall1.wav",
+	"weapons/knife_hit1.wav",
+	"weapons/knife_stab.wav",
+	"hostage/hos1.wav"
 };
 
 public plugin_init()
@@ -80,8 +92,8 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 	new szClass_Zombie_Config_Path[64];
 	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
 
-	new Array:aSounds = ArrayCreate(64, 1);
-	new szSound[64];
+	new Array:aSounds = ArrayCreate(128, 1);
+	new szSound[128];
 	new iArraySize;
 
 	for (new i = 0; i < _:ZOMBIE_SOUNDS; i++)
@@ -95,7 +107,7 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 			for (new j = 0; j < iArraySize; j++)
 			{
 				ArrayGetString(aSounds, j, szSound, charsmax(szSound));
-				zp_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:j, szSound);
+				zp_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:i, szSound);
 			}
 
 			ArrayClear(aSounds);
@@ -119,15 +131,13 @@ public zp_fw_class_human_register_post(iClass_ID)
 	new szClass_Human_Config_Path[64];
 	formatex(szClass_Human_Config_Path, charsmax(szClass_Human_Config_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
 
-	new Array:aSounds = ArrayCreate(64, 1);
-	new szSound[64];
+	new Array:aSounds = ArrayCreate(128, 1);
+	new szSound[128];
 	new iArraySize;
-
-	new bool:bSounds_Loaded;
 
 	for (new i = 0; i < _:HUMAN_SOUNDS; i++)
 	{
-		bSounds_Loaded = bool:amx_load_setting_string_arr(szClass_Human_Config_Path, g_szSound_Section_Name, g_szZombie_Sound_Types[i], aSounds);
+		amx_load_setting_string_arr(szClass_Human_Config_Path, g_szSound_Section_Name, g_szZombie_Sound_Types[i], aSounds);
 
 		iArraySize = ArraySize(aSounds);
 
@@ -136,15 +146,16 @@ public zp_fw_class_human_register_post(iClass_ID)
 			for (new j = 0; j < iArraySize; j++)
 			{
 				ArrayGetString(aSounds, j, szSound, charsmax(szSound));
-				zp_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:j, szSound);
+				zp_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, szSound);
 			}
 
 			ArrayClear(aSounds);
 		}
 
-		else if (!bSounds_Loaded)
+		else
 		{
-			amx_save_setting_string(szClass_Human_Config_Path, g_szSound_Section_Name, g_szHuman_Sound_Types[i], "");
+			amx_save_setting_string(szClass_Human_Config_Path, g_szSound_Section_Name, g_szHuman_Sound_Types[i], g_szDefault_Human_Sounds[i]);
+			zp_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, g_szDefault_Human_Sounds[i]);
 		}
 	}
 
