@@ -1,4 +1,17 @@
-[![Build Status](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/badge/icon)](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/)
+Welcome to the game development community for Counter Strike 1.6 and Counter Strike Condition Zero games.
+Game modifications allow you to make a variety of game, completely changing the gameplay.
+
+Game modifications include:
+1. Volumetric configuration.
+2. Understandable APIs.
+3. Support only current technologies.
+3. Enterprise level.
+
+### Build status of nightly builds
+
+| Jenkins (Linux)
+|:-----------------------------------------
+| [![Build Status](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/badge/icon)](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/)
 
 ### System requirements: ###
 
@@ -9,12 +22,11 @@
 - No bots on the server
 - Required location of AMXModX: addons/amxmodx
 
+## Get game modes
+Download the latest version of the game modification
 
-### Системные требования: ###
+| Game Modes                        | Downloads (.sma)      | Downloads (.amxx)   | How to Install     |
+| -------------------------------------------| ------------------------| ----------------------|  ------------------------------|
+| Zombie Plague Enterprise                | [.sma][zpe.sma]    |  |   |
 
-- Linux
-- ReHLDS + ReGameDLL + ReAPI
-- AMXModX 1.9
-- Metamod r
-- Отсутствие ботов на сервере
-- Обязательный путь расположения AMXModX: addons/amxmodx
+[zpe.sma]: https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/lastSuccessfulBuild/artifact/Zombie_Plague/*zip*/Zombie_Plague.zip
