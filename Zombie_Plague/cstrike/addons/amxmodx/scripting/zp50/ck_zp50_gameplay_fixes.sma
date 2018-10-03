@@ -36,13 +36,13 @@
 #define TASK_RESPAWN 100
 #define ID_RESPAWN (Task_ID - TASK_RESPAWN)
 
-new const g_Gameplay_Entity[][] =
+new const g_Gameplay_Entities[][] =
 {
 	"func_vehicle",
 	"item_longjump"
 };
 
-new Array:g_aGameplay_Entitys;
+new Array:g_aGameplay_Entities;
 
 new g_pCvar_Remove_Doors;
 new g_pCvar_Block_Pushables;
@@ -91,10 +91,10 @@ public plugin_init()
 public plugin_precache()
 {
 	// Initialize arrays
-	g_aGameplay_Entitys = ArrayCreate(CLASSNAME_MAX_LENGTH, 1);
+	g_aGameplay_Entities = ArrayCreate(CLASSNAME_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Objective Entities", "GAMEPLAY", g_aGameplay_Entitys);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Objective Entities", "GAMEPLAY", g_aGameplay_Entities);
 
 	// Prevent gameplay entities from spawning
 	g_unfwSpawn = register_forward(FM_Spawn, "FM_Spawn_");
@@ -189,9 +189,9 @@ public FM_Spawn_(iEntity)
 	get_entvar(iEntity, var_classname, szClassname, charsmax(szClassname));
 
 	// Check whether it needs to be removed
-	for (new i = 0; i < sizeof g_Gameplay_Entity; i++)
+	for (new i = 0; i < sizeof g_Gameplay_Entities; i++)
 	{
-		if (equal(szClassname, g_Gameplay_Entity[i]))
+		if (equal(szClassname, g_Gameplay_Entities[i]))
 		{
 			engfunc(EngFunc_RemoveEntity, iEntity);
 
