@@ -41,20 +41,6 @@ new const g_szZombie_Sound_Types[_:ZOMBIE_SOUNDS][] =
 	"FLAME"
 };
 
-new const g_szDefault_Zombie_Sounds[_:ZOMBIE_SOUNDS][] =
-{
-	"zombie_plague/zombie_sounds/zombie_die0.wav",
-	"zombie_plague/zombie_fall1.wav",
-	"zombie_plague/zombie_pain1.wav",
-	"zombie_plague/zombie_sounds/zombie_miss_slash0.wav",
-	"weapons/knife_hitwall1.wav",
-	"weapons/knife_hit1.wav",
-	"weapons/knife_stab.wav",
-	"zombie_plague/zombie_sounds/zombie_infect0.wav",
-	"zombie_plague/zombie_brains1.wav",
-	"zombie_plague/zombie_sounds/zombie_burn0.wav"
-};
-
 new const g_szHuman_Sound_Types[_:HUMAN_SOUNDS][] =
 {
 	"DIE",
@@ -67,17 +53,71 @@ new const g_szHuman_Sound_Types[_:HUMAN_SOUNDS][] =
 	"IDLE"
 };
 
-new const g_szDefault_Human_Sounds[_:HUMAN_SOUNDS][] =
+new Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUNDS];
+new Array:g_aDefault_Human_Sounds[_:HUMAN_SOUNDS];
+
+Init_Defualut_Zombie_Sounds()
 {
-	"player/die1.wav",
-	"player/pl_fallpain1.wav",
-	"player/pl_pain2.wav",
-	"weapons/knife_slash1.wav",
-	"weapons/knife_hitwall1.wav",
-	"weapons/knife_hit1.wav",
-	"weapons/knife_stab.wav",
-	"hostage/hos1.wav"
-};
+	for (new i = 0; i < _:ZOMBIE_SOUNDS; i++)
+	{
+		g_aDefault_Zombie_Sounds[i] = ArrayCreate(128, 1);
+	}
+
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague/zombie_sounds/zombie_die0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague/zombie_sounds/zombie_die1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague/zombie_sounds/zombie_die2.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FALL], "zombie_plague/zombie_sounds/zombie_fall0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_PAIN], "zombie_plague/zombie_sounds/zombie_pain0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_PAIN], "zombie_plague/zombie_sounds/zombie_pain1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_SLASH], "zombie_plague/zombie_sounds/zombie_miss_slash0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_SLASH], "zombie_plague/zombie_sounds/zombie_miss_slash1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_WALL], "zombie_plague/zombie_sounds/zombie_miss_wall0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_WALL], "zombie_plague/zombie_sounds/zombie_miss_wall1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_WALL], "zombie_plague/zombie_sounds/zombie_miss_wall2.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_WALL], "zombie_plague/zombie_sounds/zombie_miss_wall3.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_WALL], "zombie_plague/zombie_sounds/zombie_miss_wall4.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_WALL], "zombie_plague/zombie_sounds/zombie_miss_wall5.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_NORMAL], "zombie_plague/zombie_sounds/zombie_hit_normal0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_NORMAL], "zombie_plague/zombie_sounds/zombie_hit_normal1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_STAB], "zombie_plague/zombie_sounds/zombie_hit_stab0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_INFECT], "zombie_plague/zombie_sounds/zombie_infect0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_INFECT], "zombie_plague/zombie_sounds/zombie_infect1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_IDLE], "zombie_plague/zombie_sounds/zombie_idle0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_IDLE], "zombie_plague/zombie_sounds/zombie_idle1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn2.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn3.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn4.wav");
+}
+
+Init_Defualut_Human_Sounds()
+{
+	for (new i = 0; i < _:HUMAN_SOUNDS; i++)
+	{
+		g_aDefault_Human_Sounds[i] = ArrayCreate(128, 1);
+	}
+
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_DIE], "player/die1.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_DIE], "player/die2.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_DIE], "player/die3.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_FALL], "player/pl_fallpain1.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_FALL], "player/pl_fallpain2.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_FALL], "player/pl_fallpain3.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_PAIN], "player/pl_pain2.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_PAIN], "player/pl_pain4.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_PAIN], "player/pl_pain5.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_PAIN], "player/pl_pain6.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_PAIN], "player/pl_pain7.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_MISS_SLASH], "weapons/knife_slash1.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_MISS_WALL], "weapons/knife_hitwall1.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_HIT_NORMAL], "weapons/knife_hit1.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_HIT_NORMAL], "weapons/knife_hit2.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_HIT_NORMAL], "weapons/knife_hit3.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_HIT_NORMAL], "weapons/knife_hit4.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_HIT_STAB], "weapons/knife_stab.wav");
+	ArrayPushString(Array:g_aDefault_Human_Sounds[_:HUMAN_SOUND_IDLE], "hostage/hos1.wav");
+}
 
 public plugin_init()
 {
@@ -86,6 +126,11 @@ public plugin_init()
 
 public zp_fw_class_zombie_register_post(iClass_ID)
 {
+	if (g_aDefault_Zombie_Sounds[0] == Invalid_Array)
+	{
+		Init_Defualut_Zombie_Sounds();
+	}
+
 	new szReal_Name[32];
 	zp_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
@@ -115,8 +160,15 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 
 		else
 		{
-			amx_save_setting_string(szClass_Zombie_Config_Path, g_szSound_Section_Name, g_szZombie_Sound_Types[i], g_szDefault_Zombie_Sounds[i]);
-			zp_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:i, g_szDefault_Zombie_Sounds[i]);
+			iArraySize = ArraySize(g_aDefault_Zombie_Sounds[i]);
+
+			for (new j = 0; j < iArraySize; j++)
+			{
+				ArrayGetString(g_aDefault_Zombie_Sounds[i], j, szSound, charsmax(szSound));
+				zp_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:i, szSound);
+			}
+
+			amx_save_setting_string_arr(szClass_Zombie_Config_Path, g_szSound_Section_Name, g_szZombie_Sound_Types[i], g_aDefault_Zombie_Sounds[i]);
 		}
 	}
 
@@ -125,6 +177,11 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 
 public zp_fw_class_human_register_post(iClass_ID)
 {
+	if (g_aDefault_Human_Sounds[0] == Invalid_Array)
+	{
+		Init_Defualut_Human_Sounds();
+	}
+
 	new szReal_Name[32];
 	zp_class_human_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
@@ -154,8 +211,15 @@ public zp_fw_class_human_register_post(iClass_ID)
 
 		else
 		{
-			amx_save_setting_string(szClass_Human_Config_Path, g_szSound_Section_Name, g_szHuman_Sound_Types[i], g_szDefault_Human_Sounds[i]);
-			zp_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, g_szDefault_Human_Sounds[i]);
+			iArraySize = ArraySize(g_aDefault_Human_Sounds[i]);
+
+			for (new j = 0; j < iArraySize; j++)
+			{
+				ArrayGetString(g_aDefault_Human_Sounds[i], j, szSound, charsmax(szSound));
+				zp_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, szSound);
+			}
+
+			amx_save_setting_string_arr(szClass_Human_Config_Path, g_szSound_Section_Name, g_szHuman_Sound_Types[i], g_aDefault_Human_Sounds[i]);
 		}
 	}
 
