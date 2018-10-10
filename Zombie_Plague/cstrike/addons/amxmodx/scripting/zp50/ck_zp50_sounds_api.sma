@@ -377,7 +377,7 @@ public _zm_sound_zombie_register()
 
 	new iType = get_param(2);
 
-	if (ZOMBIE_SOUNDS:iType < ZOMBIE_SOUND_PAIN || ZOMBIE_SOUNDS:iType > ZOMBIE_SOUND_FLAME)
+	if (ZOMBIE_SOUNDS:iType < ZOMBIE_SOUND_DIE || ZOMBIE_SOUNDS:iType > ZOMBIE_SOUND_FLAME)
 	{
 		log_error(AMX_ERR_NATIVE, "[ZPE] Zombie sound id out of range %d", iType);
 	}
@@ -431,7 +431,7 @@ public _zm_human_sound_register()
 
 	new iType = get_param(2);
 
-	if (HUMAN_SOUNDS:iType < HUMAN_SOUND_PAIN || HUMAN_SOUNDS:iType > HUMAN_SOUND_IDLE)
+	if (HUMAN_SOUNDS:iType < HUMAN_SOUND_DIE || HUMAN_SOUNDS:iType > HUMAN_SOUND_IDLE)
 	{
 		log_error(AMX_ERR_NATIVE, "[ZPE] Human Sound id out of range %d", iType);
 	}
