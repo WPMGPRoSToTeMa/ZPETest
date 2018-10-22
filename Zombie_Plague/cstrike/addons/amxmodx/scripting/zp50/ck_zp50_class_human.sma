@@ -313,10 +313,10 @@ public Menu_Class_Human(iPlayer, iMenu_ID, iItem)
 	zpe_client_print_color
 	(
 		iPlayer, print_team_default, "%L: %d %L: %d %L: %d %L: %.2fx",
-		iPlayer, "ZOMBIE_ATTRIB1_COLOR", ArrayGetCell(g_aClass_Human_Health, g_Class_Human_Next[iPlayer]),
-		iPlayer, "ZOMBIE_ATTRIB5_COLOR", ArrayGetCell(g_aClass_Human_Armor, g_Class_Human_Next[iPlayer]),
-		iPlayer, "ZOMBIE_ATTRIB2_COLOR", cs_maxspeed_display_value(fMax_Speed),
-		iPlayer, "ZOMBIE_ATTRIB3_COLOR", Float:ArrayGetCell(g_aClass_Human_Gravity, g_Class_Human_Next[iPlayer])
+		iPlayer, "HUMAN_ATTRIB1_COLOR", floatround(ArrayGetCell(g_aClass_Human_Health, g_Class_Human_Next[iPlayer])),
+		iPlayer, "HUMAN_ATTRIB5_COLOR", ArrayGetCell(g_aClass_Human_Armor, g_Class_Human_Next[iPlayer]),
+		iPlayer, "HUMAN_ATTRIB2_COLOR", cs_maxspeed_display_value(fMax_Speed),
+		iPlayer, "HUMAN_ATTRIB3_COLOR", Float:ArrayGetCell(g_aClass_Human_Gravity, g_Class_Human_Next[iPlayer])
 	);
 
 	// Execute class select post forward
