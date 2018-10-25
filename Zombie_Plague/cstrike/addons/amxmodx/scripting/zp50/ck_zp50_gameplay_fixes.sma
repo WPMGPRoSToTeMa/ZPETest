@@ -84,8 +84,6 @@ public plugin_init()
 	RegisterHam(Ham_Use, "func_pushable", "Ham_Use_Pushable_");
 
 	unregister_forward(FM_Spawn, g_unfwSpawn);
-
-	register_message(get_user_msgid("Health"), "Message_Health");
 }
 
 public plugin_precache()
@@ -424,28 +422,6 @@ public FM_ClientKill_()
 	}
 
 	return FMRES_IGNORED;
-}
-
-// Fix for the HL engine bug when HP is multiples of 256
-public Message_Health(iMessage_ID, iMessage_Dest, iMessage_Entity)
-{
-	// Get player's helath
-	new iHelath = get_msg_arg_int(1);
-
-	// Don't bother
-	if (iHelath < 256)
-	{
-		return;
-	}
-
-	// Check if we need to fix it
-	if (iHelath % 256 == 0)
-	{
-		SET_USER_HEALTH(iMessage_Entity, Float:GET_USER_HEALTH(iMessage_Entity) + 1);
-	}
-
-	// HUD can only show as much as 255 hp
-	set_msg_arg_int(1, get_msg_argtype(1), 255);
 }
 
 public zpe_fw_kill_pre_bit_sub(iPlayer)
