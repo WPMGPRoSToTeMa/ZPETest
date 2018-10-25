@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZP] Night_Vision.
+*	[ZPE] Night Vision.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -7,11 +7,13 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
+*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*
 *	Support is provided only on the site.
 */
 
-#define PLUGIN "nightvision"
-#define VERSION "5.2.8.0"
+#define PLUGIN "night vision"
+#define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
@@ -23,8 +25,8 @@
 #include <ck_zp50_class_survivor>
 #include <ck_zp50_class_sniper>
 
-#define TASK_NIGHTVISION 100
-#define ID_NIGHTVISION (iTask_ID - TASK_NIGHTVISION)
+#define TASK_NIGHT_VISION 100
+#define ID_NIGHT_VISION (iTask_ID - TASK_NIGHT_VISION)
 
 new g_Night_Vision_Active;
 
@@ -81,55 +83,55 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Night_Vision_Custom = register_cvar("zm_night_vision_custom", "0");
+	g_pCvar_Night_Vision_Custom = register_cvar("zpe_night_vision_custom", "0");
 
-	g_pCvar_Night_Vision_Zombie = register_cvar("zm_night_vision_zombie", "2"); // 1-give only // 2-give and enable
-	g_pCvar_Night_Vision_Zombie_Radius = register_cvar("zm_night_vision_radius_zombie", "80");
-	g_pCvar_Night_Vision_Zombie_Color_R = register_cvar("zm_night_vision_zombie_color_R", "0");
-	g_pCvar_Night_Vision_Zombie_Color_G = register_cvar("zm_night_vision_zombie_color_G", "150");
-	g_pCvar_Night_Vision_Zombie_Color_B = register_cvar("zm_night_vision_zombie_color_B", "0");
+	g_pCvar_Night_Vision_Zombie = register_cvar("zpe_night_vision_zombie", "2"); // 1-give only // 2-give and enable
+	g_pCvar_Night_Vision_Zombie_Radius = register_cvar("zpe_night_vision_zombie_radius", "80");
+	g_pCvar_Night_Vision_Zombie_Color_R = register_cvar("zpe_night_vision_zombie_color_r", "0");
+	g_pCvar_Night_Vision_Zombie_Color_G = register_cvar("zpe_night_vision_zombie_color_g", "150");
+	g_pCvar_Night_Vision_Zombie_Color_B = register_cvar("zpe_night_vision_zombie_color_b", "0");
 
-	g_pCvar_Night_Vision_Human = register_cvar("zm_night_vision_human", "0"); // 1-give only // 2-give and enable
-	g_pCvar_Night_Vision_Human_Radius = register_cvar("zm_night_vision_radius_human", "80");
-	g_pCvar_Night_Vision_Human_Color_R = register_cvar("zm_night_vision_human_color_R", "0");
-	g_pCvar_Night_Vision_Human_Color_G = register_cvar("zm_night_vision_human_color_G", "150");
-	g_pCvar_Night_Vision_Human_Color_B = register_cvar("zm_night_vision_human_color_B", "0");
+	g_pCvar_Night_Vision_Human = register_cvar("zpe_night_vision_human", "0"); // 1-give only // 2-give and enable
+	g_pCvar_Night_Vision_Human_Radius = register_cvar("zpe_night_vision_human_radius", "80");
+	g_pCvar_Night_Vision_Human_Color_R = register_cvar("zpe_night_vision_human_color_r", "0");
+	g_pCvar_Night_Vision_Human_Color_G = register_cvar("zpe_night_vision_human_color_g", "150");
+	g_pCvar_Night_Vision_Human_Color_B = register_cvar("zpe_night_vision_human_color_b", "0");
 
-	g_pCvar_Night_Vision_Spectator = register_cvar("zm_night_vision_spectator", "2"); // 1-give only // 2-give and enable
-	g_pCvar_Night_Vision_Spectator_Radius = register_cvar("zm_night_vision_radius_spectator", "80");
-	g_pCvar_Night_Vision_Spectator_Color_R = register_cvar("zm_night_vision_spec_color_R", "0");
-	g_pCvar_Night_Vision_Spectator_Color_G = register_cvar("zm_night_vision_spec_color_G", "150");
-	g_pCvar_Night_Vision_Spectator_Color_B = register_cvar("zm_night_vision_spec_color_B", "0");
+	g_pCvar_Night_Vision_Spectator = register_cvar("zpe_night_vision_spectator", "2"); // 1-give only // 2-give and enable
+	g_pCvar_Night_Vision_Spectator_Radius = register_cvar("zpe_night_vision_spectator_radius", "80");
+	g_pCvar_Night_Vision_Spectator_Color_R = register_cvar("zpe_night_vision_spectator_color_r", "0");
+	g_pCvar_Night_Vision_Spectator_Color_G = register_cvar("zpe_night_vision_spectator_color_g", "150");
+	g_pCvar_Night_Vision_Spectator_Color_B = register_cvar("zpe_night_vision_spectator_color_b", "0");
 
-	g_pCvar_Night_Vision_Nemesis = register_cvar("zm_night_vision_nemesis", "2");
-	g_pCvar_Night_Vision_Nemesis_Radius = register_cvar("zm_night_vision_radius_nemesis", "80");
-	g_pCvar_Night_Vision_Nemesis_Color_R = register_cvar("zm_night_vision_nemesis_color_R", "150");
-	g_pCvar_Night_Vision_Nemesis_Color_G = register_cvar("zm_night_vision_nemesis_color_G", "0");
-	g_pCvar_Night_Vision_Nemesis_Color_B = register_cvar("zm_night_vision_nemesis_color_B", "0");
+	g_pCvar_Night_Vision_Nemesis = register_cvar("zpe_night_vision_nemesis", "2"); // 1-give only // 2-give and enable
+	g_pCvar_Night_Vision_Nemesis_Radius = register_cvar("zpe_night_vision_nemesis_radius", "80");
+	g_pCvar_Night_Vision_Nemesis_Color_R = register_cvar("zpe_night_vision_nemesis_color_r", "150");
+	g_pCvar_Night_Vision_Nemesis_Color_G = register_cvar("zpe_night_vision_nemesis_color_g", "0");
+	g_pCvar_Night_Vision_Nemesis_Color_B = register_cvar("zpe_night_vision_nemesis_color_b", "0");
 
-	g_pCvar_Night_Vision_Assassin = register_cvar("zm_night_vision_assassin", "2");
-	g_pCvar_Night_Vision_Assassin_Radius = register_cvar("zm_night_vision_radius_assassin", "80");
-	g_pCvar_Night_Vision_Assassin_Color_R = register_cvar("zm_night_vision_assassin_color_R", "150");
-	g_pCvar_Night_Vision_Assassin_Color_G = register_cvar("zm_night_vision_assassin_color_G", "0");
-	g_pCvar_Night_Vision_Assassin_Color_B = register_cvar("zm_night_vision_assassin_color_B", "0");
+	g_pCvar_Night_Vision_Assassin = register_cvar("zpe_night_vision_assassin", "2"); // 1-give only // 2-give and enable
+	g_pCvar_Night_Vision_Assassin_Radius = register_cvar("zpe_night_vision_assassin_radius", "80");
+	g_pCvar_Night_Vision_Assassin_Color_R = register_cvar("zpe_night_vision_assassin_color_r", "150");
+	g_pCvar_Night_Vision_Assassin_Color_G = register_cvar("zpe_night_vision_assassin_color_g", "0");
+	g_pCvar_Night_Vision_Assassin_Color_B = register_cvar("zpe_night_vision_assassin_color_b", "0");
 
-	g_pCvar_Night_Vision_Survivor = register_cvar("zm_night_vision_survivor", "0");
-	g_pCvar_Night_Vision_Survivor_Radius = register_cvar("zm_night_vision_radius_survivor", "80");
-	g_pCvar_Night_Vision_Survivor_Color_R = register_cvar("zm_night_vision_survivor_color_R", "0");
-	g_pCvar_Night_Vision_Survivor_Color_G = register_cvar("zm_night_vision_survivor_color_G", "0");
-	g_pCvar_Night_Vision_Survivor_Color_B = register_cvar("zm_night_vision_survivor_color_B", "150");
+	g_pCvar_Night_Vision_Survivor = register_cvar("zpe_night_vision_survivor", "0"); // 1-give only // 2-give and enable
+	g_pCvar_Night_Vision_Survivor_Radius = register_cvar("zpe_night_vision_survivor_radius", "80");
+	g_pCvar_Night_Vision_Survivor_Color_R = register_cvar("zpe_night_vision_survivor_color_r", "0");
+	g_pCvar_Night_Vision_Survivor_Color_G = register_cvar("zpe_night_vision_survivor_color_g", "0");
+	g_pCvar_Night_Vision_Survivor_Color_B = register_cvar("zpe_night_vision_survivor_color_b", "150");
 
-	g_pCvar_Night_Vision_Sniper = register_cvar("zm_night_vision_sniper", "0");
-	g_pCvar_Night_Vision_Sniper_Radius = register_cvar("zm_night_vision_radius_sniper", "80");
-	g_pCvar_Night_Vision_Sniper_Color_R = register_cvar("zm_night_vision_sniper_color_R", "0");
-	g_pCvar_Night_Vision_Sniper_Color_G = register_cvar("zm_night_vision_sniper_color_G", "0");
-	g_pCvar_Night_Vision_Sniper_Color_B = register_cvar("zm_night_vision_sniper_color_B", "150");
-	
+	g_pCvar_Night_Vision_Sniper = register_cvar("zpe_night_vision_sniper", "0"); // 1-give only // 2-give and enable
+	g_pCvar_Night_Vision_Sniper_Radius = register_cvar("zpe_night_vision_sniper_radius", "80");
+	g_pCvar_Night_Vision_Sniper_Color_R = register_cvar("zpe_night_vision_sniper_color_r", "0");
+	g_pCvar_Night_Vision_Sniper_Color_G = register_cvar("zpe_night_vision_sniper_color_g", "0");
+	g_pCvar_Night_Vision_Sniper_Color_B = register_cvar("zpe_night_vision_sniper_color_b", "150");
+
 	g_Message_NVG_Toggle = get_user_msgid("NVGToggle");
 
 	register_message(g_Message_NVG_Toggle, "Message_NVG_Toggle");
 
-	register_clcmd("nightvision", "Client_Command_NVG_Toggle");
+	register_clcmd("nightvision", "Client_Command_Night_Vision");
 
 	register_event("ResetHUD", "Event_Reset_Hud", "b");
 
@@ -164,13 +166,13 @@ public zp_fw_core_infect_post(iPlayer)
 			{
 				if (BIT_NOT_VALID(g_Night_Vision_Active, iPlayer))
 				{
-					Client_Command_NVG_Toggle(iPlayer);
+					Client_Command_Night_Vision(iPlayer);
 				}
 			}
 
 			else if (BIT_VALID(g_Night_Vision_Active, iPlayer))
 			{
-				Client_Command_NVG_Toggle(iPlayer);
+				Client_Command_Night_Vision(iPlayer);
 			}
 		}
 
@@ -199,13 +201,13 @@ public zp_fw_core_infect_post(iPlayer)
 			{
 				if (BIT_NOT_VALID(g_Night_Vision_Active, iPlayer))
 				{
-					Client_Command_NVG_Toggle(iPlayer);
+					Client_Command_Night_Vision(iPlayer);
 				}
 			}
 
 			else if (BIT_VALID(g_Night_Vision_Active, iPlayer))
 			{
-				Client_Command_NVG_Toggle(iPlayer);
+				Client_Command_Night_Vision(iPlayer);
 			}
 		}
 
@@ -233,13 +235,13 @@ public zp_fw_core_infect_post(iPlayer)
 			{
 				if (BIT_NOT_VALID(g_Night_Vision_Active, iPlayer))
 				{
-					Client_Command_NVG_Toggle(iPlayer);
+					Client_Command_Night_Vision(iPlayer);
 				}
 			}
 
 			else if (BIT_VALID(g_Night_Vision_Active, iPlayer))
 			{
-				Client_Command_NVG_Toggle(iPlayer);
+				Client_Command_Night_Vision(iPlayer);
 			}
 		}
 
@@ -271,13 +273,13 @@ public zp_fw_core_cure_post(iPlayer)
 			{
 				if (BIT_NOT_VALID(g_Night_Vision_Active, iPlayer))
 				{
-					Client_Command_NVG_Toggle(iPlayer);
+					Client_Command_Night_Vision(iPlayer);
 				}
+			}
 
-				else if (BIT_VALID(g_Night_Vision_Active, iPlayer))
-				{
-					Client_Command_NVG_Toggle(iPlayer);
-				}
+			else if (BIT_VALID(g_Night_Vision_Active, iPlayer))
+			{
+				Client_Command_Night_Vision(iPlayer);
 			}
 
 			else
@@ -306,13 +308,13 @@ public zp_fw_core_cure_post(iPlayer)
 			{
 				if (BIT_NOT_VALID(g_Night_Vision_Active, iPlayer))
 				{
-					Client_Command_NVG_Toggle(iPlayer);
+					Client_Command_Night_Vision(iPlayer);
 				}
 			}
 
 			else if (BIT_VALID(g_Night_Vision_Active, iPlayer))
 			{
-				Client_Command_NVG_Toggle(iPlayer);
+				Client_Command_Night_Vision(iPlayer);
 			}
 		}
 
@@ -340,13 +342,13 @@ public zp_fw_core_cure_post(iPlayer)
 			{
 				if (BIT_NOT_VALID(g_Night_Vision_Active, iPlayer))
 				{
-					Client_Command_NVG_Toggle(iPlayer);
+					Client_Command_Night_Vision(iPlayer);
 				}
 			}
 
 			else if (BIT_VALID(g_Night_Vision_Active, iPlayer))
 			{
-				Client_Command_NVG_Toggle(iPlayer);
+				Client_Command_Night_Vision(iPlayer);
 			}
 		}
 
@@ -362,7 +364,7 @@ public zp_fw_core_cure_post(iPlayer)
 	}
 }
 
-public Client_Command_NVG_Toggle(iPlayer)
+public Client_Command_Night_Vision(iPlayer)
 {
 	if (BIT_VALID(g_iBit_Alive, iPlayer))
 	{
@@ -375,7 +377,7 @@ public Client_Command_NVG_Toggle(iPlayer)
 
 	else
 	{
-		// Spectator nightvision disabled?
+		// Spectator night vision disabled?
 		if (!get_pcvar_num(g_pCvar_Night_Vision_Spectator))
 		{
 			return PLUGIN_CONTINUE;
@@ -395,12 +397,12 @@ public Client_Command_NVG_Toggle(iPlayer)
 	return PLUGIN_HANDLED;
 }
 
-// ResetHUD Removes CS Night_Vision (bugfix)
+// ResetHUD removes CS night vision (bugfix)
 public Event_Reset_Hud(iPlayer)
 {
 	if (!get_pcvar_num(g_pCvar_Night_Vision_Custom) && BIT_VALID(g_Night_Vision_Active, iPlayer))
 	{
-		cs_set_user_nvg_active(iPlayer, 1);
+		set_user_night_vision_active(iPlayer, 1);
 	}
 }
 
@@ -420,7 +422,7 @@ public Spectator_Night_Vision(iEntity)
 	{
 		if (BIT_NOT_VALID(g_Night_Vision_Active, iEntity))
 		{
-			Client_Command_NVG_Toggle(iEntity);
+			Client_Command_Night_Vision(iEntity);
 		}
 	}
 
@@ -436,23 +438,59 @@ public Message_NVG_Toggle()
 	return PLUGIN_HANDLED;
 }
 
-// Custom Night Vision Task
+public client_disconnected(iPlayer)
+{
+	// Reset nightvision flags
+	BIT_SUB(g_Night_Vision_Active, iPlayer);
+
+	BIT_SUB(g_iBit_Alive, iPlayer);
+	BIT_SUB(g_iBit_Connected, iPlayer);
+
+	remove_task(iPlayer + TASK_NIGHT_VISION);
+}
+
+public zpe_fw_kill_pre_bit_sub(iPlayer)
+{
+	BIT_SUB(g_iBit_Alive, iPlayer);
+}
+
+public zpe_fw_spawn_post_bit_add(iPlayer)
+{
+	BIT_ADD(g_iBit_Alive, iPlayer);
+}
+
+Enable_Night_Vision(iPlayer)
+{
+	BIT_ADD(g_Night_Vision_Active, iPlayer);
+
+	if (!get_pcvar_num(g_pCvar_Night_Vision_Custom))
+	{
+		set_user_night_vision_active(iPlayer, 1);
+	}
+
+	else
+	{
+		set_task(0.1, "Custom_Night_Vision_Task", iPlayer + TASK_NIGHT_VISION, _, _, "b");
+	}
+}
+
+// Custom night vision Task
 public Custom_Night_Vision_Task(iTask_ID)
 {
 	// Get player's origin
 	static iOrigin[3];
 
-	get_user_origin(ID_NIGHTVISION, iOrigin);
+	get_user_origin(ID_NIGHT_VISION, iOrigin);
 
-	// Night_Vision message
-	message_begin(MSG_ONE_UNRELIABLE, SVC_TEMPENTITY, _, ID_NIGHTVISION);
+	// Night vision message
+	message_begin(MSG_ONE_UNRELIABLE, SVC_TEMPENTITY, _, ID_NIGHT_VISION);
 	write_byte(TE_DLIGHT); // TE player
 	write_coord(iOrigin[0]); // x
 	write_coord(iOrigin[1]); // y
 	write_coord(iOrigin[2]); // z
 
 	// Spectator
-	if (BIT_NOT_VALID(g_iBit_Alive, ID_NIGHTVISION))
+	if (BIT_NOT_VALID(g_iBit_Alive, ID_NIGHT_VISION))
 	{
 		write_byte(get_pcvar_num(g_pCvar_Night_Vision_Spectator_Radius)); // radius
 
@@ -462,10 +500,10 @@ public Custom_Night_Vision_Task(iTask_ID)
 	}
 
 	// Zombie
-	else if (zp_core_is_zombie(ID_NIGHTVISION))
+	else if (zp_core_is_zombie(ID_NIGHT_VISION))
 	{
 		// Nemesis Class loaded?
-		if (zp_class_nemesis_get(ID_NIGHTVISION))
+		if (zp_class_nemesis_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Nemesis_Radius)); // radius
 
@@ -474,7 +512,8 @@ public Custom_Night_Vision_Task(iTask_ID)
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Nemesis_Color_B)); // b
 		}
 
-		else if (zp_class_assassin_get(ID_NIGHTVISION))
+		// Assassin Class loaded?
+		else if (zp_class_assassin_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Assassin_Radius)); // radius
 
@@ -497,7 +536,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 	else
 	{
 		// Survivor Class loaded?
-		if (zp_class_survivor_get(ID_NIGHTVISION))
+		if (zp_class_survivor_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Survivor_Radius)); // radius
 
@@ -506,7 +545,8 @@ public Custom_Night_Vision_Task(iTask_ID)
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Survivor_Color_B)); // b
 		}
 
-		else if (zp_class_sniper_get(ID_NIGHTVISION))
+		// Sniper Class loaded?
+		else if (zp_class_sniper_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Sniper_Radius)); // radius
 
@@ -530,58 +570,22 @@ public Custom_Night_Vision_Task(iTask_ID)
 	message_end();
 }
 
-public client_disconnected(iPlayer)
-{
-	// Reset nightvision flags
-	BIT_SUB(g_Night_Vision_Active, iPlayer);
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-	
-	remove_task(iPlayer + TASK_NIGHTVISION);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_add_bit(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
-}
-
-Enable_Night_Vision(iPlayer)
-{
-	BIT_ADD(g_Night_Vision_Active, iPlayer);
-
-	if (!get_pcvar_num(g_pCvar_Night_Vision_Custom))
-	{
-		cs_set_user_nvg_active(iPlayer, 1);
-	}
-
-	else
-	{
-		set_task(0.1, "Custom_Night_Vision_Task", iPlayer + TASK_NIGHTVISION, _, _, "b");
-	}
-}
-
 Disable_Night_Vision(iPlayer)
 {
 	BIT_SUB(g_Night_Vision_Active, iPlayer);
 
 	if (!get_pcvar_num(g_pCvar_Night_Vision_Custom))
 	{
-		cs_set_user_nvg_active(iPlayer, 0);
+		set_user_night_vision_active(iPlayer, 0);
 	}
 
 	else
 	{
-		remove_task(iPlayer + TASK_NIGHTVISION);
+		remove_task(iPlayer + TASK_NIGHT_VISION);
 	}
 }
 
-stock cs_set_user_nvg_active(iPlayer, iActive)
+stock set_user_night_vision_active(iPlayer, iActive)
 {
 	// Toggle NVG message
 	message_begin(MSG_ONE, g_Message_NVG_Toggle, _, iPlayer);
