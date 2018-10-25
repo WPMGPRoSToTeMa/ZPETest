@@ -32,12 +32,12 @@
 
 #define SOUND_MAX_LENGTH 64
 
-new const g_Sound_Armor_Hit[][] =
+new const g_Sound_Add_Armor[][] =
 {
 	"player/bhit_helmet-1.wav"
 };
 
-new Array:g_aSound_Armor_Hit;
+new Array:g_aSound_Add_Armor;
 
 new g_pCvar_Survivor_Armor_Protect;
 new g_pCvar_Survivor_Armor_Default;
@@ -85,14 +85,14 @@ public plugin_init()
 public plugin_precache()
 {
 	// Initialize arrays
-	g_aSound_Armor_Hit = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Add_Armor = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Armor_Hit);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Add_Armor);
 
-	for (new i = 0; i < sizeof g_Sound_Armor_Hit; i++)
+	for (new i = 0; i < sizeof g_Sound_Add_Armor; i++)
 	{
-		precache_sound(g_Sound_Armor_Hit[i]);
+		precache_sound(g_Sound_Add_Armor[i]);
 	}
 }
 
@@ -196,7 +196,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 		// If he has some, block damage and reduce armor instead
 		if (fArmor > 0.0)
 		{
-			emit_sound(iVictim, CHAN_BODY, g_Sound_Armor_Hit[random(sizeof g_Sound_Armor_Hit)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			emit_sound(iVictim, CHAN_BODY, g_Sound_Add_Armor[random(sizeof g_Sound_Add_Armor)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			if (fArmor - fDamage > 0.0)
 			{
