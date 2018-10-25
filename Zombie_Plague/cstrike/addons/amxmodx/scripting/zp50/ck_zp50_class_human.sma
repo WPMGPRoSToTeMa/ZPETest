@@ -26,10 +26,10 @@
 
 #define HUMANS_DEFAULT_NAME "Human"
 #define HUMANS_DEFAULT_DESCRIPTION "Default"
+#define HUMANS_DEFAULT_ARMOR 0.0
 #define HUMANS_DEFAULT_HEALTH 100.0
 #define HUMANS_DEFAULT_SPEED 1.0
 #define HUMANS_DEFAULT_GRAVITY 1.0
-#define HUMANS_DEFAULT_ARMOR 0
 
 #define ZPE_CLASS_HUMAN_SETTINGS_PATH "ZPE/classes/human"
 
@@ -65,9 +65,9 @@ new Array:g_aClass_Human_Real_Name;
 new Array:g_aClass_Human_Name;
 new Array:g_aClass_Human_Description;
 new Array:g_aClass_Human_Health;
+new Array:g_aClass_Human_Armor;
 new Array:g_aClass_Human_Speed;
 new Array:g_aClass_Human_Gravity;
-new Array:g_aClass_Human_Armor;
 new Array:g_aClass_Human_Models_File;
 new Array:g_aClass_Human_Models_Handle;
 
@@ -111,9 +111,9 @@ public plugin_cfg()
 		ArrayPushString(g_aClass_Human_Name, HUMANS_DEFAULT_NAME);
 		ArrayPushString(g_aClass_Human_Description, HUMANS_DEFAULT_DESCRIPTION);
 		ArrayPushCell(g_aClass_Human_Health, HUMANS_DEFAULT_HEALTH);
+		ArrayPushCell(g_aClass_Human_Armor, HUMANS_DEFAULT_ARMOR);
 		ArrayPushCell(g_aClass_Human_Speed, HUMANS_DEFAULT_SPEED);
 		ArrayPushCell(g_aClass_Human_Gravity, HUMANS_DEFAULT_GRAVITY);
-		ArrayPushCell(g_aClass_Human_Armor, HUMANS_DEFAULT_ARMOR);
 		ArrayPushCell(g_aClass_Human_Models_File, false);
 		ArrayPushCell(g_aClass_Human_Models_Handle, Invalid_Array);
 
@@ -144,9 +144,9 @@ public plugin_natives()
 	g_aClass_Human_Name = ArrayCreate(32, 1);
 	g_aClass_Human_Description = ArrayCreate(32, 1);
 	g_aClass_Human_Health = ArrayCreate(1, 1);
+	g_aClass_Human_Armor = ArrayCreate(1, 1);
 	g_aClass_Human_Speed = ArrayCreate(1, 1);
 	g_aClass_Human_Gravity = ArrayCreate(1, 1);
-	g_aClass_Human_Armor = ArrayCreate(1, 1);
 	g_aClass_Human_Models_File = ArrayCreate(1, 1);
 	g_aClass_Human_Models_Handle = ArrayCreate(1, 1);
 }
@@ -314,9 +314,9 @@ public Menu_Class_Human(iPlayer, iMenu_ID, iItem)
 	(
 		iPlayer, print_team_default, "%L: %d %L: %d %L: %d %L: %.2fx",
 		iPlayer, "HUMAN_ATTRIB1_COLOR", floatround(ArrayGetCell(g_aClass_Human_Health, g_Class_Human_Next[iPlayer])),
-		iPlayer, "HUMAN_ATTRIB5_COLOR", ArrayGetCell(g_aClass_Human_Armor, g_Class_Human_Next[iPlayer]),
-		iPlayer, "HUMAN_ATTRIB2_COLOR", cs_maxspeed_display_value(fMax_Speed),
-		iPlayer, "HUMAN_ATTRIB3_COLOR", Float:ArrayGetCell(g_aClass_Human_Gravity, g_Class_Human_Next[iPlayer])
+		iPlayer, "HUMAN_ATTRIB2_COLOR", ArrayGetCell(g_aClass_Human_Armor, g_Class_Human_Next[iPlayer]),
+		iPlayer, "HUMAN_ATTRIB3_COLOR", cs_maxspeed_display_value(fMax_Speed),
+		iPlayer, "HUMAN_ATTRIB4_COLOR", Float:ArrayGetCell(g_aClass_Human_Gravity, g_Class_Human_Next[iPlayer])
 	);
 
 	// Execute class select post forward

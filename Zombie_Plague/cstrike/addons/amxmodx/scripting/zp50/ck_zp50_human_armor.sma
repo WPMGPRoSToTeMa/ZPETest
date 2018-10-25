@@ -53,8 +53,6 @@ new g_pCvar_Nemesis_Armor_Default;
 new g_pCvar_Assassin_Armor_Protect;
 new g_pCvar_Assassin_Armor_Default;
 
-new g_pCvar_Zombie_Armor_Default;
-
 new g_iBit_Alive;
 
 public plugin_init()
