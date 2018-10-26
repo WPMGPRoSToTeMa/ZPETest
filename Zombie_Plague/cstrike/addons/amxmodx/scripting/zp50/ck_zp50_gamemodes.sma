@@ -31,7 +31,7 @@
 // Some constants
 #define DMG_HEGRENADE (1 << 24)
 
-#define CHANCE(%0) (random(100) < (%0))
+#define RANDOM(%0) random_num(0, (%0) - 1)
 
 enum _:TOTAL_FORWARDS
 {
@@ -775,7 +775,7 @@ Balance_Teams()
 		}
 
 		// Random chance
-		if (CHANCE(50))
+		if (RANDOM(50))
 		{
 			rg_set_user_team(iPlayer, TEAM_TERRORIST, MODEL_AUTO, false);
 
