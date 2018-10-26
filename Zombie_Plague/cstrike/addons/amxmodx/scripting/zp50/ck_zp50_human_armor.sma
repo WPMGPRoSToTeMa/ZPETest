@@ -32,20 +32,19 @@
 
 #define SOUND_MAX_LENGTH 64
 
-new const g_Sound_Armor_Hit[][] =
+new const g_Sound_Add_Armor[][] =
 {
 	"player/bhit_helmet-1.wav"
 };
 
-new Array:g_aSound_Armor_Hit;
+new Array:g_aSound_Add_Armor;
 
+new g_pCvar_Survivor_Armor_Protect;
+new g_pCvar_Sniper_Armor_Protect;
 new g_pCvar_Human_Armor_Protect;
-new g_pCvar_Human_Armor_Default;
 
-new g_pCvar_Armor_Protect_Nemesis;
-new g_pCvar_Armor_Protect_Assassin;
-new g_pCvar_Armor_Protect_Survivor;
-new g_pCvar_Armor_Protect_Sniper;
+new g_pCvar_Nemesis_Armor_Protect;
+new g_pCvar_Assassin_Armor_Protect;
 
 new g_iBit_Alive;
 
@@ -53,13 +52,12 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
+	g_pCvar_Survivor_Armor_Protect = register_cvar("zpe_survivor_armor_protect", "1");
+	g_pCvar_Sniper_Armor_Protect = register_cvar("zpe_sniper_armor_protect", "1");
 	g_pCvar_Human_Armor_Protect = register_cvar("zpe_human_armor_protect", "1");
-	g_pCvar_Human_Armor_Default = register_cvar("zpe_human_armor_default", "0");
 
-	g_pCvar_Armor_Protect_Nemesis = register_cvar("zpe_armor_protect_nemesis", "1");
-	g_pCvar_Armor_Protect_Assassin = register_cvar("zpe_armor_protect_assassin", "1");
-	g_pCvar_Armor_Protect_Survivor = register_cvar("zpe_armor_protect_survivor", "1");
-	g_pCvar_Armor_Protect_Sniper = register_cvar("zpe_armor_protect_sniper", "1")
+	g_pCvar_Nemesis_Armor_Protect = register_cvar("zpe_nemesis_armor_protect", "1");
+	g_pCvar_Assassin_Armor_Protect = register_cvar("zpe_assassin_armor_protect", "1");
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
 }
@@ -67,26 +65,14 @@ public plugin_init()
 public plugin_precache()
 {
 	// Initialize arrays
-	g_aSound_Armor_Hit = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Add_Armor = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Armor_Hit);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Add_Armor);
 
-	for (new i = 0; i < sizeof g_Sound_Armor_Hit; i++)
+	for (new i = 0; i < sizeof g_Sound_Add_Armor; i++)
 	{
-		precache_sound(g_Sound_Armor_Hit[i]);
-	}
-}
-
-public zp_fw_core_cure_post(iPlayer)
-{
-	new Float:fArmor;
-
-	fArmor = GET_USER_ARMOR(iPlayer);
-
-	if (fArmor < get_pcvar_num(g_pCvar_Human_Armor_Default))
-	{
-		SET_USER_ARMOR(iPlayer, get_pcvar_num(g_pCvar_Human_Armor_Default));
+		precache_sound(g_Sound_Add_Armor[i]);
 	}
 }
 
@@ -115,25 +101,25 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 		}
 
 		// Should armor protect against nemesis attacks?
-		if (!get_pcvar_num(g_pCvar_Armor_Protect_Nemesis) && zp_class_nemesis_get(iAttacker))
+		if (!get_pcvar_num(g_pCvar_Nemesis_Armor_Protect) && zp_class_nemesis_get(iAttacker))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect against assassin attacks?
-		if (!get_pcvar_num(g_pCvar_Armor_Protect_Assassin) && zp_class_assassin_get(iAttacker))
+		if (!get_pcvar_num(g_pCvar_Assassin_Armor_Protect) && zp_class_assassin_get(iAttacker))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect survivor too?
-		if (!get_pcvar_num(g_pCvar_Armor_Protect_Survivor) && zp_class_survivor_get(iVictim))
+		if (!get_pcvar_num(g_pCvar_Survivor_Armor_Protect) && zp_class_survivor_get(iVictim))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect sniper too?
-		if (!get_pcvar_num(g_pCvar_Armor_Protect_Sniper) && zp_class_sniper_get(iVictim))
+		if (!get_pcvar_num(g_pCvar_Sniper_Armor_Protect) && zp_class_sniper_get(iVictim))
 		{
 			return HC_CONTINUE;
 		}
@@ -146,7 +132,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 		// If he has some, block damage and reduce armor instead
 		if (fArmor > 0.0)
 		{
-			emit_sound(iVictim, CHAN_BODY, g_Sound_Armor_Hit[random(sizeof g_Sound_Armor_Hit)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			emit_sound(iVictim, CHAN_BODY, g_Sound_Add_Armor[random(sizeof g_Sound_Add_Armor)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			if (fArmor - fDamage > 0.0)
 			{

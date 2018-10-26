@@ -53,11 +53,12 @@ native zp_class_zombie_get_max_health(id, classid)
  * @param name			Caption to display on the menu.
  * @param description	Brief description of the class.
  * @param health		Class health.
+ * @param armor			Class armor.
  * @param speed			Class maxspeed (can be a multiplier).
  * @param gravity		Class gravity multiplier.
  * @return				An internal zombie class ID, or ZP_INVALID_ZOMBIE_CLASS on failure.
  */
-native zp_class_zombie_register(const name[], const description[], Float:health, Float:speed, Float:gravity)
+native zp_class_zombie_register(const name[], const description[], Float:health, Float:armor, Float:speed, Float:gravity)
 
 /**
  * Registers a custom player model for a given zombie class.

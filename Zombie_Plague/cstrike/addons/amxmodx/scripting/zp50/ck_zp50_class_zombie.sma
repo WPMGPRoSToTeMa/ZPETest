@@ -27,7 +27,7 @@
 
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 
-#define ZPE_SETTING_SECTION_NAME "Settings"
+#define ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME "Settings"
 
 // For class list menu handlers
 #define MENU_PAGE_CLASS(%0) g_Menu_Data[%0]
@@ -58,6 +58,7 @@ new Array:g_aClass_Zombie_Real_Name;
 new Array:g_aClass_Zombie_Name;
 new Array:g_aClass_Zombie_Description;
 new Array:g_aClass_Zombie_Health;
+new Array:g_aClass_Zombie_Armor;
 new Array:g_aClass_Zombie_Speed;
 new Array:g_aClass_Zombie_Gravity;
 new Array:g_aClass_Zombie_Knockback_File;
@@ -72,11 +73,15 @@ new g_Forward_Result;
 
 new g_Class_Zombie_Count;
 
+new g_pCvar_Zombie_Armor_Type;
+
 new g_iBit_Connected;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_pCvar_Zombie_Armor_Type = register_cvar("zpe_zombie_armor_type", "0");
 
 	register_clcmd("say /zclass", "Show_Menu_Class_Zombie");
 	register_clcmd("say /class", "Show_Class_Menu");
@@ -122,6 +127,7 @@ public plugin_natives()
 	g_aClass_Zombie_Name = ArrayCreate(32, 1);
 	g_aClass_Zombie_Description = ArrayCreate(32, 1);
 	g_aClass_Zombie_Health = ArrayCreate(1, 1);
+	g_aClass_Zombie_Armor = ArrayCreate(1, 1);
 	g_aClass_Zombie_Speed = ArrayCreate(1, 1);
 	g_aClass_Zombie_Gravity = ArrayCreate(1, 1);
 	g_aClass_Zombie_Knockback_File = ArrayCreate(1, 1);
@@ -294,11 +300,12 @@ public Menu_Class_Zombie(iPlayer, iMenu_ID, iItem)
 
 	zpe_client_print_color
 	(
-		iPlayer, print_team_default, "%L: %d %L: %d %L: %.2fx %L %.2fx",
+		iPlayer, print_team_default, "%L: %d %L: %d %L: %d %L: %.2fx %L %.2fx",
 		iPlayer, "ZOMBIE_ATTRIB1_COLOR", floatround(ArrayGetCell(g_aClass_Zombie_Health, g_Class_Zombie_Next[iPlayer])),
-		iPlayer, "ZOMBIE_ATTRIB2_COLOR", cs_maxspeed_display_value(fMax_Speed),
-		iPlayer, "ZOMBIE_ATTRIB3_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Gravity, g_Class_Zombie_Next[iPlayer]),
-		iPlayer, "ZOMBIE_ATTRIB4_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Knockback, g_Class_Zombie_Next[iPlayer])
+		iPlayer, "ZOMBIE_ATTRIB2_COLOR", ArrayGetCell(g_aClass_Zombie_Armor, g_Class_Zombie_Next[iPlayer]),
+		iPlayer, "ZOMBIE_ATTRIB3_COLOR", cs_maxspeed_display_value(fMax_Speed),
+		iPlayer, "ZOMBIE_ATTRIB4_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Gravity, g_Class_Zombie_Next[iPlayer]),
+		iPlayer, "ZOMBIE_ATTRIB5_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Knockback, g_Class_Zombie_Next[iPlayer])
 	);
 
 	// Execute class select post forward
@@ -327,6 +334,17 @@ public zp_fw_core_infect_post(iPlayer)
 
 	// Apply zombie attributes
 	SET_USER_HEALTH(iPlayer, ArrayGetCell(g_aClass_Zombie_Health, g_Class_Zombie[iPlayer]));
+
+	if (get_pcvar_num(g_pCvar_Zombie_Armor_Type))
+	{
+		rg_set_user_armor(iPlayer, ArrayGetCell(g_aClass_Zombie_Armor, g_Class_Zombie[iPlayer]), ARMOR_VESTHELM);
+	}
+
+	else
+	{
+		rg_set_user_armor(iPlayer, ArrayGetCell(g_aClass_Zombie_Armor, g_Class_Zombie[iPlayer]), ARMOR_KEVLAR);
+	}
+
 	SET_USER_GRAVITY(iPlayer, Float:ArrayGetCell(g_aClass_Zombie_Gravity, g_Class_Zombie[iPlayer]));
 	cs_set_player_maxspeed_auto(iPlayer, Float:ArrayGetCell(g_aClass_Zombie_Speed, g_Class_Zombie[iPlayer]));
 
@@ -497,9 +515,9 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szName);
 
 	// Name
-	if (!amx_load_setting_string(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "NAME", szName, charsmax(szName)))
+	if (!amx_load_setting_string(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "NAME", szName, charsmax(szName)))
 	{
-		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "NAME", szName);
+		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "NAME", szName);
 	}
 
 	ArrayPushString(g_aClass_Zombie_Name, szName);
@@ -508,16 +526,16 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	new szDescription[32];
 	get_string(2, szDescription, charsmax(szDescription));
 
-	if (!amx_load_setting_string(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "INFO", szDescription, charsmax(szDescription)))
+	if (!amx_load_setting_string(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "INFO", szDescription, charsmax(szDescription)))
 	{
-		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "INFO", szDescription);
+		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "INFO", szDescription);
 	}
 
 	ArrayPushString(g_aClass_Zombie_Description, szDescription);
 
 	// Models
 	new Array:aClass_Models = ArrayCreate(32, 1);
-	amx_load_setting_string_arr(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "MODELS", aClass_Models);
+	amx_load_setting_string_arr(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "MODELS", aClass_Models);
 
 	new iArray_Size = ArraySize(aClass_Models);
 	new bool:bHave_Elements = iArray_Size > 0;
@@ -538,7 +556,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	else
 	{
 		ArrayDestroy(aClass_Models);
-		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "MODELS", ZOMBIE_DEFAULT_MODEL);
+		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "MODELS", ZOMBIE_DEFAULT_MODEL);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Models_File, bHave_Elements);
@@ -546,7 +564,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 
 	// Claw models
 	new Array:aClass_Claws = ArrayCreate(64, 1);
-	amx_load_setting_string_arr(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "CLAWMODEL", aClass_Claws);
+	amx_load_setting_string_arr(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWMODEL", aClass_Claws);
 
 	iArray_Size = ArraySize(aClass_Claws);
 	bHave_Elements = iArray_Size > 0;
@@ -565,7 +583,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	else
 	{
 		ArrayDestroy(aClass_Claws);
-		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "CLAWMODEL", ZOMBIE_DEFAULT_CLAWMODEL);
+		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWMODEL", ZOMBIE_DEFAULT_CLAWMODEL);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Claws_File, bHave_Elements)
@@ -574,40 +592,50 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	// Health
 	new Float:fHealth = get_param_f(3);
 
-	if (!amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "HEALTH", fHealth))
+	if (!amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "HEALTH", fHealth))
 	{
-		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "HEALTH", fHealth);
+		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "HEALTH", fHealth);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Health, fHealth);
 
-	// Speed
-	new Float:fSpeed = get_param_f(4);
+	// Armor
+	new iArmor = get_param(4);
 
-	if (!amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "SPEED", fSpeed))
+	if (!amx_load_setting_int(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "ARMOR", iArmor))
 	{
-		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "SPEED", fSpeed);
+		amx_save_setting_int(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "ARMOR", iArmor);
+	}
+
+	ArrayPushCell(g_aClass_Zombie_Armor, iArmor);
+
+	// Speed
+	new Float:fSpeed = get_param_f(5);
+
+	if (!amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "SPEED", fSpeed))
+	{
+		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "SPEED", fSpeed);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Speed, fSpeed);
 
 	// Gravity
-	new Float:fGravity = get_param_f(5);
+	new Float:fGravity = get_param_f(6);
 
-	if (!amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "GRAVITY", fGravity))
+	if (!amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "GRAVITY", fGravity))
 	{
-		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "GRAVITY", fGravity);
+		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "GRAVITY", fGravity);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Gravity, fGravity);
 
 	// Knockback
 	new Float:fKnockback = ZOMBIE_DEFAULT_KNOCKBACK;
-	new bool:bSetting_Loaded = bool:amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "KNOCKBACK", fKnockback);
+	new bool:bSetting_Loaded = bool:amx_load_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "KNOCKBACK", fKnockback);
 
 	if (!bSetting_Loaded)
 	{
-		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "KNOCKBACK", fKnockback);
+		amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "KNOCKBACK", fKnockback);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Knockback_File, bSetting_Loaded);
@@ -659,7 +687,7 @@ public native_class_zombie_register_model(iPlugin_ID, iNum_Params)
 
 	new szClass_Zombie_Config_Path[64];
 	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
-	amx_save_setting_string_arr(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "MODELS", aClass_Models);
+	amx_save_setting_string_arr(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "MODELS", aClass_Models);
 
 	return true;
 }
@@ -701,7 +729,7 @@ public native_class_zombie_register_claw(iPlugin_ID, iNum_Params)
 
 	new szClass_Zombie_Config_Path[64];
 	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
-	amx_save_setting_string_arr(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "CLAWMODEL", aClass_Claws);
+	amx_save_setting_string_arr(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWMODEL", aClass_Claws);
 
 	return true;
 }
@@ -733,7 +761,7 @@ public native_class_zombie_register_kb(iPlugin_ID, iNum_Params)
 
 	new szClass_Zombie_Config_Path[64];
 	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
-	amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "KNOCKBACK", fKnockback);
+	amx_save_setting_float(szClass_Zombie_Config_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "KNOCKBACK", fKnockback);
 
 	return true;
 }
