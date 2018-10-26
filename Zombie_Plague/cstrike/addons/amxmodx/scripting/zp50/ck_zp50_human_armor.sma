@@ -40,18 +40,11 @@ new const g_Sound_Add_Armor[][] =
 new Array:g_aSound_Add_Armor;
 
 new g_pCvar_Survivor_Armor_Protect;
-new g_pCvar_Survivor_Armor_Default;
-
 new g_pCvar_Sniper_Armor_Protect;
-new g_pCvar_Sniper_Armor_Default;
-
 new g_pCvar_Human_Armor_Protect;
 
 new g_pCvar_Nemesis_Armor_Protect;
-new g_pCvar_Nemesis_Armor_Default;
-
 new g_pCvar_Assassin_Armor_Protect;
-new g_pCvar_Assassin_Armor_Default;
 
 new g_iBit_Alive;
 
@@ -60,18 +53,11 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	g_pCvar_Survivor_Armor_Protect = register_cvar("zpe_survivor_armor_protect", "1");
-	g_pCvar_Survivor_Armor_Default = register_cvar("zpe_survivor_armor_default", "0.0");
-
 	g_pCvar_Sniper_Armor_Protect = register_cvar("zpe_sniper_armor_protect", "1");
-	g_pCvar_Sniper_Armor_Default = register_cvar("zpe_sniper_armor_default", "0.0");
-
 	g_pCvar_Human_Armor_Protect = register_cvar("zpe_human_armor_protect", "1");
 
 	g_pCvar_Nemesis_Armor_Protect = register_cvar("zpe_nemesis_armor_protect", "1");
-	g_pCvar_Nemesis_Armor_Default = register_cvar("zpe_nemesis_armor_default", "0.0");
-
 	g_pCvar_Assassin_Armor_Protect = register_cvar("zpe_assassin_armor_protect", "1");
-	g_pCvar_Assassin_Armor_Default = register_cvar("zpe_assassin_armor_default", "0.0");
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
 }
@@ -87,40 +73,6 @@ public plugin_precache()
 	for (new i = 0; i < sizeof g_Sound_Add_Armor; i++)
 	{
 		precache_sound(g_Sound_Add_Armor[i]);
-	}
-}
-
-public zp_fw_core_infect_post(iPlayer)
-{
-	new Float:fArmor;
-
-	fArmor = GET_USER_ARMOR(iPlayer);
-
-	if (zp_class_nemesis_get(iPlayer) && fArmor < get_pcvar_num(g_pCvar_Nemesis_Armor_Default))
-	{
-		SET_USER_ARMOR(iPlayer, get_pcvar_num(g_pCvar_Nemesis_Armor_Default));
-	}
-
-	else if (zp_class_assassin_get(iPlayer) && fArmor < get_pcvar_num(g_pCvar_Assassin_Armor_Default))
-	{
-		SET_USER_ARMOR(iPlayer, get_pcvar_num(g_pCvar_Assassin_Armor_Default));
-	}
-}
-
-public zp_fw_core_cure_post(iPlayer)
-{
-	new Float:fArmor;
-
-	fArmor = GET_USER_ARMOR(iPlayer);
-
-	if (zp_class_survivor_get(iPlayer) && fArmor < get_pcvar_num(g_pCvar_Survivor_Armor_Default))
-	{
-		SET_USER_ARMOR(iPlayer, get_pcvar_num(g_pCvar_Survivor_Armor_Default));
-	}
-
-	else if (zp_class_sniper_get(iPlayer) && fArmor < get_pcvar_num(g_pCvar_Sniper_Armor_Default))
-	{
-		SET_USER_ARMOR(iPlayer, get_pcvar_num(g_pCvar_Sniper_Armor_Default));
 	}
 }
 
