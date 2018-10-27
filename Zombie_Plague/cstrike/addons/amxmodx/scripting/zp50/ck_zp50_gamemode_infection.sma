@@ -21,7 +21,7 @@
 #include <ck_zp50_kernel>
 #include <ck_zp50_gamemodes>
 
-#define RANDOM(%0) random_num(0, (%0) - 1)
+#define CHANCE(%0) (random_num(0, 99) < (%0))
 
 new g_pCvar_Infection_Chance;
 new g_pCvar_Infection_Min_Players;
@@ -107,7 +107,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	if (!iSkipchecks)
 	{
-		if (RANDOM(get_pcvar_num(g_pCvar_Infection_Chance)))
+		if (!CHANCE(get_pcvar_num(g_pCvar_Infection_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}

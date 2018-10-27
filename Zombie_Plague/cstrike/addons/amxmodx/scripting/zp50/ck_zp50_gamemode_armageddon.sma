@@ -28,7 +28,7 @@
 
 #define SOUND_MAX_LENGTH 64
 
-#define RANDOM(%0) random_num(0, (%0) - 1)
+#define CHANCE(%0) (random_num(0, 99) < (%0))
 
 new const g_Sounds_Armageddon[][] =
 {
@@ -132,7 +132,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	if (!iSkipchecks)
 	{
 		// Random chance
-		if (RANDOM(get_pcvar_num(g_pCvar_Armageddon_Chance)))
+		if (!CHANCE(get_pcvar_num(g_pCvar_Armageddon_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}

@@ -16,8 +16,7 @@
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
-
-	//	[RU] Периодичность воспроизведения звука горения. [ время указывается в секундах ]
+//	[RU] Периодичность воспроизведения звука горения. [ время указывается в секундах ]
 	//	[EN] Periodicity of reproduction of sound burning. [ the time is in seconds ]
 	#define TIME_FLAME 3.0
 
@@ -64,6 +63,8 @@ new Array:g_aZombie_Sounds;
 new Array:g_aZombie_Indexes;
 new Array:g_aHuman_Sounds;
 new Array:g_aHuman_Indexes;
+
+new g_pCvar_Time_Flame;
 
 new g_iBit_Connected;
 
