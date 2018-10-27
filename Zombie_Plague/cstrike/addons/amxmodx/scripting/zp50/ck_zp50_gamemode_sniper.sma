@@ -134,7 +134,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipcheck)
 	if (!iSkipcheck)
 	{
 		// Random chance
-		if (CHANCE(get_pcvar_num(g_pCvar_Sniper_Chance)))
+		if (!CHANCE(get_pcvar_num(g_pCvar_Sniper_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}

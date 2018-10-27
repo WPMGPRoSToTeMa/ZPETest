@@ -107,7 +107,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	if (!iSkipchecks)
 	{
-		if (CHANCE(get_pcvar_num(g_pCvar_Infection_Chance)))
+		if (!CHANCE(get_pcvar_num(g_pCvar_Infection_Chance)))
 		{
 			return PLUGIN_HANDLED;
 		}
