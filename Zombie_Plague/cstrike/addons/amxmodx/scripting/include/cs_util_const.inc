@@ -5,6 +5,8 @@
 #define BIT_VALID(%0,%1)				(%0 & (1 << (%1)))
 #define BIT_NOT_VALID(%0,%1)			(~(%0) & (1 << (%1)))
 
+#define CHANCE(%0) (random_num(0, 99) < (%0))
+
 #define CS_GET_CURRENT_WEAPON_ENTITY(%0)	get_member(%0, m_pActiveItem) // fm_cs_get_current_weapon_ent
 #define CS_GET_WEAPON_ID(%0)				get_member(get_member(%0, m_pActiveItem), m_iId) // cs_get_weapon_id
 #define CS_GET_WEAPON_ENTITY_OWNER(%0)		get_member(%0, m_pPlayer) // fm_cs_get_weapon_ent_owner
