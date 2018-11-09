@@ -1,8 +1,8 @@
-#if defined _ck_zp50_sounds_api_included
+#if defined _zpe_sounds_api_included
   #endinput
 #endif
 
-#define _ck_zp50_sounds_api_included
+#define _zpe_sounds_api_included
 
 enum ZOMBIE_SOUNDS
 {

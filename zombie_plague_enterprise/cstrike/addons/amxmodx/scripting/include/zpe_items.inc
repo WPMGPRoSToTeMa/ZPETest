@@ -1,10 +1,10 @@
-#if defined _ck_zp50_items_included
+#if defined _zpe_items_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_items_included
+#define _zpe_items_included
 
 #include <ck_zp50_items_const>
 

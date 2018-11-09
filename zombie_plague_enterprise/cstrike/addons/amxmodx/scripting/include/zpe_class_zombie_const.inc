@@ -1,10 +1,10 @@
-#if defined _ck_zp50_class_zombie_const_inc
+#if defined _zpe_class_zombie_const_inc
 
   #endinput
 
 #endif
 
-#define _ck_zp50_class_zombie_const_inc
+#define _zpe_class_zombie_const_inc
 
 /* Zombie Class ID constants */
 #define ZP_INVALID_ZOMBIE_CLASS -1

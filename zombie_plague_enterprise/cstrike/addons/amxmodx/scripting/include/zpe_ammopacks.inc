@@ -1,10 +1,10 @@
-#if defined _ck_zp50_ammopacks_included
+#if defined _zpe_ammopacks_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_ammopacks_included
+#define _zpe_ammopacks_included
 
 /**
  * Returns a player's ammo pack count.

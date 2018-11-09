@@ -1,10 +1,10 @@
-#if defined _ck_zp50_class_sniper_included
+#if defined _zpe_class_sniper_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_class_sniper_included
+#define _zpe_class_sniper_included
 
 /**
  * Returns whether a player is a sniper.

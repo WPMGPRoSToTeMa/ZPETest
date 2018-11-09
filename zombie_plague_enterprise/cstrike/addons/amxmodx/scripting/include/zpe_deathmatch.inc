@@ -1,10 +1,10 @@
-#if defined _ck_zp50_deathmatch_included
+#if defined _zpe_deathmatch_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_deathmatch_included
+#define _zpe_deathmatch_included
 
 
 /**

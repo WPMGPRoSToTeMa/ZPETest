@@ -1,10 +1,10 @@
-#if defined _ck_zp50_class_human_included
+#if defined _zpe_class_human_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_class_human_included
+#define _zpe_class_human_included
 
 #include <ck_zp50_class_human_const>
 

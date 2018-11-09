@@ -1,10 +1,10 @@
-#if defined _ck_zp50_grenade_frost_included
+#if defined _zpe_grenade_frost_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_grenade_frost_included
+#define _zpe_grenade_frost_included
 
 /**
  * Returns whether a player is frozen.

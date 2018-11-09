@@ -1,10 +1,10 @@
-#if defined _ck_zp50_items_const_included
+#if defined _zpe_items_const_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_items_const_included
+#define _zpe_items_const_included
 
 /* Item ID constants */
 #define ZP_INVALID_ITEM -1
