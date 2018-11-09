@@ -6,7 +6,7 @@
 
 #define _zpe_items_included
 
-#include <ck_zp50_items_const>
+#include <zpe_items_const>
 
 /**
  * Registers a custom item which will be added to the extra items menu of ZP.

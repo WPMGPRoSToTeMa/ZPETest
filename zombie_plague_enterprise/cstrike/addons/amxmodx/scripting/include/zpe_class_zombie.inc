@@ -6,7 +6,7 @@
 
 #define _zpe_class_zombie_included
 
-#include <ck_zp50_class_zombie_const>
+#include <zpe_class_zombie_const>
 
 /**
  * Returns a player's current zombie class ID.

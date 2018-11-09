@@ -6,7 +6,7 @@
 
 #define _zpe_class_human_included
 
-#include <ck_zp50_class_human_const>
+#include <zpe_class_human_const>
 
 /**
  * Returns a player's current human class ID.
