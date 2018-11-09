@@ -256,8 +256,6 @@ public client_disconnected(iLeaving_Player)
 		return;
 	}
 
-	new iPlayer;
-
 	// Prevent empty teams when no game mode is in progress
 	if (!g_Game_Mode_Started)
 	{
@@ -265,24 +263,22 @@ public client_disconnected(iLeaving_Player)
 		if ((CS_GET_USER_TEAM(iLeaving_Player) == CS_TEAM_T) && (Get_AliveT_Count() == 1))
 		{
 			// Find replacement and move him to Terrorist team
-			while (iPlayer == ((iLeaving_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iLeaving_Player)) { /* keep looping */ }
-
-			rg_set_user_team(iPlayer, TEAM_TERRORIST);
+			rg_set_user_team(Get_Random_Alive_Player(iLeaving_Player), TEAM_TERRORIST);
 		}
 
 		// Last CT
 		else if ((CS_GET_USER_TEAM(iLeaving_Player) == CS_TEAM_CT) && (Get_AliveCT_Count() == 1))
 		{
 			// Find replacement and move him to CT team
-			while (iPlayer == ((iLeaving_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iLeaving_Player)) { /* keep looping */ }
-
-			rg_set_user_team(iPlayer, TEAM_CT);
+			rg_set_user_team(Get_Random_Alive_Player(iLeaving_Player), TEAM_CT);
 		}
 	}
 
 	// Prevent no zombies/humans after game mode started
 	else
 	{
+		new iReplaced_Player;
+		
 		// Last Zombie
 		if (zp_core_is_zombie(iLeaving_Player) && zp_core_get_zombie_count() == 1)
 		{
@@ -293,37 +289,37 @@ public client_disconnected(iLeaving_Player)
 			}
 
 			// Find replacement
-			while (iPlayer == ((iLeaving_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iLeaving_Player)) { /* keep looping */ }
+			iReplaced_Player = Get_Random_Alive_Player(iLeaving_Player);
 
 			new szPlayer_Name[32];
 
-			GET_USER_NAME(iPlayer, szPlayer_Name, charsmax(szPlayer_Name));
+			GET_USER_NAME(iReplaced_Player, szPlayer_Name, charsmax(szPlayer_Name));
 
 			zpe_client_print_color(0, print_team_default, "%L", LANG_PLAYER, "LAST_ZOMBIE_LEFT_COLOR", szPlayer_Name);
 
 			if (zp_class_nemesis_get(iLeaving_Player))
 			{
-				zp_class_nemesis_set(iPlayer);
+				zp_class_nemesis_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
+					SET_USER_HEALTH(iReplaced_Player, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
 			else if (zp_class_assassin_get(iLeaving_Player))
 			{
-				zp_class_assassin_set(iPlayer);
+				zp_class_assassin_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
+					SET_USER_HEALTH(iReplaced_Player, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
 			else
 			{
-				zp_core_infect(iPlayer, iPlayer);
+				zp_core_infect(iReplaced_Player, iReplaced_Player);
 			}
 		}
 
@@ -337,37 +333,37 @@ public client_disconnected(iLeaving_Player)
 			}
 
 			// Find replacement
-			while (iPlayer == ((iLeaving_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iLeaving_Player)) { /* keep looping */ }
+			iReplaced_Player = Get_Random_Alive_Player(iLeaving_Player);
 
 			new szPlayer_Name[32];
 
-			GET_USER_NAME(iPlayer, szPlayer_Name, charsmax(szPlayer_Name));
+			GET_USER_NAME(iReplaced_Player, szPlayer_Name, charsmax(szPlayer_Name));
 
 			zpe_client_print_color(0, print_team_default, "%L", LANG_PLAYER, "LAST_HUMAN_LEFT_COLOR", szPlayer_Name);
 
 			if (zp_class_survivor_get(iLeaving_Player))
 			{
-				zp_class_survivor_set(iPlayer);
+				zp_class_survivor_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
+					SET_USER_HEALTH(iReplaced_Player, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
 			else if (zp_class_sniper_get(iLeaving_Player))
 			{
-				zp_class_sniper_set(iPlayer);
+				zp_class_sniper_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
-					SET_USER_HEALTH(iPlayer, Float:GET_USER_HEALTH(iLeaving_Player));
+					SET_USER_HEALTH(iReplaced_Player, Float:GET_USER_HEALTH(iLeaving_Player));
 				}
 			}
 
 			else
 			{
-				zp_core_cure(iPlayer, iPlayer);
+				zp_core_cure(iReplaced_Player, iReplaced_Player);
 			}
 		}
 	}
@@ -513,18 +509,23 @@ Get_Alive_Count()
 	return iAlive;
 }
 
-Get_Random_Alive_Player()
+Get_Random_Alive_Player(const iIgnore_Player = 0)
 {
 	new iPlayers[32];
 	new iCount;
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
+		if (i == iIgnore_Player)
+		{
+			continue;
+		}
+		
 		if (BIT_VALID(g_iBit_Alive, i))
 		{
 			iPlayers[iCount++] = i;
 		}
 	}
 
-	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+	return iCount > 0 ? iPlayers[random(iCount)] : 0;
 }

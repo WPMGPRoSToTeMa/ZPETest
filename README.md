@@ -11,7 +11,7 @@ Game modifications include:
 
 | Jenkins (Linux)
 |:-----------------------------------------
-| [![Build Status](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/badge/icon)](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/)
+| [![Build Status](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZPE/badge/icon)](https://build.ckcorp.ru/job/CK-AMXX-MODES-ZPE/)
 
 ### System requirements: ###
 
