@@ -6,7 +6,6 @@
 
 #define _ck_cs_maxspeed_api_included
 
-
 /**
  * Sets a player's maxspeed.
  *
@@ -21,7 +20,7 @@ native cs_set_player_maxspeed(player, Float:maxspeed, multiplier = false);
  *
  * @param player			Player index.
  */
-native cs_reset_player_maxspeed(player)
+native cs_reset_player_maxspeed(player);
 
 #define MAXSPEED_BARRIER_MIN 0.0
 #define MAXSPEED_BARRIER_MAX 10.0
