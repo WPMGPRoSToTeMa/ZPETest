@@ -18,9 +18,9 @@
 
 #include <amxmodx>
 #include <amx_settings_api>
-#include <ck_zp50_class_zombie>
-#include <ck_zp50_class_human>
-#include <ck_zp50_sounds_api>
+#include <zpe_class_zombie>
+#include <zpe_class_human>
+#include <zpe_sounds_api>
 
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 #define ZPE_CLASS_HUMAN_SETTINGS_PATH "ZPE/classes/human"

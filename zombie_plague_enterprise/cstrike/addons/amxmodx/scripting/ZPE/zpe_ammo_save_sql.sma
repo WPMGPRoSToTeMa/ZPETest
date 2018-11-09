@@ -18,7 +18,7 @@
 
 #include <amxmodx>
 #include <sqlx>
-#include <ck_zp50_ammopacks>
+#include <zpe_ammopacks>
 
 new g_iGlobal_Indexes[33];
 new g_iLast_Index;

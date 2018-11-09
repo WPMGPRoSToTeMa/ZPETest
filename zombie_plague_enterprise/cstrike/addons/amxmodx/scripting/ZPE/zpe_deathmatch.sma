@@ -18,8 +18,8 @@
 
 #include <amxmodx>
 #include <cs_util>
-#include <ck_zp50_gamemodes>
-#include <ck_zp50_kernel>
+#include <zpe_gamemodes>
+#include <zpe_kernel>
 
 #define TASK_RESPAWN 100
 #define ID_RESPAWN (iTask_ID - TASK_RESPAWN)

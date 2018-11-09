@@ -19,9 +19,9 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_zp50_class_zombie>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
+#include <zpe_class_zombie>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
 
 #define CLASS_ZOMBIE_RAGE_NAME "Rage Zombie"
 #define CLASS_ZOMBIE_RAGE_INFO "HP+ Speed+ Radioactivity++"

@@ -20,13 +20,13 @@
 #include <amxmisc>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_gamemodes>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
-#include <ck_zp50_log>
+#include <zpe_kernel>
+#include <zpe_gamemodes>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
+#include <zpe_log>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -130,7 +130,7 @@ public plugin_precache()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_admin_commands");
+	register_library("zpe_admin_commands");
 
 	register_native("zp_admin_commands_zombie", "native_admin_commands_zombie");
 	register_native("zp_admin_commands_human", "native_admin_commands_human");

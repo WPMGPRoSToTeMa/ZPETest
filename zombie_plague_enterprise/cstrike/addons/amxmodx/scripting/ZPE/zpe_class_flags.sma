@@ -14,8 +14,8 @@
 
 #include <amxmodx>
 #include <amx_settings_api>
-#include <ck_zp50_class_zombie>
-#include <ck_zp50_class_human>
+#include <zpe_class_zombie>
+#include <zpe_class_human>
 
 #define PLUGIN "class flags"
 #define VERSION "6.0.0"

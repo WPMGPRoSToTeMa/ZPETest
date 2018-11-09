@@ -17,7 +17,7 @@
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
-#include <ck_zp50_class_human>
+#include <zpe_class_human>
 
 #define CLASS_HUMAN_RAPTOR_NAME "Raptor Human"
 #define CLASS_HUMAN_RAPTOR_INFO "HP-- Speed+ Gravity+"

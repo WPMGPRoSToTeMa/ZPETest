@@ -23,7 +23,7 @@
 #include <amx_settings_api>
 #include <fakemeta>
 #include <xs>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 #define SOUND_MAX_LENGTH 64
 
@@ -107,7 +107,7 @@ public plugin_precache()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_flashlight");
+	register_library("zpe_flashlight");
 
 	register_native("zp_flashlight_get_charge", "native_flashlight_get_charge");
 	register_native("zp_flashlight_set_charge", "native_flashlight_set_charge");

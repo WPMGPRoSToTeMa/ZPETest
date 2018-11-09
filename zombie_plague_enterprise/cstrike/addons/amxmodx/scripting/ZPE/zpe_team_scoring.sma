@@ -18,8 +18,8 @@
 
 #include <amxmodx>
 #include <amx_settings_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_gamemodes>
+#include <zpe_kernel>
+#include <zpe_gamemodes>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 

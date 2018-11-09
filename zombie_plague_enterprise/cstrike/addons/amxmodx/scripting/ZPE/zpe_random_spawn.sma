@@ -20,7 +20,7 @@
 #include <amxmisc>
 #include <cs_util>
 #include <fakemeta>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 #define SPAWN_DATA_ORIGIN_X 0
 #define SPAWN_DATA_ORIGIN_Y 1
@@ -54,7 +54,7 @@ public plugin_init()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_random_spawn");
+	register_library("zpe_random_spawn");
 
 	register_native("zp_random_spawn_do", "native_random_spawn_do");
 }

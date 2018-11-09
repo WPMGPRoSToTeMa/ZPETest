@@ -19,9 +19,9 @@
 #include <amxmodx>
 #include <amx_settings_api>
 #include <fakemeta>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_zombie>
-#include <ck_zp50_class_human>
+#include <zpe_kernel>
+#include <zpe_class_zombie>
+#include <zpe_class_human>
 
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 #define ZPE_CLASS_HUMAN_SETTINGS_PATH "ZPE/classes/human"

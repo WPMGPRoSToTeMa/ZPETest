@@ -20,7 +20,7 @@
 #include <cs_util>
 #include <fakemeta>
 #include <hamsandwich>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 new g_pCvar_Zombie_Strip_Armor;
 new g_pCvar_Remove_Dropped_Weapons;

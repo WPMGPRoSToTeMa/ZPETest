@@ -19,8 +19,8 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_items_const>
+#include <zpe_kernel>
+#include <zpe_items_const>
 
 #define ZPE_EXTRAITEMS_FILE "ZPE/zpe_extraitems.ini"
 
@@ -68,7 +68,7 @@ public plugin_cfg()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_items");
+	register_library("zpe_items");
 
 	register_native("zp_items_register", "native_items_register");
 	register_native("zp_items_get_id", "native_items_get_id");

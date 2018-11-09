@@ -19,8 +19,8 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_items>
+#include <zpe_kernel>
+#include <zpe_items>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 

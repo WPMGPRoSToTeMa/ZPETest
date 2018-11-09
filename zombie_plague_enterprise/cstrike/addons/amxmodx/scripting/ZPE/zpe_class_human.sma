@@ -21,8 +21,8 @@
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
 #include <ck_cs_weap_models_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_human_const>
+#include <zpe_kernel>
+#include <zpe_class_human_const>
 
 #define HUMANS_DEFAULT_NAME "Human"
 #define HUMANS_DEFAULT_DESCRIPTION "Default"
@@ -123,7 +123,7 @@ public plugin_cfg()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_class_human");
+	register_library("zpe_class_human");
 
 	register_native("zp_class_human_get_current", "native_class_human_get_current");
 	register_native("zp_class_human_get_next", "native_class_human_get_next");

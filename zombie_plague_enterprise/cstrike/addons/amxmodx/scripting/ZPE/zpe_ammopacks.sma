@@ -46,7 +46,7 @@ public plugin_init()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_ammopacks");
+	register_library("zpe_ammopacks");
 
 	register_native("zp_ammopacks_get", "native_ammopacks_get");
 	register_native("zp_ammopacks_set", "native_ammopacks_set");

@@ -20,7 +20,7 @@
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 #define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_survivor.ini"
 
@@ -163,7 +163,7 @@ public plugin_cfg()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_class_survivor");
+	register_library("zpe_class_survivor");
 
 	register_native("zp_class_survivor_set", "native_class_survivor_set");
 	register_native("zp_class_survivor_get_count", "native_class_survivor_get_count");

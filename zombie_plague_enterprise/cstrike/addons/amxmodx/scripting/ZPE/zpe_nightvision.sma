@@ -19,11 +19,11 @@
 #include <amxmodx>
 #include <cs_util>
 #include <cstrike>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 #define TASK_NIGHT_VISION 100
 #define ID_NIGHT_VISION (iTask_ID - TASK_NIGHT_VISION)

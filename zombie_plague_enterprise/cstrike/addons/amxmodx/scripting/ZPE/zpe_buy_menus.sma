@@ -20,9 +20,9 @@
 #include <amxmisc>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -230,7 +230,7 @@ public plugin_precache()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_buy_menus");
+	register_library("zpe_buy_menus");
 
 	register_native("zp_buy_menus_show", "native_buy_menus_show");
 }

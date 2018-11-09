@@ -22,7 +22,7 @@
 #include <fakemeta>
 #include <hamsandwich>
 #include <ck_cs_weap_models_api>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 

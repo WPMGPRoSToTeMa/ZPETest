@@ -20,12 +20,12 @@
 #include <cs_util>
 #include <amx_settings_api>
 #include <hamsandwich>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
-#define LIBRARY_AMMOPACKS "ck_zp50_ammopacks"
-#include <ck_zp50_ammopacks>
+#define LIBRARY_AMMOPACKS "zpe_ammopacks"
+#include <zpe_ammopacks>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 

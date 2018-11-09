@@ -21,10 +21,10 @@
 #include <amx_settings_api>
 #include <hamsandwich>
 #include <xs>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_zombie>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
+#include <zpe_kernel>
+#include <zpe_class_zombie>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
