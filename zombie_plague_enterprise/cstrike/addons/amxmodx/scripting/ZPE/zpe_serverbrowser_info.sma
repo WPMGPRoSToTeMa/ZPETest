@@ -18,7 +18,7 @@
 
 #include <amxmodx>
 #include <fakemeta>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 new g_Mode_Name[64];
 

@@ -17,7 +17,7 @@
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
-#include <ck_zp50_class_human>
+#include <zpe_class_human>
 
 #define CLASS_HUMAN_CLASSIC_NAME "Classic Human"
 #define CLASS_HUMAN_CLASSIC_INFO "=Balanced="

@@ -90,7 +90,7 @@ public plugin_cfg()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_kernel");
+	register_library("zpe_kernel");
 
 	register_native("zp_core_is_first_zombie", "native_core_is_first_zombie");
 	register_native("zp_core_is_last_zombie", "native_core_is_last_zombie");

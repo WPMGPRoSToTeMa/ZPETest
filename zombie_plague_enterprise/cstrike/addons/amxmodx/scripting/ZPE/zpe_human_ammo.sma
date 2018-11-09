@@ -19,9 +19,9 @@
 #include <amxmodx>
 #include <cs_util>
 #include <hamsandwich>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 // Weapon id for ammo types
 new const g_Ammo_Weapon[] =

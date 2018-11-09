@@ -19,22 +19,22 @@
 #include <amxmodx>
 #include <amxmisc>
 #include <cs_util>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
-#define LIBRARY_BUYMENUS "ck_zp50_buy_menus"
-#include <ck_zp50_buy_menus>
+#define LIBRARY_BUYMENUS "zpe_buy_menus"
+#include <zpe_buy_menus>
 
-#include <ck_zp50_class_zombie>
-#include <ck_zp50_class_human>
+#include <zpe_class_zombie>
+#include <zpe_class_human>
 
-#define LIBRARY_ITEMS "ck_zp50_items"
-#include <ck_zp50_items>
+#define LIBRARY_ITEMS "zpe_items"
+#include <zpe_items>
 
-#define LIBRARY_ADMIN_MENU "ck_zp50_admin_menu"
-#include <ck_zp50_admin_menu>
+#define LIBRARY_ADMIN_MENU "zpe_admin_menu"
+#include <zpe_admin_menu>
 
-#define LIBRARY_RANDOM_SPAWN "ck_zp50_random_spawn"
-#include <ck_zp50_random_spawn>
+#define LIBRARY_RANDOM_SPAWN "zpe_random_spawn"
+#include <zpe_random_spawn>
 
 // Menu keys
 const KEYS_MENU = MENU_KEY_1 | MENU_KEY_2 | MENU_KEY_3 | MENU_KEY_4 | MENU_KEY_5 | MENU_KEY_6 | MENU_KEY_7 | MENU_KEY_8 | MENU_KEY_9 | MENU_KEY_0;

@@ -19,10 +19,10 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_items>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_items>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 

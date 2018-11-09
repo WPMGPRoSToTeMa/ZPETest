@@ -19,7 +19,7 @@
 #include <amxmodx>
 #include <cs_util>
 #include <fakemeta>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 #define UNIT_SECOND (1 << 12)
 

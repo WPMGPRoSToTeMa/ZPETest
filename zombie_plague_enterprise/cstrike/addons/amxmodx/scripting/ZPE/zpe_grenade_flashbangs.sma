@@ -21,9 +21,9 @@
 #include <amx_settings_api>
 #include <fakemeta>
 #include <ck_cs_weap_models_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
+#include <zpe_kernel>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 

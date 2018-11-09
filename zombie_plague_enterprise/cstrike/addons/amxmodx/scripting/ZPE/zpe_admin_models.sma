@@ -20,10 +20,10 @@
 #include <cs_util>
 #include <amx_settings_api>
 #include <ck_cs_weap_models_api>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 

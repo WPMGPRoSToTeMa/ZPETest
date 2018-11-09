@@ -21,7 +21,7 @@
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
 #include <ck_cs_weap_models_api>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 #define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_nemesis.ini"
 
@@ -239,7 +239,7 @@ public plugin_cfg()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_class_nemesis");
+	register_library("zpe_class_nemesis");
 
 	register_native("zp_class_nemesis_set", "native_class_nemesis_set");
 	register_native("zp_class_nemesis_get_count", "native_class_nemesis_get_count");

@@ -19,10 +19,10 @@
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_gamemodes>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_survivor>
+#include <zpe_kernel>
+#include <zpe_gamemodes>
+#include <zpe_class_nemesis>
+#include <zpe_class_survivor>
 
 #define ZPE_SETTINGS_INI "ZPE/gamemode/zpe_plague.ini"
 

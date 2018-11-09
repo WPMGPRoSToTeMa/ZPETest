@@ -22,8 +22,8 @@
 #include <ck_cs_maxspeed_api>
 #include <ck_cs_weap_models_api>
 #include <ck_cs_weap_restrict_api>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_zombie_const>
+#include <zpe_kernel>
+#include <zpe_class_zombie_const>
 
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 
@@ -103,7 +103,7 @@ public plugin_precache()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_class_zombie");
+	register_library("zpe_class_zombie");
 
 	register_native("zp_class_zombie_get_current", "native_class_zombie_get_current");
 	register_native("zp_class_zombie_get_next", "native_class_zombie_get_next");

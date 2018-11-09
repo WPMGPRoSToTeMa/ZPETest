@@ -19,12 +19,12 @@
 #include <amxmodx>
 #include <cs_util>
 #include <hamsandwich>
-#include <ck_zp50_kernel>
-#include <ck_zp50_gamemodes_const>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_gamemodes_const>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 #define TASK_GAMEMODE 100
 
@@ -131,7 +131,7 @@ public plugin_cfg()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_gamemodes");
+	register_library("zpe_gamemodes");
 
 	register_native("zp_gamemodes_register", "native_gamemodes_register");
 	register_native("zp_gamemodes_set_default", "native_gamemodes_set_default");

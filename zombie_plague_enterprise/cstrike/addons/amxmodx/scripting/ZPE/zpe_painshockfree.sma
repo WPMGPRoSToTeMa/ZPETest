@@ -18,11 +18,11 @@
 
 #include <amxmodx>
 #include <cs_util>
-#include <ck_zp50_kernel>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 new g_pCvar_Pain_Shock_Free_Zombie;
 new g_pCvar_Pain_Shock_Free_Human;

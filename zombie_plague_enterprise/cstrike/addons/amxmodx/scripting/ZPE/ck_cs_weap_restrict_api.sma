@@ -19,7 +19,7 @@
 #include <amxmodx>
 #include <cs_util>
 #include <hamsandwich>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 // Weapon entity names
 new const g_Weapon_Entity_Names[][] =

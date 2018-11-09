@@ -18,10 +18,10 @@
 
 #include <amxmodx>
 #include <cs_util>
-#include <ck_zp50_kernel>
-#include <ck_zp50_items>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
+#include <zpe_kernel>
+#include <zpe_items>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
 
 #define ITEM_SG550_NAME "SG550 Auto-Sniper"
 #define ITEM_SG550_COST 12

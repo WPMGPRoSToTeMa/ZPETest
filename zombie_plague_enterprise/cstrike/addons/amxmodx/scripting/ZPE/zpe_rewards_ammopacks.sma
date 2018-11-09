@@ -18,13 +18,13 @@
 
 #include <amxmodx>
 #include <cs_util>
-#include <ck_zp50_kernel>
-#include <ck_zp50_gamemodes>
-#include <ck_zp50_class_nemesis>
-#include <ck_zp50_class_assassin>
-#include <ck_zp50_class_survivor>
-#include <ck_zp50_class_sniper>
-#include <ck_zp50_ammopacks>
+#include <zpe_kernel>
+#include <zpe_gamemodes>
+#include <zpe_class_nemesis>
+#include <zpe_class_assassin>
+#include <zpe_class_survivor>
+#include <zpe_class_sniper>
+#include <zpe_ammopacks>
 
 new Float:g_fDamage_Dealt_To_Zombies[MAX_PLAYERS + 1];
 new Float:g_fDamage_Dealt_To_Humans[MAX_PLAYERS + 1];

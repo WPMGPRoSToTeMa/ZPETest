@@ -18,7 +18,7 @@
 
 #include <amxmodx>
 #include <cs_util>
-#include <ck_zp50_items>
+#include <zpe_items>
 
 public plugin_init()
 {

@@ -23,7 +23,7 @@
 #include <fakemeta>
 #include <hamsandwich>
 #include <ck_cs_weap_models_api>
-#include <ck_zp50_kernel>
+#include <zpe_kernel>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 
@@ -243,7 +243,7 @@ public plugin_precache()
 
 public plugin_natives()
 {
-	register_library("ck_zp50_grenade_frost");
+	register_library("zpe_grenade_frost");
 
 	register_native("zp_grenade_frost_get", "native_grenade_frost_get");
 	register_native("zp_grenade_frost_set", "native_grenade_frost_set");

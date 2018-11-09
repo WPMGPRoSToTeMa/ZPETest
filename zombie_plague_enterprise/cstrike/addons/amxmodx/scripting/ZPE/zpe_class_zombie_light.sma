@@ -18,7 +18,7 @@
 
 #include <amxmodx>
 #include <amx_settings_api>
-#include <ck_zp50_class_zombie>
+#include <zpe_class_zombie>
 
 #define CLASS_ZOMBIE_LIGHT_NAME "Light Zombie"
 #define CLASS_ZOMBIE_LIGHT_INFO "HP- Jump+ Knockback+"

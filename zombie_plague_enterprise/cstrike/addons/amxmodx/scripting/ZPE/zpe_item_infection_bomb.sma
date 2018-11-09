@@ -21,9 +21,9 @@
 #include <ck_cs_weap_models_api>
 #include <amx_settings_api>
 #include <hamsandwich>
-#include <ck_zp50_kernel>
-#include <ck_zp50_items>
-#include <ck_zp50_gamemodes>
+#include <zpe_kernel>
+#include <zpe_items>
+#include <zpe_gamemodes>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 

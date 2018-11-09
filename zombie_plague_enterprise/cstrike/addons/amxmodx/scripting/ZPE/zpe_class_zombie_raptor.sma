@@ -18,7 +18,7 @@
 
 #include <amxmodx>
 #include <amx_settings_api>
-#include <ck_zp50_class_zombie>
+#include <zpe_class_zombie>
 
 #define CLASS_ZOMBIE_RAPTOR_NAME "Raptor Zombie"
 #define CLASS_ZOMBIE_RAPTOR_INFO "HP-- Speed++ Knockback++"

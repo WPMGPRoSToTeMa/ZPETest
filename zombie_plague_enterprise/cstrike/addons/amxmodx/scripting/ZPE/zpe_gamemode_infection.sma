@@ -18,8 +18,8 @@
 
 #include <amxmodx>
 #include <cs_util>
-#include <ck_zp50_kernel>
-#include <ck_zp50_gamemodes>
+#include <zpe_kernel>
+#include <zpe_gamemodes>
 
 #define CHANCE(%0) (random_num(0, 99) < (%0))
 

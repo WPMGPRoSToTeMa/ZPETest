@@ -17,8 +17,8 @@
 #define AUTHOR "C&K Corporation"
 
 #include <amxmodx>
-#include <ck_zp50_items>
-#include <ck_zp50_ammopacks>
+#include <zpe_items>
+#include <zpe_ammopacks>
 
 public plugin_init()
 {
