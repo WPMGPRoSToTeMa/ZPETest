@@ -29,4 +29,4 @@ Download the latest version of the game modification
 | -------------------------------------------| ------------------------| ----------------------|  ------------------------------|
 | Zombie Plague Enterprise                | [.sma][zpe.sma]    |  |   |
 
-[zpe.sma]: https://build.ckcorp.ru/job/CK-AMXX-MODES-ZP/lastSuccessfulBuild/artifact/Zombie_Plague/*zip*/Zombie_Plague.zip
+[zpe.sma]: https://build.ckcorp.ru/job/CK-AMXX-MODES-ZPE/lastSuccessfulBuild/artifact/zombie_plague_enterprise/*zip*/zombie_plague_enterprise.zip
