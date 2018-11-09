@@ -1,10 +1,10 @@
-#if defined _ck_zp50_kernel_included
+#if defined _zpe_kernel_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_kernel_included
+#define _zpe_kernel_included
 
 /**
  * Returns whether a player is a zombie.

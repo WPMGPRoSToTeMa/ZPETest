@@ -1,10 +1,10 @@
-#if defined _ck_zp50_flashlight_included
+#if defined _zpe_flashlight_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_flashlight_included
+#define _zpe_flashlight_included
 
 /**
  * Returns a player's custom flashlight batteries charge.

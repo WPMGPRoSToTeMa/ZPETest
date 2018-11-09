@@ -1,12 +1,12 @@
-#if defined _ck_zp50_gamemodes_included
+#if defined _zpe_gamemodes_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_gamemodes_included
+#define _zpe_gamemodes_included
 
-#include <ck_zp50_gamemodes_const>
+#include <zpe_gamemodes_const>
 
 /**
  * Registers a new game mode.

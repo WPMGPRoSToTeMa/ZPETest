@@ -1,10 +1,10 @@
-#if defined _ck_zp50_grenade_fire_included
+#if defined _zpe_grenade_fire_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_grenade_fire_included
+#define _zpe_grenade_fire_included
 
 /**
  * Returns whether a player is burning.

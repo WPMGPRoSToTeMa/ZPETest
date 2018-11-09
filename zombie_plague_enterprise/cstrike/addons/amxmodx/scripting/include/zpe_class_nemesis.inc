@@ -1,10 +1,10 @@
-#if defined _ck_zp50_class_nemesis_included
+#if defined _zpe_class_nemesis_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_class_nemesis_included
+#define _zpe_class_nemesis_included
 
 
 /**

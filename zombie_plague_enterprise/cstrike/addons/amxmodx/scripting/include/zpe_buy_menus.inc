@@ -1,10 +1,10 @@
-#if defined _ck_zp50_buy_menus_included
+#if defined _zpe_buy_menus_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_buy_menus_included
+#define _zpe_buy_menus_included
 
 /**
  * Shows available buy menus for player and enables them

@@ -1,10 +1,10 @@
-#if defined _ck_zp50_class_survivor_included
+#if defined _zpe_class_survivor_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_class_survivor_included
+#define _zpe_class_survivor_included
 
 /**
  * Returns whether a player is a Survivor.

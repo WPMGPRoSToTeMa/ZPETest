@@ -1,10 +1,10 @@
-#if defined _ck_zp50_admin_menu_included
+#if defined _zpe_admin_menu_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_admin_menu_included
+#define _zpe_admin_menu_included
 
 /**
  * Shows admin menu to a specific player. Commands will only

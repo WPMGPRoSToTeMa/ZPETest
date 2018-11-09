@@ -1,10 +1,10 @@
-#if defined _ck_zp50_admin_commands_included
+#if defined _zpe_admin_commands_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_admin_commands_included
+#define _zpe_admin_commands_included
 
 /**
  * Manually executes admin command: zp_zombie.

@@ -1,10 +1,10 @@
-#if defined _ck_zp50_random_spawn_included
+#if defined _zpe_random_spawn_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_random_spawn_included
+#define _zpe_random_spawn_included
 
 /**
  * Moves a player to a random spawn point.

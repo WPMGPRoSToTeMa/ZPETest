@@ -1,10 +1,10 @@
-#if defined _ck_zp50_gamemodes_const_included
+#if defined _zpe_gamemodes_const_included
 
   #endinput
 
 #endif
 
-#define _ck_zp50_gamemodes_const_included
+#define _zpe_gamemodes_const_included
 
 /* Game Mode ID constants */
 #define ZP_INVALID_GAME_MODE -1
