@@ -319,7 +319,7 @@ public Menu_Main(iPlayer, iKey)
 		{
 			BIT_SUB(g_Choose_Team_Override_Active, iPlayer);
 
-			amxclient_cmd(iPlayer, "chooseteam");
+			engclient_cmd(iPlayer, "chooseteam");
 		}
 
 		case 8: // Admin menu
