@@ -92,5 +92,5 @@ public zp_fw_items_select_post(iPlayer, iItem_ID)
 	// Give player night vision and enable it automatically
 	cs_set_user_nvg(iPlayer, 1);
 
-	client_cmd(iPlayer, "nightvision");
+	amxclient_cmd(iPlayer, "nightvision");
 }

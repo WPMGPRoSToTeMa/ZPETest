@@ -402,7 +402,7 @@ public Event_Reset_Hud(iPlayer)
 {
 	if (!get_pcvar_num(g_pCvar_Night_Vision_Custom) && BIT_VALID(g_Night_Vision_Active, iPlayer))
 	{
-		set_user_night_vision_active(iPlayer, 1);
+		set_user_night_vision_active(iPlayer, true);
 	}
 }
 
@@ -465,7 +465,7 @@ Enable_Night_Vision(iPlayer)
 
 	if (!get_pcvar_num(g_pCvar_Night_Vision_Custom))
 	{
-		set_user_night_vision_active(iPlayer, 1);
+		set_user_night_vision_active(iPlayer, true);
 	}
 
 	else
@@ -576,7 +576,7 @@ Disable_Night_Vision(iPlayer)
 
 	if (!get_pcvar_num(g_pCvar_Night_Vision_Custom))
 	{
-		set_user_night_vision_active(iPlayer, 0);
+		set_user_night_vision_active(iPlayer, false);
 	}
 
 	else
@@ -585,10 +585,10 @@ Disable_Night_Vision(iPlayer)
 	}
 }
 
-stock set_user_night_vision_active(iPlayer, iActive)
+stock set_user_night_vision_active(iPlayer, bool:bActive)
 {
 	// Toggle NVG message
 	message_begin(MSG_ONE, g_Message_NVG_Toggle, _, iPlayer);
-	write_byte(iActive); // toggle
+	write_byte(bActive); // toggle
 	message_end();
 }
