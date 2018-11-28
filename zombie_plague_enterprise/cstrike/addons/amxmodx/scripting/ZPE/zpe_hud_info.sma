@@ -173,27 +173,27 @@ public Show_HUD(iTask_ID)
 	new iGreen;
 	new iBlue;
 
-	if (zp_core_is_zombie(iPlayer)) // zombies
+	if (zpe_core_is_zombie(iPlayer)) // zombies
 	{
 		iRed = get_pcvar_num(g_pCvar_Global_Hud_Informer_Zombie_R);
 		iGreen = get_pcvar_num(g_pCvar_Global_Hud_Informer_Zombie_G);
 		iBlue = get_pcvar_num(g_pCvar_Global_Hud_Informer_Zombie_B);
 
 		// Nemesis Class loaded?
-		if (zp_class_nemesis_get(iPlayer))
+		if (zpe_class_nemesis_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_NEMESIS");
 		}
 
 		// Assassin Class loaded?
-		else if (zp_class_assassin_get(iPlayer))
+		else if (zpe_class_assassin_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_ASSASSIN");
 		}
 
 		else
 		{
-			zp_class_zombie_get_name(zp_class_zombie_get_current(iPlayer), szClass_Name, charsmax(szClass_Name));
+			zpe_class_zombie_get_name(zpe_class_zombie_get_current(iPlayer), szClass_Name, charsmax(szClass_Name));
 
 			// ML support for class name
 			formatex(szTranskey, charsmax(szTranskey), "ZOMBIE_NAME %s", szClass_Name);
@@ -212,20 +212,20 @@ public Show_HUD(iTask_ID)
 		iBlue = get_pcvar_num(g_pCvar_Global_Hud_Informer_Human_B);
 
 		// Survivor Class loaded?
-		if (zp_class_survivor_get(iPlayer))
+		if (zpe_class_survivor_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_SURVIVOR");
 		}
 
 		// Sniper Class loaded?
-		else if (zp_class_sniper_get(iPlayer))
+		else if (zpe_class_sniper_get(iPlayer))
 		{
 			formatex(szClass_Name, charsmax(szClass_Name), "%L", ID_SHOWHUD, "CLASS_SNIPER");
 		}
 
 		else
 		{
-			zp_class_human_get_name(zp_class_human_get_current(iPlayer), szClass_Name, charsmax(szClass_Name));
+			zpe_class_human_get_name(zpe_class_human_get_current(iPlayer), szClass_Name, charsmax(szClass_Name));
 
 			// ML support for class name
 			formatex(szTranskey, charsmax(szTranskey), "HUMAN_NAME %s", szClass_Name);
@@ -284,12 +284,12 @@ public Show_HUD(iTask_ID)
 		{
 			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 			{
-				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(iPlayer));
+				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zpe_ammopacks_get(iPlayer));
 			}
 
 			else
 			{
-				show_dhudmessage(ID_SHOWHUD, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(iPlayer));
+				show_dhudmessage(ID_SHOWHUD, "%L: %s ^n HP: %d Armor: %d - %L %s - %L %d", ID_SHOWHUD, "SPECTATING", szPlayer_Name, floatround(GET_USER_HEALTH(iPlayer)), floatround(GET_USER_ARMOR(iPlayer)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zpe_ammopacks_get(iPlayer));
 			}
 		}
 
@@ -349,12 +349,12 @@ public Show_HUD(iTask_ID)
 		{
 			if (get_pcvar_num(g_pCvar_Global_Hud_Informer) || get_pcvar_num(g_pCvar_All_Messages_Are_Converted))
 			{
-				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s - %L %d", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(ID_SHOWHUD));
+				ShowSyncHudMsg(ID_SHOWHUD, g_Message_Sync, "HP: %d Armor: %d - %L %s - %L %d", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zpe_ammopacks_get(ID_SHOWHUD));
 			}
 
 			else
 			{
-				show_dhudmessage(ID_SHOWHUD, "HP: %d Armor: %d - %L %s - %L %d", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zp_ammopacks_get(ID_SHOWHUD));
+				show_dhudmessage(ID_SHOWHUD, "HP: %d Armor: %d - %L %s - %L %d", floatround(GET_USER_HEALTH(ID_SHOWHUD)), floatround(GET_USER_ARMOR(ID_SHOWHUD)), ID_SHOWHUD, "CLASS_CLASS", szClass_Name, ID_SHOWHUD, "AMMO_PACKS1", zpe_ammopacks_get(ID_SHOWHUD));
 			}
 		}
 

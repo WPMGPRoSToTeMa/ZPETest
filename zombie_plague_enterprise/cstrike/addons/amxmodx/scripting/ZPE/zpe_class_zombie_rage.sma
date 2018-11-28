@@ -58,7 +58,7 @@ public plugin_init()
 
 public plugin_precache()
 {
-	g_Class_Zombie_ID = zp_class_zombie_register
+	g_Class_Zombie_ID = zpe_class_zombie_register
 	(
 		CLASS_ZOMBIE_RAGE_NAME,
 		CLASS_ZOMBIE_RAGE_INFO,
@@ -68,45 +68,45 @@ public plugin_precache()
 		CLASS_ZOMBIE_RAGE_GRAVITY
 	);
 
-	zp_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_RAGE_KNOCKBACK);
+	zpe_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_RAGE_KNOCKBACK);
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Rage_Models; i++)
 	{
-		zp_class_zombie_register_model(g_Class_Zombie_ID, g_Class_Zombie_Rage_Models[i]);
+		zpe_class_zombie_register_model(g_Class_Zombie_ID, g_Class_Zombie_Rage_Models[i]);
 	}
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Rage_Clawmodels; i++)
 	{
-		zp_class_zombie_register_claw(g_Class_Zombie_ID, g_Class_Zombie_Rage_Clawmodels[i]);
+		zpe_class_zombie_register_claw(g_Class_Zombie_ID, g_Class_Zombie_Rage_Clawmodels[i]);
 	}
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	// Rage Zombie glow
-	if (zp_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
+	if (zpe_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
 	{
 		// Apply custom glow, unless nemesis and assassin
-		if (!zp_class_nemesis_get(iPlayer) || !zp_class_assassin_get(iPlayer))
+		if (!zpe_class_nemesis_get(iPlayer) || !zpe_class_assassin_get(iPlayer))
 		{
 			rg_set_user_rendering(iPlayer, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Class_Zombie_Rage_Aura_R), get_pcvar_num(g_pCvar_Class_Zombie_Rage_Aura_G), get_pcvar_num(g_pCvar_Class_Zombie_Rage_Aura_B), kRenderNormal, 15);
 		}
 	}
 }
 
-public zp_fw_core_infect(iPlayer)
+public zpe_fw_core_infect(iPlayer)
 {
 	// Player was using zombie class with custom rendering, restore it to normal
-	if (zp_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
+	if (zpe_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
 	{
 		rg_set_user_rendering(iPlayer);
 	}
 }
 
-public zp_fw_core_cure(iPlayer)
+public zpe_fw_core_cure(iPlayer)
 {
 	// Player was using zombie class with custom rendering, restore it to normal
-	if (zp_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
+	if (zpe_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
 	{
 		rg_set_user_rendering(iPlayer);
 	}
@@ -115,7 +115,7 @@ public zp_fw_core_cure(iPlayer)
 public client_disconnected(iPlayer)
 {
 	// Player was using zombie class with custom rendering, restore it to normal
-	if (zp_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
+	if (zpe_class_zombie_get_current(iPlayer) == g_Class_Zombie_ID)
 	{
 		rg_set_user_rendering(iPlayer);
 	}

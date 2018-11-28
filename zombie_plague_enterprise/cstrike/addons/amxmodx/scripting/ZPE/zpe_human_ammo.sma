@@ -182,13 +182,13 @@ public plugin_init()
 public Event_Ammo_X(iPlayer)
 {
 	// Not alive or not human
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
 
 	// Survivor Class loaded?
-	if (zp_class_survivor_get(iPlayer))
+	if (zpe_class_survivor_get(iPlayer))
 	{
 		// Unlimited BP ammo enabled for survivor?
 		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) != 1)
@@ -198,7 +198,7 @@ public Event_Ammo_X(iPlayer)
 	}
 
 	// Sniper Class loaded?
-	else if (zp_class_sniper_get(iPlayer))
+	else if (zpe_class_sniper_get(iPlayer))
 	{
 		// Unlimited BP ammo enabled for sniper?
 		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) != 1)
@@ -258,13 +258,13 @@ public Event_Ammo_X(iPlayer)
 public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 {
 	// Not alive or not human
-	if (BIT_NOT_VALID(g_iBit_Alive, iMessage_Entity) || zp_core_is_zombie(iMessage_Entity))
+	if (BIT_NOT_VALID(g_iBit_Alive, iMessage_Entity) || zpe_core_is_zombie(iMessage_Entity))
 	{
 		return;
 	}
 
 	// Survivor Class loaded?
-	if (zp_class_survivor_get(iMessage_Entity))
+	if (zpe_class_survivor_get(iMessage_Entity))
 	{
 		// Unlimited Clip ammo enabled for humans?
 		if (get_pcvar_num(g_pCvar_Survivor_Unlimited_Ammo) != 2)
@@ -274,7 +274,7 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	}
 
 	// Sniper Class loaded?
-	else if (zp_class_sniper_get(iMessage_Entity))
+	else if (zpe_class_sniper_get(iMessage_Entity))
 	{
 		// Unlimited Clip ammo enabled for humans?
 		if (get_pcvar_num(g_pCvar_Sniper_Unlimited_Ammo) != 2)

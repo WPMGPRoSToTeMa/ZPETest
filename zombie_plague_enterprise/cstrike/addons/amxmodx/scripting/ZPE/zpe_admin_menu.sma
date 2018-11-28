@@ -89,7 +89,7 @@ public plugin_natives()
 {
 	register_library("zpe_admin_menu");
 
-	register_native("zp_admin_menu_show", "native_admin_menu_show");
+	register_native("zpe_admin_menu_show", "native_admin_menu_show");
 }
 
 public native_admin_menu_show(iPlugin_ID, iNum_Params)
@@ -438,16 +438,16 @@ Show_Menu_Player_List(iPlayer)
 		{
 			case ACTION_INFECT_CURE: // Infect/Cure command
 			{
-				if (zp_core_is_zombie(i))
+				if (zpe_core_is_zombie(i))
 				{
 					if (iUser_Flags & read_flags(g_Access_Make_Human) && BIT_VALID(g_iBit_Alive, i))
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zp_class_nemesis_get(i) ? "CLASS_NEMESIS" : zp_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zpe_class_nemesis_get(i) ? "CLASS_NEMESIS" : zpe_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
 
 					else
 					{
-						formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, zp_class_nemesis_get(i) ? "CLASS_NEMESIS" : zp_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+						formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, zpe_class_nemesis_get(i) ? "CLASS_NEMESIS" : zpe_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
 				}
 
@@ -455,41 +455,41 @@ Show_Menu_Player_List(iPlayer)
 				{
 					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && BIT_VALID(g_iBit_Alive, i))
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zp_class_survivor_get(i) ? "CLASS_SURVIVOR" : zp_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zpe_class_survivor_get(i) ? "CLASS_SURVIVOR" : zpe_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
 
 					else
 					{
-						formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, zp_class_survivor_get(i) ? "CLASS_SURVIVOR" : zp_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+						formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, zpe_class_survivor_get(i) ? "CLASS_SURVIVOR" : zpe_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
 				}
 			}
 
 			case ACTION_MAKE_NEMESIS: // Nemesis command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, i) && !zp_class_nemesis_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_nemesis_get(i))
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zp_class_nemesis_get(i) ? "CLASS_NEMESIS" : zp_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zpe_class_nemesis_get(i) ? "CLASS_NEMESIS" : zpe_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
 
 					else
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zp_class_survivor_get(i) ? "CLASS_SURVIVOR" : zp_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zpe_class_survivor_get(i) ? "CLASS_SURVIVOR" : zpe_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
 				}
 
 				else
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						if (zp_class_nemesis_get(i))
+						if (zpe_class_nemesis_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
 						}
 
-						else if (zp_class_assassin_get(i))
+						else if (zpe_class_assassin_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
 						}
@@ -502,12 +502,12 @@ Show_Menu_Player_List(iPlayer)
 
 					else
 					{
-						if (zp_class_survivor_get(i))
+						if (zpe_class_survivor_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
 						}
 
-						else if (zp_class_sniper_get(i))
+						else if (zpe_class_sniper_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
 						}
@@ -522,29 +522,29 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_ASSASSIN: // Assassin command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, i) && !zp_class_assassin_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_assassin_get(i))
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zp_class_nemesis_get(i) ? "CLASS_NEMESIS" : zp_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zpe_class_nemesis_get(i) ? "CLASS_NEMESIS" : zpe_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
 
 					else
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zp_class_survivor_get(i) ? "CLASS_SURVIVOR" : zp_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zpe_class_survivor_get(i) ? "CLASS_SURVIVOR" : zpe_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
 				}
 
 				else
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						if (zp_class_nemesis_get(i))
+						if (zpe_class_nemesis_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
 						}
 
-						else if (zp_class_assassin_get(i))
+						else if (zpe_class_assassin_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
 						}
@@ -557,12 +557,12 @@ Show_Menu_Player_List(iPlayer)
 
 					else
 					{
-						if (zp_class_survivor_get(i))
+						if (zpe_class_survivor_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
 						}
 
-						else if (zp_class_sniper_get(i))
+						else if (zpe_class_sniper_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
 						}
@@ -577,29 +577,29 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, i) && !zp_class_survivor_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_survivor_get(i))
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zp_class_nemesis_get(i) ? "CLASS_NEMESIS" : zp_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zpe_class_nemesis_get(i) ? "CLASS_NEMESIS" : zpe_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
 
 					else
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zp_class_survivor_get(i) ? "CLASS_SURVIVOR" : zp_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zpe_class_survivor_get(i) ? "CLASS_SURVIVOR" : zpe_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
 				}
 
 				else
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						if (zp_class_nemesis_get(i))
+						if (zpe_class_nemesis_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
 						}
 
-						else if (zp_class_assassin_get(i))
+						else if (zpe_class_assassin_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
 						}
@@ -612,12 +612,12 @@ Show_Menu_Player_List(iPlayer)
 
 					else
 					{
-						if (zp_class_survivor_get(i))
+						if (zpe_class_survivor_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
 						}
 
-						else if (zp_class_sniper_get(i))
+						else if (zpe_class_sniper_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
 						}
@@ -632,29 +632,29 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_SNIPER: // Sniper command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, i) && !zp_class_sniper_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_sniper_get(i))
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zp_class_nemesis_get(i) ? "CLASS_NEMESIS" : zp_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
+						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zpe_class_nemesis_get(i) ? "CLASS_NEMESIS" : zpe_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
 
 					else
 					{
-						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zp_class_survivor_get(i) ? "CLASS_SURVIVOR" : zp_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
+						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zpe_class_survivor_get(i) ? "CLASS_SURVIVOR" : zpe_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
 				}
 
 				else
 				{
-					if (zp_core_is_zombie(i))
+					if (zpe_core_is_zombie(i))
 					{
-						if (zp_class_nemesis_get(i))
+						if (zpe_class_nemesis_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_NEMESIS");
 						}
 
-						else if (zp_class_assassin_get(i))
+						else if (zpe_class_assassin_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_ASSASSIN");
 						}
@@ -667,12 +667,12 @@ Show_Menu_Player_List(iPlayer)
 
 					else
 					{
-						if (zp_class_survivor_get(i))
+						if (zpe_class_survivor_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SURVIVOR");
 						}
 
-						else if (zp_class_sniper_get(i))
+						else if (zpe_class_sniper_get(i))
 						{
 							formatex(szMenu, charsmax(szMenu), "\d %s [%L]", szPlayer_Name, iPlayer, "CLASS_SNIPER");
 						}
@@ -730,7 +730,7 @@ Show_Menu_Game_Mode_List(iPlayer)
 	new iMenu;
 	new szItemdata[2];
 
-	new Game_Mode_Count = zp_gamemodes_get_count();
+	new Game_Mode_Count = zpe_gamemodes_get_count();
 
 	// Title
 	formatex(szMenu, charsmax(szMenu), "%L: \r", iPlayer, "MENU_INFO4");
@@ -741,7 +741,7 @@ Show_Menu_Game_Mode_List(iPlayer)
 	for (new i = 0; i < Game_Mode_Count; i++)
 	{
 		// Add Game Mode Name
-		zp_gamemodes_get_name(i, szMenu, charsmax(szMenu));
+		zpe_gamemodes_get_name(i, szMenu, charsmax(szMenu));
 
 		// ML support for mode name
 		formatex(szTranskey, charsmax(szTranskey), "MODENAME %s", szMenu);
@@ -819,11 +819,11 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 		{
 			case ACTION_INFECT_CURE: // Infect/Cure command
 			{
-				if (zp_core_is_zombie(iPlayers))
+				if (zpe_core_is_zombie(iPlayers))
 				{
 					if (iUser_Flags & read_flags(g_Access_Make_Human) && BIT_VALID(g_iBit_Alive, iPlayers))
 					{
-						zp_admin_commands_human(iPlayer, iPlayers);
+						zpe_admin_commands_human(iPlayer, iPlayers);
 					}
 
 					else
@@ -836,7 +836,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 				{
 					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && BIT_VALID(g_iBit_Alive, iPlayers))
 					{
-						zp_admin_commands_zombie(iPlayer, iPlayers);
+						zpe_admin_commands_zombie(iPlayer, iPlayers);
 					}
 
 					else
@@ -848,9 +848,9 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_NEMESIS: // Nemesis command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_nemesis_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_nemesis_get(iPlayers))
 				{
-					zp_admin_commands_nemesis(iPlayer, iPlayers);
+					zpe_admin_commands_nemesis(iPlayer, iPlayers);
 				}
 
 				else
@@ -861,9 +861,9 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_ASSASSIN: // Assassin command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_assassin_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_assassin_get(iPlayers))
 				{
-					zp_admin_commands_assassin(iPlayer, iPlayers);
+					zpe_admin_commands_assassin(iPlayer, iPlayers);
 				}
 
 				else
@@ -874,9 +874,9 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_survivor_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_survivor_get(iPlayers))
 				{
-					zp_admin_commands_survivor(iPlayer, iPlayers);
+					zpe_admin_commands_survivor(iPlayer, iPlayers);
 				}
 
 				else
@@ -887,9 +887,9 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_SNIPER: // Sniper command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, iPlayers) && !zp_class_sniper_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_sniper_get(iPlayers))
 				{
-					zp_admin_commands_sniper(iPlayer, iPlayers);
+					zpe_admin_commands_sniper(iPlayer, iPlayers);
 				}
 
 				else
@@ -902,7 +902,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 			{
 				if (iUser_Flags & read_flags(g_Access_Respawn_Players) && Allowed_Respawn(iPlayers))
 				{
-					zp_admin_commands_respawn(iPlayer, iPlayers);
+					zpe_admin_commands_respawn(iPlayer, iPlayers);
 				}
 
 				else
@@ -954,7 +954,7 @@ public Menu_Game_Mode_List(iPlayer, iMenu, iItem)
 	iGame_Mode_ID = szItemdata[0];
 
 	// Attempt to start game mode
-	zp_admin_commands_start_mode(iPlayer, iGame_Mode_ID);
+	zpe_admin_commands_start_mode(iPlayer, iGame_Mode_ID);
 
 	menu_destroy(iMenu);
 

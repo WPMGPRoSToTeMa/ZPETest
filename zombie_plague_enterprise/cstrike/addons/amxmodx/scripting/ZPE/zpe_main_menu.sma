@@ -150,7 +150,7 @@ Show_Menu_Main(iPlayer)
 	}
 
 	// 3. Class Zombie
-	if (zp_class_zombie_get_count() > 1)
+	if (zpe_class_zombie_get_count() > 1)
 	{
 		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 3. \w %L ^n", iPlayer, "MENU_CLASS_ZOMBIE");
 	}
@@ -161,7 +161,7 @@ Show_Menu_Main(iPlayer)
 	}
 
 	// 4. Class Human
-	if (zp_class_human_get_count() > 1)
+	if (zpe_class_human_get_count() > 1)
 	{
 		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 4. \w %L ^n", iPlayer, "MENU_CLASS_HUMAN");
 	}
@@ -220,7 +220,7 @@ public Menu_Main(iPlayer, iKey)
 				// Check whether the player is able to buy anything
 				if (BIT_VALID(g_iBit_Alive, iPlayer))
 				{
-					zp_buy_menus_show(iPlayer);
+					zpe_buy_menus_show(iPlayer);
 				}
 
 				else
@@ -243,7 +243,7 @@ public Menu_Main(iPlayer, iKey)
 				// Check whether the player is able to buy anything
 				if (BIT_VALID(g_iBit_Alive, iPlayer))
 				{
-					zp_items_show_menu(iPlayer);
+					zpe_items_show_menu(iPlayer);
 				}
 
 				else
@@ -260,9 +260,9 @@ public Menu_Main(iPlayer, iKey)
 
 		case 2: // Classes zombie
 		{
-			if (zp_class_zombie_get_count() > 1)
+			if (zpe_class_zombie_get_count() > 1)
 			{
-				zp_class_zombie_show_menu(iPlayer);
+				zpe_class_zombie_show_menu(iPlayer);
 			}
 
 			else
@@ -273,9 +273,9 @@ public Menu_Main(iPlayer, iKey)
 
 		case 3: // Classes human
 		{
-			if (zp_class_human_get_count() > 1)
+			if (zpe_class_human_get_count() > 1)
 			{
-				zp_class_human_show_menu(iPlayer);
+				zpe_class_human_show_menu(iPlayer);
 			}
 
 			else
@@ -294,12 +294,12 @@ public Menu_Main(iPlayer, iKey)
 					// Move to an initial spawn
 					if (get_pcvar_num(g_pCvar_Random_Spawning_CSDM))
 					{
-						zp_random_spawn_do(iPlayer, true); // random spawn (including CSDM)
+						zpe_random_spawn_do(iPlayer, true); // random spawn (including CSDM)
 					}
 
 					else
 					{
-						zp_random_spawn_do(iPlayer, false); // regular spawn
+						zpe_random_spawn_do(iPlayer, false); // regular spawn
 					}
 				}
 
@@ -326,7 +326,7 @@ public Menu_Main(iPlayer, iKey)
 		{
 			if (LibraryExists(LIBRARY_ADMIN_MENU, LibType_Library) && BIT_VALID(g_iBit_Admin, iPlayer))
 			{
-				zp_admin_menu_show(iPlayer);
+				zpe_admin_menu_show(iPlayer);
 			}
 
 			else

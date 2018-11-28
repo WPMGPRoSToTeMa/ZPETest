@@ -32,36 +32,36 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_Item_ID = zp_items_register(ITEM_SG550_NAME, ITEM_SG550_COST);
+	g_Item_ID = zpe_items_register(ITEM_SG550_NAME, ITEM_SG550_COST);
 }
 
-public zp_fw_items_select_pre(iPlayer, iItem_ID)
+public zpe_fw_items_select_pre(iPlayer, iItem_ID)
 {
 	// This is not our item
 	if (iItem_ID != g_Item_ID)
 	{
-		return ZP_ITEM_AVAILABLE;
+		return ZPE_ITEM_AVAILABLE;
 	}
 
-	if (zp_core_is_zombie(iPlayer))
+	if (zpe_core_is_zombie(iPlayer))
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
-	if (zp_class_survivor_get(iPlayer))
+	if (zpe_class_survivor_get(iPlayer))
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
-	if (zp_class_sniper_get(iPlayer))
+	if (zpe_class_sniper_get(iPlayer))
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
-	return ZP_ITEM_AVAILABLE;
+	return ZPE_ITEM_AVAILABLE;
 }
 
-public zp_fw_items_select_post(iPlayer, iItem_ID)
+public zpe_fw_items_select_post(iPlayer, iItem_ID)
 {
 	// This is not our item
 	if (iItem_ID != g_Item_ID)

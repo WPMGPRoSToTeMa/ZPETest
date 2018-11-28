@@ -127,7 +127,7 @@ public plugin_init()
 
 	register_forward(FM_SetModel, "FM_SetModel_");
 
-	g_Item_ID = zp_items_register(ITEM_NAME, ITEM_COST);
+	g_Item_ID = zpe_items_register(ITEM_NAME, ITEM_COST);
 }
 
 public plugin_precache()
@@ -166,8 +166,8 @@ public plugin_precache()
 
 public plugin_cfg()
 {
-	g_Game_Mode_Infection_ID = zp_gamemodes_get_id("Infection Mode");
-	g_Game_Mode_Multi_ID = zp_gamemodes_get_id("Multiple Infection Mode");
+	g_Game_Mode_Infection_ID = zpe_gamemodes_get_id("Infection Mode");
+	g_Game_Mode_Multi_ID = zpe_gamemodes_get_id("Multiple Infection Mode");
 }
 
 public Event_Round_Start()
@@ -175,32 +175,32 @@ public Event_Round_Start()
 	g_Grenade_Infection_Counter = 0;
 }
 
-public zp_fw_items_select_pre(iPlayer, iItem_ID)
+public zpe_fw_items_select_pre(iPlayer, iItem_ID)
 {
 	// This is not our item
 	if (iItem_ID != g_Item_ID)
 	{
-		return ZP_ITEM_AVAILABLE;
+		return ZPE_ITEM_AVAILABLE;
 	}
 
 	// Infection grenade only available during infection modes
-	new iCurrent_Mode = zp_gamemodes_get_current();
+	new iCurrent_Mode = zpe_gamemodes_get_current();
 
 	if (iCurrent_Mode != g_Game_Mode_Infection_ID && iCurrent_Mode != g_Game_Mode_Multi_ID)
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
 	// Infection grenade only available to zombies
-	if (!zp_core_is_zombie(iPlayer))
+	if (!zpe_core_is_zombie(iPlayer))
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
-	return ZP_ITEM_AVAILABLE;
+	return ZPE_ITEM_AVAILABLE;
 }
 
-public zp_fw_items_select_post(iPlayer, iItem_ID)
+public zpe_fw_items_select_post(iPlayer, iItem_ID)
 {
 	// This is not our item
 	if (iItem_ID != g_Item_ID)
@@ -214,13 +214,13 @@ public zp_fw_items_select_post(iPlayer, iItem_ID)
 	g_Grenade_Infection_Counter++;
 }
 
-public zp_fw_core_cure(iPlayer, iAttacker)
+public zpe_fw_core_cure(iPlayer, iAttacker)
 {
 	// Remove custom grenade model
 	cs_reset_player_view_model(iPlayer, CSW_HEGRENADE);
 }
 
-public zp_fw_core_infect_post(iPlayer, iAttacker)
+public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Set custom grenade model
 	cs_set_player_view_model(iPlayer, CSW_HEGRENADE, g_V_Model_Grenade_Infection);
@@ -254,7 +254,7 @@ public FM_SetModel_(iEntity, const szModel[])
 	}
 
 	// Grenade's owner isn't zombie?
-	if (!zp_core_is_zombie(get_entvar(iEntity, var_owner)))
+	if (!zpe_core_is_zombie(get_entvar(iEntity, var_owner)))
 	{
 		return;
 	}
@@ -322,7 +322,7 @@ public Ham_Think_Grenade_(iEntity)
 Infection_Explode(iEntity)
 {
 	// Round ended
-	if (zp_gamemodes_get_current() == ZP_NO_GAME_MODE)
+	if (zpe_gamemodes_get_current() == ZPE_NO_GAME_MODE)
 	{
 		// Get rid of the grenade
 		engfunc(EngFunc_RemoveEntity, iEntity);
@@ -345,7 +345,7 @@ Infection_Explode(iEntity)
 	new iAttacker = get_entvar(iEntity, var_owner);
 
 	// Infection grenade owner disconnected or not zombie anymore?
-	if (BIT_NOT_VALID(g_iBit_Connected, iAttacker) || !zp_core_is_zombie(iAttacker))
+	if (BIT_NOT_VALID(g_iBit_Connected, iAttacker) || !zpe_core_is_zombie(iAttacker))
 	{
 		// Get rid of the grenade
 		engfunc(EngFunc_RemoveEntity, iEntity);
@@ -359,13 +359,13 @@ Infection_Explode(iEntity)
 	while ((iVctim = engfunc(EngFunc_FindEntityInSphere, iVctim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Infection_Explosion_Radius))) != 0)
 	{
 		// Only effect alive humans
-		if (BIT_NOT_VALID(g_iBit_Alive, iVctim) || zp_core_is_zombie(iVctim))
+		if (BIT_NOT_VALID(g_iBit_Alive, iVctim) || zpe_core_is_zombie(iVctim))
 		{
 			continue;
 		}
 
 		// Last human is killed
-		if (zp_core_get_human_count() == 1)
+		if (zpe_core_get_human_count() == 1)
 		{
 			ExecuteHamB(Ham_Killed, iVctim, iAttacker, 0);
 
@@ -373,7 +373,7 @@ Infection_Explode(iEntity)
 		}
 
 		// Turn into zombie
-		zp_core_infect(iVctim, iAttacker);
+		zpe_core_infect(iVctim, iAttacker);
 
 		// Victim's sound
 		emit_sound(iVctim, CHAN_VOICE, g_Sound_Grenade_Infection_Player[random(sizeof g_Sound_Grenade_Infection_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);

@@ -267,7 +267,7 @@ public TeamScore_()
 Message_Round_End()
 {
 	// Determine round winner, show HUD notice
-	if (!zp_core_get_zombie_count())
+	if (!zpe_core_get_zombie_count())
 	{
 		// Human team wins
 		if (get_pcvar_num(g_pCvar_Message_Team_Scoring))
@@ -323,7 +323,7 @@ Message_Round_End()
 		g_Score_Humans++;
 	}
 
-	else if (!zp_core_get_human_count())
+	else if (!zpe_core_get_human_count())
 	{
 		// Zombie team wins
 		if (get_pcvar_num(g_pCvar_Message_Team_Scoring))

@@ -135,7 +135,7 @@ public plugin_init()
 	g_Message_Damage = get_user_msgid("Damage");
 }
 
-public zp_fw_core_infect_post(iPlayer, iAttacker)
+public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Attacker is valid?
 	if (BIT_VALID(g_iBit_Connected, iAttacker))
@@ -144,7 +144,7 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 		if (iAttacker == iPlayer)
 		{
 			// Show infection HUD notice? (except for first zombie)
-			if (get_pcvar_num(g_pCvar_Infect_Show_Hud) && !zp_core_is_first_zombie(iPlayer))
+			if (get_pcvar_num(g_pCvar_Infect_Show_Hud) && !zpe_core_is_first_zombie(iPlayer))
 			{
 				new szVictim_Name[32];
 

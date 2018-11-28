@@ -44,7 +44,7 @@ public plugin_precache()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_Class_Zombie_ID = zp_class_zombie_register
+	g_Class_Zombie_ID = zpe_class_zombie_register
 	(
 		CLASS_ZOMBIE_LIGHT_NAME,
 		CLASS_ZOMBIE_LIGHT_INFO,
@@ -54,15 +54,15 @@ public plugin_precache()
 		CLASS_ZOMBIE_LIGHT_GRAVITY
 	);
 
-	zp_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_LIGHT_KNOCKBACK);
+	zpe_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_LIGHT_KNOCKBACK);
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Light_Models; i++)
 	{
-		zp_class_zombie_register_model(g_Class_Zombie_ID, g_Class_Zombie_Light_Models[i]);
+		zpe_class_zombie_register_model(g_Class_Zombie_ID, g_Class_Zombie_Light_Models[i]);
 	}
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Light_Clawmodels; i++)
 	{
-		zp_class_zombie_register_claw(g_Class_Zombie_ID, g_Class_Zombie_Light_Clawmodels[i]);
+		zpe_class_zombie_register_claw(g_Class_Zombie_ID, g_Class_Zombie_Light_Clawmodels[i]);
 	}
 }

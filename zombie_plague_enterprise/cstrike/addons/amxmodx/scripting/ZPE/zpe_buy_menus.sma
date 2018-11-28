@@ -232,7 +232,7 @@ public plugin_natives()
 {
 	register_library("zpe_buy_menus");
 
-	register_native("zp_buy_menus_show", "native_buy_menus_show");
+	register_native("zpe_buy_menus_show", "native_buy_menus_show");
 }
 
 public native_buy_menus_show(iPlugin_ID, iNum_Params)
@@ -261,7 +261,7 @@ public Client_Command_Buy(iPlayer)
 	}
 
 	// Player dead or zombie
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
@@ -269,7 +269,7 @@ public Client_Command_Buy(iPlayer)
 	Show_Available_Buy_Menus(iPlayer);
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Buyzone time starts when player is set to human
 	g_fBuy_Time_Start[iPlayer] = get_gametime();
@@ -280,13 +280,13 @@ public zp_fw_core_cure_post(iPlayer)
 public Human_Weapons(iPlayer)
 {
 	// Player dead or zombie
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
 
 	// Survivor and Sniper automatically gets his own weapon
-	if (zp_class_survivor_get(iPlayer) || zp_class_sniper_get(iPlayer))
+	if (zpe_class_survivor_get(iPlayer) || zpe_class_sniper_get(iPlayer))
 	{
 		BIT_SUB(g_Can_Buy_Primary, iPlayer);
 		BIT_SUB(g_Can_Buy_Secondary, iPlayer);
@@ -483,7 +483,7 @@ Show_Menu_Buy_Grenades(iPlayer)
 public Menu_Buy_Primary(iPlayer, iKey)
 {
 	// Player dead or zombie or already bought primary
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Buy_Primary, iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Buy_Primary, iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -554,7 +554,7 @@ Buy_Primary_Weapon(iPlayer, iSelection)
 public Menu_Buy_Secondary(iPlayer, iKey)
 {
 	// Player dead or zombie or already bought secondary
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Buy_Secondary, iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Buy_Secondary, iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -608,7 +608,7 @@ Buy_Secondary_Weapon(iPlayer, iSelection)
 public Menu_Buy_Grenades(iPlayer, iKey)
 {
 	// Player dead or zombie or already bought grenades
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Buy_Grenades, iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Buy_Grenades, iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}

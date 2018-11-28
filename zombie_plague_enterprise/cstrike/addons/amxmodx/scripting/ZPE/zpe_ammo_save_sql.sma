@@ -102,7 +102,7 @@ public SQL_Check_Player(iFail_State, Handle:SQL_Query, szError[], iError, szData
 	{
 		g_iGlobal_Indexes[iPlayer] = SQL_ReadResult(SQL_Query, 0);
 
-		zp_ammopacks_set(iPlayer, SQL_ReadResult(SQL_Query, 2));
+		zpe_ammopacks_set(iPlayer, SQL_ReadResult(SQL_Query, 2));
 	}
 
 	else
@@ -131,7 +131,7 @@ public client_disconnected(iPlayer)
 	(
 		g_SQL_Connect,
 		"UPDATE `zpe_ammo` SET `Ammo` = %d WHERE `Player_ID` = %d",
-		zp_ammopacks_get(iPlayer),
+		zpe_ammopacks_get(iPlayer),
 		g_iGlobal_Indexes[iPlayer]
 	);
 

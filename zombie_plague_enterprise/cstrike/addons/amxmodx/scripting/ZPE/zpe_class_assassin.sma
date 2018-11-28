@@ -241,8 +241,8 @@ public plugin_natives()
 {
 	register_library("zpe_class_assassin");
 
-	register_native("zp_class_assassin_set", "native_class_assassin_set");
-	register_native("zp_class_assassin_get_count", "native_class_assassin_get_count");
+	register_native("zpe_class_assassin_set", "native_class_assassin_set");
+	register_native("zpe_class_assassin_get_count", "native_class_assassin_get_count");
 }
 
 public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
@@ -254,7 +254,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
 	}
 
 	// Assassin attacking human
-	if (BIT_VALID(g_iBit_Assassin, iAttacker) && !zp_core_is_zombie(iVictim))
+	if (BIT_VALID(g_iBit_Assassin, iAttacker) && !zpe_core_is_zombie(iVictim))
 	{
 		// Ignore assassin damage override if damage comes from a 3rd party entity
 		// (to prevent this from affecting a sub-plugin's rockets e.g.)
@@ -270,7 +270,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
 
 public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zp_core_is_zombie(iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zpe_core_is_zombie(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
@@ -336,7 +336,7 @@ public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:f
 	return FMRES_IGNORED;
 }
 
-public zp_fw_grenade_frost_pre(iPlayer)
+public zpe_fw_grenade_frost_pre(iPlayer)
 {
 	// Prevent frost for assassin
 	if (BIT_VALID(g_iBit_Assassin, iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Frost))
@@ -347,7 +347,7 @@ public zp_fw_grenade_frost_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_grenade_fire_pre(iPlayer)
+public zpe_fw_grenade_fire_pre(iPlayer)
 {
 	// Prevent burning for assassin
 	if (BIT_VALID(g_iBit_Assassin, iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Fire))
@@ -358,7 +358,7 @@ public zp_fw_grenade_fire_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_core_spawn_post(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
 	if (BIT_VALID(g_iBit_Assassin, iPlayer))
 	{
@@ -381,7 +381,7 @@ public zp_fw_core_spawn_post(iPlayer)
 	}
 }
 
-public zp_fw_core_cure(iPlayer)
+public zpe_fw_core_cure(iPlayer)
 {
 	if (BIT_VALID(g_iBit_Assassin, iPlayer))
 	{
@@ -404,7 +404,7 @@ public zp_fw_core_cure(iPlayer)
 	}
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	// Apply assassin attributes?
 	if (BIT_NOT_VALID(g_iBit_Assassin, iPlayer))
@@ -470,7 +470,7 @@ public native_class_assassin_set(iPlugin_ID, iNum_Params)
 
 	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Assassin);
 
-	zp_core_force_infect(iPlayer);
+	zpe_core_force_infect(iPlayer);
 
 	return true;
 }

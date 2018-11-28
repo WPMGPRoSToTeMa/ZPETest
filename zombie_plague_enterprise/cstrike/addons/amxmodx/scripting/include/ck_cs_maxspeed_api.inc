@@ -9,16 +9,20 @@
 /**
  * Sets a player's maxspeed.
  *
- * @param player		Player index.
- * @param maxspeed		Custom maxspeed.
- * @param multiplier	Treat maxspeed as multiplier instead of absolute value.
+ * @param {player} Player index.
+ * @param {maxspeed} Custom maxspeed.
+ * @param {multiplier} Treat maxspeed as multiplier instead of absolute value.
+ *
+ * @return None.
  */
 native cs_set_player_maxspeed(player, Float:maxspeed, multiplier = false);
 
 /**
  * Resets a player's maxspeed to default CS maxspeed.
  *
- * @param player			Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
 native cs_reset_player_maxspeed(player);
 

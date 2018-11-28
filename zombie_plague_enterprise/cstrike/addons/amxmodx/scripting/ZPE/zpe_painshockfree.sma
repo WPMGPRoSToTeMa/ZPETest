@@ -49,10 +49,10 @@ public plugin_init()
 
 public RG_CBasePlayer_TakeDamage_Post(iVictim)
 {
-	if (zp_core_is_zombie(iVictim))
+	if (zpe_core_is_zombie(iVictim))
 	{
 		// Nemesis Class loaded?
-		if (zp_class_nemesis_get(iVictim))
+		if (zpe_class_nemesis_get(iVictim))
 		{
 			if (!get_pcvar_num(g_pCvar_Pain_Shock_Free_Nemesis))
 			{
@@ -61,7 +61,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim)
 		}
 
 		// Assassin Class loaded?
-		else if (zp_class_assassin_get(iVictim))
+		else if (zpe_class_assassin_get(iVictim))
 		{
 			if (!get_pcvar_num(g_pCvar_Pain_Shock_Free_Assassin))
 			{
@@ -82,7 +82,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim)
 
 				case 2:
 				{
-					if (!zp_core_is_first_zombie(iVictim))
+					if (!zpe_core_is_first_zombie(iVictim))
 					{
 						return;
 					}
@@ -90,7 +90,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim)
 
 				case 3:
 				{
-					if (!zp_core_is_last_zombie(iVictim))
+					if (!zpe_core_is_last_zombie(iVictim))
 					{
 						return;
 					}
@@ -102,7 +102,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim)
 	else
 	{
 		// Survivor class loaded?
-		if (zp_class_survivor_get(iVictim))
+		if (zpe_class_survivor_get(iVictim))
 		{
 			if (!get_pcvar_num(g_pCvar_Pain_Shock_Free_Survivor))
 			{
@@ -111,7 +111,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim)
 		}
 
 		// Sniper Class loaded?
-		else if (zp_class_sniper_get(iVictim))
+		else if (zpe_class_sniper_get(iVictim))
 		{
 			if (!get_pcvar_num(g_pCvar_Pain_Shock_Free_Sniper))
 			{
@@ -131,7 +131,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim)
 
 				case 2:
 				{
-					if (!zp_core_is_last_human(iVictim))
+					if (!zpe_core_is_last_human(iVictim))
 					{
 						return;
 					}

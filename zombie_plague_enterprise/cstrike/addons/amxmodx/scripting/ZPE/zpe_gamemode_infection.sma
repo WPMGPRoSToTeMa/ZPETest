@@ -80,13 +80,13 @@ public plugin_cfg()
 {
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_infection.cfg");
 
-	new iGame_Mode_ID = zp_gamemodes_register("Infection Mode");
+	new iGame_Mode_ID = zpe_gamemodes_register("Infection Mode");
 
-	zp_gamemodes_set_default(iGame_Mode_ID);
+	zpe_gamemodes_set_default(iGame_Mode_ID);
 }
 
 // Deathmatch module's player respawn forward
-public zp_fw_deathmatch_respawn_pre(iPlayer)
+public zpe_fw_deathmatch_respawn_pre(iPlayer)
 {
 	// Respawning allowed?
 	if (!get_pcvar_num(g_pCvar_Infection_Allow_Respawn))
@@ -95,7 +95,7 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	}
 
 	// Respawn if only the last human is left?
-	if (!get_pcvar_num(g_pCvar_Infection_Respawn_After_Last_Human) && zp_core_get_human_count() == 1)
+	if (!get_pcvar_num(g_pCvar_Infection_Respawn_After_Last_Human) && zpe_core_get_human_count() == 1)
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -103,7 +103,7 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
+public zpe_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	if (!iSkipchecks)
 	{
@@ -121,16 +121,16 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_choose_post(iGame_Mode_ID, iTarget_Player)
+public zpe_fw_gamemodes_choose_post(iGame_Mode_ID, iTarget_Player)
 {
 	g_iTarget_Player = (iTarget_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iTarget_Player;
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
-	zp_gamemodes_set_allow_infect();
+	zpe_gamemodes_set_allow_infect();
 
-	zp_core_infect(g_iTarget_Player, g_iTarget_Player);
+	zpe_core_infect(g_iTarget_Player, g_iTarget_Player);
 
 	SET_USER_HEALTH(g_iTarget_Player, Float:GET_USER_HEALTH(g_iTarget_Player) * get_pcvar_float(g_pCvar_Zombie_First_HP_Multiplier));
 
@@ -143,7 +143,7 @@ public zp_fw_gamemodes_start()
 		}
 
 		// This is our first zombie
-		if (zp_core_is_zombie(i))
+		if (zpe_core_is_zombie(i))
 		{
 			continue;
 		}

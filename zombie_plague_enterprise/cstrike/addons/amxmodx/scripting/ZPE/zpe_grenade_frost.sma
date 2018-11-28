@@ -196,8 +196,8 @@ public plugin_init()
 	g_Message_Damage = get_user_msgid("Damage");
 	g_Message_Screen_Fade = get_user_msgid("ScreenFade");
 
-	g_Forwards[FW_USER_FREEZE_PRE] = CreateMultiForward("zp_fw_grenade_frost_pre", ET_CONTINUE, FP_CELL);
-	g_Forwards[FW_USER_UNFROZEN] = CreateMultiForward("zp_fw_grenade_frost_unfreeze", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_USER_FREEZE_PRE] = CreateMultiForward("zpe_fw_grenade_frost_pre", ET_CONTINUE, FP_CELL);
+	g_Forwards[FW_USER_UNFROZEN] = CreateMultiForward("zpe_fw_grenade_frost_unfreeze", ET_IGNORE, FP_CELL);
 }
 
 public plugin_precache()
@@ -245,8 +245,8 @@ public plugin_natives()
 {
 	register_library("zpe_grenade_frost");
 
-	register_native("zp_grenade_frost_get", "native_grenade_frost_get");
-	register_native("zp_grenade_frost_set", "native_grenade_frost_set");
+	register_native("zpe_grenade_frost_get", "native_grenade_frost_get");
+	register_native("zpe_grenade_frost_set", "native_grenade_frost_set");
 }
 
 public native_grenade_frost_get(iPlugin_ID, iNum_Params)
@@ -295,7 +295,7 @@ public native_grenade_frost_set(iPlugin_ID, iNum_Params)
 	return Set_Freeze(iPlayer);
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Set custom grenade model
 	cs_set_player_view_model(iPlayer, CSW_FLASHBANG, g_V_Model_Grenade_Frost);
@@ -314,13 +314,13 @@ public zp_fw_core_cure_post(iPlayer)
 	}
 }
 
-public zp_fw_core_infect(iPlayer)
+public zpe_fw_core_infect(iPlayer)
 {
 	// Remove custom grenade model
 	cs_reset_player_view_model(iPlayer, CSW_FLASHBANG);
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	// If frozen, update gravity and rendering
 	if (BIT_VALID(g_Is_Frozen, iPlayer))
@@ -430,7 +430,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	}
 
 	// Grenade's owner is zombie?
-	if (zp_core_is_zombie(get_entvar(iEntity, var_owner)))
+	if (zpe_core_is_zombie(get_entvar(iEntity, var_owner)))
 	{
 		return FMRES_IGNORED;
 	}
@@ -528,7 +528,7 @@ Frost_Explode(iEntity)
 	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Frost_Explosion_Radius))) != 0)
 	{
 		// Only effect alive zombies
-		if (iVictim < 33 && BIT_VALID(g_iBit_Alive, iVictim) && zp_core_is_zombie(iVictim))
+		if (iVictim < 33 && BIT_VALID(g_iBit_Alive, iVictim) && zpe_core_is_zombie(iVictim))
 		{
 			Set_Freeze(iVictim);
 		}

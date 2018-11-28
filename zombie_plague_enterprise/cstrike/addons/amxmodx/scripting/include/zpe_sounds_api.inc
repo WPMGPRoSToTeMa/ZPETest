@@ -1,5 +1,7 @@
 #if defined _zpe_sounds_api_included
+
   #endinput
+
 #endif
 
 #define _zpe_sounds_api_included
@@ -30,5 +32,24 @@ enum HUMAN_SOUNDS
 	HUMAN_SOUND_IDLE
 };
 
-native zp_class_zombie_register_sound(const iClass, ZOMBIE_SOUNDS:iSound_Type, const szSound[]);
-native zp_class_human_register_sound(const iClass, HUMAN_SOUNDS:iSound_Type, const szSound[]);
+/**
+ * Called in plugin_precache.
+ *
+ * @param {classid} A valid zombie class ID.
+ * @param {sound_type} Sound type.
+ * @param {sound} Full path to sound. (e.g. "sound/zombie/zombie.wav")
+ *
+ * @return None.
+ */
+native zp_class_zombie_register_sound(classid, ZOMBIE_SOUNDS:sound_type, const sound[]);
+
+/**
+ * Called in plugin_precache.
+ *
+ * @param {classid} A valid human class ID.
+ * @param {sound_type} Sound type.
+ * @param {sound} Full path to sound. (e.g. "sound/human/human.wav")
+ *
+ * @return None.
+ */
+native zp_class_human_register_sound(classid, HUMAN_SOUNDS:sound_type, const sound[]);

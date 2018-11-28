@@ -109,8 +109,8 @@ public plugin_natives()
 {
 	register_library("zpe_flashlight");
 
-	register_native("zp_flashlight_get_charge", "native_flashlight_get_charge");
-	register_native("zp_flashlight_set_charge", "native_flashlight_set_charge");
+	register_native("zpe_flashlight_get_charge", "native_flashlight_get_charge");
+	register_native("zpe_flashlight_set_charge", "native_flashlight_set_charge");
 }
 
 public native_flashlight_get_charge(iPlugin_ID, iNum_Params)
@@ -189,7 +189,7 @@ public FM_CmdStart_Post(iPlayer, iHandle)
 		return;
 	}
 
-	if (zp_core_is_zombie(iPlayer))
+	if (zpe_core_is_zombie(iPlayer))
 	{
 		// Block it!
 		set_uc(iHandle, UC_Impulse, 0);
@@ -249,13 +249,13 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim)
 	remove_task(iVictim + TASK_CHARGE);
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	// Turn off zombies flashlight
 	Turn_Off_Flashlight(iPlayer);
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Turn off humans flashlight (prevents double flashlight bug/exploit after respawn)
 	Turn_Off_Flashlight(iPlayer);

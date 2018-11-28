@@ -126,14 +126,14 @@ public plugin_precache()
 	g_Trail_Sprite = precache_model(SPRITE_GRANDE_TRAIL);
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Set custom grenade model
 	cs_set_player_view_model(iPlayer, CSW_SMOKEGRENADE, g_V_Model_Grenade_Flare);
 	cs_set_player_weap_model(iPlayer, CSW_SMOKEGRENADE, g_P_Model_Grenade_Flare);
 }
 
-public zp_fw_core_infect(iPlayer)
+public zpe_fw_core_infect(iPlayer)
 {
 	// Remove custom grenade model
 	cs_reset_player_view_model(iPlayer, CSW_SMOKEGRENADE);
@@ -166,7 +166,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	}
 
 	// Grenade's owner is zombie?
-	if (zp_core_is_zombie(get_entvar(iEntity, var_owner)))
+	if (zpe_core_is_zombie(get_entvar(iEntity, var_owner)))
 	{
 		return FMRES_IGNORED;
 	}

@@ -56,7 +56,7 @@ public plugin_init()
 
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
-	g_Forwards[FW_USER_RESPAWN_PRE] = CreateMultiForward("zp_fw_deathmatch_respawn_pre", ET_CONTINUE, FP_CELL);
+	g_Forwards[FW_USER_RESPAWN_PRE] = CreateMultiForward("zpe_fw_deathmatch_respawn_pre", ET_CONTINUE, FP_CELL);
 }
 
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
@@ -70,7 +70,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 		}
 
 		// Respawn if human/zombie?
-		if ((zp_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Zombies)) || (!zp_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Humans)))
+		if ((zpe_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Zombies)) || (!zpe_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Humans)))
 		{
 			return;
 		}
@@ -82,7 +82,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 public Respawn_Player_Task(iTask_ID)
 {
 	// Already alive or round ended
-	if (BIT_VALID(g_iBit_Alive, ID_RESPAWN) || zp_gamemodes_get_current() == ZP_NO_GAME_MODE)
+	if (BIT_VALID(g_iBit_Alive, ID_RESPAWN) || zpe_gamemodes_get_current() == ZPE_NO_GAME_MODE)
 	{
 		return;
 	}
@@ -102,12 +102,12 @@ public Respawn_Player_Task(iTask_ID)
 	}
 
 	// Respawn as zombie?
-	if (get_pcvar_num(g_pCvar_Deathmatch) == 2 || (get_pcvar_num(g_pCvar_Deathmatch) == 3 && random_num(0, 1)) || (get_pcvar_num(g_pCvar_Deathmatch) == 4 && zp_core_get_zombie_count() < Get_Alive_Count() / 2))
+	if (get_pcvar_num(g_pCvar_Deathmatch) == 2 || (get_pcvar_num(g_pCvar_Deathmatch) == 3 && random_num(0, 1)) || (get_pcvar_num(g_pCvar_Deathmatch) == 4 && zpe_core_get_zombie_count() < Get_Alive_Count() / 2))
 	{
 		// Only allow respawning as zombie after a game mode started
 		if (g_Game_Mode_Started)
 		{
-			zp_core_respawn_as_zombie(ID_RESPAWN, true);
+			zpe_core_respawn_as_zombie(ID_RESPAWN, true);
 		}
 	}
 
@@ -121,12 +121,12 @@ Respawn_Player_Manually(iPlayer)
 	rg_round_respawn(iPlayer);
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
 	g_Game_Mode_Started = true;
 }
 
-public zp_fw_gamemodes_end()
+public zpe_fw_gamemodes_end()
 {
 	g_Game_Mode_Started = false;
 

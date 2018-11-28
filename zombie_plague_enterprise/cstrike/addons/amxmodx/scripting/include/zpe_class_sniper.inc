@@ -7,31 +7,33 @@
 #define _zpe_class_sniper_included
 
 /**
- * Returns whether a player is a sniper.
+ * Returns whether a player is a Sniper.
  *
- * @param id		Player index.
- * @return			True if it is, false otherwise.
+ * @param {player} Player index.
+ *
+ * @return True if it is, false otherwise.
  */
-#define zp_class_sniper_get(%0)	BIT_VALID(g_iBit_Sniper, %0)
+#define zpe_class_sniper_get(%0) BIT_VALID(g_iBit_Sniper, %0)
 
 new stock g_iBit_Sniper;
 
-public zp_fw_class_sniper_bit_change(iBit_Sum)
+public zpe_fw_class_sniper_bit_change(player)
 {
-	g_iBit_Sniper = iBit_Sum;
+	g_iBit_Sniper = player;
 }
 
 /**
- * Forces a player to become a sniper.
+ * Forces a player to become a Sniper.
  *
- * @param id		Player index.
- * @return			True on success, false otherwise.
+ * @param {player} Player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_class_sniper_set(id)
+native zpe_class_sniper_set(player);
 
 /**
- * Returns number of alive sniper.
+ * Returns number of alive Sniper.
  *
- * @return		sniper count.
+ * @return Sniper count.
  */
-native zp_class_sniper_get_count()
+native zpe_class_sniper_get_count();

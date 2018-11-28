@@ -108,11 +108,11 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_sniper.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zp_gamemodes_register("Sniper Mode");
+	zpe_gamemodes_register("Sniper Mode");
 }
 
 // Deathmatch module's player respawn forward
-public zp_fw_deathmatch_respawn_pre(iPlayer)
+public zpe_fw_deathmatch_respawn_pre(iPlayer)
 {
 	// Respawning allowed?
 	if (!get_pcvar_num(g_pCvar_Sniper_Allow_Respawn))
@@ -123,13 +123,13 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_core_spawn_post(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
 	// Always respawn as human on sniper rounds
-	zp_core_respawn_as_zombie(iPlayer, false);
+	zpe_core_respawn_as_zombie(iPlayer, false);
 }
 
-public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipcheck)
+public zpe_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipcheck)
 {
 	if (!iSkipcheck)
 	{
@@ -150,16 +150,16 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipcheck)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_choose_post(iGame_Mode_ID, iTarget_Player)
+public zpe_fw_gamemodes_choose_post(iGame_Mode_ID, iTarget_Player)
 {
 	// Pick player randomly?
 	g_iTarget_Player = (iTarget_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iTarget_Player;
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
 	// Turn player into sniper
-	zp_class_sniper_set(g_iTarget_Player);
+	zpe_class_sniper_set(g_iTarget_Player);
 
 	// Turn the remaining players into zombies
 	for (new i = 1; i <= MaxClients; i++)
@@ -171,12 +171,12 @@ public zp_fw_gamemodes_start()
 		}
 
 		// Sniper or already a zombie
-		if (zp_class_sniper_get(i) || zp_core_is_zombie(i))
+		if (zpe_class_sniper_get(i) || zpe_core_is_zombie(i))
 		{
 			continue;
 		}
 
-		zp_core_infect(i);
+		zpe_core_infect(i);
 	}
 
 	if (get_pcvar_num(g_pCvar_Sniper_Sounds))

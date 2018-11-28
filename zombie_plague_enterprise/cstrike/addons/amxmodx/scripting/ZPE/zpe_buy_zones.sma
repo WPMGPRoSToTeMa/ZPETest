@@ -275,9 +275,9 @@ public fw_Spawn(iEntity)
 	return FMRES_IGNORED;
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
-	if (get_pcvar_num(g_pCvar_Buyzone_Humans) && !zp_class_survivor_get(iPlayer) && !zp_class_sniper_get(iPlayer))
+	if (get_pcvar_num(g_pCvar_Buyzone_Humans) && !zpe_class_survivor_get(iPlayer) && !zpe_class_sniper_get(iPlayer))
 	{
 		// Buyzones time starts when player is set to human
 		g_fBuy_Time_Start[iPlayer] = get_gametime();
@@ -290,7 +290,7 @@ public zp_fw_core_cure_post(iPlayer)
 	}
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	if (get_pcvar_num(g_pCvar_Buyzone_Zombies))
 	{
@@ -330,7 +330,7 @@ public RG_CBasePlayer_PreThink_(iPlayer)
 public Client_Command_Buy_Ammo(iPlayer)
 {
 	// Setting disabled, player dead or zombie
-	if (!get_pcvar_num(g_pCvar_Buy_Ammo_Human) || BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zp_core_is_zombie(iPlayer))
+	if (!get_pcvar_num(g_pCvar_Buy_Ammo_Human) || BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
@@ -344,7 +344,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	// Not enough money/ammo packs
 	if (LibraryExists(LIBRARY_AMMOPACKS, LibType_Library))
 	{
-		if (zp_ammopacks_get(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks))
+		if (zpe_ammopacks_get(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks))
 		{
 			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
 
@@ -395,7 +395,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	// Deduce cost
 	if (LibraryExists(LIBRARY_AMMOPACKS, LibType_Library))
 	{
-		zp_ammopacks_set(iPlayer, zp_ammopacks_get(iPlayer) - get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
+		zpe_ammopacks_set(iPlayer, zpe_ammopacks_get(iPlayer) - get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
 	}
 
 	else

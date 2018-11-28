@@ -25,28 +25,28 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 }
 
-public zp_fw_items_select_pre(iPlayer, iItem_ID, iIgnore_Cost)
+public zpe_fw_items_select_pre(iPlayer, iItem_ID, iIgnore_Cost)
 {
 	// Ignore item costs?
 	if (iIgnore_Cost)
 	{
-		return ZP_ITEM_AVAILABLE;
+		return ZPE_ITEM_AVAILABLE;
 	}
 
 	// Get current and required money
 	new iCurrent_Money = CS_GET_USER_MONEY(iPlayer);
-	new iRequired_money = zp_items_get_cost(iItem_ID);
+	new iRequired_money = zpe_items_get_cost(iItem_ID);
 
 	// Not enough money
 	if (iCurrent_Money < iRequired_money)
 	{
-		return ZP_ITEM_NOT_AVAILABLE;
+		return ZPE_ITEM_NOT_AVAILABLE;
 	}
 
-	return ZP_ITEM_AVAILABLE;
+	return ZPE_ITEM_AVAILABLE;
 }
 
-public zp_fw_items_select_post(iPlayer, iItem_ID, iIgnore_Cost)
+public zpe_fw_items_select_post(iPlayer, iItem_ID, iIgnore_Cost)
 {
 	// Ignore item costs?
 	if (iIgnore_Cost)
@@ -56,7 +56,7 @@ public zp_fw_items_select_post(iPlayer, iItem_ID, iIgnore_Cost)
 
 	// Get current and required money
 	new iCurrent_Money = CS_GET_USER_MONEY(iPlayer);
-	new iRequired_money = zp_items_get_cost(iItem_ID);
+	new iRequired_money = zpe_items_get_cost(iItem_ID);
 
 	// Deduct item's money after purchase event
 	CS_SET_USER_MONEY(iPlayer, iCurrent_Money - iRequired_money);

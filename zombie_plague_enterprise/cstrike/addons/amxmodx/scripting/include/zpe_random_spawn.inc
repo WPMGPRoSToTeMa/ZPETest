@@ -9,7 +9,9 @@
 /**
  * Moves a player to a random spawn point.
  *
- * @param id			Player index.
- * @param csdmspawns	Ue CSDM spawn points instead of map defaults.
+ * @param {player} Player index.
+ * @param {csdmspawns} Ue CSDM spawn points instead of map defaults.
+ *
+ * @return None.
  */
-native zp_random_spawn_do(id, csdmspawns = true)
+native zpe_random_spawn_do(player, csdmspawns = true);

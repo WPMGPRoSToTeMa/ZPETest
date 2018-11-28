@@ -89,13 +89,13 @@ public plugin_init()
 
 public plugin_cfg()
 {
-	g_Game_Mode_Infection_ID = zp_gamemodes_get_id("Infection Mode");
+	g_Game_Mode_Infection_ID = zpe_gamemodes_get_id("Infection Mode");
 }
 
 public fw_button_changed(iPlayer, iPressed, iUnpressed)
 {
 	// Not alive
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || !zp_core_is_zombie(iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || !zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
@@ -112,7 +112,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	static Float:fCooldown;
 
 	// Nemesis class loaded?
-	if (zp_class_nemesis_get(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer))
 	{
 		if (!get_pcvar_num(g_pCvar_Leap_Nemesis))
 		{
@@ -125,7 +125,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	}
 
 	// Assassin Class loaded?
-	else if (zp_class_assassin_get(iPlayer))
+	else if (zpe_class_assassin_get(iPlayer))
 	{
 		// Check if assassin should leap
 		if (!get_pcvar_num(g_pCvar_Leap_Assassin))
@@ -139,7 +139,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	}
 
 	// Survivor Class loaded?
-	else if (zp_class_survivor_get(iPlayer))
+	else if (zpe_class_survivor_get(iPlayer))
 	{
 		// Check if survivor should leap
 		if (!get_pcvar_num(g_pCvar_Leap_Survivor))
@@ -153,7 +153,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 	}
 
 	// Sniper Class loaded?
-	else if (zp_class_sniper_get(iPlayer))
+	else if (zpe_class_sniper_get(iPlayer))
 	{
 		// Check if sniper should leap
 		if (!get_pcvar_num(g_pCvar_Leap_Sniper))
@@ -180,7 +180,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 			// First zombie (only on infection rounds)
 			case 2:
 			{
-				if (!zp_core_is_first_zombie(iPlayer) || (zp_gamemodes_get_current() != g_Game_Mode_Infection_ID))
+				if (!zpe_core_is_first_zombie(iPlayer) || (zpe_gamemodes_get_current() != g_Game_Mode_Infection_ID))
 				{
 					return;
 				}
@@ -189,7 +189,7 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 			// Last zombie
 			case 3:
 			{
-				if (!zp_core_is_last_zombie(iPlayer))
+				if (!zpe_core_is_last_zombie(iPlayer))
 				{
 					return;
 				}

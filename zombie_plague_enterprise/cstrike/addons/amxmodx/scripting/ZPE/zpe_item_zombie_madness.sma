@@ -75,7 +75,7 @@ public plugin_init()
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
-	g_Item_ID = zp_items_register(ITEM_NAME, ITEM_COST);
+	g_Item_ID = zpe_items_register(ITEM_NAME, ITEM_COST);
 }
 
 public plugin_natives()
@@ -99,7 +99,7 @@ public native_item_zombie_madness_get(iPlugin_ID, iNum_Params)
 	return BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer);
 }
 
-public zp_fw_class_zombie_register_post(iClass_ID)
+public zpe_fw_class_zombie_register_post(iClass_ID)
 {
 	if (g_aSound_Zombie_Madness == Invalid_Array)
 	{
@@ -107,7 +107,7 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 	}
 
 	new szReal_Name[32];
-	zp_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
+	zpe_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	new szClass_Zombie_Config_Path[64];
 	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
@@ -139,36 +139,36 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 	ArrayPushCell(g_aSound_Zombie_Madness, aZombie_Madness_Sound);
 }
 
-public zp_fw_items_select_pre(iPlayer, iItem_ID)
+public zpe_fw_items_select_pre(iPlayer, iItem_ID)
 {
 	// This is not our item
 	if (iItem_ID != g_Item_ID)
 	{
-		return ZP_ITEM_AVAILABLE;
+		return ZPE_ITEM_AVAILABLE;
 	}
 
 	// Zombie madness only available to zombies
-	if (!zp_core_is_zombie(iPlayer))
+	if (!zpe_core_is_zombie(iPlayer))
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
 	// Zombie madness not available to nemesis/assassin
-	if (zp_class_nemesis_get(iPlayer) || zp_class_assassin_get(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer) || zpe_class_assassin_get(iPlayer))
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
 	// Player already has madness
 	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer))
 	{
-		return ZP_ITEM_NOT_AVAILABLE;
+		return ZPE_ITEM_NOT_AVAILABLE;
 	}
 
-	return ZP_ITEM_AVAILABLE;
+	return ZPE_ITEM_AVAILABLE;
 }
 
-public zp_fw_items_select_post(iPlayer, iItem_ID)
+public zpe_fw_items_select_post(iPlayer, iItem_ID)
 {
 	// This is not our item
 	if (iItem_ID != g_Item_ID)
@@ -183,7 +183,7 @@ public zp_fw_items_select_post(iPlayer, iItem_ID)
 	set_task(0.1, "Madness_Aura", iPlayer + TASK_AURA, _, _, "b");
 
 	// Madness sound
-	new Array:aZombie_Madness_Sound = ArrayGetCell(g_aSound_Zombie_Madness, zp_class_zombie_get_current(iPlayer));
+	new Array:aZombie_Madness_Sound = ArrayGetCell(g_aSound_Zombie_Madness, zpe_class_zombie_get_current(iPlayer));
 
 	if (aZombie_Madness_Sound != Invalid_Array)
 	{
@@ -247,7 +247,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker)
 	return HC_CONTINUE;
 }
 
-public zp_fw_grenade_frost_pre(iPlayer)
+public zpe_fw_grenade_frost_pre(iPlayer)
 {
 	// Prevent frost when victim has zombie madness
 	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer))
@@ -258,7 +258,7 @@ public zp_fw_grenade_frost_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_grenade_fire_pre(iPlayer)
+public zpe_fw_grenade_fire_pre(iPlayer)
 {
 	// Prevent burning when victim has zombie madness
 	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer))
@@ -269,7 +269,7 @@ public zp_fw_grenade_fire_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_core_cure(iPlayer)
+public zpe_fw_core_cure(iPlayer)
 {
 	// Remove zombie madness task
 	remove_task(iPlayer + TASK_MADNESS);
