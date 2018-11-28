@@ -6,10 +6,10 @@
 
 #define _zpe_items_const_included
 
-/* Item ID constants */
-#define ZP_INVALID_ITEM -1
+// Item ID constants
+#define ZPE_INVALID_ITEM -1
 
-/* Item selection constants */
-#define ZP_ITEM_AVAILABLE 0
-#define ZP_ITEM_NOT_AVAILABLE 1
-#define ZP_ITEM_DONT_SHOW 2
+// Item selection constants
+#define ZPE_ITEM_AVAILABLE 0
+#define ZPE_ITEM_NOT_AVAILABLE 1
+#define ZPE_ITEM_DONT_SHOW 2

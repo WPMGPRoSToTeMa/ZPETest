@@ -6,9 +6,9 @@
 
 #define _zpe_gamemodes_const_included
 
-/* Game Mode ID constants */
-#define ZP_INVALID_GAME_MODE -1
-#define ZP_NO_GAME_MODE -2
+// Game mode ID constants
+#define ZPE_INVALID_GAME_MODE -1
+#define ZPE_NO_GAME_MODE -2
 
-/* Target player ID constants */
+// Target player ID constants
 #define RANDOM_TARGET_PLAYER 0

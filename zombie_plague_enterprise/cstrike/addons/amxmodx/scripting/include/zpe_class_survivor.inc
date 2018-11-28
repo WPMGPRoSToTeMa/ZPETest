@@ -9,29 +9,31 @@
 /**
  * Returns whether a player is a Survivor.
  *
- * @param id		Player index.
- * @return			True if it is, false otherwise.
+ * @param {player} Player index.
+ *
+ * @return True if it is, false otherwise.
  */
-#define zp_class_survivor_get(%0)	BIT_VALID(g_iBit_Survivor, %0)
+#define zpe_class_survivor_get(%0) BIT_VALID(g_iBit_Survivor, %0)
 
 new stock g_iBit_Survivor;
 
-public zp_fw_class_survivor_bit_change(iBit_Sum)
+public zpe_fw_class_survivor_bit_change(player)
 {
-	g_iBit_Survivor = iBit_Sum;
+	g_iBit_Survivor = player;
 }
 
 /**
  * Forces a player to become a Survivor.
  *
- * @param id		Player index.
- * @return			True on success, false otherwise.
+ * @param {player} Player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_class_survivor_set(id)
+native zpe_class_survivor_set(player);
 
 /**
- * Returns number of alive survivors.
+ * Returns number of alive Survivors.
  *
- * @return		Survivor count.
+ * @return Survivor count.
  */
-native zp_class_survivor_get_count()
+native zpe_class_survivor_get_count();

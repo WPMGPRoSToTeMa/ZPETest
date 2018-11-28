@@ -96,7 +96,7 @@ public plugin_init()
 	register_message(g_Message_Money, "Message_Money");
 }
 
-public zp_fw_core_infect_post(iPlayer, iAttacker)
+public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Reward money to zombies infecting humans?
 	if (BIT_VALID(g_iBit_Connected, iAttacker) && iAttacker != iPlayer && get_pcvar_num(g_pCvar_Money_Human_Infected) > 0)
@@ -114,31 +114,31 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	}
 
 	// Ignore money rewards for Nemesis?
-	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
+	if (zpe_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
 	{
 		return;
 	}
 
 	// Ignore money rewards for Assassin?
-	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
+	if (zpe_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
 	{
 		return;
 	}
 
 	// Ignore money rewards for Survivor?
-	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
+	if (zpe_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
 	{
 		return;
 	}
 
 	// Ignore money rewards for Sniper?
-	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
+	if (zpe_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
 	{
 		return;
 	}
 
 	// Zombie attacking human...
-	if (zp_core_is_zombie(iAttacker) && !zp_core_is_zombie(iVictim))
+	if (zpe_core_is_zombie(iAttacker) && !zpe_core_is_zombie(iVictim))
 	{
 		// Reward money to zombies for damaging humans?
 		if (get_pcvar_num(g_pCvar_Money_Damage) > 0)
@@ -159,7 +159,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	}
 
 	// Human attacking zombie...
-	else if (!zp_core_is_zombie(iAttacker) && zp_core_is_zombie(iVictim))
+	else if (!zpe_core_is_zombie(iAttacker) && zpe_core_is_zombie(iVictim))
 	{
 		// Reward money to humans for damaging zombies?
 		if (get_pcvar_num(g_pCvar_Money_Damage) > 0)
@@ -212,7 +212,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	set_msg_block(g_Message_Money, g_Message_Money_Block_Status);
 
 	// Ignore money rewards for nemesis?
-	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
+	if (zpe_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 
@@ -220,7 +220,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Ignore money rewards for assassin?
-	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
+	if (zpe_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 
@@ -228,7 +228,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Ignore money rewards for survivor?
-	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
+	if (zpe_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 
@@ -236,7 +236,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Ignore money rewards for sniper?
-	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
+	if (zpe_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
 	{
 		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
 
@@ -244,7 +244,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Reward money to atacker for the kill
-	if (zp_core_is_zombie(iVictim))
+	if (zpe_core_is_zombie(iVictim))
 	{
 		CS_SET_USER_MONEY(iAttacker, min(g_Money_Before_Kill[iAttacker] + get_pcvar_num(g_pCvar_Money_Zombie_Killed), get_pcvar_num(g_pCvar_Money_Limit)));
 	}
@@ -279,10 +279,10 @@ public Event_Round_Start()
 	}
 }
 
-public zp_fw_gamemodes_end()
+public zpe_fw_gamemodes_end()
 {
 	// Determine round winner and money rewards
-	if (!zp_core_get_zombie_count())
+	if (!zpe_core_get_zombie_count())
 	{
 		// Human team wins
 		for (new i = 1; i <= MaxClients; i++)
@@ -292,7 +292,7 @@ public zp_fw_gamemodes_end()
 				continue;
 			}
 
-			if (zp_core_is_zombie(i))
+			if (zpe_core_is_zombie(i))
 			{
 				g_Money_Rewarded[i] = get_pcvar_num(g_pCvar_Money_For_Loser);
 			}
@@ -304,7 +304,7 @@ public zp_fw_gamemodes_end()
 		}
 	}
 
-	else if (!zp_core_get_human_count())
+	else if (!zpe_core_get_human_count())
 	{
 		// Zombie team wins
 		for (new i = 1; i <= MaxClients; i++)
@@ -314,7 +314,7 @@ public zp_fw_gamemodes_end()
 				continue;
 			}
 
-			if (zp_core_is_zombie(i))
+			if (zpe_core_is_zombie(i))
 			{
 				g_Money_Rewarded[i] = get_pcvar_num(g_pCvar_Money_For_Winner);
 			}

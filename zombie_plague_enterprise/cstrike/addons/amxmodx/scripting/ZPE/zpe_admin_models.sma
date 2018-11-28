@@ -118,16 +118,16 @@ public plugin_precache()
 	}
 }
 
-public zp_fw_core_cure_post(iPlayer, iAttacker)
+public zpe_fw_core_cure_post(iPlayer, iAttacker)
 {
 	// Skip for Survivor
-	if (zp_class_survivor_get(iPlayer))
+	if (zpe_class_survivor_get(iPlayer))
 	{
 		return;
 	}
 
 	// Skip for Sniper
-	else if (zp_class_sniper_get(iPlayer))
+	else if (zpe_class_sniper_get(iPlayer))
 	{
 		return;
 	}
@@ -161,16 +161,16 @@ public zp_fw_core_cure_post(iPlayer, iAttacker)
 	}
 }
 
-public zp_fw_core_infect_post(iPlayer, iAttacker)
+public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Skip for Nemesis
-	if (zp_class_nemesis_get(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer))
 	{
 		return;
 	}
 
 	// Skip for Assassin
-	else if (zp_class_assassin_get(iPlayer))
+	else if (zpe_class_assassin_get(iPlayer))
 	{
 		return;
 	}

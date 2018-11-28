@@ -6,10 +6,10 @@
 
 #define _zpe_class_zombie_const_inc
 
-/* Zombie Class ID constants */
-#define ZP_INVALID_ZOMBIE_CLASS -1
+// Zombie class ID constants
+#define ZPE_INVALID_CLASS_ZOMBIE -1
 
-/* Class selection constants */
-#define ZP_CLASS_AVAILABLE 0
-#define ZP_CLASS_NOT_AVAILABLE 1
-#define ZP_CLASS_DONT_SHOW 2
+// Class selection constants
+#define ZPE_CLASS_AVAILABLE 0
+#define ZPE_CLASS_NOT_AVAILABLE 1
+#define ZPE_CLASS_DONT_SHOW 2

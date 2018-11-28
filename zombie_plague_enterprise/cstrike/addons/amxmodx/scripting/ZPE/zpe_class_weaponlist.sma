@@ -50,7 +50,7 @@ public plugin_precache()
 	register_message(MSG_WEAPONLIST, "Message_Hook_WeaponList");
 }
 
-public zp_fw_class_zombie_register_post(iClass_ID)
+public zpe_fw_class_zombie_register_post(iClass_ID)
 {
 	if (g_aZombie_WeaponList == Invalid_Array)
 	{
@@ -58,7 +58,7 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 	}
 
 	new szReal_Name[32];
-	zp_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
+	zpe_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	new szClass_Zombie_Config_Path[64];
 	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
@@ -96,7 +96,7 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 	ArrayDestroy(aWeaponList);
 }
 
-public zp_fw_class_human_register_post(iClass_ID)
+public zpe_fw_class_human_register_post(iClass_ID)
 {
 	if (g_aHuman_WeaponList == Invalid_Array)
 	{
@@ -104,7 +104,7 @@ public zp_fw_class_human_register_post(iClass_ID)
 	}
 
 	new szReal_Name[32];
-	zp_class_human_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
+	zpe_class_human_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	new szClass_Human_Config_Path[64];
 	formatex(szClass_Human_Config_Path, charsmax(szClass_Human_Config_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
@@ -141,10 +141,10 @@ public zp_fw_class_human_register_post(iClass_ID)
 	ArrayDestroy(aWeaponList);
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	new szWeaponList[32];
-	ArrayGetString(g_aZombie_WeaponList, zp_class_zombie_get_current(iPlayer), szWeaponList, charsmax(szWeaponList));
+	ArrayGetString(g_aZombie_WeaponList, zpe_class_zombie_get_current(iPlayer), szWeaponList, charsmax(szWeaponList));
 
 	if (szWeaponList[0])
 	{
@@ -152,12 +152,12 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	Send_Weapon_List_Update(iPlayer, "weapon_knife");
 
 	new szWeaponList[32];
-	ArrayGetString(g_aHuman_WeaponList, zp_class_human_get_current(iPlayer), szWeaponList, charsmax(szWeaponList));
+	ArrayGetString(g_aHuman_WeaponList, zpe_class_human_get_current(iPlayer), szWeaponList, charsmax(szWeaponList));
 
 	if (szWeaponList[0])
 	{

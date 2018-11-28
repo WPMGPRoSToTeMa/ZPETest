@@ -9,30 +9,37 @@
 /**
  * Returns whether a player is frozen.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-native zp_grenade_frost_get(id)
+native zpe_grenade_frost_get(player);
 
 /**
- * Freezes / unfreezes a player.
+ * Freezes or unfreezes a player.
  *
- * @param id		Player index.
- * @param set		True to freeze, false to unfreeze.
- * @return			True on success, false otherwise.
+ * @param {player} Player index.
+ * @param {set} True to freeze, false to unfreeze.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_grenade_frost_set(id, set = true)
+native zpe_grenade_frost_set(player, set = true);
 
 /**
  * Called when a player is about to be frozen.
  * Returning PLUGIN_HANDLED will block it.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-forward zp_fw_grenade_frost_pre(id)
+forward zpe_fw_grenade_frost_pre(player);
 
 /**
  * Called after a player recovers from a frost nade.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-forward zp_fw_grenade_frost_unfreeze(id)
+forward zpe_fw_grenade_frost_unfreeze(player);

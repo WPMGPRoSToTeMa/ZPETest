@@ -9,115 +9,130 @@
 #include <zpe_items_const>
 
 /**
- * Registers a custom item which will be added to the extra items menu of ZP.
+ * Registers a custom item which will be added to the extra items menu of ZPE.
  *
- * Note: The returned item ID can be later used to catch item
- * selection events for the zp_item_select_() forwards.
+ * Note: the returned item ID can be later used to catch item
+ * selection events for the zpe_item_select_() forwards.
  *
- * @param name			Caption to display on the menu.
- * @param cost			Cost to display on the menu.
- * @return				An internal item ID, or ZP_INVALID_ITEM on failure.
+ * @param {name} Caption to display on the menu.
+ * @param {cost} Cost to display on the menu.
+ *
+ * @return An internal item ID, or ZPE_INVALID_ITEM on failure.
  */
-native zp_items_register(const name[], cost)
+native zpe_items_register(const name[], cost);
 
 /**
  * Returns an item's ID.
  *
- * @param name		Item name to look for.
- * @return			Internal item ID, or ZP_INVALID_ITEM if not found.
+ * @param {real_name} Item name to look for.
+ *
+ * @return Internal item ID, or ZPE_INVALID_ITEM if not found.
  */
-native zp_items_get_id(const real_name[])
+native zpe_items_get_id(const real_name[]);
 
 /**
  * Returns an item's name.
  *
- * @param itemid	A valid item ID.
- * @param name		The buffer to store the string in.
- * @param len		Character size of the output buffer.
- * @return			True on success, false otherwise.
+ * @param {itemid} A valid item ID.
+ * @param {name} The buffer to store the string in.
+ * @param {len} Character size of the output buffer.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_items_get_name(itemid, name[], len)
+native zpe_items_get_name(itemid, name[], len);
 
 /**
  * Returns an item's real name (used when registering the item).
  *
- * @param classid	A valid item ID.
- * @param name		The buffer to store the string in.
- * @param len		Character size of the output buffer.
- * @return			True on success, false otherwise.
+ * @param {classid}	A valid item ID.
+ * @param {real_name} The buffer to store the string in.
+ * @param {len} Character size of the output buffer.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_items_get_real_name(itemid, real_name[], len)
+native zpe_items_get_real_name(itemid, real_name[], len);
 
 /**
  * Returns an item's cost.
  *
- * @param itemid		A valid item ID.
- * @return				Item's cost.
+ * @param {itemid} A valid item ID.
+ *
+ * @return Item's cost.
  */
-native zp_items_get_cost(itemid)
+native zpe_items_get_cost(itemid);
 
 /**
  * Shows menu with available extra items for player.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-native zp_items_show_menu(id)
+native zpe_items_show_menu(player);
 
 /**
  * Forces a player to buy an extra item.
  *
- * @param id			Player index.
- * @param itemid		A valid extra item ID.
- * @param ignorecost	If set, item's cost won't be deduced from player.
- * @return				True on success, false otherwise.
+ * @param {player} Player index.
+ * @param {itemid} A valid extra item ID.
+ * @param {ignorecost} If set, item's cost won't be deduced from player.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_items_force_buy(id, itemid, ignorecost = false)
+native zpe_items_force_buy(player, itemid, ignorecost = false);
 
 /**
  * Appends text to an item being displayed on the extra items menu.
  * Use this on the item select pre forward.
  *
- * @param text		Additional text to display.
+ * @param {text} Additional text to display.
+ *
+ * @return None.
  */
-native zp_items_menu_text_add(const text[])
-
+native zpe_items_menu_text_add(const text[]);
 
 /**
  * Get text item being displayed on the extra items menu.
  *
- * @param text		Get text from display.
+ * @param {text} Get text from display.
+ *
+ * @return None.
  */
-native zp_items_menu_get_text_add(const text[]);
-
+native zpe_items_menu_get_text_add(const text[]);
 
 /**
  * Get accessibility information item.
  *
- * @param id			Player index.
- * @param itemid		A valid extra item ID.
+ * @param {player} Player index.
+ * @param {itemid} A valid extra item ID.
+ *
+ * @return None.
  */
-native zp_items_available(index, itemid);
-
+native zpe_items_available(index, itemid);
 
 /**
  * Called when determining whether an item should be available to a player.
  *
  * Possible return values are:
- *	- ZP_ITEM_AVAILABLE (show in menu, allow selection)
- *	- ZP_ITEM_NOT_AVAILABLE (show in menu, don't allow selection)
- *	- ZP_ITEM_DONT_SHOW (don't show in menu, don't allow selection)
+ *	- ZPE_ITEM_AVAILABLE (show in menu, allow selection)
+ *	- ZPE_ITEM_NOT_AVAILABLE (show in menu, don't allow selection)
+ *	- ZPE_ITEM_DONT_SHOW (don't show in menu, don't allow selection)
  *
- * @param id			Player index.
- * @param itemid		Internal item ID.
- * @param ignorecost	Whether item cost should be ignored.
+ * @param {player} Player index.
+ * @param {itemid} Internal item ID.
+ * @param {ignorecost} Whether item cost should be ignored.
+ *
+ * @return None.
  */
-forward zp_fw_items_select_pre(id, itemid, ignorecost)
+forward zpe_fw_items_select_pre(player, itemid, ignorecost);
 
 /**
  * Called after a player selected an item from the extra items menu.
  *
- * @param id			Player index.
- * @param itemid		Internal item ID.
- * @param ignorecost	Whether item cost should be ignored.
+ * @param {player} Player index.
+ * @param {itemid} Internal item ID.
+ * @param {ignorecost} Whether item cost should be ignored.
+ *
+ * @return None.
  */
-forward zp_fw_items_select_post(id, itemid, ignorecost)
+forward zpe_fw_items_select_post(player, itemid, ignorecost);

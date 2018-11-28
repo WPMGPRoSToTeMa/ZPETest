@@ -34,7 +34,7 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 }
 
-public zp_fw_class_zombie_register_post(iClass_ID)
+public zpe_fw_class_zombie_register_post(iClass_ID)
 {
 	if (g_aZombie_Flags == Invalid_Array)
 	{
@@ -42,7 +42,7 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 	}
 
 	new szReal_Name[32];
-	zp_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
+	zpe_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	new szClass_Config_Path[64];
 	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
@@ -58,17 +58,17 @@ public zp_fw_class_zombie_register_post(iClass_ID)
 	ArrayPushCell(g_aZombie_Flags, read_flags(szFlags));
 }
 
-public zp_fw_class_zombie_select_pre(iPlayer, iClass_ID)
+public zpe_fw_class_zombie_select_pre(iPlayer, iClass_ID)
 {
 	if (get_user_flags(iPlayer) & ArrayGetCell(g_aZombie_Flags, iClass_ID))
 	{
-		return ZP_CLASS_AVAILABLE;
+		return ZPE_CLASS_AVAILABLE;
 	}
 
-	return ZP_CLASS_NOT_AVAILABLE;
+	return ZPE_CLASS_NOT_AVAILABLE;
 }
 
-public zp_fw_class_human_register_post(iClass_ID)
+public zpe_fw_class_human_register_post(iClass_ID)
 {
 	if (g_aHuman_Flags == Invalid_Array)
 	{
@@ -76,7 +76,7 @@ public zp_fw_class_human_register_post(iClass_ID)
 	}
 
 	new szReal_Name[32];
-	zp_class_human_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
+	zpe_class_human_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	new szClass_Config_Path[64];
 	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
@@ -92,12 +92,12 @@ public zp_fw_class_human_register_post(iClass_ID)
 	ArrayPushCell(g_aHuman_Flags, read_flags(szFlags));
 }
 
-public zp_fw_class_human_select_pre(iPlayer, iClass_ID)
+public zpe_fw_class_human_select_pre(iPlayer, iClass_ID)
 {
 	if (get_user_flags(iPlayer) & ArrayGetCell(g_aHuman_Flags, iClass_ID))
 	{
-		return ZP_CLASS_AVAILABLE;
+		return ZPE_CLASS_AVAILABLE;
 	}
 
-	return ZP_CLASS_NOT_AVAILABLE;
+	return ZPE_CLASS_NOT_AVAILABLE;
 }

@@ -77,7 +77,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Nemesis class loaded?
-	if (zp_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Nemesis_Ignore))
+	if (zpe_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Nemesis_Ignore))
 	{
 		// Ignore nemesis frags
 		Remove_Frags(iAttacker, iVictim);
@@ -86,7 +86,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Assassin Class loaded?
-	if (zp_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Assassin_Ignore))
+	if (zpe_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Assassin_Ignore))
 	{
 		// Ignore assassin frags
 		Remove_Frags(iAttacker, iVictim);
@@ -95,7 +95,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Survivor Class loaded?
-	if (zp_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Survivor_Ignore))
+	if (zpe_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Survivor_Ignore))
 	{
 		// Ignore survivor frags
 		Remove_Frags(iAttacker, iVictim);
@@ -104,7 +104,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Sniper Class loaded?
-	if (zp_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Sniper_Ignore))
+	if (zpe_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Frags_Sniper_Ignore))
 	{
 		// Ignore sniper frags
 		Remove_Frags(iAttacker, iVictim);
@@ -113,19 +113,19 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Human killed zombie, add up the extra frags for kill
-	if (!zp_core_is_zombie(iAttacker) && get_pcvar_num(g_pCvar_Frags_Zombie_Killed) > 1)
+	if (!zpe_core_is_zombie(iAttacker) && get_pcvar_num(g_pCvar_Frags_Zombie_Killed) > 1)
 	{
 		Update_Frags(iAttacker, iVictim, get_pcvar_num(g_pCvar_Frags_Zombie_Killed) - 1, 0, 0);
 	}
 
 	// Zombie killed human, add up the extra frags for kill
-	if (zp_core_is_zombie(iAttacker) && get_pcvar_num(g_pCvar_Frags_Human_Killed) > 1)
+	if (zpe_core_is_zombie(iAttacker) && get_pcvar_num(g_pCvar_Frags_Human_Killed) > 1)
 	{
 		Update_Frags(iAttacker, iVictim, get_pcvar_num(g_pCvar_Frags_Human_Killed) - 1, 0, 0);
 	}
 }
 
-public zp_fw_core_infect_post(iPlayer, iAttacker)
+public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	if (BIT_VALID(g_iBit_Connected, iAttacker) && iAttacker != iPlayer)
 	{
@@ -140,18 +140,18 @@ public zp_fw_core_infect_post(iPlayer, iAttacker)
 	}
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
 	g_Game_Mode_Started = true;
 	g_Last_Human_Health_Rewarded = false;
 }
 
-public zp_fw_gamemodes_end()
+public zpe_fw_gamemodes_end()
 {
 	g_Game_Mode_Started = false;
 }
 
-public zp_fw_core_last_human(iPlayer)
+public zpe_fw_core_last_human(iPlayer)
 {
 	if (g_Game_Mode_Started && !g_Last_Human_Health_Rewarded)
 	{

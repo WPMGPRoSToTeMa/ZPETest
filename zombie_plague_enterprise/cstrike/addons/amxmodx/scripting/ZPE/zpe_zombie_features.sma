@@ -96,7 +96,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim)
 
 public Message_Setfov(iMessage_ID, iMessage_Dest, iMessage_Entity)
 {
-	if (BIT_NOT_VALID(g_iBit_Alive, iMessage_Entity) || !zp_core_is_zombie(iMessage_Entity) || get_msg_arg_int(1) != CS_DEFAULT_FOV)
+	if (BIT_NOT_VALID(g_iBit_Alive, iMessage_Entity) || !zpe_core_is_zombie(iMessage_Entity) || get_msg_arg_int(1) != CS_DEFAULT_FOV)
 	{
 		return;
 	}
@@ -104,7 +104,7 @@ public Message_Setfov(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	set_msg_arg_int(1, get_msg_argtype(1), get_pcvar_num(g_pCvar_Zombie_Fov));
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	// Set custom FOV?
 	if (get_pcvar_num(g_pCvar_Zombie_Fov) != CS_DEFAULT_FOV && get_pcvar_num(g_pCvar_Zombie_Fov) != 0)
@@ -118,7 +118,7 @@ public zp_fw_core_infect_post(iPlayer)
 	remove_task(iPlayer + TASK_BLOOD);
 
 	// Nemesis Class loaded?
-	if (zp_class_nemesis_get(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer))
 	{
 		// Set silent footsteps?
 		if (get_pcvar_num(g_pCvar_Zombie_Silent))
@@ -134,7 +134,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 
 	// Assassin Class loaded?
-	else if (zp_class_assassin_get(iPlayer))
+	else if (zpe_class_assassin_get(iPlayer))
 	{
 		// Set silent footsteps?
 		if (get_pcvar_num(g_pCvar_Zombie_Silent))
@@ -156,7 +156,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Restore FOV?
 	if (get_pcvar_num(g_pCvar_Zombie_Fov) != CS_DEFAULT_FOV && get_pcvar_num(g_pCvar_Zombie_Fov) != 0)

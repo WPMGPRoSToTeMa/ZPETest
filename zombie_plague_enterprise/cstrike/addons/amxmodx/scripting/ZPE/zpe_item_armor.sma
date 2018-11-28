@@ -51,7 +51,7 @@ public plugin_init()
 	g_pCvar_Armor_Buy_Sound = register_cvar("zpe_armor_buy_sound", "1");
 	g_pCvar_Armor_Buy_Type = register_cvar("zpe_armor_buy_type", "0");
 
-	g_Item_ID = zp_items_register(ITEM_NAME, ITEM_COST);
+	g_Item_ID = zpe_items_register(ITEM_NAME, ITEM_COST);
 }
 
 public plugin_precache()
@@ -68,23 +68,23 @@ public plugin_precache()
 	}
 }
 
-public zp_fw_items_select_pre(iPlayer, iItem_ID)
+public zpe_fw_items_select_pre(iPlayer, iItem_ID)
 {
 	// This is not our item
 	if (iItem_ID != g_Item_ID)
 	{
-		return ZP_ITEM_AVAILABLE;
+		return ZPE_ITEM_AVAILABLE;
 	}
 
-	if (zp_core_is_zombie(iPlayer))
+	if (zpe_core_is_zombie(iPlayer))
 	{
-		return ZP_ITEM_DONT_SHOW;
+		return ZPE_ITEM_DONT_SHOW;
 	}
 
-	return ZP_ITEM_AVAILABLE;
+	return ZPE_ITEM_AVAILABLE;
 }
 
-public zp_fw_items_select_post(iPlayer, iItem_ID)
+public zpe_fw_items_select_post(iPlayer, iItem_ID)
 {
 	if (iItem_ID != g_Item_ID)
 	{

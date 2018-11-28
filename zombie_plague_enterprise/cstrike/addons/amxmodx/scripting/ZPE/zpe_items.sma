@@ -57,8 +57,8 @@ public plugin_init()
 	register_clcmd("say /items", "Client_Command_Items");
 	register_clcmd("say items", "Client_Command_Items");
 
-	g_Forwards[FW_ITEM_SELECT_PRE] = CreateMultiForward("zp_fw_items_select_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL);
-	g_Forwards[FW_ITEM_SELECT_POST] = CreateMultiForward("zp_fw_items_select_post", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL);
+	g_Forwards[FW_ITEM_SELECT_PRE] = CreateMultiForward("zpe_fw_items_select_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL);
+	g_Forwards[FW_ITEM_SELECT_POST] = CreateMultiForward("zpe_fw_items_select_post", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL);
 }
 
 public plugin_cfg()
@@ -70,17 +70,17 @@ public plugin_natives()
 {
 	register_library("zpe_items");
 
-	register_native("zp_items_register", "native_items_register");
-	register_native("zp_items_get_id", "native_items_get_id");
-	register_native("zp_items_get_name", "native_items_get_name");
-	register_native("zp_items_get_real_name", "native_items_get_real_name");
-	register_native("zp_items_get_cost", "native_items_get_cost");
-	register_native("zp_items_show_menu", "native_items_show_menu");
-	register_native("zp_items_force_buy", "native_items_force_buy");
-	register_native("zp_items_menu_text_add", "native_items_menu_text_add");
+	register_native("zpe_items_register", "native_items_register");
+	register_native("zpe_items_get_id", "native_items_get_id");
+	register_native("zpe_items_get_name", "native_items_get_name");
+	register_native("zpe_items_get_real_name", "native_items_get_real_name");
+	register_native("zpe_items_get_cost", "native_items_get_cost");
+	register_native("zpe_items_show_menu", "native_items_show_menu");
+	register_native("zpe_items_force_buy", "native_items_force_buy");
+	register_native("zpe_items_menu_text_add", "native_items_menu_text_add");
 
-	register_native("zp_items_menu_get_text_add", "native_items_menu_get_text_add");
-	register_native("zp_items_available", "native_items_available");
+	register_native("zpe_items_menu_get_text_add", "native_items_menu_get_text_add");
+	register_native("zpe_items_available", "native_items_available");
 
 	// Initialize dynamic arrays
 	g_aItem_Real_Name = ArrayCreate(32, 1);
@@ -98,7 +98,7 @@ public native_items_register(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Can't register item with an empty name");
 
-		return ZP_INVALID_ITEM;
+		return ZPE_INVALID_ITEM;
 	}
 
 	new szOther_Item_Name[32];
@@ -111,7 +111,7 @@ public native_items_register(iPlugin_ID, iNum_Params)
 		{
 			log_error(AMX_ERR_NATIVE, "Item already registered (%s)", szItem_Name);
 
-			return ZP_INVALID_ITEM;
+			return ZPE_INVALID_ITEM;
 		}
 	}
 
@@ -164,7 +164,7 @@ public native_items_get_id(iPlugin_ID, iNum_Params)
 		}
 	}
 
-	return ZP_INVALID_ITEM;
+	return ZPE_INVALID_ITEM;
 }
 
 public native_items_get_name(iPlugin_ID, iNum_Params)
@@ -346,7 +346,7 @@ Show_Items_Menu(iPlayer)
 		ExecuteForward(g_Forwards[FW_ITEM_SELECT_PRE], g_Forward_Result, iPlayer, i, 0);
 
 		// Show item to player?
-		if (g_Forward_Result >= ZP_ITEM_DONT_SHOW)
+		if (g_Forward_Result >= ZPE_ITEM_DONT_SHOW)
 		{
 			continue;
 		}
@@ -365,7 +365,7 @@ Show_Items_Menu(iPlayer)
 		}
 
 		// Item available to player?
-		if (g_Forward_Result >= ZP_ITEM_NOT_AVAILABLE)
+		if (g_Forward_Result >= ZPE_ITEM_NOT_AVAILABLE)
 		{
 			formatex(szMenu, charsmax(szMenu), "\d %s %d %s", szItem_Name, iCost, g_Additional_Menu_Text);
 		}
@@ -456,7 +456,7 @@ Buy_Item(iPlayer, iItem_ID, iIgnore_Cost = 0)
 	ExecuteForward(g_Forwards[FW_ITEM_SELECT_PRE], g_Forward_Result, iPlayer, iItem_ID, iIgnore_Cost);
 
 	// Item available to player?
-	if (g_Forward_Result >= ZP_ITEM_NOT_AVAILABLE)
+	if (g_Forward_Result >= ZPE_ITEM_NOT_AVAILABLE)
 	{
 		return;
 	}

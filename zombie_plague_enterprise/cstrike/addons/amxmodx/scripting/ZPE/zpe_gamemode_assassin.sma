@@ -113,11 +113,11 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_assassin.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zp_gamemodes_register("Assassin Mode");
+	zpe_gamemodes_register("Assassin Mode");
 }
 
 // Deathmatch module's player respawn forward
-public zp_fw_deathmatch_respawn_pre(iPlayer)
+public zpe_fw_deathmatch_respawn_pre(iPlayer)
 {
 	// Respawning allowed?
 	if (!get_pcvar_num(g_pCvar_Assassin_Allow_Respawn))
@@ -128,12 +128,12 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_core_spawn_post(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
-	zp_core_respawn_as_zombie(iPlayer, false);
+	zpe_core_respawn_as_zombie(iPlayer, false);
 }
 
-public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
+public zpe_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	if (!iSkipchecks)
 	{
@@ -153,14 +153,14 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_choose_post(iGame_Mode_ID, iTarget_Player)
+public zpe_fw_gamemodes_choose_post(iGame_Mode_ID, iTarget_Player)
 {
 	g_iTarget_Player = (iTarget_Player == RANDOM_TARGET_PLAYER) ? Get_Random_Alive_Player() : iTarget_Player;
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
-	zp_class_assassin_set(g_iTarget_Player);
+	zpe_class_assassin_set(g_iTarget_Player);
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
@@ -169,7 +169,7 @@ public zp_fw_gamemodes_start()
 			continue;
 		}
 
-		if (zp_class_assassin_get(i))
+		if (zpe_class_assassin_get(i))
 		{
 			continue;
 		}
@@ -236,7 +236,7 @@ public zp_fw_gamemodes_start()
 	set_lights(szLighting);
 }
 
-public zp_fw_gamemodes_end()
+public zpe_fw_gamemodes_end()
 {
 	// Execute config file (zpe_settings.cfg)
 	server_cmd("exec addons/amxmodx/configs/ZPE/zpe_settings.cfg");

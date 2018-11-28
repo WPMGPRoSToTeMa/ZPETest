@@ -9,15 +9,18 @@
 /**
  * Returns a player's ammo pack count.
  *
- * @param id		Player index.
- * @return			Number of ammo packs owned.
+ * @param {player} Player index.
+ *
+ * @return Number of ammo packs owned.
  */
-native zp_ammopacks_get(id)
+native zpe_ammopacks_get(player);
 
 /**
  * Sets a player's ammo pack count.
  *
- * @param id		Player index.
- * @param amount	New quantity of ammo packs owned.
+ * @param {player} Player index.
+ * @param {amount} New quantity of ammo packs owned.
+ *
+ * @return None.
  */
-native zp_ammopacks_set(id, amount)
+native zpe_ammopacks_set(player, amount);

@@ -50,9 +50,9 @@ new Array:g_aGame_Mode_File_Name;
 
 new g_Default_Game_Mode = 0; // first game mode is used as default if none specified
 
-new g_Chosen_Game_Mode = ZP_NO_GAME_MODE;
-new g_Current_Game_Mode = ZP_NO_GAME_MODE;
-new g_Last_Game_Mode = ZP_NO_GAME_MODE;
+new g_Chosen_Game_Mode = ZPE_NO_GAME_MODE;
+new g_Current_Game_Mode = ZPE_NO_GAME_MODE;
+new g_Last_Game_Mode = ZPE_NO_GAME_MODE;
 
 new g_Game_Mode_Count;
 
@@ -118,10 +118,10 @@ public plugin_init()
 
 	register_forward(FM_ClientDisconnect, "FM_ClientDisconnect_Post", 1)
 
-	g_Forwards[FW_GAME_MODE_CHOOSE_PRE] = CreateMultiForward("zp_fw_gamemodes_choose_pre", ET_CONTINUE, FP_CELL, FP_CELL);
-	g_Forwards[FW_GAME_MODE_CHOOSE_POST] = CreateMultiForward("zp_fw_gamemodes_choose_post", ET_IGNORE, FP_CELL, FP_CELL);
-	g_Forwards[FW_GAME_MODE_START] = CreateMultiForward("zp_fw_gamemodes_start", ET_IGNORE, FP_CELL);
-	g_Forwards[FW_GAME_MODE_END] = CreateMultiForward("zp_fw_gamemodes_end", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_GAME_MODE_CHOOSE_PRE] = CreateMultiForward("zpe_fw_gamemodes_choose_pre", ET_CONTINUE, FP_CELL, FP_CELL);
+	g_Forwards[FW_GAME_MODE_CHOOSE_POST] = CreateMultiForward("zpe_fw_gamemodes_choose_post", ET_IGNORE, FP_CELL, FP_CELL);
+	g_Forwards[FW_GAME_MODE_START] = CreateMultiForward("zpe_fw_gamemodes_start", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_GAME_MODE_END] = CreateMultiForward("zpe_fw_gamemodes_end", ET_IGNORE, FP_CELL);
 }
 
 public plugin_cfg()
@@ -133,17 +133,17 @@ public plugin_natives()
 {
 	register_library("zpe_gamemodes");
 
-	register_native("zp_gamemodes_register", "native_gamemodes_register");
-	register_native("zp_gamemodes_set_default", "native_gamemodes_set_default");
-	register_native("zp_gamemodes_get_default", "native_gamemodes_get_default");
-	register_native("zp_gamemodes_get_chosen", "native_gamemodes_get_chosen");
-	register_native("zp_gamemodes_get_current", "native_gamemodes_get_current");
-	register_native("zp_gamemodes_get_id", "native_gamemodes_get_id");
-	register_native("zp_gamemodes_get_name", "native_gamemodes_get_name");
-	register_native("zp_gamemodes_start", "native_gamemodes_start");
-	register_native("zp_gamemodes_get_count", "native_gamemodes_get_count");
-	register_native("zp_gamemodes_set_allow_infect", "native_gamemodes_set_allow_infect");
-	register_native("zp_gamemodes_get_allow_infect", "native_gamemodes_get_allow_infect");
+	register_native("zpe_gamemodes_register", "native_gamemodes_register");
+	register_native("zpe_gamemodes_set_default", "native_gamemodes_set_default");
+	register_native("zpe_gamemodes_get_default", "native_gamemodes_get_default");
+	register_native("zpe_gamemodes_get_chosen", "native_gamemodes_get_chosen");
+	register_native("zpe_gamemodes_get_current", "native_gamemodes_get_current");
+	register_native("zpe_gamemodes_get_id", "native_gamemodes_get_id");
+	register_native("zpe_gamemodes_get_name", "native_gamemodes_get_name");
+	register_native("zpe_gamemodes_start", "native_gamemodes_start");
+	register_native("zpe_gamemodes_get_count", "native_gamemodes_get_count");
+	register_native("zpe_gamemodes_set_allow_infect", "native_gamemodes_set_allow_infect");
+	register_native("zpe_gamemodes_get_allow_infect", "native_gamemodes_get_allow_infect");
 
 	// Initialize dynamic arrays
 	g_aGame_Mode_Name = ArrayCreate(32, 1);
@@ -162,7 +162,7 @@ public native_gamemodes_register(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Can't register game mode with an empty name");
 
-		return ZP_INVALID_GAME_MODE;
+		return ZPE_INVALID_GAME_MODE;
 	}
 
 	new szGamemode_Name[32];
@@ -175,7 +175,7 @@ public native_gamemodes_register(iPlugin_ID, iNum_Params)
 		{
 			log_error(AMX_ERR_NATIVE, "Game mode already registered (%s)", szGame_Name);
 
-			return ZP_INVALID_GAME_MODE;
+			return ZPE_INVALID_GAME_MODE;
 		}
 	}
 
@@ -240,7 +240,7 @@ public native_gamemodes_get_id(iPlugin_ID, iNum_Params)
 		}
 	}
 
-	return ZP_INVALID_GAME_MODE;
+	return ZPE_INVALID_GAME_MODE;
 }
 
 public native_gamemodes_get_name(iPlugin_ID, iNum_Params)
@@ -295,7 +295,7 @@ public native_gamemodes_start(iPlugin_ID, iNum_Params)
 	new szFilename_Previous[64];
 
 	// Game mode already chosen?
-	if (g_Chosen_Game_Mode != ZP_NO_GAME_MODE)
+	if (g_Chosen_Game_Mode != ZPE_NO_GAME_MODE)
 	{
 		// Pause previous game mode before picking a new one
 		ArrayGetString(g_aGame_Mode_File_Name, g_Chosen_Game_Mode, szFilename_Previous, charsmax(szFilename_Previous));
@@ -368,7 +368,7 @@ public Logevent_Round_End()
 {
 	ExecuteForward(g_Forwards[FW_GAME_MODE_END], g_Forward_Result, g_Current_Game_Mode);
 
-	if (g_Chosen_Game_Mode != ZP_NO_GAME_MODE)
+	if (g_Chosen_Game_Mode != ZPE_NO_GAME_MODE)
 	{
 		// Pause game mode after its round ends
 		new szFilename[64];
@@ -378,8 +378,8 @@ public Logevent_Round_End()
 		pause("ac", szFilename);
 	}
 
-	g_Current_Game_Mode = ZP_NO_GAME_MODE;
-	g_Chosen_Game_Mode = ZP_NO_GAME_MODE;
+	g_Current_Game_Mode = ZPE_NO_GAME_MODE;
+	g_Chosen_Game_Mode = ZPE_NO_GAME_MODE;
 
 	g_Allow_Infection = false;
 
@@ -400,7 +400,7 @@ public Event_Round_Start()
 			continue;
 		}
 
-		zp_core_respawn_as_zombie(i, false);
+		zpe_core_respawn_as_zombie(i, false);
 	}
 
 	// No game modes registered?
@@ -484,7 +484,7 @@ public Choose_Game_Mode()
 		}
 
 		// Game mode already chosen?
-		if (g_Chosen_Game_Mode != ZP_NO_GAME_MODE)
+		if (g_Chosen_Game_Mode != ZPE_NO_GAME_MODE)
 		{
 			// Pause previous game mode before picking a new one
 			ArrayGetString(g_aGame_Mode_File_Name, g_Chosen_Game_Mode, szFilename, charsmax(szFilename));
@@ -549,7 +549,7 @@ public Choose_Game_Mode()
 public Start_Game_Mode_Task()
 {
 	// No game mode was chosen (not enough players)
-	if (g_Chosen_Game_Mode == ZP_NO_GAME_MODE)
+	if (g_Chosen_Game_Mode == ZPE_NO_GAME_MODE)
 	{
 		return;
 	}
@@ -580,13 +580,13 @@ public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 	}
 
 	// Prevent attacks when no game mode is active
-	if (g_Current_Game_Mode == ZP_NO_GAME_MODE)
+	if (g_Current_Game_Mode == ZPE_NO_GAME_MODE)
 	{
 		return HC_SUPERCEDE;
 	}
 
 	// Prevent friendly fire
-	if (zp_core_is_zombie(iAttacker) == zp_core_is_zombie(iVictim))
+	if (zpe_core_is_zombie(iAttacker) == zpe_core_is_zombie(iVictim))
 	{
 		return HC_SUPERCEDE;
 	}
@@ -604,40 +604,40 @@ public Ham_TakeDamage_Player_(iVictim, iInflictor, iAttacker, Float:fDamage, iDa
 	}
 
 	// Prevent attacks when no game mode is active
-	if (g_Current_Game_Mode == ZP_NO_GAME_MODE)
+	if (g_Current_Game_Mode == ZPE_NO_GAME_MODE)
 	{
 		return HAM_SUPERCEDE;
 	}
 
 	// Prevent friendly fire
-	if (zp_core_is_zombie(iAttacker) == zp_core_is_zombie(iVictim))
+	if (zpe_core_is_zombie(iAttacker) == zpe_core_is_zombie(iVictim))
 	{
 		return HAM_SUPERCEDE;
 	}
 
 	// Mode allows infection and zombie attacking human...
-	if (g_Allow_Infection && zp_core_is_zombie(iAttacker) && !zp_core_is_zombie(iVictim))
+	if (g_Allow_Infection && zpe_core_is_zombie(iAttacker) && !zpe_core_is_zombie(iVictim))
 	{
 		// Nemesis shouldn't be infecting
-		if (zp_class_nemesis_get(iAttacker))
+		if (zpe_class_nemesis_get(iAttacker))
 		{
 			return HAM_IGNORED;
 		}
 
 		// Assassin shouldn't be infecting
-		if (zp_class_assassin_get(iAttacker))
+		if (zpe_class_assassin_get(iAttacker))
 		{
 			return HAM_IGNORED;
 		}
 
 		// Survivor shouldn't be infected
-		if (zp_class_survivor_get(iVictim))
+		if (zpe_class_survivor_get(iVictim))
 		{
 			return HAM_IGNORED;
 		}
 
 		// Sniper shouldn't be infected
-		if (zp_class_sniper_get(iVictim))
+		if (zpe_class_sniper_get(iVictim))
 		{
 			return HAM_IGNORED;
 		}
@@ -649,7 +649,7 @@ public Ham_TakeDamage_Player_(iVictim, iInflictor, iAttacker, Float:fDamage, iDa
 		}
 
 		// Last human is killed to trigger round end
-		if (zp_core_get_human_count() == 1)
+		if (zpe_core_get_human_count() == 1)
 		{
 			return HAM_IGNORED;
 		}
@@ -658,7 +658,7 @@ public Ham_TakeDamage_Player_(iVictim, iInflictor, iAttacker, Float:fDamage, iDa
 		if (fDamage > 0.0 && GetHamReturnStatus() != HAM_SUPERCEDE)
 		{
 			// Infect victim!
-			zp_core_infect(iVictim, iAttacker);
+			zpe_core_infect(iVictim, iAttacker);
 
 			return HAM_SUPERCEDE;
 		}
@@ -698,18 +698,18 @@ public zpe_fw_spawn_post_bit_add(iPlayer)
 	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
-	if (g_Current_Game_Mode != ZP_NO_GAME_MODE)
+	if (g_Current_Game_Mode != ZPE_NO_GAME_MODE)
 	{
 		// Zombies are switched to Terrorist team
 		rg_set_user_team(iPlayer, TEAM_TERRORIST);
 	}
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
-	if (g_Current_Game_Mode != ZP_NO_GAME_MODE)
+	if (g_Current_Game_Mode != ZPE_NO_GAME_MODE)
 	{
 		// Humans are switched to CT team
 		rg_set_user_team(iPlayer, TEAM_CT);

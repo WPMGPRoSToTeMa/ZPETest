@@ -105,19 +105,19 @@ public Message_ScreenFade(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	}
 
 	// Block for humans
-	if (!zp_core_is_zombie(iMessage_Entity))
+	if (!zpe_core_is_zombie(iMessage_Entity))
 	{
 		return PLUGIN_HANDLED;
 	}
 
 	// Nemesis Class loaded?
-	if (zp_class_nemesis_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Nemesis))
+	if (zpe_class_nemesis_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Nemesis))
 	{
 		return PLUGIN_HANDLED;
 	}
 
 	// Assassin Class loaded?
-	if (zp_class_assassin_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Assassin))
+	if (zpe_class_assassin_get(iMessage_Entity) && !get_pcvar_num(g_pCvar_Grenade_Flashbang_Assassin))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -157,7 +157,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	}
 
 	// Grenade's owner is zombie?
-	if (zp_core_is_zombie(get_entvar(iEntity, var_owner)))
+	if (zpe_core_is_zombie(get_entvar(iEntity, var_owner)))
 	{
 		return FMRES_IGNORED;
 	}
@@ -192,7 +192,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	return FMRES_IGNORED;
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Set custom grenade model
 	cs_set_player_view_model(iPlayer, CSW_FLASHBANG, g_V_Model_Grenade_Flashbang);

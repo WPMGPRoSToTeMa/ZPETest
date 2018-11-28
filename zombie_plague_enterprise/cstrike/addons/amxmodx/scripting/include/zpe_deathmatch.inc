@@ -6,11 +6,12 @@
 
 #define _zpe_deathmatch_included
 
-
 /**
  * Called before the deathmatch module respawns a player.
  * Returning PLUGIN_HANDLED will block respawn.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-forward zp_fw_deathmatch_respawn_pre(id)
+forward zpe_fw_deathmatch_respawn_pre(player);

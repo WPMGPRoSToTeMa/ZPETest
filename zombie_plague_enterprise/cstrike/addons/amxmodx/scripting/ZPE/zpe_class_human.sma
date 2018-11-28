@@ -87,8 +87,8 @@ public plugin_init()
 	register_clcmd("say /hclass", "Cmd_Show_Menu_Class_Human");
 	register_clcmd("say /class", "Cmd_Show_Menu_Class_Human");
 
-	g_Forwards[FW_CLASS_SELECT_PRE] = CreateMultiForward("zp_fw_class_human_select_pre", ET_CONTINUE, FP_CELL, FP_CELL);
-	g_Forwards[FW_CLASS_SELECT_POST] = CreateMultiForward("zp_fw_class_human_select_post", ET_CONTINUE, FP_CELL, FP_CELL);
+	g_Forwards[FW_CLASS_SELECT_PRE] = CreateMultiForward("zpe_fw_class_human_select_pre", ET_CONTINUE, FP_CELL, FP_CELL);
+	g_Forwards[FW_CLASS_SELECT_POST] = CreateMultiForward("zpe_fw_class_human_select_post", ET_CONTINUE, FP_CELL, FP_CELL);
 }
 
 public plugin_precache()
@@ -99,7 +99,7 @@ public plugin_precache()
 	// Precache models
 	precache_model(g_Model_V_Knife_Human);
 
-	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zp_fw_class_human_register_post", ET_CONTINUE, FP_CELL);
+	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zpe_fw_class_human_register_post", ET_CONTINUE, FP_CELL);
 }
 
 public plugin_cfg()
@@ -125,19 +125,19 @@ public plugin_natives()
 {
 	register_library("zpe_class_human");
 
-	register_native("zp_class_human_get_current", "native_class_human_get_current");
-	register_native("zp_class_human_get_next", "native_class_human_get_next");
-	register_native("zp_class_human_set_next", "native_class_human_set_next");
-	register_native("zp_class_human_register", "native_class_human_register");
-	register_native("zp_class_human_get_id", "native_class_human_get_id");
-	register_native("zp_class_human_get_name", "native_class_human_get_name");
-	register_native("zp_class_human_get_description", "native_class_human_get_description");
-	register_native("zp_class_human_get_count", "native_class_human_get_count");
-	register_native("zp_class_human_show_menu", "native_class_human_show_menu");
-	register_native("zp_class_human_menu_text_add", "native_class_human_menu_text_add");
-	register_native("zp_class_human_get_real_name", "native_class_human_get_real_name");
-	register_native("zp_class_human_register_model", "native_class_human_register_model");
-	register_native("zp_class_human_get_max_health", "native_class_human_get_max_health");
+	register_native("zpe_class_human_get_current", "native_class_human_get_current");
+	register_native("zpe_class_human_get_next", "native_class_human_get_next");
+	register_native("zpe_class_human_set_next", "native_class_human_set_next");
+	register_native("zpe_class_human_register", "native_class_human_register");
+	register_native("zpe_class_human_get_id", "native_class_human_get_id");
+	register_native("zpe_class_human_get_name", "native_class_human_get_name");
+	register_native("zpe_class_human_get_description", "native_class_human_get_description");
+	register_native("zpe_class_human_get_count", "native_class_human_get_count");
+	register_native("zpe_class_human_show_menu", "native_class_human_show_menu");
+	register_native("zpe_class_human_menu_text_add", "native_class_human_menu_text_add");
+	register_native("zpe_class_human_get_real_name", "native_class_human_get_real_name");
+	register_native("zpe_class_human_register_model", "native_class_human_register_model");
+	register_native("zpe_class_human_get_max_health", "native_class_human_get_max_health");
 
 	// Initialize dynamic arrays
 	g_aClass_Human_Real_Name = ArrayCreate(32, 1);
@@ -153,7 +153,7 @@ public plugin_natives()
 
 public Cmd_Show_Menu_Class_Human(iPlayer)
 {
-	if (!zp_core_is_zombie(iPlayer))
+	if (!zpe_core_is_zombie(iPlayer))
 	{
 		Show_Menu_Class_Human(iPlayer);
 	}
@@ -182,7 +182,7 @@ public Show_Menu_Class_Human(iPlayer)
 		ExecuteForward(g_Forwards[FW_CLASS_SELECT_PRE], g_Forward_Result, iPlayer, i);
 
 		// Show class to player?
-		if (g_Forward_Result >= ZP_CLASS_DONT_SHOW)
+		if (g_Forward_Result >= ZPE_CLASS_DONT_SHOW)
 		{
 			continue;
 		}
@@ -206,7 +206,7 @@ public Show_Menu_Class_Human(iPlayer)
 		}
 
 		// Class available to player?
-		if (g_Forward_Result >= ZP_CLASS_NOT_AVAILABLE)
+		if (g_Forward_Result >= ZPE_CLASS_NOT_AVAILABLE)
 		{
 			formatex(szMenu, charsmax(szMenu), "\d %s %s %s", szName, szDescription, g_Additional_Menu_Text);
 		}
@@ -282,7 +282,7 @@ public Menu_Class_Human(iPlayer, iMenu_ID, iItem)
 	ExecuteForward(g_Forwards[FW_CLASS_SELECT_PRE], g_Forward_Result, iPlayer, iIndex);
 
 	// Class available to player?
-	if (g_Forward_Result >= ZP_CLASS_NOT_AVAILABLE)
+	if (g_Forward_Result >= ZPE_CLASS_NOT_AVAILABLE)
 	{
 		menu_destroy(iMenu_ID);
 
@@ -327,7 +327,7 @@ public Menu_Class_Human(iPlayer, iMenu_ID, iItem)
 	return PLUGIN_HANDLED;
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Show class human menu if they haven't chosen any (e.g. just connected)
 	if (g_Class_Human_Next[iPlayer] == ZPE_INVALID_CLASS_HUMAN)
@@ -385,7 +385,7 @@ public zp_fw_core_cure_post(iPlayer)
 	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_Model_V_Knife_Human);
 }
 
-public zp_fw_core_infect(iPlayer, iAttacker)
+public zpe_fw_core_infect(iPlayer, iAttacker)
 {
 	// Remove custom knife model
 	cs_reset_player_view_model(iPlayer, CSW_KNIFE);

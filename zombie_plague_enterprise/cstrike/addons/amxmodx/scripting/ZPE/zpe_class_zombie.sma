@@ -86,8 +86,8 @@ public plugin_init()
 	register_clcmd("say /zclass", "Show_Menu_Class_Zombie");
 	register_clcmd("say /class", "Show_Class_Menu");
 
-	g_Forwards[FW_CLASS_SELECT_PRE] = CreateMultiForward("zp_fw_class_zombie_select_pre", ET_CONTINUE, FP_CELL, FP_CELL);
-	g_Forwards[FW_CLASS_SELECT_POST] = CreateMultiForward("zp_fw_class_zombie_select_post", ET_CONTINUE, FP_CELL, FP_CELL);
+	g_Forwards[FW_CLASS_SELECT_PRE] = CreateMultiForward("zpe_fw_class_zombie_select_pre", ET_CONTINUE, FP_CELL, FP_CELL);
+	g_Forwards[FW_CLASS_SELECT_POST] = CreateMultiForward("zpe_fw_class_zombie_select_post", ET_CONTINUE, FP_CELL, FP_CELL);
 }
 
 public plugin_precache()
@@ -98,29 +98,29 @@ public plugin_precache()
 
 	precache_model(ZOMBIE_DEFAULT_CLAWMODEL);
 
-	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zp_fw_class_zombie_register_post", ET_CONTINUE, FP_CELL);
+	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zpe_fw_class_zombie_register_post", ET_CONTINUE, FP_CELL);
 }
 
 public plugin_natives()
 {
 	register_library("zpe_class_zombie");
 
-	register_native("zp_class_zombie_get_current", "native_class_zombie_get_current");
-	register_native("zp_class_zombie_get_next", "native_class_zombie_get_next");
-	register_native("zp_class_zombie_set_next", "native_class_zombie_set_next");
-	register_native("zp_class_zombie_register", "native_class_zombie_register");
-	register_native("zp_class_zombie_register_kb", "native_class_zombie_register_kb");
-	register_native("zp_class_zombie_get_id", "native_class_zombie_get_id");
-	register_native("zp_class_zombie_get_name", "native_class_zombie_get_name");
-	register_native("zp_class_zombie_get_description", "native_class_zombie_get_description");
-	register_native("zp_class_zombie_get_kb", "native_class_zombie_get_kb");
-	register_native("zp_class_zombie_get_count", "native_class_zombie_get_count");
-	register_native("zp_class_zombie_show_menu", "native_class_zombie_show_menu");
-	register_native("zp_class_zombie_get_max_health", "native_class_zombie_get_max_health");
-	register_native("zp_class_zombie_register_model", "native_class_zombie_register_model");
-	register_native("zp_class_zombie_register_claw", "native_class_zombie_register_claw");
-	register_native("zp_class_zombie_get_real_name", "native_class_zombie_get_real_name");
-	register_native("zp_class_zombie_menu_text_add", "native_class_zombie_menu_text_add");
+	register_native("zpe_class_zombie_get_current", "native_class_zombie_get_current");
+	register_native("zpe_class_zombie_get_next", "native_class_zombie_get_next");
+	register_native("zpe_class_zombie_set_next", "native_class_zombie_set_next");
+	register_native("zpe_class_zombie_register", "native_class_zombie_register");
+	register_native("zpe_class_zombie_register_kb", "native_class_zombie_register_kb");
+	register_native("zpe_class_zombie_get_id", "native_class_zombie_get_id");
+	register_native("zpe_class_zombie_get_name", "native_class_zombie_get_name");
+	register_native("zpe_class_zombie_get_description", "native_class_zombie_get_description");
+	register_native("zpe_class_zombie_get_kb", "native_class_zombie_get_kb");
+	register_native("zpe_class_zombie_get_count", "native_class_zombie_get_count");
+	register_native("zpe_class_zombie_show_menu", "native_class_zombie_show_menu");
+	register_native("zpe_class_zombie_get_max_health", "native_class_zombie_get_max_health");
+	register_native("zpe_class_zombie_register_model", "native_class_zombie_register_model");
+	register_native("zpe_class_zombie_register_claw", "native_class_zombie_register_claw");
+	register_native("zpe_class_zombie_get_real_name", "native_class_zombie_get_real_name");
+	register_native("zpe_class_zombie_menu_text_add", "native_class_zombie_menu_text_add");
 
 	// Initialize dynamic arrays
 	g_aClass_Zombie_Real_Name = ArrayCreate(32, 1);
@@ -140,7 +140,7 @@ public plugin_natives()
 
 public Show_Class_Menu(iPlayer)
 {
-	if (zp_core_is_zombie(iPlayer))
+	if (zpe_core_is_zombie(iPlayer))
 	{
 		Show_Menu_Class_Zombie(iPlayer);
 	}
@@ -169,7 +169,7 @@ public Show_Menu_Class_Zombie(iPlayer)
 		ExecuteForward(g_Forwards[FW_CLASS_SELECT_PRE], g_Forward_Result, iPlayer, i);
 
 		// Show class to player?
-		if (g_Forward_Result >= ZP_CLASS_DONT_SHOW)
+		if (g_Forward_Result >= ZPE_CLASS_DONT_SHOW)
 		{
 			continue;
 		}
@@ -193,7 +193,7 @@ public Show_Menu_Class_Zombie(iPlayer)
 		}
 
 		// Class available to player?
-		if (g_Forward_Result >= ZP_CLASS_NOT_AVAILABLE)
+		if (g_Forward_Result >= ZPE_CLASS_NOT_AVAILABLE)
 		{
 			formatex(szMenu, charsmax(szMenu), "\d %s %s %s", szName, szDescription, g_Additional_Menu_Text);
 		}
@@ -270,7 +270,7 @@ public Menu_Class_Zombie(iPlayer, iMenu_ID, iItem)
 	ExecuteForward(g_Forwards[FW_CLASS_SELECT_PRE], g_Forward_Result, iPlayer, iIndex);
 
 	// Class available to player?
-	if (g_Forward_Result >= ZP_CLASS_NOT_AVAILABLE)
+	if (g_Forward_Result >= ZPE_CLASS_NOT_AVAILABLE)
 	{
 		menu_destroy(iMenu_ID);
 
@@ -316,10 +316,10 @@ public Menu_Class_Zombie(iPlayer, iMenu_ID, iItem)
 	return PLUGIN_HANDLED;
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	// Show class zombie menu if they haven't chosen any (e.g. just connected)
-	if (g_Class_Zombie_Next[iPlayer] == ZP_INVALID_ZOMBIE_CLASS)
+	if (g_Class_Zombie_Next[iPlayer] == ZPE_INVALID_CLASS_ZOMBIE)
 	{
 		Show_Menu_Class_Zombie(iPlayer);
 	}
@@ -327,7 +327,7 @@ public zp_fw_core_infect_post(iPlayer)
 	// Set selected class zombie. If none selected yet, use the first one
 	g_Class_Zombie[iPlayer] = g_Class_Zombie_Next[iPlayer];
 
-	if (g_Class_Zombie[iPlayer] == ZP_INVALID_ZOMBIE_CLASS)
+	if (g_Class_Zombie[iPlayer] == ZPE_INVALID_CLASS_ZOMBIE)
 	{
 		g_Class_Zombie[iPlayer] = 0;
 	}
@@ -384,7 +384,7 @@ public zp_fw_core_infect_post(iPlayer)
 	cs_set_player_weap_restrict(iPlayer, true, ZOMBIE_ALLOWED_WEAPONS_BITSUM, ZOMBIE_DEFAULT_ALLOWED_WEAPON);
 }
 
-public zp_fw_core_cure(iPlayer)
+public zpe_fw_core_cure(iPlayer)
 {
 	// Remove zombie claw models
 	cs_reset_player_view_model(iPlayer, CSW_KNIFE);
@@ -402,7 +402,7 @@ public native_class_zombie_get_current(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 
-		return ZP_INVALID_ZOMBIE_CLASS;
+		return ZPE_INVALID_CLASS_ZOMBIE;
 	}
 
 	return g_Class_Zombie[iPlayer];
@@ -416,7 +416,7 @@ public native_class_zombie_get_next(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
 
-		return ZP_INVALID_ZOMBIE_CLASS;
+		return ZPE_INVALID_CLASS_ZOMBIE;
 	}
 
 	return g_Class_Zombie_Next[iPlayer];
@@ -479,7 +479,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Can't register class zombie with an empty name");
 
-		return ZP_INVALID_ZOMBIE_CLASS;
+		return ZPE_INVALID_CLASS_ZOMBIE;
 	}
 
 	new szClass_Zombie_Name[32];
@@ -492,7 +492,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 		{
 			log_error(AMX_ERR_NATIVE, "Class zombie already registered (%s)", szClass_Zombie_Name);
 
-			return ZP_INVALID_ZOMBIE_CLASS;
+			return ZPE_INVALID_CLASS_ZOMBIE;
 		}
 	}
 
@@ -505,7 +505,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 		{
 			log_error(AMX_ERR_NATIVE, "Can't create config for class zombie (%s)", szName);
 
-			return ZP_INVALID_ZOMBIE_CLASS;
+			return ZPE_INVALID_CLASS_ZOMBIE;
 		}
 	}
 
@@ -784,7 +784,7 @@ public native_class_zombie_get_id(iPlugin_ID, iNum_Params)
 		}
 	}
 
-	return ZP_INVALID_ZOMBIE_CLASS;
+	return ZPE_INVALID_CLASS_ZOMBIE;
 }
 
 public native_class_zombie_get_name(iPlugin_ID, iNum_Params)
@@ -889,8 +889,8 @@ public native_class_zombie_menu_text_add(iPlugin_ID, iNum_Params)
 
 public client_putinserver(iPlayer)
 {
-	g_Class_Zombie[iPlayer] = ZP_INVALID_ZOMBIE_CLASS;
-	g_Class_Zombie_Next[iPlayer] = ZP_INVALID_ZOMBIE_CLASS;
+	g_Class_Zombie[iPlayer] = ZPE_INVALID_CLASS_ZOMBIE;
+	g_Class_Zombie_Next[iPlayer] = ZPE_INVALID_CLASS_ZOMBIE;
 
 	BIT_ADD(g_iBit_Connected, iPlayer);
 }

@@ -9,15 +9,18 @@
 /**
  * Returns a player's custom flashlight batteries charge.
  *
- * @param id		Player index.
- * @return			Charge percent (0 to 100), or -1 if custom flashlight is disabled.
+ * @param {player} Player index.
+ *
+ * @return Charge percent (0 to 100), or -1 if custom flashlight is disabled.
  */
-native zp_flashlight_get_charge(id)
+native zpe_flashlight_get_charge(player);
 
 /**
  * Sets a player's custom flashlight batteries charge.
  *
- * @param id		Player index.
- * @param value		New charge percent (0 to 100).
+ * @param {player} Player index.
+ * @param {value} New charge percent (0 to 100).
+ *
+ * @return None.
  */
-native zp_flashlight_set_charge(id, charge)
+native zpe_flashlight_set_charge(player, value);

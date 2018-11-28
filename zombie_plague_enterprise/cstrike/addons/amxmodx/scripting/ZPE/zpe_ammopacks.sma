@@ -48,8 +48,8 @@ public plugin_natives()
 {
 	register_library("zpe_ammopacks");
 
-	register_native("zp_ammopacks_get", "native_ammopacks_get");
-	register_native("zp_ammopacks_set", "native_ammopacks_set");
+	register_native("zpe_ammopacks_get", "native_ammopacks_get");
+	register_native("zpe_ammopacks_set", "native_ammopacks_set");
 }
 
 public native_ammopacks_get(iPlugin_ID, iNum_Params)

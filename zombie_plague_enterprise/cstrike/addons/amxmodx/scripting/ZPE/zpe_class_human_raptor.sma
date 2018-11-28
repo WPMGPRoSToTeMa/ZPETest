@@ -47,11 +47,11 @@ public plugin_precache()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	new iClass_Human_ID = zp_class_human_register(CLASS_HUMAN_RAPTOR_NAME, CLASS_HUMAN_RAPTOR_INFO, CLASS_HUMAN_RAPTOR_HEALTH, CLASS_HUMAN_RAPTOR_ARMOR, CLASS_HUMAN_RAPTOR_SPEED, CLASS_HUMAN_RAPTOR_GRAVITY);
+	new iClass_Human_ID = zpe_class_human_register(CLASS_HUMAN_RAPTOR_NAME, CLASS_HUMAN_RAPTOR_INFO, CLASS_HUMAN_RAPTOR_HEALTH, CLASS_HUMAN_RAPTOR_ARMOR, CLASS_HUMAN_RAPTOR_SPEED, CLASS_HUMAN_RAPTOR_GRAVITY);
 
 	for (new i = 0; i < sizeof g_Class_Human_Raptor_Models; i++)
 	{
-		zp_class_human_register_model(iClass_Human_ID, g_Class_Human_Raptor_Models[i]);
+		zpe_class_human_register_model(iClass_Human_ID, g_Class_Human_Raptor_Models[i]);
 	}
 
 	// Fix bug deploy sound

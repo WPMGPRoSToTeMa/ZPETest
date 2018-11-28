@@ -10,6 +10,8 @@
  * Shows available buy menus for player and enables them
  * back again if automatic weapon selection was enabled.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-native zp_buy_menus_show(id)
+native zpe_buy_menus_show(player);

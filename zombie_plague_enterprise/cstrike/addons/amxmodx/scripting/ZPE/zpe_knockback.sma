@@ -127,7 +127,7 @@ public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDir
 	}
 
 	// Victim isn't zombie or attacker isn't human
-	if (!zp_core_is_zombie(iVictim) || zp_core_is_zombie(iAttacker))
+	if (!zpe_core_is_zombie(iVictim) || zpe_core_is_zombie(iAttacker))
 	{
 		return;
 	}
@@ -145,13 +145,13 @@ public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDir
 	}
 
 	// Nemesis knockback disabled, nothing else to do here
-	if (zp_class_nemesis_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Nemesis) == 0.0)
+	if (zpe_class_nemesis_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Nemesis) == 0.0)
 	{
 		return;
 	}
 
 	// Assassin knockback disabled, nothing else to do here
-	if (zp_class_assassin_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Assassin) == 0.0)
+	if (zpe_class_assassin_get(iVictim) && get_pcvar_float(g_pCvar_Knockback_Assassin) == 0.0)
 	{
 		return;
 	}
@@ -205,14 +205,14 @@ public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDir
 	}
 
 	// Nemesis Class loaded?
-	if (zp_class_nemesis_get(iVictim))
+	if (zpe_class_nemesis_get(iVictim))
 	{
 		// Apply nemesis knockback multiplier
 		xs_vec_mul_scalar(fDirection, get_pcvar_float(g_pCvar_Knockback_Nemesis), fDirection);
 	}
 
 	// Assassin Class loaded?
-	else if (zp_class_assassin_get(iVictim))
+	else if (zpe_class_assassin_get(iVictim))
 	{
 		// Apply assassin knockback multiplier
 		xs_vec_mul_scalar(fDirection, get_pcvar_float(g_pCvar_Knockback_Assassin), fDirection);
@@ -221,7 +221,7 @@ public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDir
 	else if (get_pcvar_num(g_pCvar_Knockback_Obey_Class))
 	{
 		// Apply zombie class knockback multiplier
-		xs_vec_mul_scalar(fDirection, zp_class_zombie_get_kb(zp_class_zombie_get_current(iVictim)), fDirection);
+		xs_vec_mul_scalar(fDirection, zpe_class_zombie_get_kb(zpe_class_zombie_get_current(iVictim)), fDirection);
 	}
 
 	// Add up the new vector

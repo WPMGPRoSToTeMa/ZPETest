@@ -230,9 +230,9 @@ public Respawn_Player_Check_Task(Task_ID)
 	}
 
 	// If player was being spawned as a zombie, set the flag again
-	if (zp_core_is_zombie(ID_RESPAWN))
+	if (zpe_core_is_zombie(ID_RESPAWN))
 	{
-		zp_core_respawn_as_zombie(ID_RESPAWN, true);
+		zpe_core_respawn_as_zombie(ID_RESPAWN, true);
 	}
 
 	ExecuteHamB(Ham_CS_RoundRespawn, ID_RESPAWN);
@@ -280,10 +280,10 @@ public client_disconnected(iLeaving_Player)
 		new iReplaced_Player;
 		
 		// Last Zombie
-		if (zp_core_is_zombie(iLeaving_Player) && zp_core_get_zombie_count() == 1)
+		if (zpe_core_is_zombie(iLeaving_Player) && zpe_core_get_zombie_count() == 1)
 		{
 			// Only one CT left, don't leave an empty CT team
-			if (zp_core_get_human_count() == 1 && Get_CT_Count() == 1)
+			if (zpe_core_get_human_count() == 1 && Get_CT_Count() == 1)
 			{
 				return;
 			}
@@ -297,9 +297,9 @@ public client_disconnected(iLeaving_Player)
 
 			zpe_client_print_color(0, print_team_default, "%L", LANG_PLAYER, "LAST_ZOMBIE_LEFT_COLOR", szPlayer_Name);
 
-			if (zp_class_nemesis_get(iLeaving_Player))
+			if (zpe_class_nemesis_get(iLeaving_Player))
 			{
-				zp_class_nemesis_set(iReplaced_Player);
+				zpe_class_nemesis_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
@@ -307,9 +307,9 @@ public client_disconnected(iLeaving_Player)
 				}
 			}
 
-			else if (zp_class_assassin_get(iLeaving_Player))
+			else if (zpe_class_assassin_get(iLeaving_Player))
 			{
-				zp_class_assassin_set(iReplaced_Player);
+				zpe_class_assassin_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
@@ -319,15 +319,15 @@ public client_disconnected(iLeaving_Player)
 
 			else
 			{
-				zp_core_infect(iReplaced_Player, iReplaced_Player);
+				zpe_core_infect(iReplaced_Player, iReplaced_Player);
 			}
 		}
 
 		// Last Human
-		else if (!zp_core_is_zombie(iLeaving_Player) && zp_core_get_human_count() == 1)
+		else if (!zpe_core_is_zombie(iLeaving_Player) && zpe_core_get_human_count() == 1)
 		{
 			// Only one Terrorist left, don't leave an empty Terrorist team
-			if (zp_core_get_zombie_count() == 1 && Get_T_Count() == 1)
+			if (zpe_core_get_zombie_count() == 1 && Get_T_Count() == 1)
 			{
 				return;
 			}
@@ -341,9 +341,9 @@ public client_disconnected(iLeaving_Player)
 
 			zpe_client_print_color(0, print_team_default, "%L", LANG_PLAYER, "LAST_HUMAN_LEFT_COLOR", szPlayer_Name);
 
-			if (zp_class_survivor_get(iLeaving_Player))
+			if (zpe_class_survivor_get(iLeaving_Player))
 			{
-				zp_class_survivor_set(iReplaced_Player);
+				zpe_class_survivor_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
@@ -351,9 +351,9 @@ public client_disconnected(iLeaving_Player)
 				}
 			}
 
-			else if (zp_class_sniper_get(iLeaving_Player))
+			else if (zpe_class_sniper_get(iLeaving_Player))
 			{
-				zp_class_sniper_set(iReplaced_Player);
+				zpe_class_sniper_set(iReplaced_Player);
 
 				if (get_pcvar_num(g_pCvar_Keep_HP_On_Disconnect))
 				{
@@ -363,7 +363,7 @@ public client_disconnected(iLeaving_Player)
 
 			else
 			{
-				zp_core_cure(iReplaced_Player, iReplaced_Player);
+				zpe_core_cure(iReplaced_Player, iReplaced_Player);
 			}
 		}
 	}
@@ -372,12 +372,12 @@ public client_disconnected(iLeaving_Player)
 	BIT_SUB(g_iBit_Connected, iLeaving_Player);
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
 	g_Game_Mode_Started = true;
 }
 
-public zp_fw_gamemodes_end()
+public zpe_fw_gamemodes_end()
 {
 	g_Game_Mode_Started = false;
 	g_Round_Ended = true;
@@ -393,7 +393,7 @@ public zp_fw_gamemodes_end()
 public Ham_Use_(iEntity, iCaller, iActivator, iUse_Type)
 {
 	// Prevent zombies from using stationary guns
-	if (iUse_Type == STATIONARY_USING && BIT_VALID(g_iBit_Alive, iCaller) && zp_core_is_zombie(iCaller))
+	if (iUse_Type == STATIONARY_USING && BIT_VALID(g_iBit_Alive, iCaller) && zpe_core_is_zombie(iCaller))
 	{
 		return HAM_SUPERCEDE;
 	}

@@ -103,11 +103,11 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_swarm.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zp_gamemodes_register("Swarm Mode");
+	zpe_gamemodes_register("Swarm Mode");
 }
 
 // Deathmatch module's player respawn forward
-public zp_fw_deathmatch_respawn_pre(iPlayer)
+public zpe_fw_deathmatch_respawn_pre(iPlayer)
 {
 	// Respawning allowed?
 	if (!get_pcvar_num(g_pCvar_Swarm_Allow_Respawn))
@@ -118,7 +118,7 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
+public zpe_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	if (!iSkipchecks)
 	{
@@ -138,7 +138,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
 	for (new i = 1; i <= MaxClients; i++)
 	{
@@ -152,7 +152,7 @@ public zp_fw_gamemodes_start()
 			continue;
 		}
 
-		zp_core_infect(i, 0);
+		zpe_core_infect(i, 0);
 	}
 
 	// Play swarm sound

@@ -89,14 +89,14 @@ public FM_EmitSound_Zombie_(iPlayer, iChannel, szSample[], Float:fVolume, Float:
 		return FMRES_IGNORED;
 	}
 
-	if (zp_class_nemesis_get(iPlayer) || zp_class_assassin_get(iPlayer) || !zp_core_is_zombie(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer) || zpe_class_assassin_get(iPlayer) || !zpe_core_is_zombie(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
 
 	static iClass_Zombie;
 
-	iClass_Zombie = zp_class_zombie_get_current(iPlayer);
+	iClass_Zombie = zpe_class_zombie_get_current(iPlayer);
 
 	static szSound[128];
 
@@ -186,14 +186,14 @@ public FM_EmitSound_Human_(iPlayer, iChannel, szSample[], Float:fVolume, Float:f
 		return FMRES_IGNORED;
 	}
 
-	if (zp_class_survivor_get(iPlayer) || zp_class_sniper_get(iPlayer) || zp_core_is_zombie(iPlayer))
+	if (zpe_class_survivor_get(iPlayer) || zpe_class_sniper_get(iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
 
 	static iClass_Human;
 
-	iClass_Human = zp_class_human_get_current(iPlayer);
+	iClass_Human = zpe_class_human_get_current(iPlayer);
 
 	static szSound[128];
 
@@ -276,23 +276,23 @@ public FM_EmitSound_Human_(iPlayer, iChannel, szSample[], Float:fVolume, Float:f
 	return FMRES_IGNORED;
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	Remove_Tasks(iPlayer);
 
-	if (zp_class_nemesis_get(iPlayer) && zp_class_assassin_get(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer) && zpe_class_assassin_get(iPlayer))
 	{
 		return;
 	}
 
 	new szSound[128];
 
-	if (Get_Random_Zombie_Sounds(zp_class_zombie_get_current(iPlayer), ZOMBIE_SOUND_IDLE, szSound, charsmax(szSound)))
+	if (Get_Random_Zombie_Sounds(zpe_class_zombie_get_current(iPlayer), ZOMBIE_SOUND_IDLE, szSound, charsmax(szSound)))
 	{
 		set_task(random_float(TIME_IDLE_MIN_ZOMBIE, TIME_IDLE_MAX_ZOMBIE), "Idle_Zombie_Sounds", iPlayer + TASK_IDLE_SOUNDS, _, _, "b");
 	}
 
-	if (Get_Random_Zombie_Sounds(zp_class_zombie_get_current(iPlayer), ZOMBIE_SOUND_INFECT, szSound, charsmax(szSound)))
+	if (Get_Random_Zombie_Sounds(zpe_class_zombie_get_current(iPlayer), ZOMBIE_SOUND_INFECT, szSound, charsmax(szSound)))
 	{
 		emit_sound(iPlayer, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
@@ -302,23 +302,23 @@ public Idle_Zombie_Sounds(iTask_ID)
 {
 	new szSound[128];
 
-	Get_Random_Zombie_Sounds(zp_class_zombie_get_current(ID_IDLE_SOUNDS), ZOMBIE_SOUND_IDLE, szSound, charsmax(szSound));
+	Get_Random_Zombie_Sounds(zpe_class_zombie_get_current(ID_IDLE_SOUNDS), ZOMBIE_SOUND_IDLE, szSound, charsmax(szSound));
 
 	emit_sound(ID_IDLE_SOUNDS, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	Remove_Tasks(iPlayer);
 
-	if (zp_class_survivor_get(iPlayer) && zp_class_sniper_get(iPlayer))
+	if (zpe_class_survivor_get(iPlayer) && zpe_class_sniper_get(iPlayer))
 	{
 		return;
 	}
 
 	new szSound[128];
 
-	if (Get_Random_Human_Sounds(zp_class_human_get_current(iPlayer), HUMAN_SOUND_IDLE, szSound, charsmax(szSound)))
+	if (Get_Random_Human_Sounds(zpe_class_human_get_current(iPlayer), HUMAN_SOUND_IDLE, szSound, charsmax(szSound)))
 	{
 		set_task(random_float(TIME_IDLE_MIN_HUMAN, TIME_IDLE_MAX_HUMAN), "Idle_Human_Sounds", iPlayer + TASK_IDLE_SOUNDS, _, _, "b");
 	}
@@ -328,21 +328,21 @@ public Idle_Human_Sounds(iTask_ID)
 {
 	new szSound[128];
 
-	Get_Random_Human_Sounds(zp_class_human_get_current(ID_IDLE_SOUNDS), HUMAN_SOUND_IDLE, szSound, charsmax(szSound));
+	Get_Random_Human_Sounds(zpe_class_human_get_current(ID_IDLE_SOUNDS), HUMAN_SOUND_IDLE, szSound, charsmax(szSound));
 
 	emit_sound(ID_IDLE_SOUNDS, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 }
 
-public zp_fw_grenade_fire_pre(iPlayer)
+public zpe_fw_grenade_fire_pre(iPlayer)
 {
-	if (zp_class_nemesis_get(iPlayer) && zp_class_assassin_get(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer) && zpe_class_assassin_get(iPlayer))
 	{
 		return;
 	}
 
 	new szSound[128];
 
-	if (Get_Random_Zombie_Sounds(zp_class_zombie_get_current(iPlayer), ZOMBIE_SOUND_FLAME, szSound, charsmax(szSound)))
+	if (Get_Random_Zombie_Sounds(zpe_class_zombie_get_current(iPlayer), ZOMBIE_SOUND_FLAME, szSound, charsmax(szSound)))
 	{
 		set_task(TIME_FLAME, "Flame_Sounds", iPlayer + TASK_FLAME_SOUNDS, _, _, "b");
 
@@ -352,11 +352,11 @@ public zp_fw_grenade_fire_pre(iPlayer)
 
 public Flame_Sounds(iTask_ID)
 {
-	if (zp_grenade_fire_get(ID_FLAME_SOUNDS))
+	if (zpe_grenade_fire_get(ID_FLAME_SOUNDS))
 	{
 		new szSound[128];
 
-		Get_Random_Zombie_Sounds(zp_class_zombie_get_current(ID_FLAME_SOUNDS), ZOMBIE_SOUND_FLAME, szSound, charsmax(szSound));
+		Get_Random_Zombie_Sounds(zpe_class_zombie_get_current(ID_FLAME_SOUNDS), ZOMBIE_SOUND_FLAME, szSound, charsmax(szSound));
 
 		emit_sound(ID_FLAME_SOUNDS, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
@@ -371,7 +371,7 @@ public _zm_sound_zombie_register()
 {
 	new iClass = get_param(1);
 
-	if (iClass < 0 || iClass >= zp_class_zombie_get_count())
+	if (iClass < 0 || iClass >= zpe_class_zombie_get_count())
 	{
 		log_error(AMX_ERR_NATIVE, "[ZPE] Class zombie out of range %d", iClass);
 	}
@@ -425,7 +425,7 @@ public _zm_human_sound_register()
 {
 	new iClass = get_param(1);
 
-	if (iClass < 0 || iClass >= zp_class_human_get_count())
+	if (iClass < 0 || iClass >= zpe_class_human_get_count())
 	{
 		log_error(AMX_ERR_NATIVE, "[ZPE] Human class out of range", iClass);
 	}

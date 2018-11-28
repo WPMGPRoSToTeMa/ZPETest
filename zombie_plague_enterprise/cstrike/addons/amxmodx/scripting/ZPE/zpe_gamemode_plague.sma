@@ -116,11 +116,11 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_plague.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zp_gamemodes_register("Plague Mode");
+	zpe_gamemodes_register("Plague Mode");
 }
 
 // Deathmatch module's player respawn forward
-public zp_fw_deathmatch_respawn_pre(iPlayer)
+public zpe_fw_deathmatch_respawn_pre(iPlayer)
 {
 	// Respawning allowed?
 	if (!get_pcvar_num(g_pCvar_Plague_Allow_Respawn))
@@ -131,7 +131,7 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
+public zpe_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	new iAlive_Count = Get_Alive_Count();
 
@@ -159,7 +159,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
 	new iPlayer;
 	new iAlive_Count = Get_Alive_Count();
@@ -174,12 +174,12 @@ public zp_fw_gamemodes_start()
 	{
 		iPlayer = Get_Random_Alive_Player();
 
-		if (zp_class_survivor_get(iPlayer))
+		if (zpe_class_survivor_get(iPlayer))
 		{
 			continue;
 		}
 
-		zp_class_survivor_set(iPlayer);
+		zpe_class_survivor_set(iPlayer);
 
 		iSurvivors++;
 
@@ -193,12 +193,12 @@ public zp_fw_gamemodes_start()
 	{
 		iPlayer = Get_Random_Alive_Player();
 
-		if (zp_class_survivor_get(iPlayer) || zp_class_nemesis_get(iPlayer))
+		if (zpe_class_survivor_get(iPlayer) || zpe_class_nemesis_get(iPlayer))
 		{
 			continue;
 		}
 
-		zp_class_nemesis_set(iPlayer);
+		zpe_class_nemesis_set(iPlayer);
 
 		iNemesis++;
 
@@ -212,12 +212,12 @@ public zp_fw_gamemodes_start()
 	{
 		iPlayer = Get_Random_Alive_Player();
 
-		if (zp_class_survivor_get(iPlayer) || zp_core_is_zombie(iPlayer))
+		if (zpe_class_survivor_get(iPlayer) || zpe_core_is_zombie(iPlayer))
 		{
 			continue;
 		}
 
-		zp_core_infect(iPlayer, 0);
+		zpe_core_infect(iPlayer, 0);
 
 		iZombies++;
 	}
@@ -229,7 +229,7 @@ public zp_fw_gamemodes_start()
 			continue;
 		}
 
-		if (zp_class_survivor_get(i) || zp_core_is_zombie(i))
+		if (zpe_class_survivor_get(i) || zpe_core_is_zombie(i))
 		{
 			continue;
 		}

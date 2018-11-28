@@ -103,7 +103,7 @@ public plugin_init()
 	g_pCvar_Survivor_Weapon_Block = register_cvar("zpe_survivor_weapon_block", "1");
 	g_pCvar_Survivor_Weapon_Ammo = register_cvar("zpe_survivor_weapon_ammo", "200");
 
-	g_Forward = CreateMultiForward("zp_fw_class_survivor_bit_change", ET_CONTINUE, FP_CELL);
+	g_Forward = CreateMultiForward("zpe_fw_class_survivor_bit_change", ET_CONTINUE, FP_CELL);
 
 	register_clcmd("drop", "Client_Command_Drop");
 
@@ -165,8 +165,8 @@ public plugin_natives()
 {
 	register_library("zpe_class_survivor");
 
-	register_native("zp_class_survivor_set", "native_class_survivor_set");
-	register_native("zp_class_survivor_get_count", "native_class_survivor_get_count");
+	register_native("zpe_class_survivor_set", "native_class_survivor_set");
+	register_native("zpe_class_survivor_get_count", "native_class_survivor_get_count");
 }
 
 public Client_Command_Drop(iPlayer)
@@ -191,7 +191,7 @@ public RG_CSGameRules_CanHavePlayerItem_(iWeapon, iPlayer)
 	return HC_CONTINUE;
 }
 
-public zp_fw_core_spawn_post(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
 	if (BIT_VALID(g_iBit_Survivor, iPlayer))
 	{
@@ -214,7 +214,7 @@ public zp_fw_core_spawn_post(iPlayer)
 	}
 }
 
-public zp_fw_core_infect(iPlayer)
+public zpe_fw_core_infect(iPlayer)
 {
 	if (BIT_VALID(g_iBit_Survivor, iPlayer))
 	{
@@ -237,7 +237,7 @@ public zp_fw_core_infect(iPlayer)
 	}
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Apply survivor attributes?
 	if (BIT_NOT_VALID(g_iBit_Survivor, iPlayer))
@@ -303,7 +303,7 @@ public native_class_survivor_set(iPlugin_ID, iNum_Params)
 
 	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Survivor);
 
-	zp_core_force_cure(iPlayer);
+	zpe_core_force_cure(iPlayer);
 
 	return true;
 }
@@ -338,7 +338,7 @@ public Survivor_Aura(iTask_ID)
 
 public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zp_core_is_zombie(iPlayer))
+	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zpe_core_is_zombie(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}

@@ -44,7 +44,7 @@ public plugin_precache()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_Zombie_Class_ID = zp_class_zombie_register
+	g_Zombie_Class_ID = zpe_class_zombie_register
 	(
 		CLASS_ZOMBIE_FAT_NAME,
 		CLASS_ZOMBIE_FAT_INFO,
@@ -54,15 +54,15 @@ public plugin_precache()
 		CLASS_ZOMBIE_FAT_GRAVITY
 	);
 
-	zp_class_zombie_register_kb(g_Zombie_Class_ID, CLASS_ZOMBIE_FAT_KNOCKBACK);
+	zpe_class_zombie_register_kb(g_Zombie_Class_ID, CLASS_ZOMBIE_FAT_KNOCKBACK);
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Fat_Models; i++)
 	{
-		zp_class_zombie_register_model(g_Zombie_Class_ID, g_Class_Zombie_Fat_Models[i]);
+		zpe_class_zombie_register_model(g_Zombie_Class_ID, g_Class_Zombie_Fat_Models[i]);
 	}
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Fat_Clawmodels; i++)
 	{
-		zp_class_zombie_register_claw(g_Zombie_Class_ID, g_Class_Zombie_Fat_Clawmodels[i]);
+		zpe_class_zombie_register_claw(g_Zombie_Class_ID, g_Class_Zombie_Fat_Clawmodels[i]);
 	}
 }

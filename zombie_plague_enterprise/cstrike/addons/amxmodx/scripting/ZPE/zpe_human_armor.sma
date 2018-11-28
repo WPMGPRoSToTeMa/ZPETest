@@ -86,7 +86,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 	}
 
 	// Zombie attacking human...
-	if (zp_core_is_zombie(iAttacker) && !zp_core_is_zombie(iVictim))
+	if (zpe_core_is_zombie(iAttacker) && !zpe_core_is_zombie(iVictim))
 	{
 		// Ignore damage coming from a HE grenade (bugfix)
 		if (iDamage_Type & DMG_HEGRENADE)
@@ -101,25 +101,25 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 		}
 
 		// Should armor protect against nemesis attacks?
-		if (!get_pcvar_num(g_pCvar_Nemesis_Armor_Protect) && zp_class_nemesis_get(iAttacker))
+		if (!get_pcvar_num(g_pCvar_Nemesis_Armor_Protect) && zpe_class_nemesis_get(iAttacker))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect against assassin attacks?
-		if (!get_pcvar_num(g_pCvar_Assassin_Armor_Protect) && zp_class_assassin_get(iAttacker))
+		if (!get_pcvar_num(g_pCvar_Assassin_Armor_Protect) && zpe_class_assassin_get(iAttacker))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect survivor too?
-		if (!get_pcvar_num(g_pCvar_Survivor_Armor_Protect) && zp_class_survivor_get(iVictim))
+		if (!get_pcvar_num(g_pCvar_Survivor_Armor_Protect) && zpe_class_survivor_get(iVictim))
 		{
 			return HC_CONTINUE;
 		}
 
 		// Should armor protect sniper too?
-		if (!get_pcvar_num(g_pCvar_Sniper_Armor_Protect) && zp_class_sniper_get(iVictim))
+		if (!get_pcvar_num(g_pCvar_Sniper_Armor_Protect) && zpe_class_sniper_get(iVictim))
 		{
 			return HC_CONTINUE;
 		}

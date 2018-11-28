@@ -112,11 +112,11 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_armageddon.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zp_gamemodes_register("Armageddon Mode");
+	zpe_gamemodes_register("Armageddon Mode");
 }
 
 // Deathmatch module's player respawn forward
-public zp_fw_deathmatch_respawn_pre(iPlayer)
+public zpe_fw_deathmatch_respawn_pre(iPlayer)
 {
 	// Respawning allowed?
 	if (!get_pcvar_num(g_pCvar_Armageddon_Allow_Respawn))
@@ -127,7 +127,7 @@ public zp_fw_deathmatch_respawn_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
+public zpe_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 {
 	if (!iSkipchecks)
 	{
@@ -148,7 +148,7 @@ public zp_fw_gamemodes_choose_pre(iGame_Mode_ID, iSkipchecks)
 	return PLUGIN_CONTINUE;
 }
 
-public zp_fw_gamemodes_start()
+public zpe_fw_gamemodes_start()
 {
 	// Calculate player counts
 	new iPlayer;
@@ -166,13 +166,13 @@ public zp_fw_gamemodes_start()
 		iPlayer = Get_Random_Alive_Player();
 
 		// Already a survivor?
-		if (zp_class_survivor_get(iPlayer))
+		if (zpe_class_survivor_get(iPlayer))
 		{
 			continue;
 		}
 
 		// If not, turn him into one
-		zp_class_survivor_set(iPlayer);
+		zpe_class_survivor_set(iPlayer);
 
 		iSurvivors++;
 
@@ -190,13 +190,13 @@ public zp_fw_gamemodes_start()
 		iPlayer = Get_Random_Alive_Player();
 
 		// Already a survivor or nemesis?
-		if (zp_class_survivor_get(iPlayer) || zp_class_nemesis_get(iPlayer))
+		if (zpe_class_survivor_get(iPlayer) || zpe_class_nemesis_get(iPlayer))
 		{
 			continue;
 		}
 
 		// If not, turn him into one
-		zp_class_nemesis_set(iPlayer);
+		zpe_class_nemesis_set(iPlayer);
 
 		iNemesis++;
 

@@ -11,148 +11,168 @@
 /**
  * Returns a player's current human class ID.
  *
- * @param id		Player index.
- * @return			Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not yet chosen.
+ * @param {player} Player index.
+ *
+ * @return Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not yet chosen.
  */
-native zp_class_human_get_current(id)
+native zpe_class_human_get_current(player);
 
 /**
  * Returns a player's next human class ID (for the next infection).
  *
- * @param id		Player index.
- * @return			Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not yet chosen.
+ * @param {player} Player index.
+ *
+ * @return Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not yet chosen.
  */
-native zp_class_human_get_next(id)
+native zpe_class_human_get_next(player);
 
 /**
  * Sets a player's next human class ID (for the next infection).
  *
- * @param id		Player index.
- * @param classid	A valid human class ID.
- * @return			True on success, false otherwise.
+ * @param {player} Player index.
+ * @param {classid} A valid human class ID.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_class_human_set_next(id, classid)
+native zpe_class_human_set_next(player, classid);
 
 /**
  * Returns the default maximum health for a specific human class.
  *
  * Note: does not take into account any kind of HP bonuses.
  *
- * @param id		Player index.
- * @param classid	A valid human class ID.
- * @return			Maximum amount of health points, -1 on error.
+ * @param {player} Player index.
+ * @param {classid} A valid human class ID.
+ *
+ * @return Maximum amount of health points, -1 on error.
  */
-native zp_class_human_get_max_health(id, classid)
+native zpe_class_human_get_max_health(player, classid);
 
 /**
- * Registers a custom class which will be added to the human classes menu of ZP.
+ * Registers a custom class which will be added to the human classes menu of ZPE.
  *
- * Note: The returned human class ID can be later used to identify
+ * Note: the returned human class ID can be later used to identify
  * the class when calling the zp_get_user_human_class() natives.
  *
- * @param name			Caption to display on the menu.
- * @param description	Brief description of the class.
- * @param health		Class health.
- * @param armor			Class armor.
- * @param speed			Class maxspeed (can be a multiplier).
- * @param gravity		Class gravity multiplier.
- * @return				An internal human class ID, or ZPE_INVALID_CLASS_HUMAN on failure.
+ * @param {name} Caption to display on the menu.
+ * @param {description} Brief description of the class.
+ * @param {health} Class health.
+ * @param {armor} Class armor.
+ * @param {speed} Class maxspeed (can be a multiplier).
+ * @param {gravity} Class gravity multiplier.
+ *
+ * @return An internal human class ID, or ZPE_INVALID_CLASS_HUMAN on failure.
  */
-native zp_class_human_register(const name[], const description[], Float:health, Float:armor, Float:speed, Float:gravity)
+native zpe_class_human_register(const name[], const description[], Float:health, Float:armor, Float:speed, Float:gravity);
 
 /**
  * Registers a custom player model for a given human class.
  *
- * @param classid		A valid human class ID.
- * @param model			Player model's short name.
- * @return				True on success, false otherwise.
+ * @param {classid} A valid human class ID.
+ * @param {model} Player model's short name.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_class_human_register_model(classid, const model[])
+native zpe_class_human_register_model(classid, const model[]);
 
 /**
- * Returns a human class' ID.
+ * Returns a human class's ID.
  *
- * @param name		Class name to look for.
- * @return			Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not found.
+ * @param {name} Class name to look for.
+ *
+ * @return Internal human class ID, or ZPE_INVALID_CLASS_HUMAN if not found.
  */
-native zp_class_human_get_id(const real_name[])
+native zpe_class_human_get_id(const real_name[]);
 
 /**
- * Returns a human class' name.
+ * Returns a human class's name.
  *
- * @param classid	A valid human class ID.
- * @param name		The buffer to store the string in.
- * @param len		Character size of the output buffer.
- * @return			True on success, false otherwise.
+ * @param {classid}	A valid human class ID.
+ * @param {name} The buffer to store the string in.
+ * @param {len} Character size of the output buffer.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_class_human_get_name(classid, name[], len)
+native zpe_class_human_get_name(classid, name[], len);
 
 /**
- * Returns a human class' real name (used when registering the class).
+ * Returns a human class's real name (used when registering the class).
  *
- * @param classid	A valid human class ID.
- * @param name		The buffer to store the string in.
- * @param len		Character size of the output buffer.
- * @return			True on success, false otherwise.
+ * @param {classid} A valid human class ID.
+ * @param {name} The buffer to store the string in.
+ * @param {len} Character size of the output buffer.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_class_human_get_real_name(classid, real_name[], len)
+native zpe_class_human_get_real_name(classid, real_name[], len);
 
 /**
- * Returns a human class' description.
+ * Returns a human class's description.
  *
- * @param classid		A valid human class ID.
- * @param description	The buffer to store the string in.
- * @param len			Character size of the output buffer.
- * @return				True on success, false otherwise.
+ * @param {classid} A valid human class ID.
+ * @param {description}	The buffer to store the string in.
+ * @param {len} Character size of the output buffer.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_class_human_get_description(classid, description[], len)
+native zpe_class_human_get_description(classid, description[], len);
 
 /**
  * Returns number of registered human classes.
  *
- * @return			Human class count.
+ * @return Human class count.
  */
-native zp_class_human_get_count()
+native zpe_class_human_get_count();
 
 /**
  * Shows menu with available human classes to a player.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-native zp_class_human_show_menu(id)
+native zpe_class_human_show_menu(player);
 
 /**
  * Appends text to a class being displayed on the human classes menu.
  * Use this on the class select pre forward.
  *
- * @param text		Additional text to display.
+ * @param {text} Additional text to display.
+ *
+ * @return None.
  */
-native zp_class_human_menu_text_add(const text[])
+native zpe_class_human_menu_text_add(const text[]);
 
 /**
  * Called when determining whether a class should be available to a player.
  *
  * Possible return values are:
- *	- ZP_CLASS_AVAILABLE (show in menu, allow selection)
- *	- ZP_CLASS_NOT_AVAILABLE (show in menu, don't allow selection)
- *	- ZP_CLASS_DONT_SHOW (don't show in menu, don't allow selection)
+ *	- ZPE_CLASS_AVAILABLE (show in menu, allow selection)
+ *	- ZPE_CLASS_NOT_AVAILABLE (show in menu, don't allow selection)
+ *	- ZPE_CLASS_DONT_SHOW (don't show in menu, don't allow selection)
  *
- * @param id			Player index.
- * @param classid		Internal human class ID.
+ * @param {player} Player index.
+ * @param {classid} Internal human class ID.
+ *
+ * @return None.
  */
-forward zp_fw_class_human_select_pre(id, classid)
+forward zpe_fw_class_human_select_pre(player, classid);
 
 /**
  * Called right after a player selects a class from the menu.
  *
- * @param id			Player index.
- * @param classid		Internal human class ID.
+ * @param {player} Player index.
+ * @param {classid} Internal human class ID.
+ *
+ * @return None.
  */
-forward zp_fw_class_human_select_post(id, classid)
+forward zpe_fw_class_human_select_post(player, classid);
 
 /**
  * Called after human class registered.
  *
- * @param classid		Internal human class ID.
+ * @param {classid} Internal human class ID.
+ *
+ * @return None.
  */
-forward zp_fw_class_human_register_post(classid);
+forward zpe_fw_class_human_register_post(classid);

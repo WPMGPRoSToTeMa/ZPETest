@@ -56,7 +56,7 @@ public plugin_natives()
 {
 	register_library("zpe_random_spawn");
 
-	register_native("zp_random_spawn_do", "native_random_spawn_do");
+	register_native("zpe_random_spawn_do", "native_random_spawn_do");
 }
 
 public native_random_spawn_do(iPlugin_ID, iNum_Params)
@@ -78,7 +78,7 @@ public native_random_spawn_do(iPlugin_ID, iNum_Params)
 }
 
 // ZPE Player Spawn Post Forward
-public zp_fw_core_spawn_post(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
 	Do_Random_Spawn(iPlayer, get_pcvar_num(g_pCvar_Random_Spawning));
 }

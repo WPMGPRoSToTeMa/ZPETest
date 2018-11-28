@@ -59,7 +59,7 @@ public plugin_init()
 
 public plugin_precache()
 {
-	g_Class_Zombie_ID = zp_class_zombie_register
+	g_Class_Zombie_ID = zpe_class_zombie_register
 	(
 		CLASS_ZOMBIE_LEECH_NAME,
 		CLASS_ZOMBIE_LEECH_INFO,
@@ -69,16 +69,16 @@ public plugin_precache()
 		CLASS_ZOMBIE_LEECH_GRAVITY
 	);
 
-	zp_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_LEECH_KNOCKBACK);
+	zpe_class_zombie_register_kb(g_Class_Zombie_ID, CLASS_ZOMBIE_LEECH_KNOCKBACK);
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Leech_Models; i++)
 	{
-		zp_class_zombie_register_model(g_Class_Zombie_ID, g_Class_Zombie_Leech_Models[i]);
+		zpe_class_zombie_register_model(g_Class_Zombie_ID, g_Class_Zombie_Leech_Models[i]);
 	}
 
 	for (new i = 0; i < sizeof g_Class_Zombie_Leech_Clawmodels; i++)
 	{
-		zp_class_zombie_register_claw(g_Class_Zombie_ID, g_Class_Zombie_Leech_Clawmodels[i]);
+		zpe_class_zombie_register_claw(g_Class_Zombie_ID, g_Class_Zombie_Leech_Clawmodels[i]);
 	}
 }
 
@@ -87,13 +87,13 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/classes/zombie/Leech_Zombie.cfg");
 }
 
-public zp_fw_core_infect_post(iPlayer, iAttacker)
+public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Infected by a valid attacker?
-	if (BIT_VALID(g_iBit_Alive, iAttacker) && iAttacker != iPlayer && zp_core_is_zombie(iAttacker))
+	if (BIT_VALID(g_iBit_Alive, iAttacker) && iAttacker != iPlayer && zpe_core_is_zombie(iAttacker))
 	{
 		// Leech Zombie infection hp bonus
-		if (zp_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
+		if (zpe_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
 		{
 			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward);
 		}
@@ -109,10 +109,10 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	}
 
 	// Leech Zombie kill hp bonus
-	if (zp_core_is_zombie(iAttacker) && zp_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
+	if (zpe_core_is_zombie(iAttacker) && zpe_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
 	{
 		// Unless nemesis and assassin
-		if (!zp_class_nemesis_get(iAttacker) || !zp_class_assassin_get(iAttacker))
+		if (!zpe_class_nemesis_get(iAttacker) || !zpe_class_assassin_get(iAttacker))
 		{
 			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward);
 		}

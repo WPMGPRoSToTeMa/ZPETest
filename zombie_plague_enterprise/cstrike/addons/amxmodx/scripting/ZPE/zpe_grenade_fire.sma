@@ -176,7 +176,7 @@ public plugin_init()
 	g_iStatus_Icon = get_user_msgid("StatusIcon");
 	g_Message_Damage = get_user_msgid("Damage");
 
-	g_Forwards[FW_USER_BURN_PRE] = CreateMultiForward("zp_fw_grenade_fire_pre", ET_CONTINUE, FP_CELL);
+	g_Forwards[FW_USER_BURN_PRE] = CreateMultiForward("zpe_fw_grenade_fire_pre", ET_CONTINUE, FP_CELL);
 }
 
 public plugin_precache()
@@ -212,8 +212,8 @@ public plugin_natives()
 {
 	register_library("zpe_grenade_fire");
 
-	register_native("zp_grenade_fire_get", "native_grenade_fire_get");
-	register_native("zp_grenade_fire_set", "native_grenade_fire_set");
+	register_native("zpe_grenade_fire_get", "native_grenade_fire_get");
+	register_native("zpe_grenade_fire_set", "native_grenade_fire_set");
 }
 
 public native_grenade_fire_get(iPlugin_ID, iNum_Params)
@@ -278,7 +278,7 @@ public native_grenade_fire_set(iPlugin_ID, iNum_Params)
 	return Set_On_Fire(iPlayer);
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Stop burning
 	remove_task(iPlayer + TASK_BURN);
@@ -290,7 +290,7 @@ public zp_fw_core_cure_post(iPlayer)
 	cs_set_player_weap_model(iPlayer, CSW_HEGRENADE, g_P_Model_Grenade_Fire);
 }
 
-public zp_fw_core_infect(iPlayer)
+public zpe_fw_core_infect(iPlayer)
 {
 	// Remove custom grenade model
 	cs_reset_player_view_model(iPlayer, CSW_HEGRENADE);
@@ -331,7 +331,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	}
 
 	// Grenade's owner is zombie?
-	if (zp_core_is_zombie(get_entvar(iEntity, var_owner)))
+	if (zpe_core_is_zombie(get_entvar(iEntity, var_owner)))
 	{
 		return FMRES_IGNORED;
 	}
@@ -452,7 +452,7 @@ Fire_Explode(iEntity)
 	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Fire_Explosion_Radius))) != 0)
 	{
 		// Only effect alive zombies
-		if (iVictim > 32 || BIT_NOT_VALID(g_iBit_Alive, iVictim) || !zp_core_is_zombie(iVictim))
+		if (iVictim > 32 || BIT_NOT_VALID(g_iBit_Alive, iVictim) || !zpe_core_is_zombie(iVictim))
 		{
 			continue;
 		}
@@ -485,14 +485,14 @@ Set_On_Fire(iVictim)
 	}
 
 	// Reduced duration for nemesis
-	if (zp_class_nemesis_get(iVictim))
+	if (zpe_class_nemesis_get(iVictim))
 	{
 		// Fire duration (nemesis)
 		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Fire_Duration_Nemesis);
 	}
 
 	// Reduced duration for assassin
-	else if (zp_class_assassin_get(iVictim))
+	else if (zpe_class_assassin_get(iVictim))
 	{
 		// Fire duration (assassin)
 		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Fire_Duration_Assassin);
@@ -543,7 +543,7 @@ public Burning_Flame(iTask_ID)
 	}
 
 	// Nemesis Class loaded?
-	if (zp_class_nemesis_get(ID_BURN))
+	if (zpe_class_nemesis_get(ID_BURN))
 	{
 		// Fire slow down
 		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown_Nemesis) > 0.0)
@@ -567,7 +567,7 @@ public Burning_Flame(iTask_ID)
 	}
 
 	// Assassin Class loaded?
-	else if (zp_class_assassin_get(ID_BURN))
+	else if (zpe_class_assassin_get(ID_BURN))
 	{
 		// Fire slow down
 		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown_Assassin) > 0.0)
@@ -620,8 +620,8 @@ public Event_CurWeapon(iPlayer)
 {
 	if (get_pcvar_num(g_pCvar_Grenade_Fire_Hudicon_Player))
 	{
-		// TODO: if zp_core_is_zombie - crutch. Use wpn key
-		if (read_data(2) == CSW_HEGRENADE && !zp_core_is_zombie(iPlayer))
+		// TODO: if zpe_core_is_zombie - crutch. Use wpn key
+		if (read_data(2) == CSW_HEGRENADE && !zpe_core_is_zombie(iPlayer))
 		{
 			message_begin(MSG_ONE, g_iStatus_Icon, _, iPlayer);
 			write_byte(1);

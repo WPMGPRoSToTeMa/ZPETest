@@ -150,10 +150,10 @@ public client_putinserver(iPlayer)
 	set_task(0.1, "Spectator_Night_Vision", iPlayer);
 }
 
-public zp_fw_core_infect_post(iPlayer)
+public zpe_fw_core_infect_post(iPlayer)
 {
 	// Nemesis Class loaded?
-	if (zp_class_nemesis_get(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Nemesis))
 		{
@@ -188,7 +188,7 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 
 	// Assassin Class loaded?
-	else if (zp_class_assassin_get(iPlayer))
+	else if (zpe_class_assassin_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Assassin))
 		{
@@ -257,10 +257,10 @@ public zp_fw_core_infect_post(iPlayer)
 	}
 }
 
-public zp_fw_core_cure_post(iPlayer)
+public zpe_fw_core_cure_post(iPlayer)
 {
 	// Survivor Class loaded?
-	if (zp_class_survivor_get(iPlayer))
+	if (zpe_class_survivor_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Survivor))
 		{
@@ -295,7 +295,7 @@ public zp_fw_core_cure_post(iPlayer)
 	}
 
 	// Sniper Class loaded?
-	else if (zp_class_sniper_get(iPlayer))
+	else if (zpe_class_sniper_get(iPlayer))
 	{
 		if (get_pcvar_num(g_pCvar_Night_Vision_Sniper))
 		{
@@ -500,10 +500,10 @@ public Custom_Night_Vision_Task(iTask_ID)
 	}
 
 	// Zombie
-	else if (zp_core_is_zombie(ID_NIGHT_VISION))
+	else if (zpe_core_is_zombie(ID_NIGHT_VISION))
 	{
 		// Nemesis Class loaded?
-		if (zp_class_nemesis_get(ID_NIGHT_VISION))
+		if (zpe_class_nemesis_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Nemesis_Radius)); // radius
 
@@ -513,7 +513,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 		}
 
 		// Assassin Class loaded?
-		else if (zp_class_assassin_get(ID_NIGHT_VISION))
+		else if (zpe_class_assassin_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Assassin_Radius)); // radius
 
@@ -536,7 +536,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 	else
 	{
 		// Survivor Class loaded?
-		if (zp_class_survivor_get(ID_NIGHT_VISION))
+		if (zpe_class_survivor_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Survivor_Radius)); // radius
 
@@ -546,7 +546,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 		}
 
 		// Sniper Class loaded?
-		else if (zp_class_sniper_get(ID_NIGHT_VISION))
+		else if (zpe_class_sniper_get(ID_NIGHT_VISION))
 		{
 			write_byte(get_pcvar_num(g_pCvar_Night_Vision_Sniper_Radius)); // radius
 

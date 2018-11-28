@@ -9,23 +9,28 @@
 /**
  * Returns whether a player is burning.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-native zp_grenade_fire_get(id)
+native zpe_grenade_fire_get(player);
 
 /**
- * Sets a player on fire / stops burning.
+ * Sets a player on fire or stops burning.
  *
- * @param id		Player index.
- * @param set		True to set on fire, false to stop burning.
- * @return			True on success, false otherwise.
+ * @param {player} Player index.
+ * @param {set} True to set on fire, false to stop burning.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_grenade_fire_set(id, set = true)
+native zpe_grenade_fire_set(player, set = true);
 
 /**
  * Called when a player is about to start burning.
  * Returning PLUGIN_HANDLED will block it.
  *
- * @param id		Player index.
+ * @param {player} Player index.
+ *
+ * @return None.
  */
-forward zp_fw_grenade_fire_pre(id)
+forward zpe_fw_grenade_fire_pre(player);

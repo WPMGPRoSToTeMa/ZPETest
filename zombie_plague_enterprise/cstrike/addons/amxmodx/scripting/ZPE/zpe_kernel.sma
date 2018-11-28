@@ -58,20 +58,20 @@ public plugin_init()
 
 	register_dictionary("zombie_plague_enterprise.txt");
 
-	g_Forward = CreateMultiForward("zp_fw_class_zombie_bit_change", ET_CONTINUE, FP_CELL);
+	g_Forward = CreateMultiForward("zpe_fw_class_zombie_bit_change", ET_CONTINUE, FP_CELL);
 
-	g_Forwards[FW_USER_INFECT_PRE] = CreateMultiForward("zp_fw_core_infect_pre", ET_CONTINUE, FP_CELL, FP_CELL);
-	g_Forwards[FW_USER_INFECT] = CreateMultiForward("zp_fw_core_infect", ET_IGNORE, FP_CELL, FP_CELL);
-	g_Forwards[FW_USER_INFECT_POST] = CreateMultiForward("zp_fw_core_infect_post", ET_IGNORE, FP_CELL, FP_CELL);
+	g_Forwards[FW_USER_INFECT_PRE] = CreateMultiForward("zpe_fw_core_infect_pre", ET_CONTINUE, FP_CELL, FP_CELL);
+	g_Forwards[FW_USER_INFECT] = CreateMultiForward("zpe_fw_core_infect", ET_IGNORE, FP_CELL, FP_CELL);
+	g_Forwards[FW_USER_INFECT_POST] = CreateMultiForward("zpe_fw_core_infect_post", ET_IGNORE, FP_CELL, FP_CELL);
 
-	g_Forwards[FW_USER_CURE_PRE] = CreateMultiForward("zp_fw_core_cure_pre", ET_CONTINUE, FP_CELL, FP_CELL);
-	g_Forwards[FW_USER_CURE] = CreateMultiForward("zp_fw_core_cure", ET_IGNORE, FP_CELL, FP_CELL);
-	g_Forwards[FW_USER_CURE_POST] = CreateMultiForward("zp_fw_core_cure_post", ET_IGNORE, FP_CELL, FP_CELL);
+	g_Forwards[FW_USER_CURE_PRE] = CreateMultiForward("zpe_fw_core_cure_pre", ET_CONTINUE, FP_CELL, FP_CELL);
+	g_Forwards[FW_USER_CURE] = CreateMultiForward("zpe_fw_core_cure", ET_IGNORE, FP_CELL, FP_CELL);
+	g_Forwards[FW_USER_CURE_POST] = CreateMultiForward("zpe_fw_core_cure_post", ET_IGNORE, FP_CELL, FP_CELL);
 
-	g_Forwards[FW_USER_LAST_ZOMBIE] = CreateMultiForward("zp_fw_core_last_zombie", ET_IGNORE, FP_CELL);
-	g_Forwards[FW_USER_LAST_HUMAN] = CreateMultiForward("zp_fw_core_last_human", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_USER_LAST_ZOMBIE] = CreateMultiForward("zpe_fw_core_last_zombie", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_USER_LAST_HUMAN] = CreateMultiForward("zpe_fw_core_last_human", ET_IGNORE, FP_CELL);
 
-	g_Forwards[FW_USER_SPAWN_POST] = CreateMultiForward("zp_fw_core_spawn_post", ET_IGNORE, FP_CELL);
+	g_Forwards[FW_USER_SPAWN_POST] = CreateMultiForward("zpe_fw_core_spawn_post", ET_IGNORE, FP_CELL);
 
 	g_Forwards[FW_USER_BIT_ADD] = CreateMultiForward("zpe_fw_spawn_post_bit_add", ET_IGNORE, FP_CELL);
 	g_Forwards[FW_USER_BIT_SUB] = CreateMultiForward("zpe_fw_kill_pre_bit_sub", ET_IGNORE, FP_CELL);
@@ -92,16 +92,16 @@ public plugin_natives()
 {
 	register_library("zpe_kernel");
 
-	register_native("zp_core_is_first_zombie", "native_core_is_first_zombie");
-	register_native("zp_core_is_last_zombie", "native_core_is_last_zombie");
-	register_native("zp_core_is_last_human", "native_core_is_last_human");
-	register_native("zp_core_get_zombie_count", "native_core_get_zombie_count");
-	register_native("zp_core_get_human_count", "native_core_get_human_count");
-	register_native("zp_core_infect", "native_core_infect");
-	register_native("zp_core_cure", "native_core_cure");
-	register_native("zp_core_force_infect", "native_core_force_infect");
-	register_native("zp_core_force_cure", "native_core_force_cure");
-	register_native("zp_core_respawn_as_zombie", "native_core_respawn_as_zombie");
+	register_native("zpe_core_is_first_zombie", "native_core_is_first_zombie");
+	register_native("zpe_core_is_last_zombie", "native_core_is_last_zombie");
+	register_native("zpe_core_is_last_human", "native_core_is_last_human");
+	register_native("zpe_core_get_zombie_count", "native_core_get_zombie_count");
+	register_native("zpe_core_get_human_count", "native_core_get_human_count");
+	register_native("zpe_core_infect", "native_core_infect");
+	register_native("zpe_core_cure", "native_core_cure");
+	register_native("zpe_core_force_infect", "native_core_force_infect");
+	register_native("zpe_core_force_cure", "native_core_force_cure");
+	register_native("zpe_core_respawn_as_zombie", "native_core_respawn_as_zombie");
 }
 
 public RG_CSGameRules_PlayerSpawn_Post(iPlayer)

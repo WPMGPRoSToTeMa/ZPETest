@@ -9,8 +9,10 @@
 /**
  * Called when player press or unpress button.
  *
- * @param player					Player index.
- * @param pressed					Pressed button bitsum.
- * @param unpressed					Unpressed button bitsum.
+ * @param {player} Player index.
+ * @param {pressed} Pressed button bitsum.
+ * @param {unpressed} Unpressed button bitsum.
+ *
+ * @return None.
  */
 forward fw_button_changed(player, pressed, unpressed);

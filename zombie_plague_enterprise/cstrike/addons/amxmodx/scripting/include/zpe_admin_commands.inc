@@ -7,73 +7,81 @@
 #define _zpe_admin_commands_included
 
 /**
- * Manually executes admin command: zp_zombie.
+ * Manually executes admin command: zpe_zombie.
  *
- * @param id		Admin player index.
- * @param player	Target player index.
- * @return			True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {player} Target player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_zombie(id, player)
+native zpe_admin_commands_zombie(id, player);
 
 /**
- * Manually executes admin command: zp_human.
+ * Manually executes admin command: zpe_human.
  *
- * @param id		Admin player index.
- * @param player	Target player index.
- * @return			True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {player} Target player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_human(id, player)
+native zpe_admin_commands_human(id, player);
 
 /**
- * Manually executes admin command: zp_nemesis.
+ * Manually executes admin command: zpe_nemesis.
  *
- * @param id		Admin player index.
- * @param player	Target player index.
- * @return			True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {player} Target player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_nemesis(id, player)
+native zpe_admin_commands_nemesis(id, player);
 
 /**
- * Manually executes admin command: zp_assassin.
+ * Manually executes admin command: zpe_assassin.
  *
- * @param id		Admin player index.
- * @param player	Target player index.
- * @return			True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {player} Target player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_assassin(id, player)
+native zpe_admin_commands_assassin(id, player);
 
 /**
- * Manually executes admin command: zp_survivor.
+ * Manually executes admin command: zpe_survivor.
  *
- * @param id		Admin player index.
- * @param player	Target player index.
- * @return			True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {player} Target player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_survivor(id, player)
+native zpe_admin_commands_survivor(id, player);
 
 /**
- * Manually executes admin command: zp_sniper.
+ * Manually executes admin command: zpe_sniper.
  *
- * @param id		Admin player index.
- * @param player	Target player index.
- * @return			True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {player} Target player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_sniper(id, player)
+native zpe_admin_commands_sniper(id, player);
 
 /**
- * Manually executes admin command: zp_respawn.
+ * Manually executes admin command: zpe_respawn.
  *
- * @param id		Admin player index.
- * @param player	Target player index.
- * @return			True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {player} Target player index.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_respawn(id, player)
+native zpe_admin_commands_respawn(id, player);
 
 /**
- * Manually executes admin command: zp_start_game_mode.
+ * Manually executes admin command: zpe_start_game_mode.
  *
- * @param id				Admin player index.
- * @param game_mode_id		A valid game mode ID.
- * @return					True on success, false otherwise.
+ * @param {id} Admin player index.
+ * @param {game_mode_id} A valid game mode ID.
+ *
+ * @return True on success, false otherwise.
  */
-native zp_admin_commands_start_mode(id, game_mode_id)
+native zpe_admin_commands_start_mode(id, game_mode_id);

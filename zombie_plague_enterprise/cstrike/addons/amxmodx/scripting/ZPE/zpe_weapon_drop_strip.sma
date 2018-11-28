@@ -41,7 +41,7 @@ public plugin_init()
 	register_forward(FM_SetModel, "FM_SetModel_");
 }
 
-public zp_fw_core_infect(iPlayer)
+public zpe_fw_core_infect(iPlayer)
 {
 	rg_remove_all_items(iPlayer); // strip_user_weapons
 
@@ -80,7 +80,7 @@ public FM_SetModel_(iEntity, const szModel[])
 // Ham Weapon Touch Forward
 public Ham_Touch_(iWeapon, iPlayer)
 {
-	if ((0 < iPlayer <= MaxClients) && BIT_VALID(g_iBit_Alive, iPlayer) && zp_core_is_zombie(iPlayer))
+	if ((0 < iPlayer <= MaxClients) && BIT_VALID(g_iBit_Alive, iPlayer) && zpe_core_is_zombie(iPlayer))
 	{
 		return HAM_SUPERCEDE;
 	}
