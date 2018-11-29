@@ -7,7 +7,7 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
-*	https://git.ckcorp.ru/CK/AMXX-MODES - development.
+*	https://git.ckcorp.ru/ck/amxx-modes/zpe - development.
 *
 *	Support is provided only on the site.
 */
