@@ -41,7 +41,7 @@ enum HUMAN_SOUNDS
  *
  * @return None.
  */
-native zp_class_zombie_register_sound(classid, ZOMBIE_SOUNDS:sound_type, const sound[]);
+native zpe_class_zombie_register_sound(classid, ZOMBIE_SOUNDS:sound_type, const sound[]);
 
 /**
  * Called in plugin_precache.
@@ -52,4 +52,4 @@ native zp_class_zombie_register_sound(classid, ZOMBIE_SOUNDS:sound_type, const s
  *
  * @return None.
  */
-native zp_class_human_register_sound(classid, HUMAN_SOUNDS:sound_type, const sound[]);
+native zpe_class_human_register_sound(classid, HUMAN_SOUNDS:sound_type, const sound[]);
