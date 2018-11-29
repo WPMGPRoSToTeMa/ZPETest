@@ -183,6 +183,10 @@ new g_pCvar_Buy_Custom_Time_Primary;
 new g_pCvar_Buy_Custom_Time_Secondary;
 new g_pCvar_Buy_Custom_Time_Grenades;
 
+new g_pCvar_Grenades_Buy_Count[3];
+new g_pCvar_Grenades_Show_Count[3];
+new g_pCvar_Grenades_Show_Count_If_One[3];
+
 new g_iBit_Alive;
 new g_iBit_Connected;
 
@@ -203,6 +207,18 @@ public plugin_init()
 	g_pCvar_Buy_Custom_Time_Primary = register_cvar("zpe_buy_custom_time_primary", "15.0");
 	g_pCvar_Buy_Custom_Time_Secondary = register_cvar("zpe_buy_custom_time_secondary", "15.0");
 	g_pCvar_Buy_Custom_Time_Grenades = register_cvar("zpe_buy_custom_time_grenades", "15.0");
+
+	g_pCvar_Grenades_Buy_Count[0] = register_cvar("zpe_give_napalm_grenade_count", "2");
+	g_pCvar_Grenades_Buy_Count[1] = register_cvar("zpe_give_frost_grenade_count", "1");
+	g_pCvar_Grenades_Buy_Count[2] = register_cvar("zpe_give_flare_grenade_count", "1");
+
+	g_pCvar_Grenades_Show_Count[0] = register_cvar("zpe_napalm_grenade_show_count", "1");
+	g_pCvar_Grenades_Show_Count[1] = register_cvar("zpe_frost_grenade_show_count", "1");
+	g_pCvar_Grenades_Show_Count[2] = register_cvar("zpe_flare_grenade_show_count", "1");
+
+	g_pCvar_Grenades_Show_Count_If_One[0] = register_cvar("zpe_napalm_grenade_show_count_if_one", "0");
+	g_pCvar_Grenades_Show_Count_If_One[1] = register_cvar("zpe_frost_grenade_show_count_if_one", "0");
+	g_pCvar_Grenades_Show_Count_If_One[2] = register_cvar("zpe_flare_grenade_show_count_if_one", "0");
 
 	register_clcmd("say /buy", "Client_Command_Buy");
 	register_clcmd("say buy", "Client_Command_Buy");
@@ -464,10 +480,33 @@ Show_Menu_Buy_Grenades(iPlayer)
 	// Title
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\y %L ^n", iPlayer, "MENU_BUY3_TITLE");
 
+	new szBuy_Count[10];
+	new iBuy_Count;
+
 	// 1-3. Item List
 	for (new i = 0; i < iMaxloops; i++)
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n \r %d. \w %s", i + 1, g_Weapon_Names[rg_get_weapon_info(g_Grenades_Items[i], WI_ID)]);
+		if (get_pcvar_num(g_pCvar_Grenades_Show_Count[i]))
+		{
+			iBuy_Count = get_pcvar_num(g_pCvar_Grenades_Buy_Count[i]);
+
+			if (get_pcvar_num(g_pCvar_Grenades_Show_Count_If_One[i]) && iBuy_Count < 2)
+			{
+				formatex(szBuy_Count, charsmax(szBuy_Count), "");
+			}
+
+			else
+			{
+				formatex(szBuy_Count, charsmax(szBuy_Count), "[%d]", iBuy_Count);
+			}
+		}
+
+		else
+		{
+			formatex(szBuy_Count, charsmax(szBuy_Count), "");
+		}
+
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n \r %d. \w %s %s", i + 1, g_Weapon_Names[rg_get_weapon_info(g_Grenades_Items[i], WI_ID)], szBuy_Count);
 	}
 
 	// 8. Auto Select
@@ -645,6 +684,15 @@ Buy_Grenades(iPlayer, iSelection)
 {
 	// Give the new weapon
 	rg_give_item(iPlayer, g_Grenades_Items[iSelection]);
+
+	new iBuy_Count = get_pcvar_num(g_pCvar_Grenades_Buy_Count[iSelection]);
+
+	if (iBuy_Count > 1)
+	{
+		new iWeapon_ID = rg_get_weapon_info(g_Grenades_Items[iSelection], WI_ID);
+
+		rg_set_user_bpammo(iPlayer, WeaponIdType:iWeapon_ID, iBuy_Count);
+	}
 
 	// Grenades bought
 	BIT_SUB(g_Can_Buy_Grenades, iPlayer);
