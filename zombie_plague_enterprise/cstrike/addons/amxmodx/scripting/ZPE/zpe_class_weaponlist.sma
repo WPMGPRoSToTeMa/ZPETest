@@ -60,11 +60,11 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 	new szReal_Name[32];
 	zpe_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	new szClass_Zombie_Config_Path[64];
-	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
+	new szClass_Zombie_Settings_Path[64];
+	formatex(szClass_Zombie_Settings_Path, charsmax(szClass_Zombie_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
 
 	new Array:aWeaponList = ArrayCreate(64, 1);
-	amx_load_setting_string_arr(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", aWeaponList);
+	amx_load_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", aWeaponList);
 
 	new iArray_Size = ArraySize(aWeaponList);
 
@@ -89,7 +89,7 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 
 	else
 	{
-		amx_save_setting_string(szClass_Zombie_Config_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", "");
+		amx_save_setting_string(szClass_Zombie_Settings_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", "");
 	}
 
 	ArrayPushString(g_aZombie_WeaponList, szFile_Name);
@@ -106,11 +106,12 @@ public zpe_fw_class_human_register_post(iClass_ID)
 	new szReal_Name[32];
 	zpe_class_human_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	new szClass_Human_Config_Path[64];
-	formatex(szClass_Human_Config_Path, charsmax(szClass_Human_Config_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
+	new szClass_Human_Settings_Path[64];
+	formatex(szClass_Human_Settings_Path, charsmax(szClass_Human_Settings_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
 
 	new Array:aWeaponList = ArrayCreate(32, 1);
-	amx_load_setting_string_arr(szClass_Human_Config_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", aWeaponList);
+	amx_load_setting_string_arr(szClass_Human_Settings_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", aWeaponList);
+
 	new iArray_Size = ArraySize(aWeaponList);
 
 	new szFile_Name[16] = "";
@@ -134,11 +135,18 @@ public zpe_fw_class_human_register_post(iClass_ID)
 
 	else
 	{
-		amx_save_setting_string(szClass_Human_Config_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", "");
+		amx_save_setting_string(szClass_Human_Settings_Path, ZPE_SETTING_SECTION_NAME, "WEAPONLIST", "");
 	}
 
 	ArrayPushString(g_aHuman_WeaponList, szFile_Name);
 	ArrayDestroy(aWeaponList);
+}
+
+public Weapon_Hook(iPlayer)
+{
+	engclient_cmd(iPlayer, "weapon_knife");
+
+	return PLUGIN_HANDLED;
 }
 
 public zpe_fw_core_infect_post(iPlayer)
@@ -178,13 +186,6 @@ public Message_Hook_WeaponList(iMessage_ID, iMessage_Dest, iMessage_Entity)
 			g_sWeapon_List_Data[i] = get_msg_arg_int(i + 2);
 		}
 	}
-}
-
-public Weapon_Hook(iPlayer)
-{
-	engclient_cmd(iPlayer, "weapon_knife");
-
-	return PLUGIN_HANDLED;
 }
 
 stock Send_Weapon_List_Update(iPlayer, const szWeapon_Name[32])

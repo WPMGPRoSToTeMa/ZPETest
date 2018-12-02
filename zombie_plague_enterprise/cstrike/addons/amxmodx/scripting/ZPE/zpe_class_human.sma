@@ -494,12 +494,12 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 		}
 	}
 
-	new szClass_Human_Config_Full_Path[128];
-	formatex(szClass_Human_Config_Full_Path, charsmax(szClass_Human_Config_Full_Path), "addons/amxmodx/configs/%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szName);
+	new szClass_Human_Settings_Full_Path[128];
+	formatex(szClass_Human_Settings_Full_Path, charsmax(szClass_Human_Settings_Full_Path), "addons/amxmodx/configs/%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szName);
 
-	if (!file_exists(szClass_Human_Config_Full_Path))
+	if (!file_exists(szClass_Human_Settings_Full_Path))
 	{
-		if (!write_file(szClass_Human_Config_Full_Path, ""))
+		if (!write_file(szClass_Human_Settings_Full_Path, ""))
 		{
 			log_error(AMX_ERR_NATIVE, "Can't create config for class human (%s)", szName);
 
@@ -509,13 +509,13 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 
 	ArrayPushString(g_aClass_Human_Real_Name, szName);
 
-	new szClass_Human_Config_Path[64];
-	formatex(szClass_Human_Config_Path, charsmax(szClass_Human_Config_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szName);
+	new szClass_Human_Settings_Path[64];
+	formatex(szClass_Human_Settings_Path, charsmax(szClass_Human_Settings_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szName);
 
 	// Name
-	if (!amx_load_setting_string(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "NAME", szName, charsmax(szName)))
+	if (!amx_load_setting_string(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "NAME", szName, charsmax(szName)))
 	{
-		amx_save_setting_string(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "NAME", szName);
+		amx_save_setting_string(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "NAME", szName);
 	}
 
 	ArrayPushString(g_aClass_Human_Name, szName);
@@ -525,9 +525,9 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 
 	get_string(2, szDescription, charsmax(szDescription));
 
-	if (!amx_load_setting_string(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "INFO", szDescription, charsmax(szDescription)))
+	if (!amx_load_setting_string(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "INFO", szDescription, charsmax(szDescription)))
 	{
-		amx_save_setting_string(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "INFO", szDescription);
+		amx_save_setting_string(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "INFO", szDescription);
 	}
 
 	ArrayPushString(g_aClass_Human_Description, szDescription);
@@ -535,7 +535,7 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	// Models
 	new Array:aClass_Human_Models = ArrayCreate(32, 1);
 
-	amx_load_setting_string_arr(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", aClass_Human_Models);
+	amx_load_setting_string_arr(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", aClass_Human_Models);
 
 	new iArray_Size = ArraySize(aClass_Human_Models);
 	new bool:bHave_Elements = iArray_Size > 0;
@@ -560,7 +560,7 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	{
 		ArrayDestroy(aClass_Human_Models);
 
-		amx_save_setting_string(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", "");
+		amx_save_setting_string(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", "");
 	}
 
 	ArrayPushCell(g_aClass_Human_Models_File, bHave_Elements);
@@ -569,9 +569,9 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	// Health
 	new Float:fHealth = get_param_f(3);
 
-	if (!amx_load_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", fHealth))
+	if (!amx_load_setting_float(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", fHealth))
 	{
-		amx_save_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", fHealth);
+		amx_save_setting_float(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "HEALTH", fHealth);
 	}
 
 	ArrayPushCell(g_aClass_Human_Health, fHealth);
@@ -579,9 +579,9 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	// Armor
 	new iArmor = get_param(4);
 
-	if (!amx_load_setting_int(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "ARMOR", iArmor))
+	if (!amx_load_setting_int(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "ARMOR", iArmor))
 	{
-		amx_save_setting_int(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "ARMOR", iArmor);
+		amx_save_setting_int(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "ARMOR", iArmor);
 	}
 
 	ArrayPushCell(g_aClass_Human_Armor, iArmor);
@@ -589,9 +589,9 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	// Speed
 	new Float:fSpeed = get_param_f(5);
 
-	if (!amx_load_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "SPEED", fSpeed))
+	if (!amx_load_setting_float(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "SPEED", fSpeed))
 	{
-		amx_save_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "SPEED", fSpeed);
+		amx_save_setting_float(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "SPEED", fSpeed);
 	}
 
 	ArrayPushCell(g_aClass_Human_Speed, fSpeed);
@@ -599,9 +599,9 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	// Gravity
 	new Float:fGravity = get_param_f(6);
 
-	if (!amx_load_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "GRAVITY", fGravity))
+	if (!amx_load_setting_float(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "GRAVITY", fGravity))
 	{
-		amx_save_setting_float(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "GRAVITY", fGravity);
+		amx_save_setting_float(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "GRAVITY", fGravity);
 	}
 
 	ArrayPushCell(g_aClass_Human_Gravity, fGravity);
@@ -654,11 +654,11 @@ public native_class_human_register_model(iPlugin_ID, iNum_Params)
 
 	ArrayGetString(g_aClass_Human_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	new szClass_Human_Config_Path[64];
+	new szClass_Human_Settings_Path[64];
 
-	formatex(szClass_Human_Config_Path, charsmax(szClass_Human_Config_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
+	formatex(szClass_Human_Settings_Path, charsmax(szClass_Human_Settings_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
 
-	amx_save_setting_string_arr(szClass_Human_Config_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", aClass_Human_Models);
+	amx_save_setting_string_arr(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", aClass_Human_Models);
 
 	return true;
 }
