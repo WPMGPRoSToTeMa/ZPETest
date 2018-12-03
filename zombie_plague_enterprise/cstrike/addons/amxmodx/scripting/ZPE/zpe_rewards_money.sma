@@ -89,6 +89,7 @@ public plugin_init()
 	register_event("TextMsg", "Event_Game_Restart", "a", "2=#Game_Commencing");
 
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_Post", 1);
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_");
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
 	g_Message_Money = get_user_msgid("Money");
@@ -180,8 +181,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 	}
 }
 
-// This is RG_CSGameRules_PlayerKilled Pre. Simply optimization.
-public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
+public RG_CSGameRules_PlayerKilled_(iVictim, iAttacker)
 {
 	// Non-player kill or self kill
 	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
@@ -196,8 +196,6 @@ public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 
 	// Save attacker's money before the kill
 	g_Money_Before_Kill[iAttacker] = CS_GET_USER_MONEY(iAttacker);
-
-	BIT_SUB(g_iBit_Alive, iVictim);
 }
 
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
@@ -381,6 +379,11 @@ public client_disconnected(iPlayer)
 
 	BIT_SUB(g_iBit_Alive, iPlayer);
 	BIT_SUB(g_iBit_Connected, iPlayer);
+}
+
+public zpe_fw_kill_pre_bit_sub(iVictim)
+{
+	BIT_SUB(g_iBit_Alive, iVictim);
 }
 
 public zpe_fw_spawn_post_bit_add(iPlayer)
