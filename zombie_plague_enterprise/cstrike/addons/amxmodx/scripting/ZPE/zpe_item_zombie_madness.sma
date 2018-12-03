@@ -109,11 +109,11 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 	new szReal_Name[32];
 	zpe_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	new szClass_Zombie_Config_Path[64];
-	formatex(szClass_Zombie_Config_Path, charsmax(szClass_Zombie_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
+	new szClass_Zombie_Settings_Path[64];
+	formatex(szClass_Zombie_Settings_Path, charsmax(szClass_Zombie_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
 
 	new Array:aZombie_Madness_Sound = ArrayCreate(SOUND_MAX_LENGTH, 1);
-	amx_load_setting_string_arr(szClass_Zombie_Config_Path, g_szSound_Section_Name, "MADNESS", aZombie_Madness_Sound);
+	amx_load_setting_string_arr(szClass_Zombie_Settings_Path, g_szSound_Section_Name, "MADNESS", aZombie_Madness_Sound);
 
 	new iArray_Size = ArraySize(aZombie_Madness_Sound);
 
@@ -133,7 +133,7 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 	{
 		ArrayDestroy(aZombie_Madness_Sound);
 
-		amx_save_setting_string(szClass_Zombie_Config_Path, g_szSound_Section_Name, "MADNESS", g_Sound_Zombie_Madness);
+		amx_save_setting_string(szClass_Zombie_Settings_Path, g_szSound_Section_Name, "MADNESS", g_Sound_Zombie_Madness);
 	}
 
 	ArrayPushCell(g_aSound_Zombie_Madness, aZombie_Madness_Sound);
