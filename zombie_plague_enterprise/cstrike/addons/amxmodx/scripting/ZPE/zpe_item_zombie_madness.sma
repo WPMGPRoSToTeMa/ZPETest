@@ -30,7 +30,7 @@
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 
 #define ITEM_NAME "Zombie Madness"
-#define ITEM_COST 1
+#define ITEM_COST 15
 
 #define SOUND_MAX_LENGTH 64
 
@@ -55,6 +55,9 @@ new g_Zombie_Madness_Block_Damage;
 
 new g_pCvar_Zombie_Madness_Time;
 
+new g_pCvar_Madness_Grenade_Frost;
+new g_pCvar_Madness_Grenade_Napalm;
+
 new g_pCvar_Zombie_Madness_Aura_Color_R;
 new g_pCvar_Zombie_Madness_Aura_Color_G;
 new g_pCvar_Zombie_Madness_Aura_Color_B;
@@ -66,6 +69,9 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	g_pCvar_Zombie_Madness_Time = register_cvar("zpe_zombie_madness_time", "5.0");
+	
+	g_pCvar_Madness_Grenade_Frost = register_cvar("zpe_madness_grenade_frost", "0");
+	g_pCvar_Madness_Grenade_Napalm = register_cvar("zpe_madness_grenade_napalm", "0");
 
 	g_pCvar_Zombie_Madness_Aura_Color_R = register_cvar("zpe_zombie_madness_aura_color_r", "150");
 	g_pCvar_Zombie_Madness_Aura_Color_G = register_cvar("zpe_zombie_madness_aura_color_g", "0");
@@ -250,7 +256,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker)
 public zpe_fw_grenade_frost_pre(iPlayer)
 {
 	// Prevent frost when victim has zombie madness
-	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer))
+	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer) && !get_pcvar_num(g_pCvar_Madness_Grenade_Frost))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -261,7 +267,7 @@ public zpe_fw_grenade_frost_pre(iPlayer)
 public zpe_fw_grenade_napalm_pre(iPlayer)
 {
 	// Prevent burning when victim has zombie madness
-	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer))
+	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer) && !get_pcvar_num(g_pCvar_Madness_Grenade_Napalm))
 	{
 		return PLUGIN_HANDLED;
 	}
