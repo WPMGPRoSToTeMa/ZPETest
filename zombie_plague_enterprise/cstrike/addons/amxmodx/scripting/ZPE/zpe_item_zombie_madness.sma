@@ -30,7 +30,7 @@
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 
 #define ITEM_NAME "Zombie Madness"
-#define ITEM_COST 1
+#define ITEM_COST 15
 
 #define SOUND_MAX_LENGTH 64
 
