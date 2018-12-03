@@ -112,7 +112,7 @@ public plugin_precache()
 	g_aSound_Grenade_Flare_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FLARE", g_aSound_Grenade_Flare_Explode);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FLARE EXPLODE", g_aSound_Grenade_Flare_Explode);
 
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE FLARE", g_V_Model_Grenade_Flare, charsmax(g_V_Model_Grenade_Flare));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE FLARE", g_P_Model_Grenade_Flare, charsmax(g_P_Model_Grenade_Flare));
