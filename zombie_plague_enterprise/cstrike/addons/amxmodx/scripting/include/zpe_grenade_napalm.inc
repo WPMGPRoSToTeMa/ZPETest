@@ -1,10 +1,10 @@
-#if defined _zpe_grenade_fire_included
+#if defined _zpe_grenade_napalm_included
 
   #endinput
 
 #endif
 
-#define _zpe_grenade_fire_included
+#define _zpe_grenade_napalm_included
 
 /**
  * Returns whether a player is burning.
@@ -13,7 +13,7 @@
  *
  * @return None.
  */
-native zpe_grenade_fire_get(player);
+native zpe_grenade_napalm_get(player);
 
 /**
  * Sets a player on fire or stops burning.
@@ -23,7 +23,7 @@ native zpe_grenade_fire_get(player);
  *
  * @return True on success, false otherwise.
  */
-native zpe_grenade_fire_set(player, set = true);
+native zpe_grenade_napalm_set(player, set = true);
 
 /**
  * Called when a player is about to start burning.
@@ -33,4 +33,4 @@ native zpe_grenade_fire_set(player, set = true);
  *
  * @return None.
  */
-forward zpe_fw_grenade_fire_pre(player);
+forward zpe_fw_grenade_napalm_pre(player);

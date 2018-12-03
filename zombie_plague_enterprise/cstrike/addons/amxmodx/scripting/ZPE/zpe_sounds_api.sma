@@ -26,7 +26,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
-#include <zpe_grenade_fire>
+#include <zpe_grenade_napalm>
 #include <zpe_sounds_api>
 
 #define TASK_IDLE_SOUNDS 100
@@ -321,7 +321,7 @@ public Idle_Human_Sounds(iTask_ID)
 	emit_sound(ID_IDLE_SOUNDS, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 }
 
-public zpe_fw_grenade_fire_pre(iPlayer)
+public zpe_fw_grenade_napalm_pre(iPlayer)
 {
 	if (zpe_class_nemesis_get(iPlayer) && zpe_class_assassin_get(iPlayer))
 	{
@@ -340,7 +340,7 @@ public zpe_fw_grenade_fire_pre(iPlayer)
 
 public Flame_Sounds(iTask_ID)
 {
-	if (zpe_grenade_fire_get(ID_FLAME_SOUNDS))
+	if (zpe_grenade_napalm_get(ID_FLAME_SOUNDS))
 	{
 		new szSound[128];
 

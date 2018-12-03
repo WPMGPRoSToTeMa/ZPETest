@@ -23,7 +23,7 @@
 #include <zpe_items>
 #include <zpe_class_zombie>
 #include <zpe_grenade_frost>
-#include <zpe_grenade_fire>
+#include <zpe_grenade_napalm>
 #include <zpe_class_nemesis>
 #include <zpe_class_assassin>
 
@@ -258,7 +258,7 @@ public zpe_fw_grenade_frost_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zpe_fw_grenade_fire_pre(iPlayer)
+public zpe_fw_grenade_napalm_pre(iPlayer)
 {
 	// Prevent burning when victim has zombie madness
 	if (BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer))

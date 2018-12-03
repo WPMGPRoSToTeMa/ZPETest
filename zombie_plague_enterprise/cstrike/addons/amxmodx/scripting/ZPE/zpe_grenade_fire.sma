@@ -1,5 +1,5 @@
 /* AMX Mod X
-*	[ZPE] Grenade Fire.
+*	[ZPE] Grenade Napalm.
 *	Author: MeRcyLeZZ. Edition: C&K Corporation.
 *
 *	https://ckcorp.ru/ - support from the C&K Corporation.
@@ -12,7 +12,7 @@
 *	Support is provided only on the site.
 */
 
-#define PLUGIN "grenade fire"
+#define PLUGIN "grenade napalm"
 #define VERSION "6.0.0"
 #define AUTHOR "C&K Corporation"
 
@@ -38,17 +38,17 @@
 #define MODEL_MAX_LENGTH 64
 #define SOUND_MAX_LENGTH 64
 
-#define GRENADE_FIRE_SPRITE_FIRE "sprites/flame.spr"
+#define GRENADE_NAPALM_SPRITE_FIRE "sprites/flame.spr"
 
-#define GRENADE_FIRE_SPRITE_TRAIL "sprites/laserbeam.spr"
-#define GRENADE_FIRE_SPRITE_RING "sprites/shockwave.spr"
-#define GRENADE_FIRE_SPRITE_SMOKE "sprites/black_smoke3.spr"
+#define GRENADE_NAPALM_SPRITE_TRAIL "sprites/laserbeam.spr"
+#define GRENADE_NAPALM_SPRITE_RING "sprites/shockwave.spr"
+#define GRENADE_NAPALM_SPRITE_SMOKE "sprites/black_smoke3.spr"
 
-new g_V_Model_Grenade_Fire[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_fire.mdl";
-new g_P_Model_Grenade_Fire[MODEL_MAX_LENGTH] = "models/p_hegrenade.mdl";
-new g_W_Model_Grenade_Fire[MODEL_MAX_LENGTH] = "models/w_hegrenade.mdl";
+new g_V_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_napalm.mdl";
+new g_P_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/p_hegrenade.mdl";
+new g_W_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/w_hegrenade.mdl";
 
-new const g_Sound_Grenade_Fire_Explode[][] =
+new const g_Sound_Grenade_Napalm_Explode[][] =
 {
 	"zombie_plague/grenade_explode.wav"
 };
@@ -66,7 +66,7 @@ new g_Explode_Sprite;
 
 new g_Burning_Duration[33];
 
-new Array:g_aSound_Grenade_Fire_Explode;
+new Array:g_aSound_Grenade_Napalm_Explode;
 
 new g_Trail_Sprite;
 new g_Flame_Sprite;
@@ -76,46 +76,46 @@ new g_Message_Damage;
 
 new g_iStatus_Icon;
 
-new g_pCvar_Grenade_Fire_Duration_Nemesis;
-new g_pCvar_Grenade_Fire_Duration_Assassin;
-new g_pCvar_Grenade_Fire_Duration_Zombie;
+new g_pCvar_Grenade_Napalm_Duration_Nemesis;
+new g_pCvar_Grenade_Napalm_Duration_Assassin;
+new g_pCvar_Grenade_Napalm_Duration_Zombie;
 
-new g_pCvar_Grenade_Fire_Slowdown_Nemesis;
-new g_pCvar_Grenade_Fire_Slowdown_Assassin;
+new g_pCvar_Grenade_Napalm_Slowdown_Nemesis;
+new g_pCvar_Grenade_Napalm_Slowdown_Assassin;
 
-new g_pCvar_Grenade_Fire_Damage_Nemesis;
-new g_pCvar_Grenade_Fire_Damage_Assassin;
-new g_pCvar_Grenade_Fire_Damage_Zombie;
+new g_pCvar_Grenade_Napalm_Damage_Nemesis;
+new g_pCvar_Grenade_Napalm_Damage_Assassin;
+new g_pCvar_Grenade_Napalm_Damage_Zombie;
 
-new g_pCvar_Grenade_Fire_Hudicon_Player;
-new g_pCvar_Grenade_Fire_Hudicon_Enemy;
-new g_pCvar_Grenade_Fire_Explosion;
+new g_pCvar_Grenade_Napalm_Hudicon_Player;
+new g_pCvar_Grenade_Napalm_Hudicon_Enemy;
+new g_pCvar_Grenade_Napalm_Explosion;
 
-new g_pCvar_Grenade_Fire_Hudicon_Player_Color_R;
-new g_pCvar_Grenade_Fire_Hudicon_Player_Color_G;
-new g_pCvar_Grenade_Fire_Hudicon_Player_Color_B;
+new g_pCvar_Grenade_Napalm_Hudicon_Player_Color_R;
+new g_pCvar_Grenade_Napalm_Hudicon_Player_Color_G;
+new g_pCvar_Grenade_Napalm_Hudicon_Player_Color_B;
 
-new g_pCvar_Grenade_Fire_Glow_Rendering_R;
-new g_pCvar_Grenade_Fire_Glow_Rendering_G;
-new g_pCvar_Grenade_Fire_Glow_Rendering_B;
+new g_pCvar_Grenade_Napalm_Glow_Rendering_R;
+new g_pCvar_Grenade_Napalm_Glow_Rendering_G;
+new g_pCvar_Grenade_Napalm_Glow_Rendering_B;
 
-new g_pCvar_Grenade_Fire_Trail_Rendering_R;
-new g_pCvar_Grenade_Fire_Trail_Rendering_G;
-new g_pCvar_Grenade_Fire_Trail_Rendering_B;
+new g_pCvar_Grenade_Napalm_Trail_Rendering_R;
+new g_pCvar_Grenade_Napalm_Trail_Rendering_G;
+new g_pCvar_Grenade_Napalm_Trail_Rendering_B;
 
-new g_pCvar_Grenade_Fire_Small_Ring_Rendering_R;
-new g_pCvar_Grenade_Fire_Small_Ring_Rendering_G;
-new g_pCvar_Grenade_Fire_Small_Ring_Rendering_B;
+new g_pCvar_Grenade_Napalm_Small_Ring_Rendering_R;
+new g_pCvar_Grenade_Napalm_Small_Ring_Rendering_G;
+new g_pCvar_Grenade_Napalm_Small_Ring_Rendering_B;
 
-new g_pCvar_Grenade_Fire_Medium_Ring_Rendering_R;
-new g_pCvar_Grenade_Fire_Medium_Ring_Rendering_G;
-new g_pCvar_Grenade_Fire_Medium_Ring_Rendering_B;
+new g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_R;
+new g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_G;
+new g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_B;
 
-new g_pCvar_Grenade_Fire_Largest_Ring_Rendering_R;
-new g_pCvar_Grenade_Fire_Largest_Ring_Rendering_G;
-new g_pCvar_Grenade_Fire_Largest_Ring_Rendering_B;
+new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_R;
+new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_G;
+new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_B;
 
-new g_pCvar_Grenade_Fire_Explosion_Radius;
+new g_pCvar_Grenade_Napalm_Explosion_Radius;
 
 new g_iBit_Alive;
 
@@ -123,46 +123,46 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Grenade_Fire_Duration_Nemesis = register_cvar("zpe_grenade_fire_duration_nemesis", "10");
-	g_pCvar_Grenade_Fire_Duration_Assassin = register_cvar("zpe_grenade_fire_duration_assassin", "10");
-	g_pCvar_Grenade_Fire_Duration_Zombie = register_cvar("zpe_grenade_fire_duration_zombie", "10");
+	g_pCvar_Grenade_Napalm_Duration_Nemesis = register_cvar("zpe_grenade_napalm_duration_nemesis", "10");
+	g_pCvar_Grenade_Napalm_Duration_Assassin = register_cvar("zpe_grenade_napalm_duration_assassin", "10");
+	g_pCvar_Grenade_Napalm_Duration_Zombie = register_cvar("zpe_grenade_napalm_duration_zombie", "10");
 
-	g_pCvar_Grenade_Fire_Slowdown_Nemesis = register_cvar("zpe_grenade_fire_slowdown_nemesis", "0.5");
-	g_pCvar_Grenade_Fire_Slowdown_Assassin = register_cvar("zpe_grenade_fire_slowdown_assassin", "0.5");
+	g_pCvar_Grenade_Napalm_Slowdown_Nemesis = register_cvar("zpe_grenade_napalm_slowdown_nemesis", "0.5");
+	g_pCvar_Grenade_Napalm_Slowdown_Assassin = register_cvar("zpe_grenade_napalm_slowdown_assassin", "0.5");
 
-	g_pCvar_Grenade_Fire_Damage_Nemesis = register_cvar("zpe_grenade_fire_damage_nemesis", "5.0");
-	g_pCvar_Grenade_Fire_Damage_Assassin = register_cvar("zpe_grenade_fire_damage_assassin", "5.0");
-	g_pCvar_Grenade_Fire_Damage_Zombie = register_cvar("zpe_grenade_fire_damage_zombie", "5.0");
+	g_pCvar_Grenade_Napalm_Damage_Nemesis = register_cvar("zpe_grenade_napalm_damage_nemesis", "5.0");
+	g_pCvar_Grenade_Napalm_Damage_Assassin = register_cvar("zpe_grenade_napalm_damage_assassin", "5.0");
+	g_pCvar_Grenade_Napalm_Damage_Zombie = register_cvar("zpe_grenade_napalm_damage_zombie", "5.0");
 
-	g_pCvar_Grenade_Fire_Hudicon_Player = register_cvar("zpe_grenade_fire_hudicon_player", "1");
-	g_pCvar_Grenade_Fire_Hudicon_Enemy = register_cvar("zpe_grenade_fire_hudicon_enemy", "1");
-	g_pCvar_Grenade_Fire_Explosion = register_cvar("zpe_grenade_fire_explosion", "0");
+	g_pCvar_Grenade_Napalm_Hudicon_Player = register_cvar("zpe_grenade_napalm_hudicon_player", "1");
+	g_pCvar_Grenade_Napalm_Hudicon_Enemy = register_cvar("zpe_grenade_napalm_hudicon_enemy", "1");
+	g_pCvar_Grenade_Napalm_Explosion = register_cvar("zpe_grenade_napalm_explosion", "0");
 
-	g_pCvar_Grenade_Fire_Hudicon_Player_Color_R = register_cvar("zpe_grenade_fire_hudicon_player_color_r", "255");
-	g_pCvar_Grenade_Fire_Hudicon_Player_Color_G = register_cvar("zpe_grenade_fire_hudicon_player_color_g", "0");
-	g_pCvar_Grenade_Fire_Hudicon_Player_Color_B = register_cvar("zpe_grenade_fire_hudicon_player_color_b", "0");
+	g_pCvar_Grenade_Napalm_Hudicon_Player_Color_R = register_cvar("zpe_grenade_napalm_hudicon_player_color_r", "255");
+	g_pCvar_Grenade_Napalm_Hudicon_Player_Color_G = register_cvar("zpe_grenade_napalm_hudicon_player_color_g", "0");
+	g_pCvar_Grenade_Napalm_Hudicon_Player_Color_B = register_cvar("zpe_grenade_napalm_hudicon_player_color_b", "0");
 
-	g_pCvar_Grenade_Fire_Glow_Rendering_R = register_cvar("zpe_grenade_fire_glow_rendering_r", "200");
-	g_pCvar_Grenade_Fire_Glow_Rendering_G = register_cvar("zpe_grenade_fire_glow_rendering_g", "0");
-	g_pCvar_Grenade_Fire_Glow_Rendering_B = register_cvar("zpe_grenade_fire_glow_rendering_b", "0");
+	g_pCvar_Grenade_Napalm_Glow_Rendering_R = register_cvar("zpe_grenade_napalm_glow_rendering_r", "200");
+	g_pCvar_Grenade_Napalm_Glow_Rendering_G = register_cvar("zpe_grenade_napalm_glow_rendering_g", "0");
+	g_pCvar_Grenade_Napalm_Glow_Rendering_B = register_cvar("zpe_grenade_napalm_glow_rendering_b", "0");
 
-	g_pCvar_Grenade_Fire_Trail_Rendering_R = register_cvar("zpe_grenade_fire_trail_rendering_r", "200");
-	g_pCvar_Grenade_Fire_Trail_Rendering_G = register_cvar("zpe_grenade_fire_trail_rendering_g", "0");
-	g_pCvar_Grenade_Fire_Trail_Rendering_B = register_cvar("zpe_grenade_fire_trail_rendering_b", "0");
+	g_pCvar_Grenade_Napalm_Trail_Rendering_R = register_cvar("zpe_grenade_napalm_trail_rendering_r", "200");
+	g_pCvar_Grenade_Napalm_Trail_Rendering_G = register_cvar("zpe_grenade_napalm_trail_rendering_g", "0");
+	g_pCvar_Grenade_Napalm_Trail_Rendering_B = register_cvar("zpe_grenade_napalm_trail_rendering_b", "0");
 
-	g_pCvar_Grenade_Fire_Small_Ring_Rendering_R = register_cvar("zpe_grenade_fire_small_ring_rendering_r", "200");
-	g_pCvar_Grenade_Fire_Small_Ring_Rendering_G = register_cvar("zpe_grenade_fire_small_ring_rendering_g", "100");
-	g_pCvar_Grenade_Fire_Small_Ring_Rendering_B = register_cvar("zpe_grenade_fire_small_ring_rendering_b", "0");
+	g_pCvar_Grenade_Napalm_Small_Ring_Rendering_R = register_cvar("zpe_grenade_napalm_small_ring_rendering_r", "200");
+	g_pCvar_Grenade_Napalm_Small_Ring_Rendering_G = register_cvar("zpe_grenade_napalm_small_ring_rendering_g", "100");
+	g_pCvar_Grenade_Napalm_Small_Ring_Rendering_B = register_cvar("zpe_grenade_napalm_small_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Fire_Medium_Ring_Rendering_R = register_cvar("zpe_grenade_fire_medium_ring_rendering_r", "200");
-	g_pCvar_Grenade_Fire_Medium_Ring_Rendering_G = register_cvar("zpe_grenade_fire_medium_ring_rendering_g", "50");
-	g_pCvar_Grenade_Fire_Medium_Ring_Rendering_B = register_cvar("zpe_grenade_fire_medium_ring_rendering_b", "0");
+	g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_R = register_cvar("zpe_grenade_napalm_medium_ring_rendering_r", "200");
+	g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_G = register_cvar("zpe_grenade_napalm_medium_ring_rendering_g", "50");
+	g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_B = register_cvar("zpe_grenade_napalm_medium_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Fire_Largest_Ring_Rendering_R = register_cvar("zpe_grenade_fire_largest_ring_rendering_r", "200");
-	g_pCvar_Grenade_Fire_Largest_Ring_Rendering_G = register_cvar("zpe_grenade_fire_largest_ring_rendering_g", "0");
-	g_pCvar_Grenade_Fire_Largest_Ring_Rendering_B = register_cvar("zpe_grenade_fire_largest_ring_rendering_b", "0");
+	g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_R = register_cvar("zpe_grenade_napalm_largest_ring_rendering_r", "200");
+	g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_G = register_cvar("zpe_grenade_napalm_largest_ring_rendering_g", "0");
+	g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_B = register_cvar("zpe_grenade_napalm_largest_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Fire_Explosion_Radius = register_cvar("zpe_grenade_fire_explosion_radius", "240");
+	g_pCvar_Grenade_Napalm_Explosion_Radius = register_cvar("zpe_grenade_napalm_explosion_radius", "240");
 
 	RegisterHam(Ham_Think, "grenade", "Ham_Think_Grenade_");
 
@@ -176,47 +176,47 @@ public plugin_init()
 	g_iStatus_Icon = get_user_msgid("StatusIcon");
 	g_Message_Damage = get_user_msgid("Damage");
 
-	g_Forwards[FW_USER_BURN_PRE] = CreateMultiForward("zpe_fw_grenade_fire_pre", ET_CONTINUE, FP_CELL);
+	g_Forwards[FW_USER_BURN_PRE] = CreateMultiForward("zpe_fw_grenade_napalm_pre", ET_CONTINUE, FP_CELL);
 }
 
 public plugin_precache()
 {
 	// Initialize arrays
-	g_aSound_Grenade_Fire_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Grenade_Napalm_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FIRE EXPLODE", g_aSound_Grenade_Fire_Explode);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE NAPALM EXPLODE", g_aSound_Grenade_Napalm_Explode);
 
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE FIRE", g_V_Model_Grenade_Fire, charsmax(g_V_Model_Grenade_Fire));
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE FIRE", g_P_Model_Grenade_Fire, charsmax(g_P_Model_Grenade_Fire));
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE FIRE", g_W_Model_Grenade_Fire, charsmax(g_W_Model_Grenade_Fire));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE NAPALM", g_V_Model_Grenade_Napalm, charsmax(g_V_Model_Grenade_Napalm));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE NAPALM", g_P_Model_Grenade_Napalm, charsmax(g_P_Model_Grenade_Napalm));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE NAPALM", g_W_Model_Grenade_Napalm, charsmax(g_W_Model_Grenade_Napalm));
 
-	for (new i = 0; i < sizeof g_Sound_Grenade_Fire_Explode; i++)
+	for (new i = 0; i < sizeof g_Sound_Grenade_Napalm_Explode; i++)
 	{
-		precache_sound(g_Sound_Grenade_Fire_Explode[i]);
+		precache_sound(g_Sound_Grenade_Napalm_Explode[i]);
 	}
 
-	g_Explode_Sprite = precache_model(GRENADE_FIRE_SPRITE_RING);
+	g_Explode_Sprite = precache_model(GRENADE_NAPALM_SPRITE_RING);
 
 	// Precache models
-	precache_model(g_V_Model_Grenade_Fire);
-	precache_model(g_P_Model_Grenade_Fire);
-	precache_model(g_W_Model_Grenade_Fire);
+	precache_model(g_V_Model_Grenade_Napalm);
+	precache_model(g_P_Model_Grenade_Napalm);
+	precache_model(g_W_Model_Grenade_Napalm);
 
-	g_Trail_Sprite = precache_model(GRENADE_FIRE_SPRITE_TRAIL);
-	g_Flame_Sprite = precache_model(GRENADE_FIRE_SPRITE_FIRE);
-	g_Smoke_Sprite = precache_model(GRENADE_FIRE_SPRITE_SMOKE);
+	g_Trail_Sprite = precache_model(GRENADE_NAPALM_SPRITE_TRAIL);
+	g_Flame_Sprite = precache_model(GRENADE_NAPALM_SPRITE_FIRE);
+	g_Smoke_Sprite = precache_model(GRENADE_NAPALM_SPRITE_SMOKE);
 }
 
 public plugin_natives()
 {
-	register_library("zpe_grenade_fire");
+	register_library("zpe_grenade_napalm");
 
-	register_native("zpe_grenade_fire_get", "native_grenade_fire_get");
-	register_native("zpe_grenade_fire_set", "native_grenade_fire_set");
+	register_native("zpe_grenade_napalm_get", "native_grenade_napalm_get");
+	register_native("zpe_grenade_napalm_set", "native_grenade_napalm_set");
 }
 
-public native_grenade_fire_get(iPlugin_ID, iNum_Params)
+public native_grenade_napalm_get(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
 
@@ -230,7 +230,7 @@ public native_grenade_fire_get(iPlugin_ID, iNum_Params)
 	return task_exists(iPlayer + TASK_BURN);
 }
 
-public native_grenade_fire_set(iPlugin_ID, iNum_Params)
+public native_grenade_napalm_set(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
 
@@ -286,8 +286,8 @@ public zpe_fw_core_cure_post(iPlayer)
 	g_Burning_Duration[iPlayer] = 0;
 
 	// Set custom grenade model
-	cs_set_player_view_model(iPlayer, CSW_HEGRENADE, g_V_Model_Grenade_Fire);
-	cs_set_player_weap_model(iPlayer, CSW_HEGRENADE, g_P_Model_Grenade_Fire);
+	cs_set_player_view_model(iPlayer, CSW_HEGRENADE, g_V_Model_Grenade_Napalm);
+	cs_set_player_weap_model(iPlayer, CSW_HEGRENADE, g_P_Model_Grenade_Napalm);
 }
 
 public zpe_fw_core_infect(iPlayer)
@@ -340,7 +340,7 @@ public FM_SetModel_(iEntity, const sModel[])
 	if (sModel[9] == 'h' && sModel[10] == 'e')
 	{
 		// Give it a glow
-		rg_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Fire_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Fire_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Fire_Glow_Rendering_B), kRenderNormal, 16);
+		rg_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Napalm_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Napalm_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Napalm_Glow_Rendering_B), kRenderNormal, 16);
 
 		// And a colored trail
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
@@ -349,16 +349,16 @@ public FM_SetModel_(iEntity, const sModel[])
 		write_short(g_Trail_Sprite); // sprite
 		write_byte(10); // life
 		write_byte(10); // width
-		write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Trail_Rendering_R)); // r
-		write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Trail_Rendering_G)); // g
-		write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Trail_Rendering_B)); // b
+		write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Trail_Rendering_R)); // r
+		write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Trail_Rendering_G)); // g
+		write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Trail_Rendering_B)); // b
 		write_byte(200); // brightness
 		message_end();
 
 		// Set grenade type on the thrown grenade entity
 		set_entvar(iEntity, PEV_NADE_TYPE, NADE_TYPE_NAPALM);
 
-		engfunc(EngFunc_SetModel, iEntity, g_W_Model_Grenade_Fire);
+		engfunc(EngFunc_SetModel, iEntity, g_W_Model_Grenade_Napalm);
 
 		return FMRES_SUPERCEDE;
 	}
@@ -395,7 +395,7 @@ public Ham_Think_Grenade_(iEntity)
 	Fire_Explode(iEntity);
 
 	// Keep the original explosion?
-	if (get_pcvar_num(g_pCvar_Grenade_Fire_Explosion))
+	if (get_pcvar_num(g_pCvar_Grenade_Napalm_Explosion))
 	{
 		set_entvar(iEntity, PEV_NADE_TYPE, 0);
 
@@ -428,7 +428,7 @@ public zpe_fw_kill_pre_bit_sub(iPlayer)
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-// Fire Grenade Explosion
+// Napalm Grenade Explosion
 Fire_Explode(iEntity)
 {
 	// Get origin
@@ -437,19 +437,19 @@ Fire_Explode(iEntity)
 	get_entvar(iEntity, var_origin, fOrigin);
 
 	// Override original HE grenade explosion?
-	if (!get_pcvar_num(g_pCvar_Grenade_Fire_Explosion))
+	if (!get_pcvar_num(g_pCvar_Grenade_Napalm_Explosion))
 	{
 		// Make the explosion
 		Create_Blast2(fOrigin);
 
-		// Fire nade explode sound
-		emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Fire_Explode[random(sizeof g_Sound_Grenade_Fire_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		// Fire grenade explode sound
+		emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Napalm_Explode[random(sizeof g_Sound_Grenade_Napalm_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Collisions
 	new iVictim = -1;
 
-	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Fire_Explosion_Radius))) != 0)
+	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Napalm_Explosion_Radius))) != 0)
 	{
 		// Only effect alive zombies
 		if (iVictim > 32 || BIT_NOT_VALID(g_iBit_Alive, iVictim) || !zpe_core_is_zombie(iVictim))
@@ -472,7 +472,7 @@ Set_On_Fire(iVictim)
 	}
 
 	// Heat icon?
-	if (get_pcvar_num(g_pCvar_Grenade_Fire_Hudicon_Enemy))
+	if (get_pcvar_num(g_pCvar_Grenade_Napalm_Hudicon_Enemy))
 	{
 		message_begin(MSG_ONE_UNRELIABLE, g_Message_Damage, _, iVictim);
 		write_byte(0); // damage save
@@ -488,20 +488,20 @@ Set_On_Fire(iVictim)
 	if (zpe_class_nemesis_get(iVictim))
 	{
 		// Fire duration (nemesis)
-		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Fire_Duration_Nemesis);
+		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Napalm_Duration_Nemesis);
 	}
 
 	// Reduced duration for assassin
 	else if (zpe_class_assassin_get(iVictim))
 	{
 		// Fire duration (assassin)
-		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Fire_Duration_Assassin);
+		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Napalm_Duration_Assassin);
 	}
 
 	else
 	{
 		// Fire duration (zombie)
-		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Fire_Duration_Zombie) * 5;
+		g_Burning_Duration[iVictim] += get_pcvar_num(g_pCvar_Grenade_Napalm_Duration_Zombie) * 5;
 	}
 
 	// Set burning task on victim
@@ -546,18 +546,18 @@ public Burning_Flame(iTask_ID)
 	if (zpe_class_nemesis_get(ID_BURN))
 	{
 		// Fire slow down
-		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown_Nemesis) > 0.0)
+		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Napalm_Slowdown_Nemesis) > 0.0)
 		{
 			static Float:fVelocity[3];
 
 			get_entvar(ID_BURN, var_velocity, fVelocity);
 
-			xs_vec_mul_scalar(fVelocity, get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown_Nemesis), fVelocity);
+			xs_vec_mul_scalar(fVelocity, get_pcvar_float(g_pCvar_Grenade_Napalm_Slowdown_Nemesis), fVelocity);
 
 			set_entvar(ID_BURN, var_velocity, fVelocity);
 		}
 
-		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Nemesis);
+		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Napalm_Damage_Nemesis);
 
 		// Take damage from the fire
 		if (fHealth_After_Damage > 0.0)
@@ -570,18 +570,18 @@ public Burning_Flame(iTask_ID)
 	else if (zpe_class_assassin_get(ID_BURN))
 	{
 		// Fire slow down
-		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown_Assassin) > 0.0)
+		if ((iFlags & FL_ONGROUND) && get_pcvar_float(g_pCvar_Grenade_Napalm_Slowdown_Assassin) > 0.0)
 		{
 			static Float:fVelocity[3];
 
 			get_entvar(ID_BURN, var_velocity, fVelocity);
 
-			xs_vec_mul_scalar(fVelocity, get_pcvar_float(g_pCvar_Grenade_Fire_Slowdown_Assassin), fVelocity);
+			xs_vec_mul_scalar(fVelocity, get_pcvar_float(g_pCvar_Grenade_Napalm_Slowdown_Assassin), fVelocity);
 
 			set_entvar(ID_BURN, var_velocity, fVelocity);
 		}
 
-		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Assassin);
+		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Napalm_Damage_Assassin);
 
 		// Take damage from the fire
 		if (fHealth_After_Damage > 0.0)
@@ -592,7 +592,7 @@ public Burning_Flame(iTask_ID)
 
 	else
 	{
-		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Fire_Damage_Zombie);
+		new Float:fHealth_After_Damage = Float:GET_USER_HEALTH(ID_BURN) - get_pcvar_float(g_pCvar_Grenade_Napalm_Damage_Zombie);
 
 		// Take damage from the fire
 		if (fHealth_After_Damage > 0.0)
@@ -618,7 +618,7 @@ public Burning_Flame(iTask_ID)
 
 public Event_CurWeapon(iPlayer)
 {
-	if (get_pcvar_num(g_pCvar_Grenade_Fire_Hudicon_Player))
+	if (get_pcvar_num(g_pCvar_Grenade_Napalm_Hudicon_Player))
 	{
 		// TODO: if zpe_core_is_zombie - crutch. Use wpn key
 		if (read_data(2) == CSW_HEGRENADE && !zpe_core_is_zombie(iPlayer))
@@ -626,9 +626,9 @@ public Event_CurWeapon(iPlayer)
 			message_begin(MSG_ONE, g_iStatus_Icon, _, iPlayer);
 			write_byte(1);
 			write_string("dmg_heat");
-			write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Hudicon_Player_Color_R));
-			write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Hudicon_Player_Color_G));
-			write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Hudicon_Player_Color_B));
+			write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Hudicon_Player_Color_R));
+			write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Hudicon_Player_Color_G));
+			write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Hudicon_Player_Color_B));
 			message_end();
 		}
 
@@ -643,7 +643,7 @@ public Event_CurWeapon(iPlayer)
 
 public Event_DeathMsg()
 {
-	if (get_pcvar_num(g_pCvar_Grenade_Fire_Hudicon_Player))
+	if (get_pcvar_num(g_pCvar_Grenade_Napalm_Hudicon_Player))
 	{
 		Grenade_Icon_Remove(read_data(2));
 	}
@@ -657,7 +657,7 @@ Grenade_Icon_Remove(iPlayer)
 	message_end();
 }
 
-// Fire Grenade: Fire Blast
+// Fire Blast
 Create_Blast2(const Float:fOrigin[3])
 {
 	// Smallest ring
@@ -675,9 +675,9 @@ Create_Blast2(const Float:fOrigin[3])
 	write_byte(4); // life
 	write_byte(60); // width
 	write_byte(0); // noise
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Small_Ring_Rendering_R)); // red
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Small_Ring_Rendering_G)); // green
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Small_Ring_Rendering_B)); // blue
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Small_Ring_Rendering_R)); // red
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Small_Ring_Rendering_G)); // green
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Small_Ring_Rendering_B)); // blue
 	write_byte(200); // brightness
 	write_byte(0); // speed
 	message_end();
@@ -697,9 +697,9 @@ Create_Blast2(const Float:fOrigin[3])
 	write_byte(4); // life
 	write_byte(60); // width
 	write_byte(0); // noise
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Medium_Ring_Rendering_R)); // red
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Medium_Ring_Rendering_G)); // green
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Medium_Ring_Rendering_B)); // blue
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_R)); // red
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_G)); // green
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Medium_Ring_Rendering_B)); // blue
 	write_byte(200); // brightness
 	write_byte(0); // speed
 	message_end();
@@ -719,9 +719,9 @@ Create_Blast2(const Float:fOrigin[3])
 	write_byte(4); // life
 	write_byte(60); // width
 	write_byte(0); // noise
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Largest_Ring_Rendering_R)); // red
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Largest_Ring_Rendering_G)); // green
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Fire_Largest_Ring_Rendering_B)); // blue
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_R)); // red
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_G)); // green
+	write_byte(get_pcvar_num(g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_B)); // blue
 	write_byte(200); // brightness
 	write_byte(0); // speed
 	message_end();
