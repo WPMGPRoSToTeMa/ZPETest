@@ -44,15 +44,15 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 	new szReal_Name[32];
 	zpe_class_zombie_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	new szClass_Config_Path[64];
-	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
+	new szClass_Settings_Path[64];
+	formatex(szClass_Settings_Path, charsmax(szClass_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
 
 	new szFlags[32];
 	szFlags[0] = 'z';
 
-	if (!amx_load_setting_string(szClass_Config_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags, charsmax(szFlags)))
+	if (!amx_load_setting_string(szClass_Settings_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags, charsmax(szFlags)))
 	{
-		amx_save_setting_string(szClass_Config_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags);
+		amx_save_setting_string(szClass_Settings_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags);
 	}
 
 	ArrayPushCell(g_aZombie_Flags, read_flags(szFlags));
@@ -78,15 +78,15 @@ public zpe_fw_class_human_register_post(iClass_ID)
 	new szReal_Name[32];
 	zpe_class_human_get_real_name(iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	new szClass_Config_Path[64];
-	formatex(szClass_Config_Path, charsmax(szClass_Config_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
+	new szClass_Settings_Path[64];
+	formatex(szClass_Settings_Path, charsmax(szClass_Settings_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
 
 	new szFlags[32];
 	szFlags[0] = 'z';
 
-	if (!amx_load_setting_string(szClass_Config_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags, charsmax(szFlags)))
+	if (!amx_load_setting_string(szClass_Settings_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags, charsmax(szFlags)))
 	{
-		amx_save_setting_string(szClass_Config_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags);
+		amx_save_setting_string(szClass_Settings_Path, ZPE_SETTING_SECTION_NAME, "FLAGS", szFlags);
 	}
 
 	ArrayPushCell(g_aHuman_Flags, read_flags(szFlags));
