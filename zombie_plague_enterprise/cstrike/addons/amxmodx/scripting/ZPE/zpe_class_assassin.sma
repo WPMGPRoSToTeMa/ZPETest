@@ -115,7 +115,7 @@ new g_pCvar_Assassin_Kill_Explode;
 new g_pCvar_Assassin_Damage;
 
 new g_pCvar_Assassin_Grenade_Frost;
-new g_pCvar_Assassin_Grenade_Fire;
+new g_pCvar_Assassin_Grenade_Napalm;
 
 new g_iBit_Assassin;
 
@@ -144,7 +144,7 @@ public plugin_init()
 	g_pCvar_Assassin_Damage = register_cvar("zpe_assassin_damage", "1000.0");
 
 	g_pCvar_Assassin_Grenade_Frost = register_cvar("zpe_assassin_grenade_frost", "0");
-	g_pCvar_Assassin_Grenade_Fire = register_cvar("zpe_assassin_grenade_fire", "1");
+	g_pCvar_Assassin_Grenade_Napalm = register_cvar("zpe_assassin_grenade_napalm", "1");
 
 	g_Forward = CreateMultiForward("zpe_fw_class_asassin_bit_change", ET_CONTINUE, FP_CELL);
 
@@ -350,7 +350,7 @@ public zpe_fw_grenade_frost_pre(iPlayer)
 public zpe_fw_grenade_napalm_pre(iPlayer)
 {
 	// Prevent burning for assassin
-	if (BIT_VALID(g_iBit_Assassin, iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Fire))
+	if (BIT_VALID(g_iBit_Assassin, iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Napalm))
 	{
 		return PLUGIN_HANDLED;
 	}
