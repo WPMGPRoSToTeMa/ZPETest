@@ -347,7 +347,7 @@ public zpe_fw_grenade_frost_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zpe_fw_grenade_fire_pre(iPlayer)
+public zpe_fw_grenade_napalm_pre(iPlayer)
 {
 	// Prevent burning for assassin
 	if (BIT_VALID(g_iBit_Assassin, iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Fire))

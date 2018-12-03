@@ -279,7 +279,7 @@ public zpe_fw_grenade_frost_pre(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public zpe_fw_grenade_fire_pre(iPlayer)
+public zpe_fw_grenade_napalm_pre(iPlayer)
 {
 	// Prevent burning for Nemesis
 	if (BIT_VALID(g_iBit_Nemesis, iPlayer) && !get_pcvar_num(g_pCvar_Nemesis_Grenade_Fire))
