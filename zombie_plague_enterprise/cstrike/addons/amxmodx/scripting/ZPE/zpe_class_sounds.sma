@@ -152,7 +152,7 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 			for (new j = 0; j < iArraySize; j++)
 			{
 				ArrayGetString(aSounds, j, szSound, charsmax(szSound));
-				zp_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:i, szSound);
+				zpe_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:i, szSound);
 			}
 
 			ArrayClear(aSounds);
@@ -165,7 +165,7 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 			for (new j = 0; j < iArraySize; j++)
 			{
 				ArrayGetString(g_aDefault_Zombie_Sounds[i], j, szSound, charsmax(szSound));
-				zp_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:i, szSound);
+				zpe_class_zombie_register_sound(iClass_ID, ZOMBIE_SOUNDS:i, szSound);
 			}
 
 			amx_save_setting_string_arr(szClass_Zombie_Config_Path, g_szSound_Section_Name, g_szZombie_Sound_Types[i], g_aDefault_Zombie_Sounds[i]);
@@ -203,7 +203,7 @@ public zpe_fw_class_human_register_post(iClass_ID)
 			for (new j = 0; j < iArraySize; j++)
 			{
 				ArrayGetString(aSounds, j, szSound, charsmax(szSound));
-				zp_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, szSound);
+				zpe_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, szSound);
 			}
 
 			ArrayClear(aSounds);
@@ -216,7 +216,7 @@ public zpe_fw_class_human_register_post(iClass_ID)
 			for (new j = 0; j < iArraySize; j++)
 			{
 				ArrayGetString(g_aDefault_Human_Sounds[i], j, szSound, charsmax(szSound));
-				zp_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, szSound);
+				zpe_class_human_register_sound(iClass_ID, HUMAN_SOUNDS:i, szSound);
 			}
 
 			amx_save_setting_string_arr(szClass_Human_Config_Path, g_szSound_Section_Name, g_szHuman_Sound_Types[i], g_aDefault_Human_Sounds[i]);
