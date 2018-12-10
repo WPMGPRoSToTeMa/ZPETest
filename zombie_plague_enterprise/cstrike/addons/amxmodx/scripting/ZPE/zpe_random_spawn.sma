@@ -97,7 +97,7 @@ Do_Random_Spawn(iPlayer, iCSDM_Spawns = true)
 	if (iCSDM_Spawns && g_Spawn_Count_CSDM)
 	{
 		// Choose random spawn to start looping at
-		iSpawn_Index = random(g_Spawn_Count_CSDM);
+		iSpawn_Index = RANDOM(g_Spawn_Count_CSDM);
 
 		// Try to find a clear spawn
 		for (iCurrent_Index = iSpawn_Index + 1; /*no condition*/; iCurrent_Index++)
@@ -149,7 +149,7 @@ Do_Random_Spawn(iPlayer, iCSDM_Spawns = true)
 	else if (g_Spawn_Count_Regular)
 	{
 		// Choose random spawn to start looping at
-		iSpawn_Index = random_num(0, g_Spawn_Count_Regular - 1);
+		iSpawn_Index = RANDOM(g_Spawn_Count_Regular);
 
 		// Try to find a clear spawn
 		for (iCurrent_Index = iSpawn_Index + 1; /*no condition*/; iCurrent_Index++)

@@ -206,7 +206,7 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Armageddon_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sounds_Armageddon[random(sizeof g_Sounds_Armageddon)]);
+		Play_Sound_To_Clients(g_Sounds_Armageddon[RANDOM(sizeof g_Sounds_Armageddon)]);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Armageddon_Show_Hud))
@@ -294,5 +294,5 @@ Get_Random_Alive_Player()
 		}
 	}
 
-	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+	return iCount > 0 ? iPlayers[RANDOM(iCount)] : -1;
 }

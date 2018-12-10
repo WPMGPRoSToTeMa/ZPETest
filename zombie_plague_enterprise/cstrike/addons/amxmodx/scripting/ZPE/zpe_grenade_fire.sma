@@ -443,7 +443,7 @@ Fire_Explode(iEntity)
 		Create_Blast2(fOrigin);
 
 		// Fire grenade explode sound
-		emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Napalm_Explode[random(sizeof g_Sound_Grenade_Napalm_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Napalm_Explode[RANDOM(sizeof g_Sound_Grenade_Napalm_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Collisions

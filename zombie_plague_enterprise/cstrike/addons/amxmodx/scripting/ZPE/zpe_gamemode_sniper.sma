@@ -181,7 +181,7 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Sniper_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Sniper[random(sizeof g_Sound_Sniper)]);
+		Play_Sound_To_Clients(g_Sound_Sniper[RANDOM(sizeof g_Sound_Sniper)]);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Sniper_Show_Hud))
@@ -273,5 +273,5 @@ Get_Random_Alive_Player()
 		}
 	}
 
-	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+	return iCount > 0 ? iPlayers[RANDOM(iCount)] : -1;
 }

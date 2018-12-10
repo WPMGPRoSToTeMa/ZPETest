@@ -107,6 +107,6 @@ public zpe_fw_items_select_post(iPlayer, iItem_ID)
 
 	if (get_pcvar_num(g_pCvar_Armor_Buy_Sound))
 	{
-		emit_sound(iPlayer, CHAN_STATIC, g_Sound_Armor_Buy_Item[random(sizeof g_Sound_Armor_Buy_Item)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(iPlayer, CHAN_STATIC, g_Sound_Armor_Buy_Item[RANDOM(sizeof g_Sound_Armor_Buy_Item)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 }

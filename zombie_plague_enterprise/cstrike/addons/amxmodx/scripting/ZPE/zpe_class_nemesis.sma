@@ -362,10 +362,10 @@ public zpe_fw_core_infect_post(iPlayer)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Speed));
 
 	// Apply nemesis player model
-	rg_set_user_model(iPlayer, g_Models_Nemesis_Player[random(sizeof g_Models_Nemesis_Player)]);
+	rg_set_user_model(iPlayer, g_Models_Nemesis_Player[RANDOM(sizeof g_Models_Nemesis_Player)]);
 
 	// Apply nemesis claw model
-	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_Models_Nemesis_Claw[random(sizeof g_Models_Nemesis_Claw)]);
+	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_Models_Nemesis_Claw[RANDOM(sizeof g_Models_Nemesis_Claw)]);
 
 	// Nemesis glow
 	if (get_pcvar_num(g_pCvar_Nemesis_Glow))
@@ -446,21 +446,21 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 	{
 		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Die[random(sizeof g_Sound_Nemesis_Die)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Die[RANDOM(sizeof g_Sound_Nemesis_Die)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Fall[random(sizeof g_Sound_Nemesis_Fall)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Fall[RANDOM(sizeof g_Sound_Nemesis_Fall)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Pain[random(sizeof g_Sound_Nemesis_Pain)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Pain[RANDOM(sizeof g_Sound_Nemesis_Pain)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
@@ -469,7 +469,7 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 		{
 			if (szSample[14] == 's' && szSample[15] == 'l' && szSample[16] == 'a')
 			{
-				emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Miss_Slash[random(sizeof g_Sound_Nemesis_Miss_Slash)], fVolume, fAttn, iFlags, iPitch);
+				emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Miss_Slash[RANDOM(sizeof g_Sound_Nemesis_Miss_Slash)], fVolume, fAttn, iFlags, iPitch);
 
 				return FMRES_SUPERCEDE;
 			}
@@ -478,14 +478,14 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 			{
 				if (szSample[17] == 'w')
 				{
-					emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Miss_Wall[random(sizeof g_Sound_Nemesis_Miss_Wall)], fVolume, fAttn, iFlags, iPitch);
+					emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Miss_Wall[RANDOM(sizeof g_Sound_Nemesis_Miss_Wall)], fVolume, fAttn, iFlags, iPitch);
 
 					return FMRES_SUPERCEDE;
 				}
 
 				else
 				{
-					emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Hit_Normal[random(sizeof g_Sound_Nemesis_Hit_Normal)], fVolume, fAttn, iFlags, iPitch);
+					emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Hit_Normal[RANDOM(sizeof g_Sound_Nemesis_Hit_Normal)], fVolume, fAttn, iFlags, iPitch);
 
 					return FMRES_SUPERCEDE;
 				}
@@ -493,7 +493,7 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 
 			if (szSample[14] == 's' && szSample[15] == 't' && szSample[16] == 'a')
 			{
-				emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Hit_Stab[random(sizeof g_Sound_Nemesis_Hit_Stab)], fVolume, fAttn, iFlags, iPitch);
+				emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Hit_Stab[RANDOM(sizeof g_Sound_Nemesis_Hit_Stab)], fVolume, fAttn, iFlags, iPitch);
 
 				return FMRES_SUPERCEDE;
 			}

@@ -98,7 +98,7 @@ public plugin_precache()
 	{
 		new szPath[128];
 
-		g_Sky_Index = random(sizeof g_Sky_Names);
+		g_Sky_Index = RANDOM(sizeof g_Sky_Names);
 
 		formatex(szPath, charsmax(szPath), "gfx/env/%sbk.tga", g_Sky_Names[g_Sky_Index]);
 		precache_generic(szPath);
@@ -176,7 +176,7 @@ public Lighting_Task()
 	{
 		g_Thunder_Light_Index = 0;
 
-		formatex(g_Thunder_Light, charsmax(g_Thunder_Light), g_Thunder_Lights[random(sizeof g_Thunder_Lights)]);
+		formatex(g_Thunder_Light, charsmax(g_Thunder_Light), g_Thunder_Lights[RANDOM(sizeof g_Thunder_Lights)]);
 
 		g_Thunder_Light_Max_Len = strlen(g_Thunder_Light);
 
@@ -191,7 +191,7 @@ public Thunder_Task()
 	if (g_Thunder_Light_Index == 0)
 	{
 		// Play thunder sound
-		Play_Sound_To_Clients(g_Sound_Thunder[random(sizeof g_Sound_Thunder)]);
+		Play_Sound_To_Clients(g_Sound_Thunder[RANDOM(sizeof g_Sound_Thunder)]);
 
 		// Set thunder lights task
 		set_task(0.1, "Thunder_Task", TASK_THUNDER_LIGHTS, _, _, "b");

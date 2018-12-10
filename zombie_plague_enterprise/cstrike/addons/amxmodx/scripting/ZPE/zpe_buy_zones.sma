@@ -404,7 +404,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	}
 
 	// Play clip purchase sound, and notify player
-	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[random(sizeof g_Sound_Buy_Ammo)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[RANDOM(sizeof g_Sound_Buy_Ammo)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT_COLOR");
 }

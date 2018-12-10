@@ -527,5 +527,5 @@ Get_Random_Alive_Player(const iIgnore_Player = 0)
 		}
 	}
 
-	return iCount > 0 ? iPlayers[random(iCount)] : 0;
+	return iCount > 0 ? iPlayers[RANDOM(iCount)] : 0;
 }

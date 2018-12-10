@@ -263,7 +263,7 @@ public zpe_fw_core_cure_post(iPlayer)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Survivor_Speed));
 
 	// Apply survivor player model
-	rg_set_user_model(iPlayer, g_Models_Survivor_Player[random(sizeof g_Models_Survivor_Player)]);
+	rg_set_user_model(iPlayer, g_Models_Survivor_Player[RANDOM(sizeof g_Models_Survivor_Player)]);
 
 	// Survivor glow
 	if (get_pcvar_num(g_pCvar_Survivor_Glow))
@@ -347,21 +347,21 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 	{
 		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Survivor_Die[random(sizeof g_Sound_Survivor_Die)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Survivor_Die[RANDOM(sizeof g_Sound_Survivor_Die)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Survivor_Fall[random(sizeof g_Sound_Survivor_Fall)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Survivor_Fall[RANDOM(sizeof g_Sound_Survivor_Fall)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Survivor_Pain[random(sizeof g_Sound_Survivor_Pain)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Survivor_Pain[RANDOM(sizeof g_Sound_Survivor_Pain)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}

@@ -110,7 +110,7 @@ public zpe_fw_items_select_post(iPlayer, iItem_ID)
 		write_byte(1); // Ammount
 		message_end();
 
-		emit_sound(iPlayer, CHAN_ITEM, g_Sound_Napalm_Buy_Item[random(sizeof g_Sound_Napalm_Buy_Item)], VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(iPlayer, CHAN_ITEM, g_Sound_Napalm_Buy_Item[RANDOM(sizeof g_Sound_Napalm_Buy_Item)], VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	else

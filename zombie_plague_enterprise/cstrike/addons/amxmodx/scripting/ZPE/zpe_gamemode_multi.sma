@@ -214,7 +214,7 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Multi_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Multi[random(sizeof g_Sound_Multi)]);
+		Play_Sound_To_Clients(g_Sound_Multi[RANDOM(sizeof g_Sound_Multi)]);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Multi_Show_Hud))
@@ -302,5 +302,5 @@ Get_Random_Alive_Player()
 		}
 	}
 
-	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+	return iCount > 0 ? iPlayers[RANDOM(iCount)] : -1;
 }

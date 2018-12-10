@@ -339,7 +339,7 @@ Infection_Explode(iEntity)
 	Create_Blast(fOrigin);
 
 	// Infection nade explode sound
-	emit_sound(iEntity, CHAN_WEAPON, g_Sound_Grenade_Infection_Explode[random(sizeof g_Sound_Grenade_Infection_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(iEntity, CHAN_WEAPON, g_Sound_Grenade_Infection_Explode[RANDOM(sizeof g_Sound_Grenade_Infection_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Get attacker
 	new iAttacker = get_entvar(iEntity, var_owner);
@@ -376,7 +376,7 @@ Infection_Explode(iEntity)
 		zpe_core_infect(iVctim, iAttacker);
 
 		// Victim's sound
-		emit_sound(iVctim, CHAN_VOICE, g_Sound_Grenade_Infection_Player[random(sizeof g_Sound_Grenade_Infection_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(iVctim, CHAN_VOICE, g_Sound_Grenade_Infection_Player[RANDOM(sizeof g_Sound_Grenade_Infection_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Get rid of the grenade

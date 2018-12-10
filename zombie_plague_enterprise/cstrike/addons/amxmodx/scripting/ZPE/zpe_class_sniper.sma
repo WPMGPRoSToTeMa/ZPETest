@@ -296,7 +296,7 @@ public zpe_fw_core_cure_post(iPlayer, iAttacker)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Sniper_Speed));
 
 	// Apply sniper player model
-	rg_set_user_model(iPlayer, g_Models_Sniper_Player[random(sizeof g_Models_Sniper_Player)]);
+	rg_set_user_model(iPlayer, g_Models_Sniper_Player[RANDOM(sizeof g_Models_Sniper_Player)]);
 
 	// Sniper glow
 	if (get_pcvar_num(g_pCvar_Sniper_Glow))
@@ -380,21 +380,21 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 	{
 		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Die[random(sizeof g_Sound_Sniper_Die)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Die[RANDOM(sizeof g_Sound_Sniper_Die)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Fall[random(sizeof g_Sound_Sniper_Fall)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Fall[RANDOM(sizeof g_Sound_Sniper_Fall)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Pain[random(sizeof g_Sound_Sniper_Pain)], fVolume, fAttn, iFlags, iPitch);
+			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Pain[RANDOM(sizeof g_Sound_Sniper_Pain)], fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
