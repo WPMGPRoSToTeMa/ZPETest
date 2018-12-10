@@ -6,6 +6,8 @@
 
 #define _zpe_class_sniper_included
 
+#include <cs_util_const>
+
 /**
  * Returns whether a player is a Sniper.
  *
