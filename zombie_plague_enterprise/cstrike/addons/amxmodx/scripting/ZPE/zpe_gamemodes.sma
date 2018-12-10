@@ -31,8 +31,6 @@
 // Some constants
 #define DMG_HEGRENADE (1 << 24)
 
-#define CHANCE(%0) (random_num(0, 99) < (%0))
-
 enum _:TOTAL_FORWARDS
 {
 	FW_GAME_MODE_CHOOSE_PRE = 0,

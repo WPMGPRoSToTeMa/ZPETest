@@ -366,45 +366,45 @@ stock Recursive_Mkdir(szPath[])
 {
 	static szPath_Copy[128];
 	static szRecursive_Path[128];
-	
+
 	static bool:bFirst_Iteration = true;
 	static bool:bRecursive_Creating = false;
-	
+
 	if (bFirst_Iteration)
 	{
 		copy(szPath_Copy, charsmax(szPath_Copy), szPath);
-		
+
 		bFirst_Iteration = false;
 	}
-	
+
 	new szDir_Name[64];
 	strtok(szPath_Copy, szDir_Name, charsmax(szDir_Name), szPath_Copy, charsmax(szPath_Copy), '/');
 	format(szRecursive_Path, charsmax(szRecursive_Path), "%s%s%s", szRecursive_Path, bFirst_Iteration ? "" : "/", szDir_Name);
-	
+
 	if (!szPath_Copy[0])
 	{
 		mkdir(szRecursive_Path);
-		
+
 		szPath_Copy[0] = '^0';
 		szRecursive_Path[0] = '^0';
-		
+
 		bFirst_Iteration = true;
 		bRecursive_Creating = false;
-		
+
 		return;
 	}
-	
+
 	if (bRecursive_Creating)
 	{
 		mkdir(szRecursive_Path);
 	}
-	
+
 	else if (!dir_exists(szRecursive_Path))
 	{
 		mkdir(szRecursive_Path);
-		
+
 		bRecursive_Creating = true;
 	}
-	
+
 	Recursive_Mkdir(szPath_Copy);
 }
