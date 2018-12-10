@@ -25,32 +25,21 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
-new const g_Bleeding_Decals[] =
-{
-	99,
-	107,
-	108,
-	184,
-	185,
-	186,
-	187,
-	188,
-	189
-};
-
-#define TASK_BLOOD 100
-#define ID_BLOOD (iTask_ID - TASK_BLOOD)
-
 #define CS_DEFAULT_FOV 90
 
 new Array:g_aBleeding_Decals;
+new g_iDecal_Count;
 
 new g_Message_Set_Fov;
 
-new g_Is_Mod_CZ;
-
 new g_pCvar_Zombie_Fov;
+
+new g_pCvar_Nemesis_Silent;
+new g_pCvar_Assassin_Silent;
 new g_pCvar_Zombie_Silent;
+
+new g_pCvar_Nemesis_Bleeding;
+new g_pCvar_Assassin_Bleeding;
 new g_pCvar_Zombie_Bleeding;
 
 new g_iBit_Alive;
@@ -60,7 +49,13 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	g_pCvar_Zombie_Fov = register_cvar("zpe_zombie_fov", "110");
+
+	g_pCvar_Nemesis_Silent = register_cvar("zpe_nemesis_silent", "1");
+	g_pCvar_Assassin_Silent = register_cvar("zpe_assassin_silent", "1");
 	g_pCvar_Zombie_Silent = register_cvar("zpe_zombie_silent", "1");
+
+	g_pCvar_Nemesis_Bleeding = register_cvar("zpe_nemesis_bleeding", "1");
+	g_pCvar_Assassin_Bleeding = register_cvar("zpe_assassin_bleeding", "1");
 	g_pCvar_Zombie_Bleeding = register_cvar("zpe_zombie_bleeding", "1");
 
 	g_Message_Set_Fov = get_user_msgid("SetFOV");
@@ -68,15 +63,6 @@ public plugin_init()
 	register_message(g_Message_Set_Fov, "Message_Setfov");
 
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
-
-	new szMy_Mod[6];
-
-	get_modname(szMy_Mod, charsmax(szMy_Mod));
-
-	if (equal(szMy_Mod, "czero"))
-	{
-		g_Is_Mod_CZ = 1;
-	}
 }
 
 public plugin_precache()
@@ -84,14 +70,28 @@ public plugin_precache()
 	// Initialize arrays
 	g_aBleeding_Decals = ArrayCreate(1, 1);
 
+	new Array:aDecal_Names = ArrayCreate(32, 1);
+
 	// Load from external file
-	amx_load_setting_int_arr(ZPE_SETTINGS_FILE, "Zombie Decals", "DECALS", g_aBleeding_Decals);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Zombie Decals", "DECALS", aDecal_Names);
+
+	new g_iDecal_Count = ArraySize(aDecal_Names);
+	new szDecal_Name[32];
+
+	for (new i = 0; i < g_iDecal_Count; i++)
+	{
+		ArrayGetString(aDecal_Names, i, szDecal_Name, charsmax(szDecal_Name));
+
+		ArrayPushCell(g_aBleeding_Decals, engfunc(EngFunc_DecalIndex, szDecal_Name));
+	}
+
+	ArrayDestroy(aDecal_Names);
 }
 
 public RG_CSGameRules_PlayerKilled_Post(iVictim)
 {
 	// Remove bleeding task
-	remove_task(iVictim + TASK_BLOOD);
+	remove_task(iVictim);
 }
 
 public Message_Setfov(iMessage_ID, iMessage_Dest, iMessage_Entity)
@@ -115,21 +115,21 @@ public zpe_fw_core_infect_post(iPlayer)
 	}
 
 	// Remove previous tasks
-	remove_task(iPlayer + TASK_BLOOD);
+	remove_task(iPlayer);
 
 	// Nemesis Class loaded?
 	if (zpe_class_nemesis_get(iPlayer))
 	{
 		// Set silent footsteps?
-		if (get_pcvar_num(g_pCvar_Zombie_Silent))
+		if (get_pcvar_num(g_pCvar_Nemesis_Silent))
 		{
 			rg_set_user_footsteps(iPlayer, true);
 		}
 
-		// Zombie bleeding?
-		if (get_pcvar_num(g_pCvar_Zombie_Bleeding))
+		// Nemesis bleeding?
+		if (get_pcvar_num(g_pCvar_Nemesis_Bleeding) && g_iDecal_Count > 0)
 		{
-			set_task(0.7, "Zombie_Bleeding", iPlayer + TASK_BLOOD, _, _, "b");
+			set_task(0.7, "Zombie_Bleeding", iPlayer, _, _, "b");
 		}
 	}
 
@@ -137,22 +137,31 @@ public zpe_fw_core_infect_post(iPlayer)
 	else if (zpe_class_assassin_get(iPlayer))
 	{
 		// Set silent footsteps?
+		if (get_pcvar_num(g_pCvar_Assassin_Silent))
+		{
+			rg_set_user_footsteps(iPlayer, true);
+		}
+
+		// Assassin bleeding?
+		if (get_pcvar_num(g_pCvar_Assassin_Bleeding) && g_iDecal_Count > 0)
+		{
+			set_task(0.7, "Zombie_Bleeding", iPlayer, _, _, "b");
+		}
+	}
+
+	else
+	{
+		// Set silent footsteps?
 		if (get_pcvar_num(g_pCvar_Zombie_Silent))
 		{
 			rg_set_user_footsteps(iPlayer, true);
 		}
 
 		// Zombie bleeding?
-		if (get_pcvar_num(g_pCvar_Zombie_Bleeding))
+		if (get_pcvar_num(g_pCvar_Zombie_Bleeding) && g_iDecal_Count > 0)
 		{
-			set_task(0.7, "Zombie_Bleeding", iPlayer + TASK_BLOOD, _, _, "b");
+			set_task(0.7, "Zombie_Bleeding", iPlayer, _, _, "b");
 		}
-	}
-
-	else
-	{
-		// Restore normal footsteps?
-		rg_set_user_footsteps(iPlayer, false);
 	}
 }
 
@@ -167,20 +176,20 @@ public zpe_fw_core_cure_post(iPlayer)
 	}
 
 	// Restore normal footsteps?
-	if (get_pcvar_num(g_pCvar_Zombie_Silent))
+	if (rg_get_user_footsteps(iPlayer))
 	{
 		rg_set_user_footsteps(iPlayer, false);
 	}
 
 	// Remove bleeding task
-	remove_task(iPlayer + TASK_BLOOD);
+	remove_task(iPlayer);
 }
 
 // Make zombies leave footsteps and bloodstains on the floor
-public Zombie_Bleeding(iTask_ID)
+public Zombie_Bleeding(iPlayer)
 {
 	// Only bleed when moving on ground
-	if (!(get_entvar(ID_BLOOD, var_flags) & FL_ONGROUND) || _fm_get_speed(ID_BLOOD) < 80)
+	if (!(get_entvar(iPlayer, var_flags) & FL_ONGROUND) || _fm_get_speed(iPlayer) < 80)
 	{
 		return;
 	}
@@ -188,10 +197,10 @@ public Zombie_Bleeding(iTask_ID)
 	// Get user origin
 	static Float:fOrigin[3];
 
-	get_entvar(ID_BLOOD, var_origin, fOrigin);
+	get_entvar(iPlayer, var_origin, fOrigin);
 
 	// If ducking set a little lower
-	if (get_entvar(ID_BLOOD, var_bInDuck))
+	if (get_entvar(iPlayer, var_bInDuck))
 	{
 		fOrigin[2] -= 18.0;
 	}
@@ -207,14 +216,14 @@ public Zombie_Bleeding(iTask_ID)
 	engfunc(EngFunc_WriteCoord, fOrigin[0]); // x
 	engfunc(EngFunc_WriteCoord, fOrigin[1]); // y
 	engfunc(EngFunc_WriteCoord, fOrigin[2]); // z
-	write_byte(g_Bleeding_Decals[random(sizeof g_Bleeding_Decals) + (g_Is_Mod_CZ * 12)]); // decal number (offsets +12 for CZ)
+	write_byte(ArrayGetCell(g_aBleeding_Decals, random_num(0, g_iDecal_Count - 1))); // decal number
 	message_end();
 }
 
 public client_disconnected(iPlayer)
 {
 	// Remove bleeding task
-	remove_task(iPlayer + TASK_BLOOD);
+	remove_task(iPlayer);
 
 	BIT_SUB(g_iBit_Alive, iPlayer);
 }
