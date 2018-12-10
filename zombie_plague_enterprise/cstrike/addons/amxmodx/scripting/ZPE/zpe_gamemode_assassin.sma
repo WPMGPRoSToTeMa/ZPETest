@@ -180,7 +180,7 @@ public zpe_fw_gamemodes_start()
 	// Play assassin sound
 	if (get_pcvar_num(g_pCvar_Assassin_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sounds_Assassin[random(sizeof g_Sounds_Assassin)]);
+		Play_Sound_To_Clients(g_Sounds_Assassin[RANDOM(sizeof g_Sounds_Assassin)]);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Assassin_Show_Hud))
@@ -284,5 +284,5 @@ Get_Random_Alive_Player()
 		}
 	}
 
-	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+	return iCount > 0 ? iPlayers[RANDOM(iCount)] : -1;
 }

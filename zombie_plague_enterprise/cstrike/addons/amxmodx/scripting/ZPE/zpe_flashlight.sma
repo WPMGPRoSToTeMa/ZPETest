@@ -229,7 +229,7 @@ public FM_CmdStart_Post(iPlayer, iHandle)
 			set_task(1.0, "Flashlight_Charge_Task", iPlayer + TASK_CHARGE, _, _, "b");
 
 			// Play flashlight toggle sound
-			emit_sound(iPlayer, CHAN_WEAPON, g_Sound_Flashlight[random(sizeof g_Sound_Flashlight)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			emit_sound(iPlayer, CHAN_WEAPON, g_Sound_Flashlight[RANDOM(sizeof g_Sound_Flashlight)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			// Update flashlight status on HUD
 			message_begin(MSG_ONE, g_Message_Flashlight, _, iPlayer);
@@ -404,7 +404,7 @@ public Flashlight_Charge_Task(iTask_ID)
 		remove_task(ID_CHARGE + TASK_FLASHLIGHT);
 
 		// Play flashlight toggle sound
-		emit_sound(ID_CHARGE, CHAN_WEAPON, g_Sound_Flashlight[random(sizeof g_Sound_Flashlight)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(ID_CHARGE, CHAN_WEAPON, g_Sound_Flashlight[RANDOM(sizeof g_Sound_Flashlight)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 		// Update flashlight status on HUD
 		message_begin(MSG_ONE, g_Message_Flashlight, _, ID_CHARGE);

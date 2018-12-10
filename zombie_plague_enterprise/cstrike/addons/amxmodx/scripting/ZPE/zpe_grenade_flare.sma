@@ -253,7 +253,7 @@ public Ham_Think_Grenade_(iEntity)
 		else if ((get_entvar(iEntity, var_flags) & FL_ONGROUND) && _fm_get_speed(iEntity) < 10)
 		{
 			// Flare sound
-			emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Flare_Explode[random(sizeof g_Sound_Grenade_Flare_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Flare_Explode[RANDOM(sizeof g_Sound_Grenade_Flare_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			// Set duration and start lightning loop on next think
 			set_entvar(iEntity, PEV_FLARE_DURATION, 1 + get_pcvar_num(g_pCvar_Grenade_Flare_Duration) / 2);

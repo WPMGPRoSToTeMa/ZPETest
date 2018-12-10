@@ -20,6 +20,7 @@
 #include <amx_settings_api>
 #include <zpe_kernel>
 #include <zpe_gamemodes>
+#include <cs_util>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -317,7 +318,7 @@ Message_Round_End()
 
 		if (get_pcvar_num(g_pCvar_Sounds_Win_Humans))
 		{
-			Play_Sound_To_Clients(g_Sound_Win_Humans[random(sizeof g_Sound_Win_Humans)], 1);
+			Play_Sound_To_Clients(g_Sound_Win_Humans[RANDOM(sizeof g_Sound_Win_Humans)], 1);
 		}
 
 		g_Score_Humans++;
@@ -373,7 +374,7 @@ Message_Round_End()
 
 		if (get_pcvar_num(g_pCvar_Sounds_Win_Zombies))
 		{
-			Play_Sound_To_Clients(g_Sound_Win_Zombies[random(sizeof g_Sound_Win_Zombies)], 1);
+			Play_Sound_To_Clients(g_Sound_Win_Zombies[RANDOM(sizeof g_Sound_Win_Zombies)], 1);
 		}
 
 		g_Score_Zombies++;
@@ -429,7 +430,7 @@ Message_Round_End()
 
 		if (get_pcvar_num(g_pCvar_Sounds_Win_No_One))
 		{
-			Play_Sound_To_Clients(g_Sound_Win_No_One[random(sizeof g_Sound_Win_No_One)], 1);
+			Play_Sound_To_Clients(g_Sound_Win_No_One[RANDOM(sizeof g_Sound_Win_No_One)], 1);
 		}
 	}
 }

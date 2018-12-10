@@ -372,7 +372,7 @@ public zpe_fw_core_cure_post(iPlayer)
 
 	if (aClass_Human_Models != Invalid_Array)
 	{
-		new iIndex = random(ArraySize(aClass_Human_Models));
+		new iIndex = RANDOM(ArraySize(aClass_Human_Models));
 
 		new szPlayer_Model[32];
 

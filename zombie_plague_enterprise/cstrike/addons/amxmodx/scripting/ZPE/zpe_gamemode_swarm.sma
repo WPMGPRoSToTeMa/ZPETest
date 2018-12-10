@@ -158,7 +158,7 @@ public zpe_fw_gamemodes_start()
 	// Play swarm sound
 	if (get_pcvar_num(g_pCvar_Swarm_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Swarm[random(sizeof g_Sound_Swarm)]);
+		Play_Sound_To_Clients(g_Sound_Swarm[RANDOM(sizeof g_Sound_Swarm)]);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Swarm_Show_Hud))

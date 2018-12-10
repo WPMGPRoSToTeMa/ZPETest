@@ -226,5 +226,5 @@ Get_Random_Alive_Player()
 		}
 	}
 
-	return iCount > 0 ? iPlayers[random(iCount)] : -1;
+	return iCount > 0 ? iPlayers[RANDOM(iCount)] : -1;
 }

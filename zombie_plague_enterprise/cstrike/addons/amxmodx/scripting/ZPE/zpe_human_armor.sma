@@ -132,7 +132,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 		// If he has some, block damage and reduce armor instead
 		if (fArmor > 0.0)
 		{
-			emit_sound(iVictim, CHAN_BODY, g_Sound_Add_Armor[random(sizeof g_Sound_Add_Armor)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			emit_sound(iVictim, CHAN_BODY, g_Sound_Add_Armor[RANDOM(sizeof g_Sound_Add_Armor)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			if (fArmor - fDamage > 0.0)
 			{

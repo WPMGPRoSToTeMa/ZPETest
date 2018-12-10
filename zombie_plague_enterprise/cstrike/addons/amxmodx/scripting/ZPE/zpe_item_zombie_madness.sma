@@ -194,7 +194,7 @@ public zpe_fw_items_select_post(iPlayer, iItem_ID)
 	if (aZombie_Madness_Sound != Invalid_Array)
 	{
 		new szSound_Path[64];
-		ArrayGetString(aZombie_Madness_Sound, random(ArraySize(aZombie_Madness_Sound)), szSound_Path, charsmax(szSound_Path));
+		ArrayGetString(aZombie_Madness_Sound, RANDOM(ArraySize(aZombie_Madness_Sound)), szSound_Path, charsmax(szSound_Path));
 
 		emit_sound(iPlayer, CHAN_VOICE, szSound_Path, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}

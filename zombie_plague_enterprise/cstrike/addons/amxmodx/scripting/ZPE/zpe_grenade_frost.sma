@@ -520,7 +520,7 @@ Frost_Explode(iEntity)
 	// Make the explosion
 	Create_Blast3(fOrigin);
 
-	emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Frost_Explode[random(sizeof g_Sound_Grenade_Frost_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Frost_Explode[RANDOM(sizeof g_Sound_Grenade_Frost_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Collisions
 	new iVictim = -1;
@@ -556,7 +556,7 @@ Set_Freeze(iVictim)
 
 		get_user_origin(iVictim, iOrigin);
 
-		emit_sound(iVictim, CHAN_VOICE, g_Sound_Grenade_Frost_Break[random(sizeof g_Sound_Grenade_Frost_Break)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		emit_sound(iVictim, CHAN_VOICE, g_Sound_Grenade_Frost_Break[RANDOM(sizeof g_Sound_Grenade_Frost_Break)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 		// Glass shatter
 		message_begin(MSG_PVS, SVC_TEMPENTITY, iOrigin);
@@ -597,7 +597,7 @@ Set_Freeze(iVictim)
 	BIT_ADD(g_Is_Frozen, iVictim);
 
 	// Freeze sound
-	emit_sound(iVictim, CHAN_VOICE, g_Sound_Grenade_Frost_Player[random(sizeof g_Sound_Grenade_Frost_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(iVictim, CHAN_VOICE, g_Sound_Grenade_Frost_Player[RANDOM(sizeof g_Sound_Grenade_Frost_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Add a blue tint to their screen
 	message_begin(MSG_ONE, g_Message_Screen_Fade, _, iVictim);
@@ -719,7 +719,7 @@ public Remove_Freeze(iTask_ID)
 	write_byte(100); // alpha
 	message_end();
 
-	emit_sound(ID_FROST_REMOVE, CHAN_VOICE, g_Sound_Grenade_Frost_Break[random(sizeof g_Sound_Grenade_Frost_Break)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	emit_sound(ID_FROST_REMOVE, CHAN_VOICE, g_Sound_Grenade_Frost_Break[RANDOM(sizeof g_Sound_Grenade_Frost_Break)], 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Get player's origin
 	static iOrigin[3];

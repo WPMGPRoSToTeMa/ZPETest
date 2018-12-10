@@ -354,7 +354,7 @@ public zpe_fw_core_infect_post(iPlayer)
 	if (aClass_Models != Invalid_Array)
 	{
 		new szPlayer_Model[32];
-		ArrayGetString(aClass_Models, random(ArraySize(aClass_Models)), szPlayer_Model, charsmax(szPlayer_Model));
+		ArrayGetString(aClass_Models, RANDOM(ArraySize(aClass_Models)), szPlayer_Model, charsmax(szPlayer_Model));
 		rg_set_user_model(iPlayer, szPlayer_Model);
 	}
 
@@ -369,7 +369,7 @@ public zpe_fw_core_infect_post(iPlayer)
 	if (aClass_Claws != Invalid_Array)
 	{
 		new szClaw_Model[64];
-		ArrayGetString(aClass_Claws, random(ArraySize(aClass_Claws)), szClaw_Model, charsmax(szClaw_Model));
+		ArrayGetString(aClass_Claws, RANDOM(ArraySize(aClass_Claws)), szClaw_Model, charsmax(szClaw_Model));
 		cs_set_player_view_model(iPlayer, CSW_KNIFE, szClaw_Model);
 	}
 

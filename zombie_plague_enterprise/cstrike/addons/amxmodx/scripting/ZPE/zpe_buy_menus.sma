@@ -314,12 +314,12 @@ public Human_Weapons(iPlayer)
 	// Random wapons settings
 	if (get_pcvar_num(g_pCvar_Random_Primary))
 	{
-		Buy_Primary_Weapon(iPlayer, random(sizeof g_Primary_Items));
+		Buy_Primary_Weapon(iPlayer, RANDOM(sizeof g_Primary_Items));
 	}
 
 	if (get_pcvar_num(g_pCvar_Random_Secondary))
 	{
-		Buy_Secondary_Weapon(iPlayer, random(sizeof g_Secondary_Items));
+		Buy_Secondary_Weapon(iPlayer, RANDOM(sizeof g_Secondary_Items));
 	}
 
 	if (get_pcvar_num(g_pCvar_Random_Grenades))
