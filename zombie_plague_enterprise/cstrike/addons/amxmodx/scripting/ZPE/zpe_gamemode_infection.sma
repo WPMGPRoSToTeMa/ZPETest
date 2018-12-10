@@ -21,8 +21,6 @@
 #include <zpe_kernel>
 #include <zpe_gamemodes>
 
-#define CHANCE(%0) (random_num(0, 99) < (%0))
-
 new g_pCvar_Infection_Chance;
 new g_pCvar_Infection_Min_Players;
 new g_pCvar_Infection_Allow_Respawn;

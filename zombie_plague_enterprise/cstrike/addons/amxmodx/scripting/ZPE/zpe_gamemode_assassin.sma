@@ -29,8 +29,6 @@
 
 #define SOUND_MAX_LENGTH 64
 
-#define CHANCE(%0) (random_num(0, 99) < (%0))
-
 new const g_Sounds_Assassin[][] =
 {
 	"zombie_plague/nemesis1.wav",
