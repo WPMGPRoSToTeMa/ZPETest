@@ -97,6 +97,8 @@ new Array:g_aSound_Nemesis_Hit_Stab;
 new g_Forward;
 new g_Forward_Result;
 
+new g_pCvar_Nemesis_Armor_Type;
+new g_pCvar_Nemesis_Armor;
 new g_pCvar_Nemesis_Health;
 new g_pCvar_Nemesis_Base_Health;
 new g_pCvar_Nemesis_Speed;
@@ -126,6 +128,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
+	g_pCvar_Nemesis_Armor_Type = register_cvar("zpe_nemesis_armor_type", "0");
+	g_pCvar_Nemesis_Armor = register_cvar("zpe_nemesis_armor", "0");
 	g_pCvar_Nemesis_Health = register_cvar("zpe_nemesis_health", "0.0");
 	g_pCvar_Nemesis_Base_Health = register_cvar("zpe_nemesis_base_health", "2000.0");
 	g_pCvar_Nemesis_Speed = register_cvar("zpe_nemesis_speed", "1.05");
@@ -353,6 +357,17 @@ public zpe_fw_core_infect_post(iPlayer)
 	else
 	{
 		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Base_Health));
+	}
+
+	// Armor
+	if (get_pcvar_num(g_pCvar_Nemesis_Armor_Type))
+	{
+		rg_set_user_armor(iPlayer, get_pcvar_num(g_pCvar_Nemesis_Armor), ARMOR_VESTHELM);
+	}
+
+	else
+	{
+		rg_set_user_armor(iPlayer, get_pcvar_num(g_pCvar_Nemesis_Armor), ARMOR_KEVLAR);
 	}
 
 	// Gravity
