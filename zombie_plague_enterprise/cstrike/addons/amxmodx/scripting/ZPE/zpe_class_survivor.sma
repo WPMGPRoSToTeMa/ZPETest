@@ -60,6 +60,8 @@ new Array:g_aSound_Survivor_Pain;
 new g_Forward;
 new g_Forward_Result;
 
+new g_pCvar_Survivor_Armor_Type;
+new g_pCvar_Survivor_Armor;
 new g_pCvar_Survivor_Health;
 new g_pCvar_Survivor_Base_Health;
 new g_pCvar_Survivor_Speed;
@@ -86,6 +88,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
+	g_pCvar_Survivor_Armor_Type = register_cvar("zpe_survivor_armor_type", "0");
+	g_pCvar_Survivor_Armor = register_cvar("zpe_survivor_armor", "0");
 	g_pCvar_Survivor_Health = register_cvar("zpe_survivor_health", "0.0");
 	g_pCvar_Survivor_Base_Health = register_cvar("zpe_survivor_base_health", "100.0");
 	g_pCvar_Survivor_Speed = register_cvar("zpe_survivor_speed", "0.95");
@@ -254,6 +258,17 @@ public zpe_fw_core_cure_post(iPlayer)
 	else
 	{
 		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Survivor_Health));
+	}
+
+	// Armor
+	if (get_pcvar_num(g_pCvar_Survivor_Armor_Type))
+	{
+		rg_set_user_armor(iPlayer, get_pcvar_num(g_pCvar_Survivor_Armor), ARMOR_VESTHELM);
+	}
+
+	else
+	{
+		rg_set_user_armor(iPlayer, get_pcvar_num(g_pCvar_Survivor_Armor), ARMOR_KEVLAR);
 	}
 
 	// Gravity
