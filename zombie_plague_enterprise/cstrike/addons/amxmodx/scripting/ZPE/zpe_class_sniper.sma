@@ -21,7 +21,6 @@
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
 #include <zpe_kernel>
-#include <zpe_items>
 
 #define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_sniper.ini"
 
