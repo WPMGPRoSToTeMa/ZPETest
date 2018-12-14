@@ -65,11 +65,11 @@ new const g_Sound_Nemesis_Miss_Slash[][] =
 	"zombie_plague/zombie_sounds/zombie_miss_slash1.wav"
 };
 
-new const g_Sound_Nemesis_Miss_Wall[][] =
+new const g_Sound_Nemesis_Hit_Wall[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_miss_wall0.wav",
-	"zombie_plague/zombie_sounds/zombie_miss_wall1.wav",
-	"zombie_plague/zombie_sounds/zombie_miss_wall2.wav"
+	"zombie_plague/zombie_sounds/zombie_hit_wall0.wav",
+	"zombie_plague/zombie_sounds/zombie_hit_wall1.wav",
+	"zombie_plague/zombie_sounds/zombie_hit_wall2.wav"
 };
 
 new const g_Sound_Nemesis_Hit_Normal[][] =
@@ -90,7 +90,7 @@ new Array:g_aSound_Nemesis_Die;
 new Array:g_aSound_Nemesis_Fall;
 new Array:g_aSound_Nemesis_Pain;
 new Array:g_aSound_Nemesis_Miss_Slash;
-new Array:g_aSound_Nemesis_Miss_Wall;
+new Array:g_aSound_Nemesis_Hit_Wall;
 new Array:g_aSound_Nemesis_Hit_Normal;
 new Array:g_aSound_Nemesis_Hit_Stab;
 
@@ -170,7 +170,7 @@ public plugin_precache()
 	g_aSound_Nemesis_Fall = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Nemesis_Pain = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Nemesis_Miss_Slash = ArrayCreate(SOUND_MAX_LENGTH, 1);
-	g_aSound_Nemesis_Miss_Wall = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Nemesis_Hit_Wall = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Nemesis_Hit_Normal = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Nemesis_Hit_Stab = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
@@ -182,7 +182,7 @@ public plugin_precache()
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS FALL", g_aSound_Nemesis_Fall);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS PAIN", g_aSound_Nemesis_Pain);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS MISS SLASH", g_aSound_Nemesis_Miss_Slash);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS MISS WALL", g_aSound_Nemesis_Miss_Wall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT WALL", g_aSound_Nemesis_Hit_Wall);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT NORMAL", g_aSound_Nemesis_Hit_Normal);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT STAB", g_aSound_Nemesis_Hit_Stab);
 
@@ -220,9 +220,9 @@ public plugin_precache()
 		precache_sound(g_Sound_Nemesis_Miss_Slash[i]);
 	}
 
-	for (new i = 0; i < sizeof g_Sound_Nemesis_Miss_Wall; i++)
+	for (new i = 0; i < sizeof g_Sound_Nemesis_Hit_Wall; i++)
 	{
-		precache_sound(g_Sound_Nemesis_Miss_Wall[i]);
+		precache_sound(g_Sound_Nemesis_Hit_Wall[i]);
 	}
 
 	for (new i = 0; i < sizeof g_Sound_Nemesis_Hit_Normal; i++)
@@ -493,7 +493,7 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 			{
 				if (szSample[17] == 'w')
 				{
-					emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Miss_Wall[RANDOM(sizeof g_Sound_Nemesis_Miss_Wall)], fVolume, fAttn, iFlags, iPitch);
+					emit_sound(iPlayer, iChannel, g_Sound_Nemesis_Hit_Wall[RANDOM(sizeof g_Sound_Nemesis_Hit_Wall)], fVolume, fAttn, iFlags, iPitch);
 
 					return FMRES_SUPERCEDE;
 				}
