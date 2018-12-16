@@ -136,7 +136,7 @@ public plugin_precache()
 	g_aSound_Sniper_Pain = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Player Models", "SNIPER", g_aModels_Sniper_Player);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Sniper_Player);
 
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER DIE", g_aSound_Sniper_Die);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER FALL", g_aSound_Sniper_Fall);
