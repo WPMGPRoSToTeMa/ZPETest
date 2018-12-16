@@ -178,13 +178,13 @@ public plugin_precache()
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Assassin_Player);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "CLAWS MODEL", g_aModels_Assassin_Claw);
 
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN DIE", g_aSound_Assassin_Die);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN FALL", g_aSound_Assassin_Fall);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN PAIN", g_aSound_Assassin_Pain);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN MISS SLASH", g_aSound_Assassin_Miss_Slash);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN HIT WALL", g_aSound_Assassin_Hit_Wall);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN HIT NORMAL", g_aSound_Assassin_Hit_Normal);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN HIT STAB", g_aSound_Assassin_Hit_Stab);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "DIE", g_aSound_Assassin_Die);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FALL", g_aSound_Assassin_Fall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "PAIN", g_aSound_Assassin_Pain);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "MISS SLASH", g_aSound_Assassin_Miss_Slash);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT WALL", g_aSound_Assassin_Hit_Wall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT NORMAL", g_aSound_Assassin_Hit_Normal);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT STAB", g_aSound_Assassin_Hit_Stab);
 
 	new szBuffer[128];
 

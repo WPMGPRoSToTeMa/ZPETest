@@ -131,9 +131,9 @@ public plugin_precache()
 	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Survivor_Player);
 
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SURVIVOR DIE", g_aSound_Survivor_Die);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SURVIVOR FALL", g_aSound_Survivor_Fall);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SURVIVOR PAIN", g_aSound_Survivor_Pain);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "DIE", g_aSound_Survivor_Die);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FALL", g_aSound_Survivor_Fall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "PAIN", g_aSound_Survivor_Pain);
 
 	new szBuffer[128];
 

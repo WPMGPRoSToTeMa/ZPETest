@@ -138,9 +138,9 @@ public plugin_precache()
 	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Sniper_Player);
 
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER DIE", g_aSound_Sniper_Die);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER FALL", g_aSound_Sniper_Fall);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SNIPER PAIN", g_aSound_Sniper_Pain);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "DIE", g_aSound_Sniper_Die);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FALL", g_aSound_Sniper_Fall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "PAIN", g_aSound_Sniper_Pain);
 
 	new szBuffer[128];
 
