@@ -535,7 +535,7 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	// Models
 	new Array:aClass_Human_Models = ArrayCreate(32, 1);
 
-	amx_load_setting_string_arr(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", aClass_Human_Models);
+	amx_load_setting_string_arr(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "PLAYER MODELS", aClass_Human_Models);
 
 	new iArray_Size = ArraySize(aClass_Human_Models);
 	new bool:bHave_Elements = iArray_Size > 0;
@@ -560,7 +560,7 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 	{
 		ArrayDestroy(aClass_Human_Models);
 
-		amx_save_setting_string(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", "");
+		amx_save_setting_string(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "PLAYER MODELS", "");
 	}
 
 	ArrayPushCell(g_aClass_Human_Models_File, bHave_Elements);
@@ -658,7 +658,7 @@ public native_class_human_register_model(iPlugin_ID, iNum_Params)
 
 	formatex(szClass_Human_Settings_Path, charsmax(szClass_Human_Settings_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
 
-	amx_save_setting_string_arr(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "MODELS", aClass_Human_Models);
+	amx_save_setting_string_arr(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "PLAYER MODELS", aClass_Human_Models);
 
 	return true;
 }

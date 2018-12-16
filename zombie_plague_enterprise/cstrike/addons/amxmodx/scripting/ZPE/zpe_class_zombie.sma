@@ -33,7 +33,7 @@
 #define MENU_PAGE_CLASS(%0) g_Menu_Data[%0]
 
 #define ZOMBIE_DEFAULT_MODEL "zombie"
-#define ZOMBIE_DEFAULT_CLAWMODEL "models/zombie_plague_enterprise/v_knife_zombie.mdl"
+#define ZOMBIE_DEFAULT_CLAWS_MODEL "models/zombie_plague_enterprise/v_knife_zombie.mdl"
 #define ZOMBIE_DEFAULT_KNOCKBACK 1.0
 #define ZOMBIE_DEFAULT_ALLOWED_WEAPON CSW_KNIFE
 
@@ -96,7 +96,7 @@ public plugin_precache()
 	formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", ZOMBIE_DEFAULT_MODEL, ZOMBIE_DEFAULT_MODEL);
 	precache_model(szModel_Path);
 
-	precache_model(ZOMBIE_DEFAULT_CLAWMODEL);
+	precache_model(ZOMBIE_DEFAULT_CLAWS_MODEL);
 
 	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zpe_fw_class_zombie_register_post", ET_CONTINUE, FP_CELL);
 }
@@ -375,7 +375,7 @@ public zpe_fw_core_infect_post(iPlayer)
 
 	else
 	{
-		cs_set_player_view_model(iPlayer, CSW_KNIFE, ZOMBIE_DEFAULT_CLAWMODEL);
+		cs_set_player_view_model(iPlayer, CSW_KNIFE, ZOMBIE_DEFAULT_CLAWS_MODEL);
 	}
 
 	cs_set_player_weap_model(iPlayer, CSW_KNIFE, "");
@@ -535,7 +535,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 
 	// Models
 	new Array:aClass_Models = ArrayCreate(32, 1);
-	amx_load_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "MODELS", aClass_Models);
+	amx_load_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "PLAYER MODELS", aClass_Models);
 
 	new iArray_Size = ArraySize(aClass_Models);
 	new bool:bHave_Elements = iArray_Size > 0;
@@ -556,15 +556,15 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	else
 	{
 		ArrayDestroy(aClass_Models);
-		amx_save_setting_string(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "MODELS", ZOMBIE_DEFAULT_MODEL);
+		amx_save_setting_string(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "PLAYER MODELS", ZOMBIE_DEFAULT_MODEL);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Models_File, bHave_Elements);
 	ArrayPushCell(g_aClass_Zombie_Models_Handle, aClass_Models);
 
-	// Claw models
+	// Claw model
 	new Array:aClass_Claws = ArrayCreate(64, 1);
-	amx_load_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWMODEL", aClass_Claws);
+	amx_load_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWS MODEL", aClass_Claws);
 
 	iArray_Size = ArraySize(aClass_Claws);
 	bHave_Elements = iArray_Size > 0;
@@ -583,7 +583,7 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 	else
 	{
 		ArrayDestroy(aClass_Claws);
-		amx_save_setting_string(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWMODEL", ZOMBIE_DEFAULT_CLAWMODEL);
+		amx_save_setting_string(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWS MODEL", ZOMBIE_DEFAULT_CLAWS_MODEL);
 	}
 
 	ArrayPushCell(g_aClass_Zombie_Claws_File, bHave_Elements)
@@ -687,7 +687,7 @@ public native_class_zombie_register_model(iPlugin_ID, iNum_Params)
 
 	new szClass_Zombie_Settings_Path[64];
 	formatex(szClass_Zombie_Settings_Path, charsmax(szClass_Zombie_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
-	amx_save_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "MODELS", aClass_Models);
+	amx_save_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "PLAYER MODELS", aClass_Models);
 
 	return true;
 }
@@ -729,7 +729,7 @@ public native_class_zombie_register_claw(iPlugin_ID, iNum_Params)
 
 	new szClass_Zombie_Settings_Path[64];
 	formatex(szClass_Zombie_Settings_Path, charsmax(szClass_Zombie_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
-	amx_save_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWMODEL", aClass_Claws);
+	amx_save_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWS MODEL", aClass_Claws);
 
 	return true;
 }

@@ -175,8 +175,8 @@ public plugin_precache()
 	g_aSound_Assassin_Hit_Stab = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Player Models", "ASSASSIN", g_aModels_Assassin_Player);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Weapon Models", "V_KNIFE ASSASSIN", g_aModels_Assassin_Claw);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Assassin_Player);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "CLAWS MODEL", g_aModels_Assassin_Claw);
 
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN DIE", g_aSound_Assassin_Die);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ASSASSIN FALL", g_aSound_Assassin_Fall);

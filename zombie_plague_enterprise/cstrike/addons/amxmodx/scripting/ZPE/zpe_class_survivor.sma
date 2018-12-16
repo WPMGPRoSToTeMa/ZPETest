@@ -129,7 +129,7 @@ public plugin_precache()
 	g_aSound_Survivor_Pain = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
 	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Player Models", "SURVIVOR", g_aModels_Survivor_Player);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Survivor_Player);
 
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SURVIVOR DIE", g_aSound_Survivor_Die);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "SURVIVOR FALL", g_aSound_Survivor_Fall);
