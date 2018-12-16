@@ -44,13 +44,13 @@
 #define GRENADE_NAPALM_SPRITE_RING "sprites/shockwave.spr"
 #define GRENADE_NAPALM_SPRITE_SMOKE "sprites/black_smoke3.spr"
 
-new g_V_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_napalm.mdl";
+new g_V_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_napalm.mdl";
 new g_P_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/p_hegrenade.mdl";
 new g_W_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/w_hegrenade.mdl";
 
 new const g_Sound_Grenade_Napalm_Explode[][] =
 {
-	"zombie_plague/grenade_explode.wav"
+	"zombie_plague_enterprise/grenade_explode.wav"
 };
 
 // Custom Forwards

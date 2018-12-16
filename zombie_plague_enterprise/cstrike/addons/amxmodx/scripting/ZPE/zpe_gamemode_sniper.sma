@@ -30,8 +30,8 @@
 
 new const g_Sound_Sniper[][] =
 {
-	"zombie_plague/survivor1.wav",
-	"zombie_plague/survivor2.wav"
+	"zombie_plague_enterprise/survivor1.wav",
+	"zombie_plague_enterprise/survivor2.wav"
 };
 
 new Array:g_aSound_Sniper;

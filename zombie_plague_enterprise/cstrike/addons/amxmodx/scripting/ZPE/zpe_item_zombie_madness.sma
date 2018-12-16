@@ -42,7 +42,7 @@
 
 new const g_Sound_Zombie_Madness[] =
 {
-	"zombie_plague/zombie_sounds/zombie_madness1.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_madness1.wav"
 };
 
 new const g_szSound_Section_Name[] = "Sounds";

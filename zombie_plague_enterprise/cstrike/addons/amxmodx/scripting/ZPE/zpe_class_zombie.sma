@@ -33,7 +33,7 @@
 #define MENU_PAGE_CLASS(%0) g_Menu_Data[%0]
 
 #define ZOMBIE_DEFAULT_MODEL "zombie"
-#define ZOMBIE_DEFAULT_CLAWMODEL "models/zombie_plague/v_knife_zombie.mdl"
+#define ZOMBIE_DEFAULT_CLAWMODEL "models/zombie_plague_enterprise/v_knife_zombie.mdl"
 #define ZOMBIE_DEFAULT_KNOCKBACK 1.0
 #define ZOMBIE_DEFAULT_ALLOWED_WEAPON CSW_KNIFE
 

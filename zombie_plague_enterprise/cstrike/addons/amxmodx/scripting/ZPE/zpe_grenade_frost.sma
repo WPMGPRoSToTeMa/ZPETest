@@ -51,7 +51,7 @@
 #define SPRITE_GRENADE_RING "sprites/shockwave.spr"
 #define SPRITE_GRENADE_GLASS "models/glassgibs.mdl"
 
-new g_V_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_frost.mdl";
+new g_V_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_frost.mdl";
 new g_P_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/p_flashbang.mdl";
 new g_W_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/w_flashbang.mdl";
 

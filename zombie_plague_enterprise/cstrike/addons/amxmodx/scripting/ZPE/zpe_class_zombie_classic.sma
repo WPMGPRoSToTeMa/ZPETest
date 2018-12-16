@@ -35,7 +35,7 @@ new const g_Class_Zombie_Classic_Models[][] =
 
 new const g_Class_Zombie_Classic_Clawmodels[][] =
 {
-	"models/zombie_plague/v_knife_zombie.mdl"
+	"models/zombie_plague_enterprise/v_knife_zombie.mdl"
 };
 
 new g_Zombie_Class_ID;

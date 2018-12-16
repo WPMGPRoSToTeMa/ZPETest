@@ -39,7 +39,7 @@ new const g_Class_Zombie_Leech_Models[][] =
 
 new const g_Class_Zombie_Leech_Clawmodels[][] =
 {
-	"models/zombie_plague/v_knife_zombie.mdl"
+	"models/zombie_plague_enterprise/v_knife_zombie.mdl"
 };
 
 new g_pCvar_Class_Zombie_Leech_HP_Reward;
