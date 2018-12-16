@@ -178,13 +178,13 @@ public plugin_precache()
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Nemesis_Player);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "CLAWS MODEL", g_aModels_Nemesis_Claw);
 
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS DIE", g_aSound_Nemesis_Die);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS FALL", g_aSound_Nemesis_Fall);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS PAIN", g_aSound_Nemesis_Pain);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS MISS SLASH", g_aSound_Nemesis_Miss_Slash);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT WALL", g_aSound_Nemesis_Hit_Wall);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT NORMAL", g_aSound_Nemesis_Hit_Normal);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "NEMESIS HIT STAB", g_aSound_Nemesis_Hit_Stab);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "DIE", g_aSound_Nemesis_Die);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FALL", g_aSound_Nemesis_Fall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "PAIN", g_aSound_Nemesis_Pain);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "MISS SLASH", g_aSound_Nemesis_Miss_Slash);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT WALL", g_aSound_Nemesis_Hit_Wall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT NORMAL", g_aSound_Nemesis_Hit_Normal);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT STAB", g_aSound_Nemesis_Hit_Stab);
 
 	new szBuffer[128];
 
