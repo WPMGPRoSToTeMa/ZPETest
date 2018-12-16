@@ -40,14 +40,14 @@
 #define GRENADE_INFECTION_SPRITE_TRAIL "sprites/laserbeam.spr"
 #define GRENADE_INFECTION_SPRITE_RING "sprites/shockwave.spr"
 
-new g_V_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_infect.mdl"
+new g_V_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_infect.mdl"
 new g_P_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/p_hegrenade.mdl";
 new g_W_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/w_hegrenade.mdl";
 
 // Default sounds
 new const g_Sound_Grenade_Infection_Explode[][] =
 {
-	"zombie_plague/grenade_infect.wav"
+	"zombie_plague_enterprise/grenade_infect.wav"
 };
 
 new const g_Sound_Grenade_Infection_Player[][] =

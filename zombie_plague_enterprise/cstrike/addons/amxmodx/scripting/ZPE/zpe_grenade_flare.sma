@@ -37,7 +37,7 @@
 
 #define SPRITE_GRANDE_TRAIL "sprites/laserbeam.spr"
 
-new g_V_Model_Grenade_Flare[MODEL_MAX_LENGTH] = "models/zombie_plague/v_grenade_flare.mdl";
+new g_V_Model_Grenade_Flare[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_flare.mdl";
 new g_P_Model_Grenade_Flare[MODEL_MAX_LENGTH] = "models/p_smokegrenade.mdl";
 new g_W_Model_Grenade_Flare[MODEL_MAX_LENGTH] = "models/w_smokegrenade.mdl";
 

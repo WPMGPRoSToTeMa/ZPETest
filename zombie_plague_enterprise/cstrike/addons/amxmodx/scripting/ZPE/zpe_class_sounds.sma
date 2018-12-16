@@ -63,32 +63,32 @@ Init_Defualut_Zombie_Sounds()
 		g_aDefault_Zombie_Sounds[i] = ArrayCreate(128, 1);
 	}
 
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague/zombie_sounds/zombie_die0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague/zombie_sounds/zombie_die1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague/zombie_sounds/zombie_die2.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FALL], "zombie_plague/zombie_sounds/zombie_fall0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_PAIN], "zombie_plague/zombie_sounds/zombie_pain0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_PAIN], "zombie_plague/zombie_sounds/zombie_pain1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_SLASH], "zombie_plague/zombie_sounds/zombie_miss_slash0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_SLASH], "zombie_plague/zombie_sounds/zombie_miss_slash1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague/zombie_sounds/zombie_hit_wall0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague/zombie_sounds/zombie_hit_wall1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague/zombie_sounds/zombie_hit_wall2.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague/zombie_sounds/zombie_hit_wall3.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague/zombie_sounds/zombie_hit_wall4.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague/zombie_sounds/zombie_hit_wall5.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_NORMAL], "zombie_plague/zombie_sounds/zombie_hit_normal0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_NORMAL], "zombie_plague/zombie_sounds/zombie_hit_normal1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_STAB], "zombie_plague/zombie_sounds/zombie_hit_stab0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_INFECT], "zombie_plague/zombie_sounds/zombie_infect0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_INFECT], "zombie_plague/zombie_sounds/zombie_infect1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_IDLE], "zombie_plague/zombie_sounds/zombie_idle0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_IDLE], "zombie_plague/zombie_sounds/zombie_idle1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn0.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn1.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn2.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn3.wav");
-	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague/zombie_sounds/zombie_burn4.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague_enterprise/zombie_sounds/zombie_die0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague_enterprise/zombie_sounds/zombie_die1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_DIE], "zombie_plague_enterprise/zombie_sounds/zombie_die2.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FALL], "zombie_plague_enterprise/zombie_sounds/zombie_fall0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_PAIN], "zombie_plague_enterprise/zombie_sounds/zombie_pain0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_PAIN], "zombie_plague_enterprise/zombie_sounds/zombie_pain1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_SLASH], "zombie_plague_enterprise/zombie_sounds/zombie_miss_slash0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_MISS_SLASH], "zombie_plague_enterprise/zombie_sounds/zombie_miss_slash1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_wall0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_wall1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_wall2.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_wall3.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_wall4.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_WALL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_wall5.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_NORMAL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_normal0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_NORMAL], "zombie_plague_enterprise/zombie_sounds/zombie_hit_normal1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_HIT_STAB], "zombie_plague_enterprise/zombie_sounds/zombie_hit_stab0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_INFECT], "zombie_plague_enterprise/zombie_sounds/zombie_infect0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_INFECT], "zombie_plague_enterprise/zombie_sounds/zombie_infect1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_IDLE], "zombie_plague_enterprise/zombie_sounds/zombie_idle0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_IDLE], "zombie_plague_enterprise/zombie_sounds/zombie_idle1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague_enterprise/zombie_sounds/zombie_burn0.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague_enterprise/zombie_sounds/zombie_burn1.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague_enterprise/zombie_sounds/zombie_burn2.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague_enterprise/zombie_sounds/zombie_burn3.wav");
+	ArrayPushString(Array:g_aDefault_Zombie_Sounds[_:ZOMBIE_SOUND_FLAME], "zombie_plague_enterprise/zombie_sounds/zombie_burn4.wav");
 }
 
 Init_Defualut_Human_Sounds()

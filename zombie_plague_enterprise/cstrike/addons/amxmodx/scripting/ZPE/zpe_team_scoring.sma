@@ -35,8 +35,8 @@ new const g_Sound_Win_Zombies[][] =
 
 new const g_Sound_Win_Humans[][] =
 {
-	"zombie_plague/win_humans1.wav",
-	"zombie_plague/win_humans2.wav"
+	"zombie_plague_enterprise/win_humans1.wav",
+	"zombie_plague_enterprise/win_humans2.wav"
 };
 
 new const g_Sound_Win_No_One[][] =

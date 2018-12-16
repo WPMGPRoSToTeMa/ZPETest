@@ -25,8 +25,8 @@ new const g_Sky_Names[][] =
 
 new const g_Sound_Thunder[][] =
 {
-	"zombie_plague/thunder1.wav",
-	"zombie_plague/thunder2.wav"
+	"zombie_plague_enterprise/thunder1.wav",
+	"zombie_plague_enterprise/thunder2.wav"
 };
 
 new const g_Thunder_Lights[][] =

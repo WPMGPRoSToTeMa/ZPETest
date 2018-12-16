@@ -39,48 +39,48 @@ new const g_Models_Assassin_Player[][] =
 
 new const g_Models_Assassin_Claw[][] =
 {
-	"models/zombie_plague/v_knife_zombie.mdl"
+	"models/zombie_plague_enterprise/v_knife_zombie.mdl"
 };
 
 new const g_Sound_Assassin_Die[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_die0.wav",
-	"zombie_plague/zombie_sounds/zombie_die1.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_die0.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_die1.wav"
 };
 
 new const g_Sound_Assassin_Fall[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_fall0.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_fall0.wav"
 };
 
 new const g_Sound_Assassin_Pain[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_pain0.wav",
-	"zombie_plague/zombie_sounds/zombie_pain1.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_pain0.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_pain1.wav"
 };
 
 new const g_Sound_Assassin_Miss_Slash[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_miss_slash0.wav",
-	"zombie_plague/zombie_sounds/zombie_miss_slash1.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_miss_slash0.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_miss_slash1.wav"
 };
 
 new const g_Sound_Assassin_Hit_Wall[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_hit_wall0.wav",
-	"zombie_plague/zombie_sounds/zombie_hit_wall1.wav",
-	"zombie_plague/zombie_sounds/zombie_hit_wall2.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_wall0.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_wall1.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_wall2.wav"
 };
 
 new const g_Sound_Assassin_Hit_Normal[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_hit_normal0.wav",
-	"zombie_plague/zombie_sounds/zombie_hit_normal1.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_normal0.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_normal1.wav"
 };
 
 new const g_Sound_Assassin_Hit_Stab[][] =
 {
-	"zombie_plague/zombie_sounds/zombie_hit_stab0.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_stab0.wav"
 };
 
 new Array:g_aModels_Assassin_Player;

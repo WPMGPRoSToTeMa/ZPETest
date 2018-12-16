@@ -31,8 +31,8 @@
 
 new const g_Sounds_Assassin[][] =
 {
-	"zombie_plague/nemesis1.wav",
-	"zombie_plague/nemesis2.wav"
+	"zombie_plague_enterprise/nemesis1.wav",
+	"zombie_plague_enterprise/nemesis2.wav"
 };
 
 new Array:g_aSounds_Assassin;

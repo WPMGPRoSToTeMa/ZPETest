@@ -30,8 +30,8 @@
 
 new const g_Sounds_Armageddon[][] =
 {
-	"zombie_plague/nemesis1.wav",
-	"zombie_plague/survivor1.wav"
+	"zombie_plague_enterprise/nemesis1.wav",
+	"zombie_plague_enterprise/survivor1.wav"
 };
 
 new Array:g_aSound_Armageddon;
