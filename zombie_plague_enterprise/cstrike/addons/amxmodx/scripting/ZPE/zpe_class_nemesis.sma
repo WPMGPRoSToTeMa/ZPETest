@@ -97,10 +97,10 @@ new Array:g_aSound_Nemesis_Hit_Stab;
 new g_Forward;
 new g_Forward_Result;
 
-new g_pCvar_Nemesis_Armor_Type;
-new g_pCvar_Nemesis_Armor;
 new g_pCvar_Nemesis_Health;
 new g_pCvar_Nemesis_Base_Health;
+new g_pCvar_Nemesis_Armor;
+new g_pCvar_Nemesis_Armor_Type;
 new g_pCvar_Nemesis_Speed;
 new g_pCvar_Nemesis_Gravity;
 
@@ -128,10 +128,10 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Nemesis_Armor_Type = register_cvar("zpe_nemesis_armor_type", "0");
-	g_pCvar_Nemesis_Armor = register_cvar("zpe_nemesis_armor", "0");
 	g_pCvar_Nemesis_Health = register_cvar("zpe_nemesis_health", "0.0");
 	g_pCvar_Nemesis_Base_Health = register_cvar("zpe_nemesis_base_health", "2000.0");
+	g_pCvar_Nemesis_Armor = register_cvar("zpe_nemesis_armor", "0");
+	g_pCvar_Nemesis_Armor_Type = register_cvar("zpe_nemesis_armor_type", "0");
 	g_pCvar_Nemesis_Speed = register_cvar("zpe_nemesis_speed", "1.05");
 	g_pCvar_Nemesis_Gravity = register_cvar("zpe_nemesis_gravity", "0.5");
 
