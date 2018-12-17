@@ -60,10 +60,10 @@ new Array:g_aSound_Sniper_Pain;
 new g_Forward;
 new g_Forward_Result;
 
-new g_pCvar_Sniper_Armor_Type;
-new g_pCvar_Sniper_Armor;
 new g_pCvar_Sniper_Health;
 new g_pCvar_Sniper_Base_Health;
+new g_pCvar_Sniper_Armor;
+new g_pCvar_Sniper_Armor_Type;
 new g_pCvar_Sniper_Speed;
 new g_pCvar_Sniper_Gravity;
 
@@ -91,10 +91,10 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Sniper_Armor_Type = register_cvar("zpe_sniper_armor_type", "0");
-	g_pCvar_Sniper_Armor = register_cvar("zpe_sniper_armor", "0");
 	g_pCvar_Sniper_Health = register_cvar("zpe_sniper_health", "0.0");
 	g_pCvar_Sniper_Base_Health = register_cvar("zpe_sniper_base_health", "100.0");
+	g_pCvar_Sniper_Armor = register_cvar("zpe_sniper_armor", "0");
+	g_pCvar_Sniper_Armor_Type = register_cvar("zpe_sniper_armor_type", "0");
 	g_pCvar_Sniper_Speed = register_cvar("zpe_sniper_speed", "0.95");
 	g_pCvar_Sniper_Gravity = register_cvar("zpe_sniper_gravity", "0.75");
 

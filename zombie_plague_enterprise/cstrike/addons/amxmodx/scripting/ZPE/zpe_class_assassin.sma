@@ -97,10 +97,10 @@ new Array:g_aSound_Assassin_Hit_Stab;
 new g_Forward;
 new g_Forward_Result;
 
-new g_pCvar_Assassin_Armor_Type;
-new g_pCvar_Assassin_Armor;
 new g_pCvar_Assassin_Health;
 new g_pCvar_Assassin_Base_Health;
+new g_pCvar_Assassin_Armor;
+new g_pCvar_Assassin_Armor_Type;
 new g_pCvar_Assassin_Speed;
 new g_pCvar_Assassin_Gravity;
 
@@ -128,10 +128,10 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Assassin_Armor_Type = register_cvar("zpe_assassin_armor_type", "0");
-	g_pCvar_Assassin_Armor = register_cvar("zpe_assassin_armor", "0");
 	g_pCvar_Assassin_Health = register_cvar("zpe_assassin_health", "0.0");
 	g_pCvar_Assassin_Base_Health = register_cvar("zpe_assassin_base_health", "2000.0");
+	g_pCvar_Assassin_Armor = register_cvar("zpe_assassin_armor", "0");
+	g_pCvar_Assassin_Armor_Type = register_cvar("zpe_assassin_armor_type", "0");
 	g_pCvar_Assassin_Speed = register_cvar("zpe_assassin_speed", "1.05");
 	g_pCvar_Assassin_Gravity = register_cvar("zpe_assassin_gravity", "0.5");
 

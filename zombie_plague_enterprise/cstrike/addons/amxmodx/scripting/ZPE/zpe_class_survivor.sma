@@ -60,10 +60,10 @@ new Array:g_aSound_Survivor_Pain;
 new g_Forward;
 new g_Forward_Result;
 
-new g_pCvar_Survivor_Armor_Type;
-new g_pCvar_Survivor_Armor;
 new g_pCvar_Survivor_Health;
 new g_pCvar_Survivor_Base_Health;
+new g_pCvar_Survivor_Armor;
+new g_pCvar_Survivor_Armor_Type;
 new g_pCvar_Survivor_Speed;
 new g_pCvar_Survivor_Gravity;
 
@@ -88,10 +88,10 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Survivor_Armor_Type = register_cvar("zpe_survivor_armor_type", "0");
-	g_pCvar_Survivor_Armor = register_cvar("zpe_survivor_armor", "0");
 	g_pCvar_Survivor_Health = register_cvar("zpe_survivor_health", "0.0");
 	g_pCvar_Survivor_Base_Health = register_cvar("zpe_survivor_base_health", "100.0");
+	g_pCvar_Survivor_Armor = register_cvar("zpe_survivor_armor", "0");
+	g_pCvar_Survivor_Armor_Type = register_cvar("zpe_survivor_armor_type", "0");
 	g_pCvar_Survivor_Speed = register_cvar("zpe_survivor_speed", "0.95");
 	g_pCvar_Survivor_Gravity = register_cvar("zpe_survivor_gravity", "1.25");
 
