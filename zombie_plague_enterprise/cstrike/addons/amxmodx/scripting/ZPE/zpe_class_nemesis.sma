@@ -138,9 +138,9 @@ public plugin_init()
 	g_pCvar_Nemesis_Glow = register_cvar("zpe_nemesis_glow", "1");
 	g_pCvar_Nemesis_Aura = register_cvar("zpe_nemesis_aura", "1");
 	g_pCvar_Nemesis_Aura_Radius = register_cvar("zpe_nemesis_aura_radius", "1");
-	g_pCvar_Nemesis_Aura_Color_R = register_cvar("zpe_nemesis_aura_color_R", "150");
-	g_pCvar_Nemesis_Aura_Color_G = register_cvar("zpe_nemesis_aura_color_G", "0");
-	g_pCvar_Nemesis_Aura_Color_B = register_cvar("zpe_nemesis_aura_color_B", "0");
+	g_pCvar_Nemesis_Aura_Color_R = register_cvar("zpe_nemesis_aura_color_r", "150");
+	g_pCvar_Nemesis_Aura_Color_G = register_cvar("zpe_nemesis_aura_color_g", "0");
+	g_pCvar_Nemesis_Aura_Color_B = register_cvar("zpe_nemesis_aura_color_b", "0");
 	g_pCvar_Nemesis_Aura_Life = register_cvar("zpe_nemesis_aura_life", "2");
 	g_pCvar_Nemesis_Aura_Decay_Rate = register_cvar("zpe_nemesis_aura_decay_rate", "0");
 

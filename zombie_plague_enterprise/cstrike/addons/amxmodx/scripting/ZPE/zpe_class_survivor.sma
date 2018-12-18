@@ -98,9 +98,9 @@ public plugin_init()
 	g_pCvar_Survivor_Glow = register_cvar("zpe_survivor_glow", "1");
 	g_pCvar_Survivor_Aura = register_cvar("zpe_survivor_aura", "1");
 	g_pCvar_Survivor_Aura_Radius = register_cvar("zpe_survivor_aura_radius", "20");
-	g_pCvar_Survivor_Aura_Color_R = register_cvar("zpe_survivor_aura_color_R", "0");
-	g_pCvar_Survivor_Aura_Color_G = register_cvar("zpe_survivor_aura_color_G", "0");
-	g_pCvar_Survivor_Aura_Color_B = register_cvar("zpe_survivor_aura_color_B", "150");
+	g_pCvar_Survivor_Aura_Color_R = register_cvar("zpe_survivor_aura_color_r", "0");
+	g_pCvar_Survivor_Aura_Color_G = register_cvar("zpe_survivor_aura_color_g", "0");
+	g_pCvar_Survivor_Aura_Color_B = register_cvar("zpe_survivor_aura_color_b", "150");
 	g_pCvar_Survivor_Aura_Life = register_cvar("zpe_survivor_aura_life", "2");
 	g_pCvar_Survivor_Aura_Decay_Rate = register_cvar("zpe_survivor_aura_decay_rate", "0");
 
