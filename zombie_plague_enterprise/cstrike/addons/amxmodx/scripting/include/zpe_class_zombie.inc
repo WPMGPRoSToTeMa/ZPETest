@@ -63,7 +63,7 @@ native zpe_class_zombie_get_max_health(player, classid);
  *
  * @return An internal zombie class ID, or ZPE_INVALID_CLASS_ZOMBIE on failure.
  */
-native zpe_class_zombie_register(const name[], const description[], Float:health, Float:armor, Float:speed, Float:gravity);
+native zpe_class_zombie_register(const name[], const description[], Float:health, armor, Float:speed, Float:gravity);
 
 /**
  * Registers a custom player model for a given zombie class.

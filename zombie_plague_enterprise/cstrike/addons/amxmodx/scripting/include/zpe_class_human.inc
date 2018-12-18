@@ -63,7 +63,7 @@ native zpe_class_human_get_max_health(player, classid);
  *
  * @return An internal human class ID, or ZPE_INVALID_CLASS_HUMAN on failure.
  */
-native zpe_class_human_register(const name[], const description[], Float:health, Float:armor, Float:speed, Float:gravity);
+native zpe_class_human_register(const name[], const description[], Float:health, armor, Float:speed, Float:gravity);
 
 /**
  * Registers a custom player model for a given human class.
