@@ -83,7 +83,7 @@ public plugin_precache()
 	new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
 	new szModel[MODELS_MAX_LENGTH];
 
-	new	szModel_Path[128];
+	new szModel_Path[128];
 
 	for (new i = 0; i < ArraySize(g_aAdmin_Models_Human_Player); i++)
 	{
