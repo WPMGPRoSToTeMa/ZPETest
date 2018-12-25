@@ -43,7 +43,7 @@
 #define MENU_PAGE_CLASS(%0) g_Menu_Data[%0]
 
 // Models
-new g_Model_V_Knife_Human[MODEL_MAX_LENGTH] = "models/v_knife.mdl";
+new g_V_Models_Human_Knife[MODEL_MAX_LENGTH] = "models/v_knife.mdl";
 
 new g_Menu_Data[MAX_PLAYERS + 1];
 
@@ -94,10 +94,10 @@ public plugin_init()
 public plugin_precache()
 {
 	// Load from external file
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V_KNIFE HUMAN", g_Model_V_Knife_Human, charsmax(g_Model_V_Knife_Human));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Settings", "VIEW MODELS HUMAN KNIFE", g_V_Models_Human_Knife, charsmax(g_V_Models_Human_Knife));
 
 	// Precache models
-	precache_model(g_Model_V_Knife_Human);
+	precache_model(g_V_Models_Human_Knife);
 
 	g_Forwards[FW_CLASS_REGISTER_POST] = CreateMultiForward("zpe_fw_class_human_register_post", ET_CONTINUE, FP_CELL);
 }
@@ -382,7 +382,7 @@ public zpe_fw_core_cure_post(iPlayer)
 	}
 
 	// Set custom knife model
-	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_Model_V_Knife_Human);
+	cs_set_player_view_model(iPlayer, CSW_KNIFE, g_V_Models_Human_Knife);
 }
 
 public zpe_fw_core_infect(iPlayer, iAttacker)
