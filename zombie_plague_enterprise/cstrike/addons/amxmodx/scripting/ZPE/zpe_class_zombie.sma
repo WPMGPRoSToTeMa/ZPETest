@@ -57,16 +57,16 @@ new g_Menu_Data[MAX_PLAYERS + 1];
 new Array:g_aClass_Zombie_Real_Name;
 new Array:g_aClass_Zombie_Name;
 new Array:g_aClass_Zombie_Description;
+new Array:g_aClass_Zombie_Models_File;
+new Array:g_aClass_Zombie_Models_Handle;
+new Array:g_aClass_Zombie_Claws_File;
+new Array:g_aClass_Zombie_Claws_Handle;
 new Array:g_aClass_Zombie_Health;
 new Array:g_aClass_Zombie_Armor;
 new Array:g_aClass_Zombie_Speed;
 new Array:g_aClass_Zombie_Gravity;
 new Array:g_aClass_Zombie_Knockback_File;
 new Array:g_aClass_Zombie_Knockback;
-new Array:g_aClass_Zombie_Models_File;
-new Array:g_aClass_Zombie_Models_Handle;
-new Array:g_aClass_Zombie_Claws_File;
-new Array:g_aClass_Zombie_Claws_Handle;
 
 new g_Forwards[TOTAL_FORWARDS];
 new g_Forward_Result;
@@ -126,16 +126,16 @@ public plugin_natives()
 	g_aClass_Zombie_Real_Name = ArrayCreate(32, 1);
 	g_aClass_Zombie_Name = ArrayCreate(32, 1);
 	g_aClass_Zombie_Description = ArrayCreate(32, 1);
+	g_aClass_Zombie_Models_File = ArrayCreate(1, 1);
+	g_aClass_Zombie_Models_Handle = ArrayCreate(1, 1);
+	g_aClass_Zombie_Claws_File = ArrayCreate(1, 1);
+	g_aClass_Zombie_Claws_Handle = ArrayCreate(1, 1);
 	g_aClass_Zombie_Health = ArrayCreate(1, 1);
 	g_aClass_Zombie_Armor = ArrayCreate(1, 1);
 	g_aClass_Zombie_Speed = ArrayCreate(1, 1);
 	g_aClass_Zombie_Gravity = ArrayCreate(1, 1);
 	g_aClass_Zombie_Knockback_File = ArrayCreate(1, 1);
 	g_aClass_Zombie_Knockback = ArrayCreate(1, 1);
-	g_aClass_Zombie_Models_File = ArrayCreate(1, 1);
-	g_aClass_Zombie_Models_Handle = ArrayCreate(1, 1);
-	g_aClass_Zombie_Claws_File = ArrayCreate(1, 1);
-	g_aClass_Zombie_Claws_Handle = ArrayCreate(1, 1);
 }
 
 public Show_Class_Menu(iPlayer)
