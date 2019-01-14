@@ -1,4 +1,4 @@
-﻿# Fork Zombie Plague 5.0.8a #
+# Fork Zombie Plague 5.0.8a #
 
 Fork Zombie Plague 5.0.8a + New Modes for Counter Strike 1.6
 
