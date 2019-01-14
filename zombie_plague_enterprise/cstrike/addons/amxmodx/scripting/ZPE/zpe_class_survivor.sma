@@ -60,8 +60,8 @@ new Array:g_aSound_Survivor_Pain;
 new g_Forward;
 new g_Forward_Result;
 
-new g_pCvar_Survivor_Health;
 new g_pCvar_Survivor_Base_Health;
+new g_pCvar_Survivor_Health_Per_Player;
 new g_pCvar_Survivor_Armor;
 new g_pCvar_Survivor_Armor_Type;
 new g_pCvar_Survivor_Speed;
@@ -88,8 +88,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Survivor_Health = register_cvar("zpe_survivor_health", "0.0");
-	g_pCvar_Survivor_Base_Health = register_cvar("zpe_survivor_base_health", "100.0");
+	g_pCvar_Survivor_Base_Health = register_cvar("zpe_survivor_base_health", "500.0");
+	g_pCvar_Survivor_Health_Per_Player = register_cvar("zpe_survivor_health_per_player", "200.0");
 	g_pCvar_Survivor_Armor = register_cvar("zpe_survivor_armor", "0");
 	g_pCvar_Survivor_Armor_Type = register_cvar("zpe_survivor_armor_type", "0");
 	g_pCvar_Survivor_Speed = register_cvar("zpe_survivor_speed", "0.95");
@@ -250,15 +250,7 @@ public zpe_fw_core_cure_post(iPlayer)
 	}
 
 	// Health
-	if (get_pcvar_float(g_pCvar_Survivor_Health) == 0.0)
-	{
-		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Survivor_Base_Health) * Get_Alive_Count());
-	}
-
-	else
-	{
-		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Survivor_Health));
-	}
+	SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Survivor_Base_Health) + get_pcvar_float(g_pCvar_Survivor_Health_Per_Player) * Get_Alive_Count());
 
 	// Armor
 	if (get_pcvar_num(g_pCvar_Survivor_Armor_Type))

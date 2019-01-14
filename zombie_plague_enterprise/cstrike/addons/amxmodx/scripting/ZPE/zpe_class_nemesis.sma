@@ -97,8 +97,8 @@ new Array:g_aSound_Nemesis_Hit_Stab;
 new g_Forward;
 new g_Forward_Result;
 
-new g_pCvar_Nemesis_Health;
 new g_pCvar_Nemesis_Base_Health;
+new g_pCvar_Nemesis_Health_Per_Player;
 new g_pCvar_Nemesis_Armor;
 new g_pCvar_Nemesis_Armor_Type;
 new g_pCvar_Nemesis_Speed;
@@ -128,8 +128,8 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	g_pCvar_Nemesis_Health = register_cvar("zpe_nemesis_health", "0.0");
 	g_pCvar_Nemesis_Base_Health = register_cvar("zpe_nemesis_base_health", "2000.0");
+	g_pCvar_Nemesis_Health_Per_Player = register_cvar("zpe_nemesis_health_per_player", "500.0");
 	g_pCvar_Nemesis_Armor = register_cvar("zpe_nemesis_armor", "0");
 	g_pCvar_Nemesis_Armor_Type = register_cvar("zpe_nemesis_armor_type", "0");
 	g_pCvar_Nemesis_Speed = register_cvar("zpe_nemesis_speed", "1.05");
@@ -349,15 +349,7 @@ public zpe_fw_core_infect_post(iPlayer)
 	}
 
 	// Health
-	if (get_pcvar_float(g_pCvar_Nemesis_Health) == 0.0)
-	{
-		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Base_Health) * Get_Alive_Count());
-	}
-
-	else
-	{
-		SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Base_Health));
-	}
+	SET_USER_HEALTH(iPlayer, get_pcvar_float(g_pCvar_Nemesis_Base_Health) + get_pcvar_float(g_pCvar_Nemesis_Health_Per_Player) * Get_Alive_Count());
 
 	// Armor
 	if (get_pcvar_num(g_pCvar_Nemesis_Armor_Type))
