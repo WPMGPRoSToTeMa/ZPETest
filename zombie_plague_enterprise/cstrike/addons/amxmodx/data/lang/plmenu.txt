@@ -1,4 +1,4 @@
-﻿[en]
+[en]
 ADMIN_BAN_1 = ADMIN: ban %s
 ADMIN_BAN_2 = ADMIN %s: ban %s
 BAN_MENU = Ban Menu

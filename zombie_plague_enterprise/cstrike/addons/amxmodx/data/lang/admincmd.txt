@@ -1,4 +1,4 @@
-﻿[en]
+[en]
 ADMIN_KICK_1 = ADMIN: kick %s
 ADMIN_KICK_2 = ADMIN %s: kick %s
 IP_REMOVED = Ip "%s" removed from ban list
