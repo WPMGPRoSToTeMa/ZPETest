@@ -535,7 +535,7 @@ Frost_Explode(iEntity)
 	}
 
 	// Get rid of the grenade
-	engfunc(EngFunc_RemoveEntity, iEntity);
+	set_entvar(iEntity, var_flags, get_entvar(iEntity, var_flags) | FL_KILLME);
 }
 
 Set_Freeze(iVictim)

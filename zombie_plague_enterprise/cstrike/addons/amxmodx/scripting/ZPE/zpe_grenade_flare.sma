@@ -236,7 +236,7 @@ public Ham_Think_Grenade_(iEntity)
 			if (iDuration == 1)
 			{
 				// Get rid of the flare entity
-				engfunc(EngFunc_RemoveEntity, iEntity);
+				set_entvar(iEntity, var_flags, get_entvar(iEntity, var_flags) | FL_KILLME);
 
 				return HAM_SUPERCEDE;
 			}
