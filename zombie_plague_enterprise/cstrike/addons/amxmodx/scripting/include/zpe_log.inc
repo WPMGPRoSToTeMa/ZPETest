@@ -1,6 +1,6 @@
 /**
- * 	This is used to log ZP-specific information or errors into a
- * 	location where it is separate from other messages.
+ * This is used to log ZPE specific information or errors into a
+ * location where it is separate from other messages.
 */
 
 stock zpe_log(const message_format[], any:...)

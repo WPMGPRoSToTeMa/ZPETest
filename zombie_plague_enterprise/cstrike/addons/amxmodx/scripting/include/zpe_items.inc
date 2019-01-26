@@ -106,23 +106,24 @@ native zpe_items_menu_get_text_add(const text[]);
  * @param {player} Player index.
  * @param {itemid} A valid extra item ID.
  *
- * @return None.
+ * @return
+ * {ZPE_ITEM_AVAILABLE} Show in menu, allow selection.
+ * {ZPE_ITEM_NOT_AVAILABLE} Show in menu, don't allow selection.
+ * {ZPE_ITEM_DONT_SHOW} Don't show in menu, don't allow selection.
  */
 native zpe_items_available(index, itemid);
 
 /**
  * Called when determining whether an item should be available to a player.
  *
- * Possible return values are:
- *	- ZPE_ITEM_AVAILABLE (show in menu, allow selection)
- *	- ZPE_ITEM_NOT_AVAILABLE (show in menu, don't allow selection)
- *	- ZPE_ITEM_DONT_SHOW (don't show in menu, don't allow selection)
- *
  * @param {player} Player index.
  * @param {itemid} Internal item ID.
  * @param {ignorecost} Whether item cost should be ignored.
  *
- * @return None.
+ * @return
+ * {ZPE_ITEM_AVAILABLE} Show in menu, allow selection.
+ * {ZPE_ITEM_NOT_AVAILABLE} Show in menu, don't allow selection.
+ * {ZPE_ITEM_DONT_SHOW} Don't show in menu, don't allow selection.
  */
 forward zpe_fw_items_select_pre(player, itemid, ignorecost);
 

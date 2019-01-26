@@ -146,15 +146,13 @@ native zpe_class_human_menu_text_add(const text[]);
 /**
  * Called when determining whether a class should be available to a player.
  *
- * Possible return values are:
- *	- ZPE_CLASS_AVAILABLE (show in menu, allow selection)
- *	- ZPE_CLASS_NOT_AVAILABLE (show in menu, don't allow selection)
- *	- ZPE_CLASS_DONT_SHOW (don't show in menu, don't allow selection)
- *
  * @param {player} Player index.
  * @param {classid} Internal human class ID.
  *
- * @return None.
+ * @return
+ * {ZPE_CLASS_AVAILABLE} Show in menu, allow selection.
+ * {ZPE_CLASS_NOT_AVAILABLE} Show in menu, don't allow selection.
+ * {ZPE_CLASS_DONT_SHOW} Don't show in menu, don't allow selection.
  */
 forward zpe_fw_class_human_select_pre(player, classid);
 
