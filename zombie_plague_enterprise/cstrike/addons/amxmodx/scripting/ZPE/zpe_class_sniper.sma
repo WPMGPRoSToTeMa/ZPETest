@@ -98,8 +98,8 @@ public plugin_init()
 	g_pCvar_Sniper_Speed = register_cvar("zpe_sniper_speed", "0.95");
 	g_pCvar_Sniper_Gravity = register_cvar("zpe_sniper_gravity", "0.75");
 
-	g_pCvar_Sniper_Glow = register_cvar("zpe_sniper_glow", "1");
-	g_pCvar_Sniper_Aura = register_cvar("zpe_sniper_aura", "1");
+	g_pCvar_Sniper_Glow = register_cvar("zpe_sniper_glow", "0");
+	g_pCvar_Sniper_Aura = register_cvar("zpe_sniper_aura", "0");
 	g_pCvar_Sniper_Aura_Radius = register_cvar("zpe_sniper_aura_radius", "20");
 	g_pCvar_Sniper_Aura_Color_R = register_cvar("zpe_sniper_aura_color_r", "200");
 	g_pCvar_Sniper_Aura_Color_G = register_cvar("zpe_sniper_aura_color_g", "200");
@@ -107,10 +107,10 @@ public plugin_init()
 	g_pCvar_Sniper_Aura_Life = register_cvar("zpe_sniper_aura_life", "2");
 	g_pCvar_Sniper_Aura_Decay_Rate = register_cvar("zpe_sniper_aura_decay_rate", "0");
 
-	g_pCvar_Sniper_Damage = register_cvar("zpe_sniper_damage", "55555");
+	g_pCvar_Sniper_Damage = register_cvar("zpe_sniper_damage", "1000");
 	g_pCvar_Sniper_Kill_Explode = register_cvar("zpe_sniper_kill_explode", "0");
 
-	g_pCvar_Sniper_Weapon_Block = register_cvar("zpe_sniper_weapon_block", "1");
+	g_pCvar_Sniper_Weapon_Block = register_cvar("zpe_sniper_weapon_block", "0");
 	g_pCvar_Sniper_Weapon_Ammo = register_cvar("zpe_sniper_weapon_ammo", "30");
 
 	g_Forward = CreateMultiForward("zpe_fw_class_sniper_bit_change", ET_CONTINUE, FP_CELL);

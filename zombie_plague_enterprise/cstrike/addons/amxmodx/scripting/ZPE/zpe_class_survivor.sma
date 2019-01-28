@@ -95,16 +95,16 @@ public plugin_init()
 	g_pCvar_Survivor_Speed = register_cvar("zpe_survivor_speed", "0.95");
 	g_pCvar_Survivor_Gravity = register_cvar("zpe_survivor_gravity", "1.25");
 
-	g_pCvar_Survivor_Glow = register_cvar("zpe_survivor_glow", "1");
-	g_pCvar_Survivor_Aura = register_cvar("zpe_survivor_aura", "1");
-	g_pCvar_Survivor_Aura_Radius = register_cvar("zpe_survivor_aura_radius", "20");
+	g_pCvar_Survivor_Glow = register_cvar("zpe_survivor_glow", "0");
+	g_pCvar_Survivor_Aura = register_cvar("zpe_survivor_aura", "0");
+	g_pCvar_Survivor_Aura_Radius = register_cvar("zpe_survivor_aura_radius", "50");
 	g_pCvar_Survivor_Aura_Color_R = register_cvar("zpe_survivor_aura_color_r", "0");
 	g_pCvar_Survivor_Aura_Color_G = register_cvar("zpe_survivor_aura_color_g", "0");
 	g_pCvar_Survivor_Aura_Color_B = register_cvar("zpe_survivor_aura_color_b", "150");
 	g_pCvar_Survivor_Aura_Life = register_cvar("zpe_survivor_aura_life", "2");
 	g_pCvar_Survivor_Aura_Decay_Rate = register_cvar("zpe_survivor_aura_decay_rate", "0");
 
-	g_pCvar_Survivor_Weapon_Block = register_cvar("zpe_survivor_weapon_block", "1");
+	g_pCvar_Survivor_Weapon_Block = register_cvar("zpe_survivor_weapon_block", "0");
 	g_pCvar_Survivor_Weapon_Ammo = register_cvar("zpe_survivor_weapon_ammo", "200");
 
 	g_Forward = CreateMultiForward("zpe_fw_class_survivor_bit_change", ET_CONTINUE, FP_CELL);

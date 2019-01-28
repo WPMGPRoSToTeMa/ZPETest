@@ -135,16 +135,16 @@ public plugin_init()
 	g_pCvar_Assassin_Speed = register_cvar("zpe_assassin_speed", "1.05");
 	g_pCvar_Assassin_Gravity = register_cvar("zpe_assassin_gravity", "0.5");
 
-	g_pCvar_Assassin_Glow = register_cvar("zpe_assassin_glow", "1");
-	g_pCvar_Assassin_Aura = register_cvar("zpe_assassin_aura", "1");
-	g_pCvar_Assassin_Aura_Radius = register_cvar("zpe_assassin_aura_radius", "1");
+	g_pCvar_Assassin_Glow = register_cvar("zpe_assassin_glow", "0");
+	g_pCvar_Assassin_Aura = register_cvar("zpe_assassin_aura", "0");
+	g_pCvar_Assassin_Aura_Radius = register_cvar("zpe_assassin_aura_radius", "20");
 	g_pCvar_Assassin_Aura_Color_R = register_cvar("zpe_assassin_aura_color_r", "150");
 	g_pCvar_Assassin_Aura_Color_G = register_cvar("zpe_assassin_aura_color_g", "0");
 	g_pCvar_Assassin_Aura_Color_B = register_cvar("zpe_assassin_aura_color_b", "0");
 	g_pCvar_Assassin_Aura_Life = register_cvar("zpe_assassin_aura_life", "2");
 	g_pCvar_Assassin_Aura_Decay_Rate = register_cvar("zpe_assassin_aura_decay_rate", "0");
 
-	g_pCvar_Assassin_Kill_Explode = register_cvar("zpe_assassin_kill_explode", "1");
+	g_pCvar_Assassin_Kill_Explode = register_cvar("zpe_assassin_kill_explode", "0");
 	g_pCvar_Assassin_Damage = register_cvar("zpe_assassin_damage", "1000.0");
 
 	g_pCvar_Assassin_Grenade_Frost = register_cvar("zpe_assassin_grenade_frost", "0");
