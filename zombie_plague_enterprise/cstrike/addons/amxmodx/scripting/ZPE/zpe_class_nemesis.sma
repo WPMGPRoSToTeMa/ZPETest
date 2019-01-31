@@ -113,8 +113,8 @@ new g_pCvar_Nemesis_Aura_Color_B;
 new g_pCvar_Nemesis_Aura_Life;
 new g_pCvar_Nemesis_Aura_Decay_Rate;
 
-new g_pCvar_Nemesis_Damage;
 new g_pCvar_Nemesis_Kill_Explode;
+new g_pCvar_Nemesis_Damage;
 
 new g_pCvar_Nemesis_Grenade_Frost;
 new g_pCvar_Nemesis_Grenade_Napalm;
@@ -144,8 +144,8 @@ public plugin_init()
 	g_pCvar_Nemesis_Aura_Life = register_cvar("zpe_nemesis_aura_life", "2");
 	g_pCvar_Nemesis_Aura_Decay_Rate = register_cvar("zpe_nemesis_aura_decay_rate", "0");
 
-	g_pCvar_Nemesis_Damage = register_cvar("zpe_nemesis_damage", "2.0");
 	g_pCvar_Nemesis_Kill_Explode = register_cvar("zpe_nemesis_kill_explode", "0");
+	g_pCvar_Nemesis_Damage = register_cvar("zpe_nemesis_damage", "2.0");
 
 	g_pCvar_Nemesis_Grenade_Frost = register_cvar("zpe_nemesis_grenade_frost", "0");
 	g_pCvar_Nemesis_Grenade_Napalm = register_cvar("zpe_nemesis_grenade_napalm", "1");
