@@ -725,7 +725,7 @@ Buy_Random_Grenades(iPlayer)
 
 	if (iCount_Available > 0)
 	{
-		Buy_Grenades(iPlayer, iAvailable[random_num(0, iCount_Available - 1)]);
+		Buy_Grenades(iPlayer, iAvailable[RANDOM(iCount_Available)]);
 	}
 }
 

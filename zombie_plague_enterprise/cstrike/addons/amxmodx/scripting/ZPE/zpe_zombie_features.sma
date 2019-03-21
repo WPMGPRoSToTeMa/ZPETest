@@ -216,7 +216,7 @@ public Zombie_Bleeding(iPlayer)
 	engfunc(EngFunc_WriteCoord, fOrigin[0]); // x
 	engfunc(EngFunc_WriteCoord, fOrigin[1]); // y
 	engfunc(EngFunc_WriteCoord, fOrigin[2]); // z
-	write_byte(ArrayGetCell(g_aBleeding_Decals, random_num(0, g_iDecal_Count - 1))); // decal number
+	write_byte(ArrayGetCell(g_aBleeding_Decals, RANDOM(g_iDecal_Count))); // decal number
 	message_end();
 }
 

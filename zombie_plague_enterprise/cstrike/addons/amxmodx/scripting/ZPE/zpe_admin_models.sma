@@ -151,7 +151,7 @@ public zpe_fw_core_cure_post(iPlayer, iAttacker)
 		{
 			new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
 
-			ArrayGetString(g_aAdmin_Models_Human_Player, random_num(0, ArraySize(g_aAdmin_Models_Human_Player) - 1), szPlayer_Model, charsmax(szPlayer_Model));
+			ArrayGetString(g_aAdmin_Models_Human_Player, RANDOM(ArraySize(g_aAdmin_Models_Human_Player)), szPlayer_Model, charsmax(szPlayer_Model));
 
 			rg_set_user_model(iPlayer, szPlayer_Model);
 		}
@@ -164,8 +164,8 @@ public zpe_fw_core_cure_post(iPlayer, iAttacker)
 		{
 			new szModel[MODELS_MAX_LENGTH];
 
-			ArrayGetString(g_aAdmin_V_Models_Human_Knife, random_num(0, ArraySize(g_aAdmin_V_Models_Human_Knife) - 1), szModel, charsmax(szModel));
-			ArrayGetString(g_aAdmin_P_Models_Human_Knife, random_num(0, ArraySize(g_aAdmin_P_Models_Human_Knife) - 1), szModel, charsmax(szModel));
+			ArrayGetString(g_aAdmin_V_Models_Human_Knife, RANDOM(ArraySize(g_aAdmin_V_Models_Human_Knife)), szModel, charsmax(szModel));
+			ArrayGetString(g_aAdmin_P_Models_Human_Knife, RANDOM(ArraySize(g_aAdmin_P_Models_Human_Knife)), szModel, charsmax(szModel));
 
 			cs_set_player_view_model(iPlayer, CSW_KNIFE, szModel);
 			cs_set_player_weap_model(iPlayer, CSW_KNIFE, szModel);
@@ -196,7 +196,7 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 		{
 			new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
 
-			ArrayGetString(g_aAdmin_Models_Zombie_Player, random_num(0, ArraySize(g_aAdmin_Models_Zombie_Player) - 1), szPlayer_Model, charsmax(szPlayer_Model));
+			ArrayGetString(g_aAdmin_Models_Zombie_Player, RANDOM(ArraySize(g_aAdmin_Models_Zombie_Player)), szPlayer_Model, charsmax(szPlayer_Model));
 
 			rg_set_user_model(iPlayer, szPlayer_Model);
 		}
@@ -209,7 +209,7 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 		{
 			new szModel[MODELS_MAX_LENGTH];
 
-			ArrayGetString(g_aAdmin_Models_Zombie_Claws, random_num(0, ArraySize(g_aAdmin_Models_Zombie_Claws) - 1), szModel, charsmax(szModel));
+			ArrayGetString(g_aAdmin_Models_Zombie_Claws, RANDOM(ArraySize(g_aAdmin_Models_Zombie_Claws)), szModel, charsmax(szModel));
 
 			cs_set_player_view_model(iPlayer, CSW_KNIFE, szModel);
 		}

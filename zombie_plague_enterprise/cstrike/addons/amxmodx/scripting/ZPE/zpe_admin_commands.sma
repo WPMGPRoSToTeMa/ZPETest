@@ -986,7 +986,7 @@ Command_Respawn(iID, iPlayer)
 	if (g_pCvar_Deathmatch)
 	{
 		// Respawn as zombie?
-		if (get_pcvar_num(g_pCvar_Deathmatch) == 2 || (get_pcvar_num(g_pCvar_Deathmatch) == 3 && random_num(0, 1)) || (get_pcvar_num(g_pCvar_Deathmatch) == 4 && zpe_core_get_zombie_count() < Get_Alive_Count() / 2))
+		if (get_pcvar_num(g_pCvar_Deathmatch) == 2 || (get_pcvar_num(g_pCvar_Deathmatch) == 3 && CHANCE(50)) || (get_pcvar_num(g_pCvar_Deathmatch) == 4 && zpe_core_get_zombie_count() < Get_Alive_Count() / 2))
 		{
 			// Only allow respawning as zombie after a game mode started
 			if (zpe_gamemodes_get_current() != ZPE_NO_GAME_MODE)
