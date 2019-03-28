@@ -41,12 +41,11 @@ native zpe_class_zombie_set_next(player, classid);
  *
  * Note: does not take into account any kind of HP multipliers.
  *
- * @param {player} Player index.
  * @param {classid} A valid zombie class ID.
  *
  * @return Maximum amount of health points, -1 on error.
  */
-native zpe_class_zombie_get_max_health(player, classid);
+native zpe_class_zombie_get_max_health(classid);
 
 /**
  * Registers a custom class which will be added to the zombie classes menu of ZPE.

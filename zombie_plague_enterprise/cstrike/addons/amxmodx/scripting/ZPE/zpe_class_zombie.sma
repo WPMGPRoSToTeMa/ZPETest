@@ -449,16 +449,7 @@ public native_class_zombie_set_next(iPlugin_ID, iNum_Params)
 
 public native_class_zombie_get_max_health(iPlugin_ID, iNum_Params)
 {
-	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return -1;
-	}
-
-	new iClass_ID = get_param(2);
+	new iClass_ID = get_param(1);
 
 	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
 	{
