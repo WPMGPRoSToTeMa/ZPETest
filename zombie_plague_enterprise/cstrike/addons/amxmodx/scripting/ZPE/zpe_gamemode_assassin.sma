@@ -111,7 +111,7 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_assassin.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zpe_gamemodes_register("Assassin Mode");
+	zpe_gamemodes_register("assassin");
 }
 
 // Deathmatch module's player respawn forward

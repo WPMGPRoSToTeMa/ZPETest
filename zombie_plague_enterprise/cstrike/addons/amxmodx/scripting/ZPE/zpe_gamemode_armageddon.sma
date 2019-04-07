@@ -110,7 +110,7 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_armageddon.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zpe_gamemodes_register("Armageddon Mode");
+	zpe_gamemodes_register("armageddon");
 }
 
 // Deathmatch module's player respawn forward

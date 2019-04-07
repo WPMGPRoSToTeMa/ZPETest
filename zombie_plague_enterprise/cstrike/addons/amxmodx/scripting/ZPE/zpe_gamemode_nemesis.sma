@@ -105,7 +105,7 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_nemesis.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zpe_gamemodes_register("Nemesis Mode");
+	zpe_gamemodes_register("nemesis");
 }
 
 // Deathmatch module's player respawn forward
