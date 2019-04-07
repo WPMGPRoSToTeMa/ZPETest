@@ -403,7 +403,7 @@ public Ham_Think_Grenade_(iEntity)
 	}
 
 	// Get rid of the grenade
-	set_entvar(iEntity, var_flags, get_entvar(iEntity, var_flags) | FL_KILLME);
+	rg_remove_entity(iEntity);
 
 	return HAM_SUPERCEDE;
 }
