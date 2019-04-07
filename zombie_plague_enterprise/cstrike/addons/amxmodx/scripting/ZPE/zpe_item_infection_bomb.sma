@@ -325,7 +325,7 @@ Infection_Explode(iEntity)
 	if (zpe_gamemodes_get_current() == ZPE_NO_GAME_MODE)
 	{
 		// Get rid of the grenade
-		engfunc(EngFunc_RemoveEntity, iEntity);
+		rg_remove_entity(iEntity);
 
 		return;
 	}
@@ -348,7 +348,7 @@ Infection_Explode(iEntity)
 	if (BIT_NOT_VALID(g_iBit_Connected, iAttacker) || !zpe_core_is_zombie(iAttacker))
 	{
 		// Get rid of the grenade
-		engfunc(EngFunc_RemoveEntity, iEntity);
+		rg_remove_entity(iEntity);
 
 		return;
 	}
@@ -380,7 +380,7 @@ Infection_Explode(iEntity)
 	}
 
 	// Get rid of the grenade
-	engfunc(EngFunc_RemoveEntity, iEntity);
+	rg_remove_entity(iEntity);
 }
 
 // Infection Grenade: Green Blast
