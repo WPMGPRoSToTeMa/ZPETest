@@ -78,7 +78,7 @@ public plugin_cfg()
 {
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_infection.cfg");
 
-	new iGame_Mode_ID = zpe_gamemodes_register("Infection Mode");
+	new iGame_Mode_ID = zpe_gamemodes_register("infection");
 
 	zpe_gamemodes_set_default(iGame_Mode_ID);
 }

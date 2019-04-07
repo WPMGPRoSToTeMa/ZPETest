@@ -108,7 +108,7 @@ public plugin_cfg()
 	server_cmd("exec addons/amxmodx/configs/ZPE/gamemode/zpe_multi.cfg");
 
 	// Register game mode at plugin_cfg (plugin gets paused after this)
-	zpe_gamemodes_register("Multiple Infection Mode");
+	zpe_gamemodes_register("multiple_infection");
 }
 
 // Deathmatch module's player respawn forward
