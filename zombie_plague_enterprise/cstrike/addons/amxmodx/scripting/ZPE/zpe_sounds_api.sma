@@ -133,9 +133,9 @@ public FM_EmitSound_Zombie_(iPlayer, iChannel, szSample[], Float:fVolume, Float:
 
 		if (szSample[14] == 'h' && szSample[15] == 'i' && szSample[16] == 't')
 		{
-			if (szSample[17] == 'w')
+			if (szSample[18] == 's')
 			{
-				if (Get_Random_Zombie_Sounds(iClass_Zombie, ZOMBIE_SOUND_HIT_WALL, szSound, charsmax(szSound)))
+				if (Get_Random_Zombie_Sounds(iClass_Zombie, ZOMBIE_SOUND_HIT_SOLID, szSound, charsmax(szSound)))
 				{
 					emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 				}
@@ -229,9 +229,9 @@ public FM_EmitSound_Human_(iPlayer, iChannel, szSample[], Float:fVolume, Float:f
 
 		if (szSample[14] == 'h' && szSample[15] == 'i' && szSample[16] == 't')
 		{
-			if (szSample[17] == 'w')
+			if (szSample[18] == 's')
 			{
-				if (Get_Random_Human_Sounds(iClass_Human, HUMAN_SOUND_HIT_WALL, szSound, charsmax(szSound)))
+				if (Get_Random_Human_Sounds(iClass_Human, HUMAN_SOUND_HIT_SOLID, szSound, charsmax(szSound)))
 				{
 					emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 				}

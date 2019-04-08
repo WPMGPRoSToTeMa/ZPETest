@@ -65,11 +65,11 @@ new const g_Sound_Assassin_Miss_Slash[][] =
 	"zombie_plague_enterprise/zombie_sounds/zombie_miss_slash1.wav"
 };
 
-new const g_Sound_Assassin_Hit_Wall[][] =
+new const g_Sound_Assassin_Hit_Solid[][] =
 {
-	"zombie_plague_enterprise/zombie_sounds/zombie_hit_wall0.wav",
-	"zombie_plague_enterprise/zombie_sounds/zombie_hit_wall1.wav",
-	"zombie_plague_enterprise/zombie_sounds/zombie_hit_wall2.wav"
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_solid0.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_solid1.wav",
+	"zombie_plague_enterprise/zombie_sounds/zombie_hit_solid2.wav"
 };
 
 new const g_Sound_Assassin_Hit_Normal[][] =
@@ -90,7 +90,7 @@ new Array:g_aSound_Assassin_Die;
 new Array:g_aSound_Assassin_Fall;
 new Array:g_aSound_Assassin_Pain;
 new Array:g_aSound_Assassin_Miss_Slash;
-new Array:g_aSound_Assassin_Hit_Wall;
+new Array:g_aSound_Assassin_Hit_Solid;
 new Array:g_aSound_Assassin_Hit_Normal;
 new Array:g_aSound_Assassin_Hit_Stab;
 
@@ -170,7 +170,7 @@ public plugin_precache()
 	g_aSound_Assassin_Fall = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Assassin_Pain = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Assassin_Miss_Slash = ArrayCreate(SOUND_MAX_LENGTH, 1);
-	g_aSound_Assassin_Hit_Wall = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	g_aSound_Assassin_Hit_Solid = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Assassin_Hit_Normal = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Assassin_Hit_Stab = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
@@ -182,7 +182,7 @@ public plugin_precache()
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FALL", g_aSound_Assassin_Fall);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "PAIN", g_aSound_Assassin_Pain);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "MISS SLASH", g_aSound_Assassin_Miss_Slash);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT WALL", g_aSound_Assassin_Hit_Wall);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT SOLID", g_aSound_Assassin_Hit_Solid);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT NORMAL", g_aSound_Assassin_Hit_Normal);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT STAB", g_aSound_Assassin_Hit_Stab);
 
@@ -220,9 +220,9 @@ public plugin_precache()
 		precache_sound(g_Sound_Assassin_Miss_Slash[i]);
 	}
 
-	for (new i = 0; i < sizeof g_Sound_Assassin_Hit_Wall; i++)
+	for (new i = 0; i < sizeof g_Sound_Assassin_Hit_Solid; i++)
 	{
-		precache_sound(g_Sound_Assassin_Hit_Wall[i]);
+		precache_sound(g_Sound_Assassin_Hit_Solid[i]);
 	}
 
 	for (new i = 0; i < sizeof g_Sound_Assassin_Hit_Normal; i++)
@@ -313,9 +313,9 @@ public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:f
 
 			if (szSample[14] == 'h' && szSample[15] == 'i' && szSample[16] == 't')
 			{
-				if (szSample[17] == 'w')
+				if (szSample[18] == 's')
 				{
-					emit_sound(iPlayer, iChannel, g_Sound_Assassin_Hit_Wall[RANDOM(sizeof g_Sound_Assassin_Hit_Wall)], fVolume, fAttn, iFlags, iPitch);
+					emit_sound(iPlayer, iChannel, g_Sound_Assassin_Hit_Solid[RANDOM(sizeof g_Sound_Assassin_Hit_Solid)], fVolume, fAttn, iFlags, iPitch);
 
 					return FMRES_SUPERCEDE;
 				}
