@@ -112,7 +112,7 @@ public plugin_init()
 	register_concmd(szConsole_Command_Target_Sniper, "Cmd_Sniper", _, "<target> - Turn someone into a Sniper", 0);
 
 	register_concmd(szConsole_Command_Target_Respawn_Players, "Cmd_Respawn", _, "<target> - Respawn someone", 0);
-	register_concmd(szConsole_Command_Target_Start_Game_Mode, "Cmd_Start_Game_Mode", _, "<game mode player> - Start specific game mode", 0);
+	register_concmd(szConsole_Command_Target_Start_Game_Mode, "Cmd_Start_Game_Mode", _, "<game mode name> - Start specific game mode", 0);
 }
 
 public plugin_precache()
@@ -345,12 +345,14 @@ public native_admin_commands_start_mode(iPlugin_ID, iNum_Params)
 		return false;
 	}
 
-	new iGame_Mode_ID = get_param(2);
+	new szGame_Mode[32];
+	get_string(2, szGame_Mode, charsmax(szGame_Mode));
 
-	// Invalid game mode player
-	if (!(0 <= iGame_Mode_ID < zpe_gamemodes_get_count()))
+	new iGame_Mode_ID = zpe_gamemodes_get_id(szGame_Mode);
+
+	if (iGame_Mode_ID == ZPE_INVALID_GAME_MODE)
 	{
-		log_error(AMX_ERR_NATIVE, "Invalid game mode player (%d)", iGame_Mode_ID);
+		log_error(AMX_ERR_NATIVE, "Invalid game mode name (%s)", szGame_Mode);
 
 		return false;
 	}
@@ -642,17 +644,14 @@ public Cmd_Start_Game_Mode(iID_Admin, iLevel, iCID)
 		return PLUGIN_HANDLED;
 	}
 
-	// Retrieve arguments
-	new szArg[32];
-	new iGame_Mode_ID;
+	new szGame_Mode[32];
+	read_argv(1, szGame_Mode, charsmax(szGame_Mode));
 
-	read_argv(1, szArg, charsmax(szArg));
-	iGame_Mode_ID = str_to_num(szArg);
+	new iGame_Mode_ID = zpe_gamemodes_get_id(szGame_Mode);
 
-	// Invalid game mode player
-	if (!(0 <= iGame_Mode_ID < zpe_gamemodes_get_count()))
+	if (iGame_Mode_ID == ZPE_INVALID_GAME_MODE)
 	{
-		client_print(iID_Admin, print_console, "%L (%d)", iID_Admin, "INVALID_GAME_MODE", iGame_Mode_ID);
+		client_print(iID_Admin, print_console, "%L (%s)", iID_Admin, "INVALID_GAME_MODE", szGame_Mode);
 
 		return PLUGIN_HANDLED;
 	}
