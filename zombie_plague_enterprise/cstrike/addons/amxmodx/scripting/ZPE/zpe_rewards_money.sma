@@ -102,7 +102,7 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 	// Reward money to zombies infecting humans?
 	if (BIT_VALID(g_iBit_Connected, iAttacker) && iAttacker != iPlayer && get_pcvar_num(g_pCvar_Money_Human_Infected) > 0)
 	{
-		CS_SET_USER_MONEY(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + get_pcvar_num(g_pCvar_Money_Human_Infected), get_pcvar_num(g_pCvar_Money_Limit)));
+		UTIL_Set_User_Money(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + get_pcvar_num(g_pCvar_Money_Human_Infected), get_pcvar_num(g_pCvar_Money_Limit)));
 	}
 }
 
@@ -152,7 +152,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 
 			if (iHow_Many_Rewards > 0)
 			{
-				CS_SET_USER_MONEY(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + (get_pcvar_num(g_pCvar_Money_Damage) * iHow_Many_Rewards), get_pcvar_num(g_pCvar_Money_Limit)));
+				UTIL_Set_User_Money(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + (get_pcvar_num(g_pCvar_Money_Damage) * iHow_Many_Rewards), get_pcvar_num(g_pCvar_Money_Limit)));
 
 				g_fDamage_Dealt_To_Humans[iAttacker] -= get_pcvar_float(g_pCvar_Money_Human_Damaged_HP) * iHow_Many_Rewards;
 			}
@@ -173,7 +173,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 
 			if (iHow_Many_Rewards > 0)
 			{
-				CS_SET_USER_MONEY(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + (get_pcvar_num(g_pCvar_Money_Damage) * iHow_Many_Rewards), get_pcvar_num(g_pCvar_Money_Limit)));
+				UTIL_Set_User_Money(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + (get_pcvar_num(g_pCvar_Money_Damage) * iHow_Many_Rewards), get_pcvar_num(g_pCvar_Money_Limit)));
 
 				g_fDamage_Dealt_To_Zombies[iAttacker] -= get_pcvar_float(g_pCvar_Money_Zombie_Damaged_HP) * iHow_Many_Rewards;
 			}
@@ -212,7 +212,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	// Ignore money rewards for nemesis?
 	if (zpe_class_nemesis_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Nemesis_Ignore))
 	{
-		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+		UTIL_Set_User_Money(iAttacker, g_Money_Before_Kill[iAttacker]);
 
 		return;
 	}
@@ -220,7 +220,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	// Ignore money rewards for assassin?
 	if (zpe_class_assassin_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Assassin_Ignore))
 	{
-		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+		UTIL_Set_User_Money(iAttacker, g_Money_Before_Kill[iAttacker]);
 
 		return;
 	}
@@ -228,7 +228,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	// Ignore money rewards for survivor?
 	if (zpe_class_survivor_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Survivor_Ignore))
 	{
-		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+		UTIL_Set_User_Money(iAttacker, g_Money_Before_Kill[iAttacker]);
 
 		return;
 	}
@@ -236,7 +236,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	// Ignore money rewards for sniper?
 	if (zpe_class_sniper_get(iAttacker) && get_pcvar_num(g_pCvar_Money_Sniper_Ignore))
 	{
-		CS_SET_USER_MONEY(iAttacker, g_Money_Before_Kill[iAttacker]);
+		UTIL_Set_User_Money(iAttacker, g_Money_Before_Kill[iAttacker]);
 
 		return;
 	}
@@ -244,12 +244,12 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	// Reward money to atacker for the kill
 	if (zpe_core_is_zombie(iVictim))
 	{
-		CS_SET_USER_MONEY(iAttacker, min(g_Money_Before_Kill[iAttacker] + get_pcvar_num(g_pCvar_Money_Zombie_Killed), get_pcvar_num(g_pCvar_Money_Limit)));
+		UTIL_Set_User_Money(iAttacker, min(g_Money_Before_Kill[iAttacker] + get_pcvar_num(g_pCvar_Money_Zombie_Killed), get_pcvar_num(g_pCvar_Money_Limit)));
 	}
 
 	else
 	{
-		CS_SET_USER_MONEY(iAttacker, min(g_Money_Before_Kill[iAttacker] + get_pcvar_num(g_pCvar_Money_Human_Killed), get_pcvar_num(g_pCvar_Money_Limit)));
+		UTIL_Set_User_Money(iAttacker, min(g_Money_Before_Kill[iAttacker] + get_pcvar_num(g_pCvar_Money_Human_Killed), get_pcvar_num(g_pCvar_Money_Limit)));
 	}
 }
 
@@ -349,7 +349,7 @@ public Message_Money(iMessage_ID, iMessage_Dest, iMessage_Entity)
 	// If arg 2 = 0, this is CS giving round win money or start money
 	if (get_msg_arg_int(2) == 0 && g_Money_At_Round_Start[iMessage_Entity] != NO_DATA)
 	{
-		CS_SET_USER_MONEY(iMessage_Entity, g_Money_At_Round_Start[iMessage_Entity]);
+		UTIL_Set_User_Money(iMessage_Entity, g_Money_At_Round_Start[iMessage_Entity]);
 
 		set_msg_arg_int(1, get_msg_argtype(1), g_Money_At_Round_Start[iMessage_Entity]);
 

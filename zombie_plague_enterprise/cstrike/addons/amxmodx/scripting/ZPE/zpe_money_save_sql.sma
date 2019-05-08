@@ -102,7 +102,7 @@ public SQL_Check_Player(iFail_State, Handle:SQL_Query, szError[], iError, szData
 	{
 		g_iGlobal_Indexes[iPlayer] = SQL_ReadResult(SQL_Query, 0);
 
-		CS_SET_USER_MONEY(iPlayer, SQL_ReadResult(SQL_Query, 2));
+		UTIL_Set_User_Money(iPlayer, SQL_ReadResult(SQL_Query, 2));
 	}
 
 	else

@@ -1,5 +1,6 @@
 #include <cs_util_const>
 #include <fakemeta>
+#include <reapi>
 
 new stock __g_Message_ID_ScreenFade = -1;
 
@@ -82,6 +83,20 @@ stock UTIL_Show_Task_Bar(iPlayer, iTime)
 {
 	message_begin(MSG_ONE_UNRELIABLE, MESSAGE_ID_BAR_TIME, _, iPlayer);
 	write_short(iTime);
+	message_end();
+}
+
+new stock __g_Message_ID_Money = -1;
+
+#define MESSAGE_ID_MONEY (__g_Message_ID_Money != -1 ? __g_Message_ID_Money : (__g_Message_ID_Money = get_user_msgid("Money")))
+
+stock UTIL_Set_User_Money(iPlayer, iAmount, bool:bFlash = true)
+{
+	set_member(iPlayer, m_iAccount, iAmount);
+
+	message_begin(MSG_ONE, MESSAGE_ID_MONEY, _, iPlayer);
+	write_long(iAmount);
+	write_byte(bFlash);
 	message_end();
 }
 
