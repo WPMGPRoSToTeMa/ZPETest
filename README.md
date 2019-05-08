@@ -16,9 +16,11 @@ Game modifications include:
 ### System requirements: ###
 
 - Linux
-- ReHLDS + ReGameDLL + ReAPI
-- AMXModX 1.9
+- ReHLDSE
+- ReGameDLL_CSE
 - Metamod r
+- AMXModXE
+- ReAPIE
 - No bots on the server
 - Required location of AMXModX: addons/amxmodx
 
