@@ -1,5 +1,3 @@
-#include <reapi>
-
 #define BIT_ADD(%0,%1)					(%0 |= (1 << (%1)))
 #define BIT_SUB(%0,%1)					(%0 &= ~(1 << (%1)))
 #define BIT_VALID(%0,%1)				(%0 & (1 << (%1)))

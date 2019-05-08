@@ -59,5 +59,5 @@ public zpe_fw_items_select_post(iPlayer, iItem_ID, iIgnore_Cost)
 	new iRequired_money = zpe_items_get_cost(iItem_ID);
 
 	// Deduct item's money after purchase event
-	CS_SET_USER_MONEY(iPlayer, iCurrent_Money - iRequired_money);
+	UTIL_Set_User_Money(iPlayer, iCurrent_Money - iRequired_money);
 }
