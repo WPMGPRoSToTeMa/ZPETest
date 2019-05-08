@@ -21,8 +21,8 @@
 #include <cs_util>
 #include <zpe_kernel>
 
-#define LIBRARY_BUYMENUS "zpe_buy_menus"
-#include <zpe_buy_menus>
+#define LIBRARY_GIVE_MENUS "zpe_give_menus"
+#include <zpe_give_menus>
 
 #include <zpe_class_zombie>
 #include <zpe_class_human>
@@ -41,9 +41,9 @@ const KEYS_MENU = MENU_KEY_1 | MENU_KEY_2 | MENU_KEY_3 | MENU_KEY_4 | MENU_KEY_5
 
 new g_Choose_Team_Override_Active;
 
-new g_pCvar_Buy_Custom_Primary;
-new g_pCvar_Buy_Custom_Secondary;
-new g_pCvar_Buy_Custom_Grenades;
+new g_pCvar_Give_Custom_Primary;
+new g_pCvar_Give_Custom_Secondary;
+new g_pCvar_Give_Custom_Grenades;
 
 new g_pCvar_Random_Spawning_CSDM;
 
@@ -57,11 +57,11 @@ public plugin_init()
 
 	register_clcmd("chooseteam", "Client_Command_Chooseteam");
 
-	register_clcmd("say /zpemenu", "Client_Command_Zpemenu");
-	register_clcmd("say zpemenu", "Client_Command_Zpemenu");
+	register_clcmd("say /zpemenu", "Client_Command_ZPE_Menu");
+	register_clcmd("say zpemenu", "Client_Command_ZPE_Menu");
 
 	// Menus
-	register_menu("Main Menu", KEYS_MENU, "Menu_Main");
+	register_menu("Main Menu", KEYS_MENU, "Main_Menu");
 }
 
 public plugin_natives()
@@ -72,7 +72,7 @@ public plugin_natives()
 
 public module_filter(const szModule[])
 {
-	if (equal(szModule, LIBRARY_BUYMENUS) || equal(szModule, LIBRARY_ITEMS) || equal(szModule, LIBRARY_ADMIN_MENU) || equal(szModule, LIBRARY_RANDOM_SPAWN))
+	if (equal(szModule, LIBRARY_GIVE_MENUS) || equal(szModule, LIBRARY_ITEMS) || equal(szModule, LIBRARY_ADMIN_MENU) || equal(szModule, LIBRARY_RANDOM_SPAWN))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -92,9 +92,9 @@ public native_filter(const szName[], iIndex, iTrap)
 
 public plugin_cfg()
 {
-	g_pCvar_Buy_Custom_Primary = get_cvar_pointer("zpe_buy_custom_primary");
-	g_pCvar_Buy_Custom_Secondary = get_cvar_pointer("zpe_buy_custom_secondary");
-	g_pCvar_Buy_Custom_Grenades = get_cvar_pointer("zpe_buy_custom_grenades");
+	g_pCvar_Give_Custom_Primary = get_cvar_pointer("zpe_give_custom_primary");
+	g_pCvar_Give_Custom_Secondary = get_cvar_pointer("zpe_give_custom_secondary");
+	g_pCvar_Give_Custom_Grenades = get_cvar_pointer("zpe_give_custom_grenades");
 	g_pCvar_Random_Spawning_CSDM = get_cvar_pointer("zpe_random_spawning_csdm");
 }
 
@@ -102,7 +102,7 @@ public Client_Command_Chooseteam(iPlayer)
 {
 	if (BIT_VALID(g_Choose_Team_Override_Active, iPlayer))
 	{
-		Show_Menu_Main(iPlayer);
+		Show_Main_Menu(iPlayer);
 
 		return PLUGIN_HANDLED;
 	}
@@ -112,13 +112,13 @@ public Client_Command_Chooseteam(iPlayer)
 	return PLUGIN_CONTINUE;
 }
 
-public Client_Command_Zpemenu(iPlayer)
+public Client_Command_ZPE_Menu(iPlayer)
 {
-	Show_Menu_Main(iPlayer);
+	Show_Main_Menu(iPlayer);
 }
 
-// Menu main
-Show_Menu_Main(iPlayer)
+// Main menu
+Show_Main_Menu(iPlayer)
 {
 	static szMenu[512];
 
@@ -127,26 +127,26 @@ Show_Menu_Main(iPlayer)
 	// Title
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "%L", iPlayer, "MENU_TITLE");
 
-	// 1. Buy menu
-	if (LibraryExists(LIBRARY_BUYMENUS, LibType_Library) && (get_pcvar_num(g_pCvar_Buy_Custom_Primary) || get_pcvar_num(g_pCvar_Buy_Custom_Secondary) || get_pcvar_num(g_pCvar_Buy_Custom_Grenades)) && BIT_VALID(g_iBit_Alive, iPlayer))
+	// 1. Give menu
+	if (LibraryExists(LIBRARY_GIVE_MENUS, LibType_Library) && (get_pcvar_num(g_pCvar_Give_Custom_Primary) || get_pcvar_num(g_pCvar_Give_Custom_Secondary) || get_pcvar_num(g_pCvar_Give_Custom_Grenades)) && BIT_VALID(g_iBit_Alive, iPlayer))
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 1. \w %L ^n", iPlayer, "MENU_BUY");
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 1. \w %L ^n", iPlayer, "MENU_GIVE_WEAPONS");
 	}
 
 	else
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\d 1. %L ^n", iPlayer, "MENU_BUY");
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\d 1. %L ^n", iPlayer, "MENU_GIVE_WEAPONS");
 	}
 
 	// 2. Extra items
 	if (LibraryExists(LIBRARY_ITEMS, LibType_Library) && BIT_VALID(g_iBit_Alive, iPlayer))
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 2. \w %L ^n", iPlayer, "MENU_EXTRA_BUY");
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 2. \w %L ^n", iPlayer, "MENU_BUY_EXTRA_ITEMS");
 	}
 
 	else
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\d 2. %L ^n", iPlayer, "MENU_EXTRA_BUY");
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\d 2. %L ^n", iPlayer, "MENU_BUY_EXTRA_ITEMS");
 	}
 
 	// 3. Class Zombie
@@ -202,8 +202,8 @@ Show_Menu_Main(iPlayer)
 	show_menu(iPlayer, KEYS_MENU, szMenu, -1, "Main Menu");
 }
 
-// Menu main
-public Menu_Main(iPlayer, iKey)
+// Main menu
+public Main_Menu(iPlayer, iKey)
 {
 	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
 	{
@@ -212,26 +212,26 @@ public Menu_Main(iPlayer, iKey)
 
 	switch (iKey)
 	{
-		case 0: // Buy menu
+		case 0: // Give menu
 		{
-			// Custom buy menus enabled?
-			if (LibraryExists(LIBRARY_BUYMENUS, LibType_Library) && (get_pcvar_num(g_pCvar_Buy_Custom_Primary) || get_pcvar_num(g_pCvar_Buy_Custom_Secondary) || get_pcvar_num(g_pCvar_Buy_Custom_Grenades)))
+			// Custom give menus enabled?
+			if (LibraryExists(LIBRARY_GIVE_MENUS, LibType_Library) && (get_pcvar_num(g_pCvar_Give_Custom_Primary) || get_pcvar_num(g_pCvar_Give_Custom_Secondary) || get_pcvar_num(g_pCvar_Give_Custom_Grenades)))
 			{
-				// Check whether the player is able to buy anything
+				// Check whether the player is able to give anything
 				if (BIT_VALID(g_iBit_Alive, iPlayer))
 				{
-					zpe_buy_menus_show(iPlayer);
+					zpe_give_menus_show(iPlayer);
 				}
 
 				else
 				{
-					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CANT_BUY_WEAPONS_DEAD_COLOR");
+					zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CANT_GIVE_WEAPONS_DEAD_COLOR");
 				}
 			}
 
 			else
 			{
-				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "CUSTOM_BUY_DISABLED_COLOR");
+				zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "GIVE_DISABLED_COLOR");
 			}
 		}
 

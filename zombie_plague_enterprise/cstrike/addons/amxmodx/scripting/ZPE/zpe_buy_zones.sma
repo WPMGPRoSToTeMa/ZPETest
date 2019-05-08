@@ -346,7 +346,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	{
 		if (zpe_ammopacks_get(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks))
 		{
-			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_AMMO_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "AMMO_NOT_ENOUGH_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Ammopacks));
 
 			return;
 		}
@@ -356,7 +356,7 @@ public Client_Command_Buy_Ammo(iPlayer)
 	{
 		if (CS_GET_USER_MONEY(iPlayer) < get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money))
 		{
-			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "NOT_ENOUGH_MONEY_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
+			zpe_client_print_color(iPlayer, print_team_default, "%L (%L)", iPlayer, "MONEY_NOT_ENOUGH_COLOR", iPlayer, "REQUIRED_AMOUNT_COLOR", get_pcvar_num(g_pCvar_Buy_Ammo_Cost_Money));
 
 			return;
 		}

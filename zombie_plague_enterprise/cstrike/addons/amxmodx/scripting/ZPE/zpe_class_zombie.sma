@@ -301,11 +301,11 @@ public Menu_Class_Zombie(iPlayer, iMenu_ID, iItem)
 	zpe_client_print_color
 	(
 		iPlayer, print_team_default, "%L: %d %L: %d %L: %d %L: %.2fx %L %.2fx",
-		iPlayer, "ZOMBIE_ATTRIB1_COLOR", floatround(ArrayGetCell(g_aClass_Zombie_Health, g_Class_Zombie_Next[iPlayer])),
-		iPlayer, "ZOMBIE_ATTRIB2_COLOR", ArrayGetCell(g_aClass_Zombie_Armor, g_Class_Zombie_Next[iPlayer]),
-		iPlayer, "ZOMBIE_ATTRIB3_COLOR", cs_maxspeed_display_value(fMax_Speed),
-		iPlayer, "ZOMBIE_ATTRIB4_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Gravity, g_Class_Zombie_Next[iPlayer]),
-		iPlayer, "ZOMBIE_ATTRIB5_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Knockback, g_Class_Zombie_Next[iPlayer])
+		iPlayer, "ZOMBIE_ATTRIBUTE_HP_COLOR", floatround(ArrayGetCell(g_aClass_Zombie_Health, g_Class_Zombie_Next[iPlayer])),
+		iPlayer, "ZOMBIE_ATTRIBUTE_ARMOR_COLOR", ArrayGetCell(g_aClass_Zombie_Armor, g_Class_Zombie_Next[iPlayer]),
+		iPlayer, "ZOMBIE_ATTRIBUTE_SPEED_COLOR", cs_maxspeed_display_value(fMax_Speed),
+		iPlayer, "ZOMBIE_ATTRIBUTE_GRAVITY_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Gravity, g_Class_Zombie_Next[iPlayer]),
+		iPlayer, "ZOMBIE_ATTRIBUTE_KNOCKBACK_COLOR", Float:ArrayGetCell(g_aClass_Zombie_Knockback, g_Class_Zombie_Next[iPlayer])
 	);
 
 	// Execute class select post forward
