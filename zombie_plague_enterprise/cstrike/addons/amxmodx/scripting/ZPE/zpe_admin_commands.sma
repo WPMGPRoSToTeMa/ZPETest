@@ -908,7 +908,7 @@ Command_Survivor(iID, iPlayer)
 
 	if (get_pcvar_num(g_pCvar_Message_Information))
 	{
-		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_SURVIVAL_COLOR");
+		zpe_client_print_color(0, print_team_default, "ADMIN %s - %s %L", szAdmin_Name, szPlayer_Name, LANG_PLAYER, "CMD_SURVIVOR_COLOR");
 	}
 
 	// Log to Zombie Plague Enterprise log file?
@@ -920,7 +920,7 @@ Command_Survivor(iID, iPlayer)
 		get_user_authid(iID, szAuth_ID, charsmax(szAuth_ID));
 		get_user_ip(iID, szIP, charsmax(szIP), 1);
 
-		zpe_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_SURVIVAL_LOG", Get_Playing_Count());
+		zpe_log("ADMIN %s <%s><%s> - %s %L (Players: %d)", szAdmin_Name, szAuth_ID, szIP, szPlayer_Name, LANG_SERVER, "CMD_SURVIVOR_LOG", Get_Playing_Count());
 	}
 }
 

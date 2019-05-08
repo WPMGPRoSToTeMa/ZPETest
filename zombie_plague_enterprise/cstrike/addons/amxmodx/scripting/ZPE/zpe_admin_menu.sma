@@ -127,82 +127,82 @@ Show_Menu_Admin(iPlayer)
 	// 1. Infect/Cure command
 	if (iUser_Flags & (read_flags(g_Access_Make_Zombie) | read_flags(g_Access_Make_Human)))
 	{
-		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN1");
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_MAKE_ZOMBIE_OR_HUMAN");
 		menu_additem(iMenu, szMenu, "1");
 	}
 
 	else
 	{
-		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN1");
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN_MAKE_ZOMBIE_OR_HUMAN");
 		menu_additem(iMenu, szMenu, "1");
 	}
 
 	// 2. Nemesis command
 	if (iUser_Flags & read_flags(g_Access_Make_Nemesis))
 	{
-		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN2");
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_MAKE_NEMESIS");
 		menu_additem(iMenu, szMenu, "2");
 	}
 
 	else
 	{
-		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN2");
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN_MAKE_NEMESIS");
 		menu_additem(iMenu, szMenu, "2");
 	}
 
 	// 3. Assassin command
 	if (iUser_Flags & read_flags(g_Access_Make_Assassin))
 	{
-		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN3");
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_MAKE_ASSASSIN");
 		menu_additem(iMenu, szMenu, "3");
 	}
 
 	else
 	{
-		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN3");
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN_MAKE_ASSASSIN");
 		menu_additem(iMenu, szMenu, "3");
 	}
 
 	// 4. Survivor command
 	if (iUser_Flags & read_flags(g_Access_Make_Survivor))
 	{
-		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN4");
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_MAKE_SURVIVOR");
 		menu_additem(iMenu, szMenu, "4");
 	}
 
 	else
 	{
-		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN4");
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN_MAKE_SURVIVOR");
 		menu_additem(iMenu, szMenu, "4");
 	}
 
 	// 5. Sniper command
 	if (iUser_Flags & read_flags(g_Access_Make_Sniper))
 	{
-		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN5");
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_MAKE_SNIPER");
 		menu_additem(iMenu, szMenu, "5");
 	}
 
 	else
 	{
-		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN5");
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN_MAKE_SNIPER");
 		menu_additem(iMenu, szMenu, "5");
 	}
 
 	// 6. Respawn command
 	if (iUser_Flags & read_flags(g_Access_Respawn_Players))
 	{
-		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN6");
+		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_RESPAWN");
 		menu_additem(iMenu, szMenu, "6");
 	}
 
 	else
 	{
-		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN6");
+		formatex(szMenu, charsmax(szMenu), "\d %L", iPlayer, "MENU_ADMIN_RESPAWN");
 		menu_additem(iMenu, szMenu, "6");
 	}
 
-	// 7. Start Game Mode command
+	// 7. Start game mode command
 	if (iUser_Flags & read_flags(g_Access_Start_Game_Mode))
 	{
 		formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_ADMIN_START_GAME_MODE");
@@ -353,7 +353,7 @@ public Menu_Admin(iPlayer, iMenu, iItem)
 			}
 		}
 
-		case 7: // Start Game Mode command
+		case 7: // Start game mode command
 		{
 			if (iUser_Flags & read_flags(g_Access_Start_Game_Mode))
 			{
@@ -388,32 +388,32 @@ Show_Menu_Player_List(iPlayer)
 	{
 		case ACTION_INFECT_CURE:
 		{
-			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN1");
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN_MAKE_ZOMBIE_OR_HUMAN");
 		}
 
 		case ACTION_MAKE_NEMESIS:
 		{
-			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN2");
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN_MAKE_NEMESIS");
 		}
 
 		case ACTION_MAKE_ASSASSIN:
 		{
-			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN3");
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN_MAKE_ASSASSIN");
 		}
 
 		case ACTION_MAKE_SURVIVOR:
 		{
-			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN4");
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN_MAKE_SURVIVOR");
 		}
 
 		case ACTION_MAKE_SNIPER:
 		{
-			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN5");
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN_MAKE_SNIPER");
 		}
 
 		case ACTION_RESPAWN_PLAYER:
 		{
-			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN6");
+			formatex(szMenu, charsmax(szMenu), "%L \r", iPlayer, "MENU_ADMIN_RESPAWN");
 		}
 	}
 
@@ -721,40 +721,38 @@ Show_Menu_Player_List(iPlayer)
 	menu_display(iPlayer, iMenu, MENU_PAGE_PLAYERS(iPlayer));
 }
 
-// Game Mode List Menu
 Show_Menu_Game_Mode_List(iPlayer)
 {
-	static szMenu[128];
-	static szTranskey[64];
+	new szTitle[128];
+	formatex(szTitle, charsmax(szTitle), "%L: \r", iPlayer, "MENU_INFO4");
 
-	new iMenu;
+	new iMenu = menu_create(szTitle, "Menu_Game_Mode_List");
+
+	new szGame_Mode_Name[32];
+	new szTranskey[64];
+	new szItem[128];
+
 	new szItemdata[2];
 
-	new Game_Mode_Count = zpe_gamemodes_get_count();
-
-	// Title
-	formatex(szMenu, charsmax(szMenu), "%L: \r", iPlayer, "MENU_INFO4");
-
-	iMenu = menu_create(szMenu, "Menu_Game_Mode_List");
+	new iGame_Mode_Count = zpe_gamemodes_get_count();
 
 	// Item List
-	for (new i = 0; i < Game_Mode_Count; i++)
+	for (new i = 0; i < iGame_Mode_Count; i++)
 	{
-		// Add Game Mode Name
-		zpe_gamemodes_get_name(i, szMenu, charsmax(szMenu));
+		zpe_gamemodes_get_name(i, szGame_Mode_Name, charsmax(szGame_Mode_Name));
+		strtoupper(szGame_Mode_Name);
 
 		// ML support for mode name
-		formatex(szTranskey, charsmax(szTranskey), "MODENAME %s", szMenu);
+		formatex(szTranskey, charsmax(szTranskey), "GAME_MODE_NAME_%s", szGame_Mode_Name);
 
 		if (GetLangTransKey(szTranskey) != TransKey_Bad)
 		{
-			formatex(szMenu, charsmax(szMenu), "%L", iPlayer, szTranskey);
+			formatex(szItem, charsmax(szItem), "%L", iPlayer, szTranskey);
 		}
 
 		szItemdata[0] = i;
-		szItemdata[1] = 0;
-
-		menu_additem(iMenu, szMenu, szItemdata);
+		szItemdata[1] = '^0';
+		menu_additem(iMenu, szItem, szItemdata);
 	}
 
 	// No game modes to display?
@@ -766,14 +764,14 @@ Show_Menu_Game_Mode_List(iPlayer)
 	}
 
 	// Back - Next - Exit
-	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_BACK");
-	menu_setprop(iMenu, MPROP_BACKNAME, szMenu);
+	formatex(szItem, charsmax(szItem), "%L", iPlayer, "MENU_BACK");
+	menu_setprop(iMenu, MPROP_BACKNAME, szItem);
 
-	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_NEXT");
-	menu_setprop(iMenu, MPROP_NEXTNAME, szMenu);
+	formatex(szItem, charsmax(szItem), "%L", iPlayer, "MENU_NEXT");
+	menu_setprop(iMenu, MPROP_NEXTNAME, szItem);
 
-	formatex(szMenu, charsmax(szMenu), "%L", iPlayer, "MENU_EXIT");
-	menu_setprop(iMenu, MPROP_EXITNAME, szMenu);
+	formatex(szItem, charsmax(szItem), "%L", iPlayer, "MENU_EXIT");
+	menu_setprop(iMenu, MPROP_EXITNAME, szItem);
 
 	// If remembered page is greater than number of pages, clamp down the value
 	MENU_PAGE_GAME_MODES(iPlayer) = min(MENU_PAGE_GAME_MODES(iPlayer), menu_pages(iMenu) - 1);
@@ -925,7 +923,6 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 	return PLUGIN_HANDLED;
 }
 
-// Game Mode List Menu
 public Menu_Game_Mode_List(iPlayer, iMenu, iItem)
 {
 	// Menu was closed
