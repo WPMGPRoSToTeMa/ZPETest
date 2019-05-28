@@ -43,9 +43,9 @@ native zpe_class_human_set_next(player, classid);
  *
  * @param {classid} A valid human class ID.
  *
- * @return Maximum amount of health points, -1 on error.
+ * @return Maximum amount of health points.
  */
-native zpe_class_human_get_max_health(classid);
+native Float:zpe_class_human_get_max_health(classid);
 
 /**
  * Registers a custom class which will be added to the human classes menu of ZPE.

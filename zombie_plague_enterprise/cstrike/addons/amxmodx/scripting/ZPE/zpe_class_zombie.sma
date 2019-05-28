@@ -447,7 +447,7 @@ public native_class_zombie_set_next(iPlugin_ID, iNum_Params)
 	return true;
 }
 
-public native_class_zombie_get_max_health(iPlugin_ID, iNum_Params)
+public Float:native_class_zombie_get_max_health(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
 
@@ -455,7 +455,7 @@ public native_class_zombie_get_max_health(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
 
-		return -1;
+		return -1.0;
 	}
 
 	return ArrayGetCell(g_aClass_Zombie_Health, iClass_ID);
