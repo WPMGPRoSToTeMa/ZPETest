@@ -32,8 +32,6 @@
 #define ITEM_NAME "Zombie Madness"
 #define ITEM_COST 15
 
-#define SOUND_MAX_LENGTH 64
-
 #define TASK_MADNESS 100
 #define TASK_AURA 200
 
@@ -125,14 +123,7 @@ public zpe_fw_class_zombie_register_post(iClass_ID)
 
 	if (iArray_Size > 0)
 	{
-		new szSound_Path[64];
-
-		for (new i = 0; i < iArray_Size; i++)
-		{
-			ArrayGetString(aZombie_Madness_Sound, i, szSound_Path, charsmax(szSound_Path));
-
-			precache_sound(szSound_Path);
-		}
+		Precache_Sounds(aZombie_Madness_Sound);
 	}
 
 	else

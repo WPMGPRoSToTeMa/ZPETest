@@ -701,7 +701,6 @@ public native_class_zombie_register_claw(iPlugin_ID, iNum_Params)
 
 	new szClaw_Model[86];
 	get_string(2, szClaw_Model, charsmax(szClaw_Model));
-
 	precache_model(szClaw_Model);
 
 	new Array:aClass_Claws = ArrayGetCell(g_aClass_Zombie_Claws_Handle, iClass_ID);

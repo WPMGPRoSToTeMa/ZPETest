@@ -32,19 +32,11 @@
 #define PEV_FLARE_COLOR var_punchangle
 #define PEV_FLARE_DURATION var_flSwimTime
 
-#define MODEL_MAX_LENGTH 64
-#define SOUND_MAX_LENGTH 64
-
 #define SPRITE_GRANDE_TRAIL "sprites/laserbeam.spr"
 
 new g_V_Model_Grenade_Flare[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_flare.mdl";
 new g_P_Model_Grenade_Flare[MODEL_MAX_LENGTH] = "models/p_smokegrenade.mdl";
 new g_W_Model_Grenade_Flare[MODEL_MAX_LENGTH] = "models/w_smokegrenade.mdl";
-
-new const g_Sound_Grenade_Flare_Explode[][] =
-{
-	"items/nvg_on.wav"
-};
 
 new Array:g_aSound_Grenade_Flare_Explode;
 
@@ -108,17 +100,14 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Grenade_Flare_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FLARE EXPLODE", g_aSound_Grenade_Flare_Explode);
+	Precache_Sounds(g_aSound_Grenade_Flare_Explode);
 
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE FLARE", g_V_Model_Grenade_Flare, charsmax(g_V_Model_Grenade_Flare));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE FLARE", g_P_Model_Grenade_Flare, charsmax(g_P_Model_Grenade_Flare));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE FLARE", g_W_Model_Grenade_Flare, charsmax(g_W_Model_Grenade_Flare));
 
-	// Precache models
 	precache_model(g_V_Model_Grenade_Flare);
 	precache_model(g_P_Model_Grenade_Flare);
 	precache_model(g_W_Model_Grenade_Flare);
@@ -253,7 +242,9 @@ public Ham_Think_Grenade_(iEntity)
 		else if ((get_entvar(iEntity, var_flags) & FL_ONGROUND) && _fm_get_speed(iEntity) < 10)
 		{
 			// Flare sound
-			emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Flare_Explode[RANDOM(sizeof g_Sound_Grenade_Flare_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			new szSound[SOUND_MAX_LENGTH];
+			ArrayGetString(g_aSound_Grenade_Flare_Explode, RANDOM(ArraySize(g_aSound_Grenade_Flare_Explode)), szSound, charsmax(szSound));
+			emit_sound(iEntity, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			// Set duration and start lightning loop on next think
 			set_entvar(iEntity, PEV_FLARE_DURATION, 1 + get_pcvar_num(g_pCvar_Grenade_Flare_Duration) / 2);

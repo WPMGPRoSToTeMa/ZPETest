@@ -30,9 +30,6 @@
 #define ITEM_NAME "Infection Grenade"
 #define ITEM_COST 15
 
-#define MODEL_MAX_LENGTH 64
-#define SOUND_MAX_LENGTH 64
-
 // HACK: var_ field used to store custom nade types and their values
 #define PEV_NADE_TYPE var_flTimeStepSound
 #define NADE_TYPE_INFECTION 1111
@@ -43,19 +40,6 @@
 new g_V_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_infect.mdl"
 new g_P_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/p_hegrenade.mdl";
 new g_W_Model_Grenade_Infection[MODEL_MAX_LENGTH] = "models/w_hegrenade.mdl";
-
-// Default sounds
-new const g_Sound_Grenade_Infection_Explode[][] =
-{
-	"zombie_plague_enterprise/grenade_infect.wav"
-};
-
-new const g_Sound_Grenade_Infection_Player[][] =
-{
-	"scientist/scream20.wav",
-	"scientist/scream22.wav",
-	"scientist/scream05.wav"
-};
 
 new Array:g_aSound_Grenade_Infection_Explode;
 new Array:g_aSound_Grenade_Infection_Player;
@@ -132,30 +116,19 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Grenade_Infection_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Grenade_Infection_Player = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE INFECTION EXPLODE", g_aSound_Grenade_Infection_Explode);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE INFECTION PLAYER", g_aSound_Grenade_Infection_Player);
+
+	Precache_Sounds(g_aSound_Grenade_Infection_Explode);
+	Precache_Sounds(g_aSound_Grenade_Infection_Player);
 
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE INFECTION", g_V_Model_Grenade_Infection, charsmax(g_V_Model_Grenade_Infection));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE INFECTION", g_P_Model_Grenade_Infection, charsmax(g_P_Model_Grenade_Infection));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE INFECTION", g_W_Model_Grenade_Infection, charsmax(g_W_Model_Grenade_Infection));
 
-	// Precache sounds
-	for (new i = 0; i < sizeof g_Sound_Grenade_Infection_Explode; i++)
-	{
-		precache_sound(g_Sound_Grenade_Infection_Explode[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Grenade_Infection_Player; i++)
-	{
-		precache_sound(g_Sound_Grenade_Infection_Player[i]);
-	}
-
-	// Precache models
 	precache_model(g_V_Model_Grenade_Infection);
 	precache_model(g_P_Model_Grenade_Infection);
 	precache_model(g_W_Model_Grenade_Infection);
@@ -339,7 +312,9 @@ Infection_Explode(iEntity)
 	Create_Blast(fOrigin);
 
 	// Infection nade explode sound
-	emit_sound(iEntity, CHAN_WEAPON, g_Sound_Grenade_Infection_Explode[RANDOM(sizeof g_Sound_Grenade_Infection_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	new szSound[SOUND_MAX_LENGTH];
+	ArrayGetString(g_aSound_Grenade_Infection_Explode, RANDOM(ArraySize(g_aSound_Grenade_Infection_Explode)), szSound, charsmax(szSound));
+	emit_sound(iEntity, CHAN_WEAPON, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Get attacker
 	new iAttacker = get_entvar(iEntity, var_owner);
@@ -376,7 +351,8 @@ Infection_Explode(iEntity)
 		zpe_core_infect(iVctim, iAttacker);
 
 		// Victim's sound
-		emit_sound(iVctim, CHAN_VOICE, g_Sound_Grenade_Infection_Player[RANDOM(sizeof g_Sound_Grenade_Infection_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		ArrayGetString(g_aSound_Grenade_Infection_Player, RANDOM(ArraySize(g_aSound_Grenade_Infection_Player)), szSound, charsmax(szSound));
+		emit_sound(iVctim, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Get rid of the grenade

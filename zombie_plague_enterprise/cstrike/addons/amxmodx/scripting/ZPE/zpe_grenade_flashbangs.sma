@@ -31,8 +31,6 @@
 #define PEV_NADE_TYPE var_flTimeStepSound
 #define NADE_TYPE_FLASHBANG 3334
 
-#define MODEL_MAX_LENGTH 64
-
 #define GRENADE_FLASHBANG_SPRITE_TRAIL "sprites/laserbeam.spr"
 
 new g_V_Model_Grenade_Flashbang[MODEL_MAX_LENGTH] = "models/v_flashbang.mdl";

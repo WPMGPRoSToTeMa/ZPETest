@@ -26,14 +26,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_armageddon.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sounds_Armageddon[][] =
-{
-	"zombie_plague_enterprise/nemesis1.wav",
-	"zombie_plague_enterprise/survivor1.wav"
-};
-
 new Array:g_aSound_Armageddon;
 
 new g_pCvar_Armageddon_Chance;
@@ -93,16 +85,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Armageddon = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND ARMAGEDDON", g_aSound_Armageddon);
-
-	for (new i = 0; i < sizeof g_Sounds_Armageddon; i++)
-	{
-		precache_sound(g_Sounds_Armageddon[i]);
-	}
+	Precache_Sounds(g_aSound_Armageddon);
 }
 
 public plugin_cfg()
@@ -204,7 +189,9 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Armageddon_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sounds_Armageddon[RANDOM(sizeof g_Sounds_Armageddon)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Armageddon, RANDOM(ArraySize(g_aSound_Armageddon)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Armageddon_Show_Hud))

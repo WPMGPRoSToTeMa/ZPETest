@@ -25,14 +25,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_nemesis.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Nemesis[][] =
-{
-	"zombie_plague_enterprise/nemesis1.wav",
-	"zombie_plague_enterprise/nemesis2.wav"
-};
-
 new Array:g_aSound_Nemesis;
 
 new g_pCvar_Nemesis_Chance;
@@ -88,16 +80,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Nemesis = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND NEMESIS", g_aSound_Nemesis);
-
-	for (new i = 0; i < sizeof g_Sound_Nemesis; i++)
-	{
-		precache_sound(g_Sound_Nemesis[i]);
-	}
+	Precache_Sounds(g_aSound_Nemesis)
 }
 
 public plugin_cfg()
@@ -172,7 +157,9 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Nemesis_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Nemesis[RANDOM(sizeof g_Sound_Nemesis)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Nemesis, RANDOM(ArraySize(g_aSound_Nemesis)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Nemesis_Show_Hud))

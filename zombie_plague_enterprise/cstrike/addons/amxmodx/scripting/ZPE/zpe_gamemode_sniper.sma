@@ -26,14 +26,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_sniper.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Sniper[][] =
-{
-	"zombie_plague_enterprise/survivor1.wav",
-	"zombie_plague_enterprise/survivor2.wav"
-};
-
 new Array:g_aSound_Sniper;
 
 new g_pCvar_Sniper_Chance;
@@ -89,16 +81,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Sniper = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND SNIPER", g_aSound_Sniper);
-
-	for (new i = 0; i < sizeof g_Sound_Sniper; i++)
-	{
-		precache_sound(g_Sound_Sniper[i]);
-	}
+	Precache_Sounds(g_aSound_Sniper);
 }
 
 public plugin_cfg()
@@ -179,7 +164,9 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Sniper_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Sniper[RANDOM(sizeof g_Sound_Sniper)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Sniper, RANDOM(ArraySize(g_aSound_Sniper)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Sniper_Show_Hud))

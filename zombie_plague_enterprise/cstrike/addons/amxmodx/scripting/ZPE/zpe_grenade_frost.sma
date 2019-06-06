@@ -43,9 +43,6 @@
 #define FFADE_IN 0x0000
 #define FFADE_STAYOUT 0x0004
 
-#define MODEL_MAX_LENGTH 64
-#define SOUND_MAX_LENGTH 64
-
 // Sprites
 #define SPRITE_GRENADE_TRAIL "sprites/laserbeam.spr"
 #define SPRITE_GRENADE_RING "sprites/shockwave.spr"
@@ -54,21 +51,6 @@
 new g_V_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_frost.mdl";
 new g_P_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/p_flashbang.mdl";
 new g_W_Model_Grenade_Frost[MODEL_MAX_LENGTH] = "models/w_flashbang.mdl";
-
-new const g_Sound_Grenade_Frost_Explode[][] =
-{
-	"warcraft3/frostnova.wav"
-};
-
-new const g_Sound_Grenade_Frost_Player[][] =
-{
-	"warcraft3/impalehit.wav"
-};
-
-new const g_Sound_Grenade_Frost_Break[][] =
-{
-	"warcraft3/impalelaunch1.wav"
-};
 
 // Hack to be able to use Ham_Player_ResetMaxSpeed (by joaquimandrade)
 new Ham:Ham_Player_ResetMaxSpeed = Ham_Item_PreFrame;
@@ -202,36 +184,22 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Grenade_Frost_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Grenade_Frost_Player = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Grenade_Frost_Break = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FROST EXPLODE", g_aSound_Grenade_Frost_Explode);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FROST PLAYER", g_aSound_Grenade_Frost_Player);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE FROST BREAK", g_aSound_Grenade_Frost_Break);
+
+	Precache_Sounds(g_aSound_Grenade_Frost_Explode);
+	Precache_Sounds(g_aSound_Grenade_Frost_Player);
+	Precache_Sounds(g_aSound_Grenade_Frost_Break);
 
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE FROST", g_V_Model_Grenade_Frost, charsmax(g_V_Model_Grenade_Frost));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE FROST", g_P_Model_Grenade_Frost, charsmax(g_P_Model_Grenade_Frost));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE FROST", g_W_Model_Grenade_Frost, charsmax(g_W_Model_Grenade_Frost));
 
-	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Explode; i++)
-	{
-		precache_sound(g_Sound_Grenade_Frost_Explode[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Player; i++)
-	{
-		precache_sound(g_Sound_Grenade_Frost_Player[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Grenade_Frost_Break; i++)
-	{
-		precache_sound(g_Sound_Grenade_Frost_Break[i]);
-	}
-
-	// Precache models
 	precache_model(g_V_Model_Grenade_Frost);
 	precache_model(g_P_Model_Grenade_Frost);
 	precache_model(g_W_Model_Grenade_Frost);
@@ -520,7 +488,9 @@ Frost_Explode(iEntity)
 	// Make the explosion
 	Create_Blast3(fOrigin);
 
-	emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Frost_Explode[RANDOM(sizeof g_Sound_Grenade_Frost_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	new szSound[SOUND_MAX_LENGTH];
+	ArrayGetString(g_aSound_Grenade_Frost_Explode, RANDOM(ArraySize(g_aSound_Grenade_Frost_Explode)), szSound, charsmax(szSound));
+	emit_sound(iEntity, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Collisions
 	new iVictim = -1;
@@ -556,7 +526,9 @@ Set_Freeze(iVictim)
 
 		get_user_origin(iVictim, iOrigin);
 
-		emit_sound(iVictim, CHAN_VOICE, g_Sound_Grenade_Frost_Break[RANDOM(sizeof g_Sound_Grenade_Frost_Break)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Grenade_Frost_Break, RANDOM(ArraySize(g_aSound_Grenade_Frost_Break)), szSound, charsmax(szSound));
+		emit_sound(iVictim, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 		// Glass shatter
 		message_begin(MSG_PVS, SVC_TEMPENTITY, iOrigin);
@@ -597,7 +569,9 @@ Set_Freeze(iVictim)
 	BIT_ADD(g_Is_Frozen, iVictim);
 
 	// Freeze sound
-	emit_sound(iVictim, CHAN_VOICE, g_Sound_Grenade_Frost_Player[RANDOM(sizeof g_Sound_Grenade_Frost_Player)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	new szSound[SOUND_MAX_LENGTH];
+	ArrayGetString(g_aSound_Grenade_Frost_Player, RANDOM(ArraySize(g_aSound_Grenade_Frost_Player)), szSound, charsmax(szSound));
+	emit_sound(iVictim, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Add a blue tint to their screen
 	message_begin(MSG_ONE, g_Message_Screen_Fade, _, iVictim);
@@ -719,7 +693,9 @@ public Remove_Freeze(iTask_ID)
 	write_byte(100); // alpha
 	message_end();
 
-	emit_sound(ID_FROST_REMOVE, CHAN_VOICE, g_Sound_Grenade_Frost_Break[RANDOM(sizeof g_Sound_Grenade_Frost_Break)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	new szSound[SOUND_MAX_LENGTH];
+	ArrayGetString(g_aSound_Grenade_Frost_Break, RANDOM(ArraySize(g_aSound_Grenade_Frost_Break)), szSound, charsmax(szSound));
+	emit_sound(ID_FROST_REMOVE, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	// Get player's origin
 	static iOrigin[3];

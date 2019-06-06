@@ -25,19 +25,6 @@
 
 #define CLASSNAME_MAX_LENGTH 32
 
-new const g_Objective_Entities[][] =
-{
-	"func_bomb_target",
-	"info_bomb_target",
-	"info_vip_start",
-	"func_vip_safetyzone",
-	"func_escapezone",
-	"hostage_entity",
-	"monster_scientist",
-	"func_hostage_rescue",
-	"info_hostage_rescue"
-};
-
 new Array:g_aObjective_Entities;
 
 new g_unfwSpawn;
@@ -92,13 +79,17 @@ public FM_Spawn_(iEntity)
 
 	// Get сlassname
 	new szClassname[32];
-
 	get_entvar(iEntity, var_classname, szClassname, charsmax(szClassname));
 
+	new szRemove_Entity_Name[CLASSNAME_MAX_LENGTH];
+	new iRemove_Entity_Count = ArraySize(g_aObjective_Entities);
+
 	// Check whether it needs to be removed
-	for (new i = 0; i < sizeof g_Objective_Entities; i++)
+	for (new i = 0; i < iRemove_Entity_Count; i++)
 	{
-		if (equal(szClassname, g_Objective_Entities[i]))
+		ArrayGetString(g_aObjective_Entities, i, szRemove_Entity_Name, charsmax(szRemove_Entity_Name));
+
+		if (equal(szClassname, szRemove_Entity_Name))
 		{
 			engfunc(EngFunc_RemoveEntity, iEntity);
 

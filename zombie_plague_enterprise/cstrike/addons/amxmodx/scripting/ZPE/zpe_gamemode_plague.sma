@@ -26,14 +26,6 @@
 
 #define ZPE_SETTINGS_INI "ZPE/gamemode/zpe_plague.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Plague[][] =
-{
-	"zombie_plague_enterprise/nemesis1.wav",
-	"zombie_plague_enterprise/survivor1.wav"
-};
-
 new Array:g_aSound_Plague;
 
 new g_pCvar_Plague_Chance;
@@ -97,16 +89,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Plague = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_INI, "Sounds", "ROUND PLAGUE", g_aSound_Plague);
-
-	for (new i = 0; i < sizeof g_Sound_Plague; i++)
-	{
-		precache_sound(g_Sound_Plague[i]);
-	}
+	Precache_Sounds(g_aSound_Plague);
 }
 
 public plugin_cfg()
@@ -237,7 +222,9 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Plague_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Plague[RANDOM(sizeof g_Sound_Plague)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Plague, RANDOM(ArraySize(g_aSound_Plague)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Plague_Show_Hud))

@@ -27,14 +27,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_assassin.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sounds_Assassin[][] =
-{
-	"zombie_plague_enterprise/nemesis1.wav",
-	"zombie_plague_enterprise/nemesis2.wav"
-};
-
 new Array:g_aSounds_Assassin;
 
 new g_pCvar_Assassin_Chance;
@@ -94,16 +86,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSounds_Assassin = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND ASSASSIN", g_aSounds_Assassin);
-
-	for (new i = 0; i < sizeof g_Sounds_Assassin; i++)
-	{
-		precache_sound(g_Sounds_Assassin[i]);
-	}
+	Precache_Sounds(g_aSounds_Assassin);
 }
 
 public plugin_cfg()
@@ -178,7 +163,9 @@ public zpe_fw_gamemodes_start()
 	// Play assassin sound
 	if (get_pcvar_num(g_pCvar_Assassin_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sounds_Assassin[RANDOM(sizeof g_Sounds_Assassin)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSounds_Assassin, RANDOM(ArraySize(g_aSounds_Assassin)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Assassin_Show_Hud))

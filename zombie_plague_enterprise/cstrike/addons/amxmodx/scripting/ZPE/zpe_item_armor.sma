@@ -7,7 +7,7 @@
 *	https://wiki.ckcorp.ru - documentation and other useful information.
 *	https://news.ckcorp.ru/ - other info.
 *
-*	https://git.ckcorp.ru/ck/amxx-modes/zpe - development.
+*	https://git.ckcorp.ru/ck/game-dev/amxx-modes/zpe - development.
 *
 *	Support is provided only on the site.
 */
@@ -26,14 +26,6 @@
 
 #define ITEM_NAME "Armor"
 #define ITEM_COST 5
-
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Armor_Buy_Item[][] =
-{
-	"items/ammopickup1.wav",
-	"items/ammopickup2.wav"
-};
 
 new Array:g_aSound_Armor_Buy_Item;
 
@@ -56,16 +48,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Armor_Buy_Item = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "BUY ARMOR", g_aSound_Armor_Buy_Item);
-
-	for (new i = 0; i < sizeof g_Sound_Armor_Buy_Item; i++)
-	{
-		precache_sound(g_Sound_Armor_Buy_Item[i]);
-	}
+	Precache_Sounds(g_aSound_Armor_Buy_Item);
 }
 
 public zpe_fw_items_select_pre(iPlayer, iItem_ID)
@@ -91,22 +76,13 @@ public zpe_fw_items_select_post(iPlayer, iItem_ID)
 		return;
 	}
 
-	new ArmorType:Armor_Type;
-
-	new iArmor = rg_get_user_armor(iPlayer, Armor_Type) + get_pcvar_num(g_pCvar_Armor_Buy_Count);
-
-	if (get_pcvar_num(g_pCvar_Armor_Buy_Type))
-	{
-		rg_set_user_armor(iPlayer, iArmor, ARMOR_VESTHELM);
-	}
-
-	else
-	{
-		rg_set_user_armor(iPlayer, iArmor, ARMOR_KEVLAR);
-	}
+	new iNew_Armor = rg_get_user_armor(iPlayer) + get_pcvar_num(g_pCvar_Armor_Buy_Count);
+	rg_set_user_armor(iPlayer, iNew_Armor, get_pcvar_num(g_pCvar_Armor_Buy_Type) ? ARMOR_VESTHELM : ARMOR_KEVLAR);
 
 	if (get_pcvar_num(g_pCvar_Armor_Buy_Sound))
 	{
-		emit_sound(iPlayer, CHAN_STATIC, g_Sound_Armor_Buy_Item[RANDOM(sizeof g_Sound_Armor_Buy_Item)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Armor_Buy_Item, RANDOM(ArraySize(g_aSound_Armor_Buy_Item)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, CHAN_STATIC, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 }

@@ -27,9 +27,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
-#define PLAYER_MODELS_MAX_LENGTH 32
-#define MODELS_MAX_LENGTH 64
-
 #define ACCESS_FLAG_MAX_LENGTH 2
 
 // Access flags
@@ -62,14 +59,13 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
-	g_aAdmin_Models_Human_Player = ArrayCreate(PLAYER_MODELS_MAX_LENGTH, 1);
-	g_aAdmin_V_Models_Human_Knife = ArrayCreate(MODELS_MAX_LENGTH, 1);
-	g_aAdmin_P_Models_Human_Knife = ArrayCreate(MODELS_MAX_LENGTH, 1);
-	g_aAdmin_Models_Zombie_Player = ArrayCreate(PLAYER_MODELS_MAX_LENGTH, 1);
-	g_aAdmin_Models_Zombie_Claws = ArrayCreate(MODELS_MAX_LENGTH, 1);
+	g_aAdmin_Models_Human_Player = ArrayCreate(PLAYER_MODEL_MAX_LENGTH, 1);
+	g_aAdmin_V_Models_Human_Knife = ArrayCreate(MODEL_MAX_LENGTH, 1);
+	g_aAdmin_P_Models_Human_Knife = ArrayCreate(MODEL_MAX_LENGTH, 1);
 
-	// Load from external file
+	g_aAdmin_Models_Zombie_Player = ArrayCreate(PLAYER_MODEL_MAX_LENGTH, 1);
+	g_aAdmin_Models_Zombie_Claws = ArrayCreate(MODEL_MAX_LENGTH, 1);
+
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "ADMIN MODELS HUMAN PLAYER", g_aAdmin_Models_Human_Player);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "ADMIN VIEW MODELS HUMAN KNIFE", g_aAdmin_V_Models_Human_Knife);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "ADMIN PLAYER MODELS HUMAN KNIFE", g_aAdmin_P_Models_Human_Knife);
@@ -77,55 +73,18 @@ public plugin_precache()
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "ADMIN MODELS ZOMBIE PLAYER", g_aAdmin_Models_Zombie_Player);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "ADMIN MODELS ZOMBIE CLAWS", g_aAdmin_Models_Zombie_Claws);
 
+	Precache_Player_Models(g_aAdmin_Models_Human_Player);
+	Precache_Models(g_aAdmin_V_Models_Human_Knife);
+	Precache_Models(g_aAdmin_P_Models_Human_Knife);
+
+	Precache_Player_Models(g_aAdmin_Models_Zombie_Player);
+	Precache_Models(g_aAdmin_Models_Zombie_Claws);
+
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS HUMAN PLAYER", g_Access_Admin_Models_Human_Player, charsmax(g_Access_Admin_Models_Human_Player));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS HUMAN KNIFE", g_Access_Admin_Models_Human_Knife, charsmax(g_Access_Admin_Models_Human_Knife));
 
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS ZOMBIE PLAYER", g_Access_Admin_Models_Zombie_Player, charsmax(g_Access_Admin_Models_Zombie_Player));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Access Flags", "ADMIN MODELS ZOMBIE CLAWS", g_Access_Admin_Models_Zombie_Claws, charsmax(g_Access_Admin_Models_Zombie_Claws));
-
-	new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
-	new szModel[MODELS_MAX_LENGTH];
-
-	new szModel_Path[128];
-
-	for (new i = 0; i < ArraySize(g_aAdmin_Models_Human_Player); i++)
-	{
-		ArrayGetString(g_aAdmin_Models_Human_Player, i, szPlayer_Model, charsmax(szPlayer_Model));
-
-		formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szPlayer_Model, szPlayer_Model);
-
-		precache_model(szModel_Path);
-	}
-
-	for (new i = 0; i < ArraySize(g_aAdmin_V_Models_Human_Knife); i++)
-	{
-		ArrayGetString(g_aAdmin_V_Models_Human_Knife, i, szModel, charsmax(szModel));
-
-		precache_model(szModel);
-	}
-
-	for (new i = 0; i < ArraySize(g_aAdmin_P_Models_Human_Knife); i++)
-	{
-		ArrayGetString(g_aAdmin_P_Models_Human_Knife, i, szModel, charsmax(szModel));
-
-		precache_model(szModel);
-	}
-
-	for (new i = 0; i < ArraySize(g_aAdmin_Models_Zombie_Player); i++)
-	{
-		ArrayGetString(g_aAdmin_Models_Zombie_Player, i, szPlayer_Model, charsmax(szPlayer_Model));
-
-		formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szPlayer_Model, szPlayer_Model);
-
-		precache_model(szModel_Path);
-	}
-
-	for (new i = 0; i < ArraySize(g_aAdmin_Models_Zombie_Claws); i++)
-	{
-		ArrayGetString(g_aAdmin_Models_Zombie_Claws, i, szModel, charsmax(szModel));
-
-		precache_model(szModel);
-	}
 }
 
 public zpe_fw_core_cure_post(iPlayer, iAttacker)
@@ -149,8 +108,7 @@ public zpe_fw_core_cure_post(iPlayer, iAttacker)
 	{
 		if (iUser_Flags & read_flags(g_Access_Admin_Models_Human_Player))
 		{
-			new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
-
+			new szPlayer_Model[PLAYER_MODEL_MAX_LENGTH];
 			ArrayGetString(g_aAdmin_Models_Human_Player, RANDOM(ArraySize(g_aAdmin_Models_Human_Player)), szPlayer_Model, charsmax(szPlayer_Model));
 
 			rg_set_user_model(iPlayer, szPlayer_Model);
@@ -162,12 +120,12 @@ public zpe_fw_core_cure_post(iPlayer, iAttacker)
 	{
 		if (iUser_Flags & read_flags(g_Access_Admin_Models_Human_Knife))
 		{
-			new szModel[MODELS_MAX_LENGTH];
+			new szModel[MODEL_MAX_LENGTH];
 
 			ArrayGetString(g_aAdmin_V_Models_Human_Knife, RANDOM(ArraySize(g_aAdmin_V_Models_Human_Knife)), szModel, charsmax(szModel));
-			ArrayGetString(g_aAdmin_P_Models_Human_Knife, RANDOM(ArraySize(g_aAdmin_P_Models_Human_Knife)), szModel, charsmax(szModel));
-
 			cs_set_player_view_model(iPlayer, CSW_KNIFE, szModel);
+
+			ArrayGetString(g_aAdmin_P_Models_Human_Knife, RANDOM(ArraySize(g_aAdmin_P_Models_Human_Knife)), szModel, charsmax(szModel));
 			cs_set_player_weap_model(iPlayer, CSW_KNIFE, szModel);
 		}
 	}
@@ -194,10 +152,8 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 	{
 		if (iUser_Flags & read_flags(g_Access_Admin_Models_Zombie_Player))
 		{
-			new szPlayer_Model[PLAYER_MODELS_MAX_LENGTH];
-
+			new szPlayer_Model[PLAYER_MODEL_MAX_LENGTH];
 			ArrayGetString(g_aAdmin_Models_Zombie_Player, RANDOM(ArraySize(g_aAdmin_Models_Zombie_Player)), szPlayer_Model, charsmax(szPlayer_Model));
-
 			rg_set_user_model(iPlayer, szPlayer_Model);
 		}
 	}
@@ -207,10 +163,8 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 	{
 		if (iUser_Flags & read_flags(g_Access_Admin_Models_Zombie_Claws))
 		{
-			new szModel[MODELS_MAX_LENGTH];
-
+			new szModel[MODEL_MAX_LENGTH];
 			ArrayGetString(g_aAdmin_Models_Zombie_Claws, RANDOM(ArraySize(g_aAdmin_Models_Zombie_Claws)), szModel, charsmax(szModel));
-
 			cs_set_player_view_model(iPlayer, CSW_KNIFE, szModel);
 		}
 	}

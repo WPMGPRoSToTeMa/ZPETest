@@ -35,9 +35,6 @@
 #define TASK_BURN 100
 #define ID_BURN (iTask_ID - TASK_BURN)
 
-#define MODEL_MAX_LENGTH 64
-#define SOUND_MAX_LENGTH 64
-
 #define GRENADE_NAPALM_SPRITE_FIRE "sprites/flame.spr"
 
 #define GRENADE_NAPALM_SPRITE_TRAIL "sprites/laserbeam.spr"
@@ -47,11 +44,6 @@
 new g_V_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/zombie_plague_enterprise/v_grenade_napalm.mdl";
 new g_P_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/p_hegrenade.mdl";
 new g_W_Model_Grenade_Napalm[MODEL_MAX_LENGTH] = "models/w_hegrenade.mdl";
-
-new const g_Sound_Grenade_Napalm_Explode[][] =
-{
-	"zombie_plague_enterprise/grenade_explode.wav"
-};
 
 // Custom Forwards
 enum TOTAL_FORWARDS
@@ -181,28 +173,19 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Grenade_Napalm_Explode = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "GRENADE NAPALM EXPLODE", g_aSound_Grenade_Napalm_Explode);
+	Precache_Sounds(g_aSound_Grenade_Napalm_Explode);
 
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "V GRENADE NAPALM", g_V_Model_Grenade_Napalm, charsmax(g_V_Model_Grenade_Napalm));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "P GRENADE NAPALM", g_P_Model_Grenade_Napalm, charsmax(g_P_Model_Grenade_Napalm));
 	amx_load_setting_string(ZPE_SETTINGS_FILE, "Weapon Models", "W GRENADE NAPALM", g_W_Model_Grenade_Napalm, charsmax(g_W_Model_Grenade_Napalm));
 
-	for (new i = 0; i < sizeof g_Sound_Grenade_Napalm_Explode; i++)
-	{
-		precache_sound(g_Sound_Grenade_Napalm_Explode[i]);
-	}
-
-	g_Explode_Sprite = precache_model(GRENADE_NAPALM_SPRITE_RING);
-
-	// Precache models
 	precache_model(g_V_Model_Grenade_Napalm);
 	precache_model(g_P_Model_Grenade_Napalm);
 	precache_model(g_W_Model_Grenade_Napalm);
 
+	g_Explode_Sprite = precache_model(GRENADE_NAPALM_SPRITE_RING);
 	g_Trail_Sprite = precache_model(GRENADE_NAPALM_SPRITE_TRAIL);
 	g_Flame_Sprite = precache_model(GRENADE_NAPALM_SPRITE_FIRE);
 	g_Smoke_Sprite = precache_model(GRENADE_NAPALM_SPRITE_SMOKE);
@@ -443,7 +426,9 @@ Fire_Explode(iEntity)
 		Create_Blast2(fOrigin);
 
 		// Fire grenade explode sound
-		emit_sound(iEntity, CHAN_VOICE, g_Sound_Grenade_Napalm_Explode[RANDOM(sizeof g_Sound_Grenade_Napalm_Explode)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Grenade_Napalm_Explode, RANDOM(ArraySize(g_aSound_Grenade_Napalm_Explode)), szSound, charsmax(szSound));
+		emit_sound(iEntity, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Collisions

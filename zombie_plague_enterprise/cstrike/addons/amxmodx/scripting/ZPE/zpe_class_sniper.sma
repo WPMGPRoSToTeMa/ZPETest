@@ -27,30 +27,6 @@
 #define TASK_AURA 100
 #define ID_AURA (iTask_ID - TASK_AURA)
 
-#define PLAYERMODEL_MAX_LENGTH 32
-#define SOUND_MAX_LENGTH 64
-
-new const g_Models_Sniper_Player[][] =
-{
-	"leet",
-	"sas"
-};
-
-new const g_Sound_Sniper_Die[][] =
-{
-	"player/die1.wav"
-};
-
-new const g_Sound_Sniper_Fall[][] =
-{
-	"player/pl_fallpain1.wav"
-};
-
-new const g_Sound_Sniper_Pain[][] =
-{
-	"player/pl_pain7.wav"
-};
-
 new Array:g_aModels_Sniper_Player;
 
 new Array:g_aSound_Sniper_Die;
@@ -128,43 +104,20 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
-	g_aModels_Sniper_Player = ArrayCreate(PLAYERMODEL_MAX_LENGTH, 1);
-
+	g_aModels_Sniper_Player = ArrayCreate(PLAYER_MODEL_MAX_LENGTH, 1);
 	g_aSound_Sniper_Die = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Sniper_Fall = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Sniper_Pain = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Settings", "PLAYER MODELS", g_aModels_Sniper_Player);
-
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "DIE", g_aSound_Sniper_Die);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FALL", g_aSound_Sniper_Fall);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "PAIN", g_aSound_Sniper_Pain);
 
-	new szBuffer[128];
-
-	for (new i = 0; i < sizeof g_Models_Sniper_Player; i++)
-	{
-		formatex(szBuffer, charsmax(szBuffer), "models/player/%s/%s.mdl", g_Models_Sniper_Player[i], g_Models_Sniper_Player[i]);
-
-		precache_model(szBuffer);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Sniper_Die; i++)
-	{
-		precache_sound(g_Sound_Sniper_Die[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Sniper_Fall; i++)
-	{
-		precache_sound(g_Sound_Sniper_Fall[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Sniper_Pain; i++)
-	{
-		precache_sound(g_Sound_Sniper_Pain[i]);
-	}
+	Precache_Player_Models(g_aModels_Sniper_Player);
+	Precache_Sounds(g_aSound_Sniper_Die);
+	Precache_Sounds(g_aSound_Sniper_Fall);
+	Precache_Sounds(g_aSound_Sniper_Pain);
 }
 
 public plugin_cfg()
@@ -302,7 +255,9 @@ public zpe_fw_core_cure_post(iPlayer, iAttacker)
 	cs_set_player_maxspeed_auto(iPlayer, get_pcvar_float(g_pCvar_Sniper_Speed));
 
 	// Apply sniper player model
-	rg_set_user_model(iPlayer, g_Models_Sniper_Player[RANDOM(sizeof g_Models_Sniper_Player)]);
+	new szModel[PLAYER_MODEL_MAX_LENGTH];
+	ArrayGetString(g_aModels_Sniper_Player, RANDOM(ArraySize(g_aModels_Sniper_Player)), szModel, charsmax(szModel));
+	rg_set_user_model(iPlayer, szModel);
 
 	// Sniper glow
 	if (get_pcvar_num(g_pCvar_Sniper_Glow))
@@ -384,23 +339,28 @@ public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, 
 
 	if (BIT_VALID(g_iBit_Sniper, iPlayer))
 	{
+		static szSound[SOUND_MAX_LENGTH];
+
 		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Die[RANDOM(sizeof g_Sound_Sniper_Die)], fVolume, fAttn, iFlags, iPitch);
+			ArrayGetString(g_aSound_Sniper_Die, RANDOM(ArraySize(g_aSound_Sniper_Die)), szSound, charsmax(szSound));
+			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Fall[RANDOM(sizeof g_Sound_Sniper_Fall)], fVolume, fAttn, iFlags, iPitch);
+			ArrayGetString(g_aSound_Sniper_Fall, RANDOM(ArraySize(g_aSound_Sniper_Fall)), szSound, charsmax(szSound));
+			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
 		if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
 		{
-			emit_sound(iPlayer, iChannel, g_Sound_Sniper_Pain[RANDOM(sizeof g_Sound_Sniper_Pain)], fVolume, fAttn, iFlags, iPitch);
+			ArrayGetString(g_aSound_Sniper_Pain, RANDOM(ArraySize(g_aSound_Sniper_Pain)), szSound, charsmax(szSound));
+			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
