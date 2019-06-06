@@ -1,5 +1,14 @@
-#include <cs_util_const>
+#if defined _cs_util_included
+
+  #endinput
+
+#endif
+
+#define _cs_util_included
+
+#include <amxmodx>
 #include <fakemeta>
+#include <cs_util_const>
 #include <reapi>
 
 new stock __g_Message_ID_ScreenFade = -1;
@@ -422,4 +431,50 @@ stock Recursive_Mkdir(szPath[])
 	}
 
 	Recursive_Mkdir(szPath_Copy);
+}
+
+stock Precache_Models(Array:aModels)
+{
+	new szModel[MODEL_MAX_LENGTH];
+	new iCount = ArraySize(aModels);
+
+	for (new i = 0; i < iCount; i++)
+	{
+		ArrayGetString(aModels, i, szModel, charsmax(szModel));
+		precache_model(szModel);
+	}
+}
+
+stock Precache_Player_Models(Array:aPlayer_Models)
+{
+	new szPlayer_Model[PLAYER_MODEL_MAX_LENGTH];
+	new szModel_Path[PLAYER_MODEL_PATH_MAX_LENGTH];
+	new iCount = ArraySize(aPlayer_Models);
+
+	for (new i = 0; i < iCount; i++)
+	{
+		ArrayGetString(aPlayer_Models, i, szPlayer_Model, charsmax(szPlayer_Model));
+		formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szPlayer_Model, szPlayer_Model);
+		precache_model(szModel_Path);
+	}
+}
+
+stock Precache_Sounds(Array:aSounds)
+{
+	new szSound[SOUND_MAX_LENGTH];
+	new iCount = ArraySize(aSounds);
+
+	for (new i = 0; i < iCount; i++)
+	{
+		ArrayGetString(aSounds, i, szSound, charsmax(szSound));
+		precache_sound(szSound);
+	}
+}
+
+stock bool:Ends_With(const szString[], const szSuffix[])
+{
+	new iString_Length = strlen(szString);
+	new iSuffix_Length = strlen(szSuffix);
+
+	return iString_Length >= iSuffix_Length && equal(szString[iString_Length - iSuffix_Length], szSuffix);
 }

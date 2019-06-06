@@ -24,26 +24,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Win_Zombies[][] =
-{
-	"ambience/the_horror1.wav",
-	"ambience/the_horror3.wav",
-	"ambience/the_horror4.wav"
-};
-
-new const g_Sound_Win_Humans[][] =
-{
-	"zombie_plague_enterprise/win_humans1.wav",
-	"zombie_plague_enterprise/win_humans2.wav"
-};
-
-new const g_Sound_Win_No_One[][] =
-{
-	"ambience/3dmstart.wav"
-};
-
 // Custom sounds
 new Array:g_aSound_Win_Zombies;
 new Array:g_aSound_Win_Humans;
@@ -174,30 +154,17 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Win_Zombies = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Win_Humans = ArrayCreate(SOUND_MAX_LENGTH, 1);
 	g_aSound_Win_No_One = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "WIN HUMANS", g_aSound_Win_Humans);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "WIN ZOMBIES", g_aSound_Win_Zombies);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "WIN NO ONE", g_aSound_Win_No_One);
 
-	for (new i = 0; i < sizeof g_Sound_Win_Humans; i++)
-	{
-		precache_sound(g_Sound_Win_Humans[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Win_Zombies; i++)
-	{
-		precache_sound(g_Sound_Win_Zombies[i]);
-	}
-
-	for (new i = 0; i < sizeof g_Sound_Win_No_One; i++)
-	{
-		precache_sound(g_Sound_Win_No_One[i]);
-	}
+	Precache_Sounds(g_aSound_Win_Humans);
+	Precache_Sounds(g_aSound_Win_Zombies);
+	Precache_Sounds(g_aSound_Win_No_One);
 }
 
 // Block some text messages
@@ -318,7 +285,9 @@ Message_Round_End()
 
 		if (get_pcvar_num(g_pCvar_Sounds_Win_Humans))
 		{
-			Play_Sound_To_Clients(g_Sound_Win_Humans[RANDOM(sizeof g_Sound_Win_Humans)], 1);
+			new szSound[SOUND_MAX_LENGTH];
+			ArrayGetString(g_aSound_Win_Humans, RANDOM(ArraySize(g_aSound_Win_Humans)), szSound, charsmax(szSound));
+			Play_Sound_To_Clients(szSound);
 		}
 
 		g_Score_Humans++;
@@ -374,7 +343,9 @@ Message_Round_End()
 
 		if (get_pcvar_num(g_pCvar_Sounds_Win_Zombies))
 		{
-			Play_Sound_To_Clients(g_Sound_Win_Zombies[RANDOM(sizeof g_Sound_Win_Zombies)], 1);
+			new szSound[SOUND_MAX_LENGTH];
+			ArrayGetString(g_aSound_Win_Zombies, RANDOM(ArraySize(g_aSound_Win_Zombies)), szSound, charsmax(szSound));
+			Play_Sound_To_Clients(szSound);
 		}
 
 		g_Score_Zombies++;
@@ -430,37 +401,23 @@ Message_Round_End()
 
 		if (get_pcvar_num(g_pCvar_Sounds_Win_No_One))
 		{
-			Play_Sound_To_Clients(g_Sound_Win_No_One[RANDOM(sizeof g_Sound_Win_No_One)], 1);
+			new szSound[SOUND_MAX_LENGTH];
+			ArrayGetString(g_aSound_Win_No_One, RANDOM(ArraySize(g_aSound_Win_No_One)), szSound, charsmax(szSound));
+			Play_Sound_To_Clients(szSound);
 		}
 	}
 }
 
 // Plays a sound on clients
-Play_Sound_To_Clients(const szSound[], bStop_Sounds_Fist = 0)
+Play_Sound_To_Clients(const szSound[])
 {
-	if (bStop_Sounds_Fist)
+	if (Ends_With(szSound, ".mp3"))
 	{
-		if (equal(szSound[strlen(szSound) - 4], ".mp3"))
-		{
-			client_cmd(0, "stopsound; mp3 play ^"sound/%s^"", szSound);
-		}
-
-		else
-		{
-			client_cmd(0, "mp3 stop; stopsound; spk ^"%s^"", szSound);
-		}
+		client_cmd(0, "stopsound; mp3 play ^"sound/%s^"", szSound);
 	}
 
 	else
 	{
-		if (equal(szSound[strlen(szSound) - 4], ".mp3"))
-		{
-			client_cmd(0, "mp3 play ^"sound/%s^"", szSound);
-		}
-
-		else
-		{
-			client_cmd(0, "spk ^"%s^"", szSound);
-		}
+		client_cmd(0, "mp3 stop; stopsound; spk ^"%s^"", szSound);
 	}
 }

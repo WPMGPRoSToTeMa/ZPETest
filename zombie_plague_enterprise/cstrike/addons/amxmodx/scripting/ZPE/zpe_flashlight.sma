@@ -25,8 +25,6 @@
 #include <xs>
 #include <zpe_kernel>
 
-#define SOUND_MAX_LENGTH 64
-
 #define TASK_FLASHLIGHT 100
 #define TASK_CHARGE 200
 
@@ -34,11 +32,6 @@
 #define ID_CHARGE (iTask_ID - TASK_CHARGE)
 
 #define IMPULSE_FLASHLIGHT 100
-
-new const g_Sound_Flashlight[][] =
-{
-	"items/flashlight1.wav"
-};
 
 new Float:g_fFlashlight_Last_Time[33];
 
@@ -93,16 +86,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Flashlight = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "FLASHLIGHT", g_aSound_Flashlight);
-
-	for (new i = 0; i < sizeof g_Sound_Flashlight; i++)
-	{
-		precache_sound(g_Sound_Flashlight[i]);
-	}
+	Precache_Sounds(g_aSound_Flashlight);
 }
 
 public plugin_natives()
@@ -229,7 +215,9 @@ public FM_CmdStart_Post(iPlayer, iHandle)
 			set_task(1.0, "Flashlight_Charge_Task", iPlayer + TASK_CHARGE, _, _, "b");
 
 			// Play flashlight toggle sound
-			emit_sound(iPlayer, CHAN_WEAPON, g_Sound_Flashlight[RANDOM(sizeof g_Sound_Flashlight)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			new szSound[SOUND_MAX_LENGTH];
+			ArrayGetString(g_aSound_Flashlight, RANDOM(ArraySize(g_aSound_Flashlight)), szSound, charsmax(szSound));
+			emit_sound(iPlayer, CHAN_WEAPON, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			// Update flashlight status on HUD
 			message_begin(MSG_ONE, g_Message_Flashlight, _, iPlayer);
@@ -404,7 +392,9 @@ public Flashlight_Charge_Task(iTask_ID)
 		remove_task(ID_CHARGE + TASK_FLASHLIGHT);
 
 		// Play flashlight toggle sound
-		emit_sound(ID_CHARGE, CHAN_WEAPON, g_Sound_Flashlight[RANDOM(sizeof g_Sound_Flashlight)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Flashlight, RANDOM(ArraySize(g_aSound_Flashlight)), szSound, charsmax(szSound));
+		emit_sound(ID_CHARGE, CHAN_WEAPON, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 		// Update flashlight status on HUD
 		message_begin(MSG_ONE, g_Message_Flashlight, _, ID_CHARGE);

@@ -29,13 +29,6 @@
 #define ITEM_FROST_NAME "Frost Nade"
 #define ITEM_FROST_COST 6
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Frost_Buy_Item[][] =
-{
-	"items/gunpickup2.wav"
-};
-
 new Array:g_aSound_Frost_Buy_Item;
 
 new g_Item_ID;
@@ -53,16 +46,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Frost_Buy_Item = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ADD FROST GRENADE", g_aSound_Frost_Buy_Item);
-
-	for (new i = 0; i < sizeof g_Sound_Frost_Buy_Item; i++)
-	{
-		precache_sound(g_Sound_Frost_Buy_Item[i]);
-	}
+	Precache_Sounds(g_aSound_Frost_Buy_Item);
 }
 
 public zpe_fw_items_select_pre(iPlayer, iItem_ID)
@@ -109,12 +95,14 @@ public zpe_fw_items_select_post(iPlayer, iItem_ID)
 		write_byte(13); // Ammo id
 		write_byte(1); // Ammount
 		message_end();
-
-		emit_sound(iPlayer, CHAN_ITEM, g_Sound_Frost_Buy_Item[RANDOM(sizeof g_Sound_Frost_Buy_Item)], VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	else
 	{
 		rg_give_item(iPlayer, "weapon_flashbang");
 	}
+
+	new szSound[SOUND_MAX_LENGTH];
+	ArrayGetString(g_aSound_Frost_Buy_Item, RANDOM(ArraySize(g_aSound_Frost_Buy_Item)), szSound, charsmax(szSound));
+	emit_sound(iPlayer, CHAN_ITEM, szSound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 }

@@ -24,13 +24,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_swarm.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Swarm[][] =
-{
-	"ambience/the_horror2.wav"
-};
-
 new Array:g_aSound_Swarm;
 
 new g_pCvar_Swarm_Chance;
@@ -84,16 +77,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Swarm = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND SWARM", g_aSound_Swarm);
-
-	for (new i = 0; i < sizeof g_Sound_Swarm; i++)
-	{
-		precache_sound(g_Sound_Swarm[i]);
-	}
+	Precache_Sounds(g_aSound_Swarm);
 }
 
 public plugin_cfg()
@@ -156,7 +142,9 @@ public zpe_fw_gamemodes_start()
 	// Play swarm sound
 	if (get_pcvar_num(g_pCvar_Swarm_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Swarm[RANDOM(sizeof g_Sound_Swarm)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Swarm, RANDOM(ArraySize(g_aSound_Swarm)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Swarm_Show_Hud))

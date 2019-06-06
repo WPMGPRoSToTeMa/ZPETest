@@ -75,8 +75,8 @@ public plugin_precache()
 	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Zombie Decals", "DECALS", aDecal_Names);
 
-	g_iDecal_Count = ArraySize(aDecal_Names);
 	new szDecal_Name[32];
+	g_iDecal_Count = ArraySize(aDecal_Names);
 
 	for (new i = 0; i < g_iDecal_Count; i++)
 	{

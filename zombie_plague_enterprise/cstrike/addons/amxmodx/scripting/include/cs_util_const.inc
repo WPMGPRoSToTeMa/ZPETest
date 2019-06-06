@@ -1,10 +1,23 @@
-#define BIT_ADD(%0,%1)					(%0 |= (1 << (%1)))
-#define BIT_SUB(%0,%1)					(%0 &= ~(1 << (%1)))
-#define BIT_VALID(%0,%1)				(%0 & (1 << (%1)))
-#define BIT_NOT_VALID(%0,%1)			(~(%0) & (1 << (%1)))
+#if defined _cs_util_const_included
 
-#define CHANCE(%0) (random_num(0, 99) < (%0))
-#define RANDOM(%0) random_num(0, (%0) - 1)
+  #endinput
+
+#endif
+
+#define _cs_util_const_included
+
+#define MODEL_MAX_LENGTH 					64
+#define SOUND_MAX_LENGTH 					64
+#define PLAYER_MODEL_MAX_LENGTH 			32
+#define PLAYER_MODEL_PATH_MAX_LENGTH 		64
+
+#define BIT_ADD(%0,%1)						(%0 |= (1 << (%1)))
+#define BIT_SUB(%0,%1)						(%0 &= ~(1 << (%1)))
+#define BIT_VALID(%0,%1)					(%0 & (1 << (%1)))
+#define BIT_NOT_VALID(%0,%1)				(~(%0) & (1 << (%1)))
+
+#define CHANCE(%0) 							(random_num(0, 99) < (%0))
+#define RANDOM(%0) 							random_num(0, (%0) - 1)
 
 #define CS_GET_CURRENT_WEAPON_ENTITY(%0)	get_member(%0, m_pActiveItem) // fm_cs_get_current_weapon_ent
 #define CS_GET_WEAPON_ID(%0)				get_member(get_member(%0, m_pActiveItem), m_iId) // cs_get_weapon_id

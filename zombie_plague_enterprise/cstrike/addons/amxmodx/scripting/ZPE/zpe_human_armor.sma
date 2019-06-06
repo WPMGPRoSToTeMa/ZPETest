@@ -30,14 +30,7 @@
 // Some constants
 #define DMG_HEGRENADE (1 << 24)
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Add_Armor[][] =
-{
-	"player/bhit_helmet-1.wav"
-};
-
-new Array:g_aSound_Add_Armor;
+new Array:g_aSound_Hit_Armor;
 
 new g_pCvar_Survivor_Armor_Protect;
 new g_pCvar_Sniper_Armor_Protect;
@@ -64,16 +57,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
-	g_aSound_Add_Armor = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ADD ARMOR", g_aSound_Add_Armor);
-
-	for (new i = 0; i < sizeof g_Sound_Add_Armor; i++)
-	{
-		precache_sound(g_Sound_Add_Armor[i]);
-	}
+	g_aSound_Hit_Armor = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "HIT ARMOR", g_aSound_Hit_Armor);
+	Precache_Sounds(g_aSound_Hit_Armor);
 }
 
 // ReAPI Take Damage Forward
@@ -126,13 +112,14 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 
 		// Get victim armor
 		static Float:fArmor;
-
 		fArmor = GET_USER_ARMOR(iVictim);
 
 		// If he has some, block damage and reduce armor instead
 		if (fArmor > 0.0)
 		{
-			emit_sound(iVictim, CHAN_BODY, g_Sound_Add_Armor[RANDOM(sizeof g_Sound_Add_Armor)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+			static szSound[SOUND_MAX_LENGTH];
+			ArrayGetString(g_aSound_Hit_Armor, RANDOM(ArraySize(g_aSound_Hit_Armor)), szSound, charsmax(szSound));
+			emit_sound(iVictim, CHAN_BODY, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 			if (fArmor - fDamage > 0.0)
 			{

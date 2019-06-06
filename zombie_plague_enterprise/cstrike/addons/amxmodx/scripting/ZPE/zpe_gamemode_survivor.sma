@@ -25,14 +25,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/gamemode/zpe_survivor.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Survivor[][] =
-{
-	"zombie_plague_enterprise/survivor1.wav",
-	"zombie_plague_enterprise/survivor2.wav"
-};
-
 new Array:g_aSound_Survivor;
 
 new g_pCvar_Survivor_Chance;
@@ -88,16 +80,9 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSound_Survivor = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "ROUND SURVIVOR", g_aSound_Survivor);
-
-	for (new i = 0; i < sizeof g_Sound_Survivor; i++)
-	{
-		precache_sound(g_Sound_Survivor[i]);
-	}
+	Precache_Sounds(g_aSound_Survivor);
 }
 
 public plugin_cfg()
@@ -171,7 +156,9 @@ public zpe_fw_gamemodes_start()
 
 	if (get_pcvar_num(g_pCvar_Survivor_Sounds))
 	{
-		Play_Sound_To_Clients(g_Sound_Survivor[RANDOM(sizeof g_Sound_Survivor)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Survivor, RANDOM(ArraySize(g_aSound_Survivor)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 	}
 
 	if (get_pcvar_num(g_pCvar_Notice_Survivor_Show_Hud))

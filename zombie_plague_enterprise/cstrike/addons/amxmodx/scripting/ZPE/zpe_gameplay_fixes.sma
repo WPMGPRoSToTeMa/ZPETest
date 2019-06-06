@@ -36,12 +36,6 @@
 #define TASK_RESPAWN 100
 #define ID_RESPAWN (Task_ID - TASK_RESPAWN)
 
-new const g_Gameplay_Entities[][] =
-{
-	"func_vehicle",
-	"item_longjump"
-};
-
 new Array:g_aGameplay_Entities;
 
 new g_pCvar_Remove_Doors;
@@ -182,14 +176,18 @@ public FM_Spawn_(iEntity)
 	}
 
 	// Get classname
-	new szClassname[32];
-
+	new szClassname[CLASSNAME_MAX_LENGTH];
 	get_entvar(iEntity, var_classname, szClassname, charsmax(szClassname));
 
+	new szRemove_Entity_Name[CLASSNAME_MAX_LENGTH];
+	new iRemove_Entity_Count = ArraySize(g_aGameplay_Entities);
+
 	// Check whether it needs to be removed
-	for (new i = 0; i < sizeof g_Gameplay_Entities; i++)
+	for (new i = 0; i < iRemove_Entity_Count; i++)
 	{
-		if (equal(szClassname, g_Gameplay_Entities[i]))
+		ArrayGetString(g_aGameplay_Entities, i, szRemove_Entity_Name, charsmax(szRemove_Entity_Name));
+
+		if (equal(szClassname, szRemove_Entity_Name))
 		{
 			engfunc(EngFunc_RemoveEntity, iEntity);
 
@@ -278,7 +276,7 @@ public client_disconnected(iLeaving_Player)
 	else
 	{
 		new iReplaced_Player;
-		
+
 		// Last Zombie
 		if (zpe_core_is_zombie(iLeaving_Player) && zpe_core_get_zombie_count() == 1)
 		{
@@ -520,7 +518,7 @@ Get_Random_Alive_Player(const iIgnore_Player = 0)
 		{
 			continue;
 		}
-		
+
 		if (BIT_VALID(g_iBit_Alive, i))
 		{
 			iPlayers[iCount++] = i;

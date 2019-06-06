@@ -29,13 +29,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
-#define SOUND_MAX_LENGTH 64
-
-new const g_Sound_Buy_Ammo[][] =
-{
-	"items/9mmclip1.wav"
-};
-
 // Max BP ammo for weapons
 new const g_Max_BP_Ammo[] =
 {
@@ -185,12 +178,6 @@ public plugin_init()
 
 public plugin_precache()
 {
-	// Initialize arrays
-	g_aSound_Buy_Ammo = ArrayCreate(SOUND_MAX_LENGTH, 1);
-
-	// Load from external file
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "BUY AMMO", g_aSound_Buy_Ammo);
-
 	// Custom buyzones for all players
 	g_Buyzone_Entity = rg_create_entity("func_buyzone");
 
@@ -211,11 +198,9 @@ public plugin_precache()
 	// Prevent some entities from spawning
 	g_fwSpawn = register_forward(FM_Spawn, "fw_Spawn");
 
-	// Precache sounds
-	for (new i = 0; i < sizeof g_Sound_Buy_Ammo; i++)
-	{
-		precache_sound(g_Sound_Buy_Ammo[i]);
-	}
+	g_aSound_Buy_Ammo = ArrayCreate(SOUND_MAX_LENGTH, 1);
+	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "BUY AMMO", g_aSound_Buy_Ammo);
+	Precache_Sounds(g_aSound_Buy_Ammo);
 }
 
 public plugin_natives()
@@ -404,7 +389,9 @@ public Client_Command_Buy_Ammo(iPlayer)
 	}
 
 	// Play clip purchase sound, and notify player
-	emit_sound(iPlayer, CHAN_VOICE, g_Sound_Buy_Ammo[RANDOM(sizeof g_Sound_Buy_Ammo)], 1.0, ATTN_NORM, 0, PITCH_NORM);
+	new szSound[SOUND_MAX_LENGTH];
+	ArrayGetString(g_aSound_Buy_Ammo, RANDOM(ArraySize(g_aSound_Buy_Ammo)), szSound, charsmax(szSound));
+	emit_sound(iPlayer, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT_COLOR");
 }

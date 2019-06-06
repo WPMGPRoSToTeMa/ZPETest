@@ -26,37 +26,7 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
-// Give menu: primary weapons
-new const g_Primary_Items[][] =
-{
-	"weapon_galil",
-	"weapon_famas",
-	"weapon_m4a1",
-	"weapon_ak47",
-	"weapon_sg552",
-	"weapon_aug",
-	"weapon_scout",
-	"weapon_m3",
-	"weapon_xm1014",
-	"weapon_tmp",
-	"weapon_mac10",
-	"weapon_ump45",
-	"weapon_mp5navy",
-	"weapon_p90"
-};
-
-// Give menu: secondary weapons
-new const g_Secondary_Items[][] =
-{
-	"weapon_glock18",
-	"weapon_usp",
-	"weapon_p228",
-	"weapon_deagle",
-	"weapon_fiveseven",
-	"weapon_elite"
-};
-
-// Give menu: grenades
+// Buy Menu: Grenades
 new const g_Grenades_Items[][] =
 {
 	"weapon_hegrenade",
@@ -100,45 +70,8 @@ new const g_Weapon_Names[][] =
 	"ES P90"
 };
 
-// Max BP ammo for weapons
-new const g_Max_BP_Ammo[] =
-{
-	-1,
-	52,
-	-1,
-	90,
-	1,
-	32,
-	1,
-	100,
-	90,
-	1,
-	120,
-	100,
-	100,
-	90,
-	90,
-	90,
-	100,
-	120,
-	30,
-	120,
-	200,
-	32,
-	90,
-	120,
-	90,
-	2,
-	35,
-	90,
-	90,
-	-1,
-	100
-};
-
 // For weapon give menu handlers
 #define WEAPON_START_ID(%0) g_Menu_Data[%0][0]
-#define WEAPON_MAX_IDS (sizeof g_Primary_Items)
 #define WEAPON_SELECTION(%1,%2) (g_Menu_Data[%1][1] + %2)
 #define WEAPON_AUTO_ON(%2) g_Menu_Data[%2][2]
 #define WEAPON_AUTO_PRIMARY(%3) g_Menu_Data[%3][3]
@@ -161,7 +94,6 @@ new g_Menu_Data[MAX_PLAYERS + 1][6];
 
 new	Array:g_aPrimary_Items;
 new	Array:g_aSecondary_Items;
-new	Array:g_aGrenades_Items;
 
 new g_Can_Give_Primary;
 new g_Can_Give_Secondary;
@@ -234,12 +166,10 @@ public plugin_precache()
 	// Initialize arrays
 	g_aPrimary_Items = ArrayCreate(WEAPON_ITEM_MAX_LENGTH, 1);
 	g_aSecondary_Items = ArrayCreate(WEAPON_ITEM_MAX_LENGTH, 1);
-	g_aGrenades_Items = ArrayCreate(WEAPON_ITEM_MAX_LENGTH, 1);
 
 	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Give menu weapons", "PRIMARY", g_aPrimary_Items);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Give menu weapons", "SECONDARY", g_aSecondary_Items);
-	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Give menu weapons", "GRENADES", g_aGrenades_Items);
 }
 
 public plugin_natives()
@@ -312,12 +242,12 @@ public Human_Weapons(iPlayer)
 	// Random weapons settings
 	if (get_pcvar_num(g_pCvar_Give_Random_Primary))
 	{
-		Give_Primary_Weapon(iPlayer, RANDOM(sizeof g_Primary_Items));
+		Give_Primary_Weapon(iPlayer, RANDOM(ArraySize(g_aPrimary_Items)));
 	}
 
 	if (get_pcvar_num(g_pCvar_Give_Random_Secondary))
 	{
-		Give_Secondary_Weapon(iPlayer, RANDOM(sizeof g_Secondary_Items));
+		Give_Secondary_Weapon(iPlayer, RANDOM(ArraySize(g_aSecondary_Items)));
 	}
 
 	if (get_pcvar_num(g_pCvar_Give_Random_Grenades))
@@ -404,16 +334,20 @@ Show_Give_Menu_Primary(iPlayer)
 
 	static szMenu[512];
 
+	new iWeapon_Count = ArraySize(g_aPrimary_Items);
+	new iWeapon_Count_By_Page = min(WEAPON_START_ID(iPlayer) + 7, iWeapon_Count);
 	new iLen;
-	new iMaxLoops = min(WEAPON_START_ID(iPlayer) + 7, WEAPON_MAX_IDS);
 
 	// Title
-	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\y %L \r [%d - %d] ^n ^n", iPlayer, "MENU_GIVE_PRIMARY_WEAPONS", WEAPON_START_ID(iPlayer) + 1, min(WEAPON_START_ID(iPlayer) + 7, WEAPON_MAX_IDS));
+	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\y %L \r [%d - %d] ^n ^n", iPlayer, "MENU_GIVE_PRIMARY_WEAPONS", WEAPON_START_ID(iPlayer) + 1, iWeapon_Count_By_Page);
 
-	// 1-7. Weapon list
-	for (new i = WEAPON_START_ID(iPlayer); i < iMaxLoops; i++)
+	new szWeapon_Name[WEAPON_ITEM_MAX_LENGTH];
+
+	// 1-7. Weapon List
+	for (new i = WEAPON_START_ID(iPlayer); i < iWeapon_Count_By_Page; i++)
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r %d. \w %s ^n", i - WEAPON_START_ID(iPlayer) + 1, g_Weapon_Names[rg_get_weapon_info(g_Primary_Items[i], WI_ID)]);
+		ArrayGetString(g_aPrimary_Items, i, szWeapon_Name, charsmax(szWeapon_Name));
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r %d. \w %s ^n", i - WEAPON_START_ID(iPlayer) + 1, g_Weapon_Names[rg_get_weapon_info(szWeapon_Name, WI_ID)]);
 	}
 
 	// 8. Auto select
@@ -439,15 +373,18 @@ Show_Give_Menu_Secondary(iPlayer)
 	static szMenu[512];
 
 	new iLen;
-	new iMaxLoops = sizeof g_Secondary_Items;
+	new iWeapon_Count = ArraySize(g_aSecondary_Items);
 
 	// Title
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\y %L ^n", iPlayer, "MENU_GIVE_SECONDARY_WEAPONS");
 
+	new szWeapon_Name[WEAPON_ITEM_MAX_LENGTH];
+
 	// 1-6. Weapon list
-	for (new i = 0; i < iMaxLoops; i++)
+	for (new i = 0; i < iWeapon_Count; i++)
 	{
-		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n \r %d. \w %s", i + 1, g_Weapon_Names[rg_get_weapon_info(g_Secondary_Items[i], WI_ID)]);
+		ArrayGetString(g_aSecondary_Items, i, szWeapon_Name, charsmax(szWeapon_Name));
+		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "^n \r %d. \w %s", i + 1, g_Weapon_Names[rg_get_weapon_info(szWeapon_Name, WI_ID)]);
 	}
 
 	// 8. Auto select
@@ -473,7 +410,7 @@ Show_Give_Menu_Grenades(iPlayer)
 	static szMenu[512];
 
 	new iLen;
-	new iMaxLoops = sizeof g_Grenades_Items;
+	new iGrenade_Count = sizeof g_Grenades_Items;
 
 	// Title
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\y %L ^n", iPlayer, "MENU_GIVE_GRENADES");
@@ -482,7 +419,7 @@ Show_Give_Menu_Grenades(iPlayer)
 	new iGive_Count;
 
 	// 1-3. Item list
-	for (new i = 0; i < iMaxLoops; i++)
+	for (new i = 0; i < iGrenade_Count; i++)
 	{
 		iGive_Count = get_pcvar_num(g_pCvar_Grenades_Give_Count[i]);
 
@@ -525,8 +462,10 @@ public Give_Menu_Primary(iPlayer, iKey)
 		return PLUGIN_HANDLED;
 	}
 
+	new iWeapon_Count = ArraySize(g_aPrimary_Items);
+
 	// Special keys/weapon list exceeded
-	if (iKey >= MENU_KEY_AUTO_SELECT || WEAPON_SELECTION(iPlayer, iKey) >= WEAPON_MAX_IDS)
+	if (iKey >= MENU_KEY_AUTO_SELECT || WEAPON_SELECTION(iPlayer, iKey) >= iWeapon_Count)
 	{
 		switch (iKey)
 		{
@@ -537,7 +476,7 @@ public Give_Menu_Primary(iPlayer, iKey)
 
 			case MENU_KEY_NEXT: // Next/back
 			{
-				if (WEAPON_START_ID(iPlayer) + 7 < WEAPON_MAX_IDS)
+				if (WEAPON_START_ID(iPlayer) + 7 < iWeapon_Count)
 				{
 					WEAPON_START_ID(iPlayer) += 7;
 				}
@@ -575,12 +514,12 @@ public Give_Menu_Primary(iPlayer, iKey)
 Give_Primary_Weapon(iPlayer, iSelection)
 {
 	// Get weapon's player
-	new iWeapon_ID = rg_get_weapon_info(g_Primary_Items[iSelection], WI_ID);
+	new szWeapon_Name[WEAPON_ITEM_MAX_LENGTH];
+	ArrayGetString(g_aPrimary_Items, iSelection, szWeapon_Name, charsmax(szWeapon_Name));
+	rg_give_item(iPlayer, szWeapon_Name, GT_DROP_AND_REPLACE);
 
-	// Give the new weapon and full ammo
-	rg_give_item(iPlayer, g_Primary_Items[iSelection], GT_DROP_AND_REPLACE);
-
-	rg_set_user_bpammo(iPlayer, WeaponIdType:iWeapon_ID, g_Max_BP_Ammo[iWeapon_ID]);
+	new WeaponIdType:iWeapon_ID = rg_get_weapon_info(szWeapon_Name, WI_ID);
+	rg_set_user_bpammo(iPlayer, iWeapon_ID, rg_get_weapon_info(iWeapon_ID, WI_MAX_ROUNDS));
 
 	// Primary bought
 	BIT_SUB(g_Can_Give_Primary, iPlayer);
@@ -595,7 +534,7 @@ public Give_Menu_Secondary(iPlayer, iKey)
 	}
 
 	// Special keys/weapon list exceeded
-	if (iKey >= sizeof g_Secondary_Items)
+	if (iKey >= ArraySize(g_aSecondary_Items))
 	{
 		// Toggle auto select
 		if (iKey == MENU_KEY_AUTO_SELECT)
@@ -627,12 +566,12 @@ public Give_Menu_Secondary(iPlayer, iKey)
 Give_Secondary_Weapon(iPlayer, iSelection)
 {
 	// Get weapon's player
-	new iWeapon_ID = rg_get_weapon_info(g_Secondary_Items[iSelection], WI_ID);
+	new szWeapon_Name[WEAPON_ITEM_MAX_LENGTH];
+	ArrayGetString(g_aSecondary_Items, iSelection, szWeapon_Name, charsmax(szWeapon_Name));
+	rg_give_item(iPlayer, szWeapon_Name, GT_DROP_AND_REPLACE);
 
-	// Give the new weapon and full ammo
-	rg_give_item(iPlayer, g_Secondary_Items[iSelection], GT_DROP_AND_REPLACE);
-
-	rg_set_user_bpammo(iPlayer, WeaponIdType:iWeapon_ID, g_Max_BP_Ammo[iWeapon_ID]);
+	new WeaponIdType:iWeapon_ID = rg_get_weapon_info(szWeapon_Name, WI_ID);
+	rg_set_user_bpammo(iPlayer, iWeapon_ID, rg_get_weapon_info(iWeapon_ID, WI_MAX_ROUNDS));
 
 	// Secondary bought
 	BIT_SUB(g_Can_Give_Secondary, iPlayer);

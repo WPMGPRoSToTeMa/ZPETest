@@ -18,30 +18,11 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
-new const g_Sky_Names[][] =
-{
-	"space"
-};
-
-new const g_Sound_Thunder[][] =
-{
-	"zombie_plague_enterprise/thunder1.wav",
-	"zombie_plague_enterprise/thunder2.wav"
-};
-
-new const g_Thunder_Lights[][] =
-{
-	"ijklmnonmlkjihgfedcb",
-	"klmlkjihgfedcbaabcdedcb",
-	"bcdefedcijklmlkjihgfedcb"
-};
-
 #include <amxmodx>
 #include <cs_util>
 #include <amx_settings_api>
 #include <engine>
 
-#define SOUND_MAX_LENGTH 64
 #define LIGHTS_MAX_LENGTH 32
 #define SKYNAME_MAX_LENGTH 32
 
@@ -77,18 +58,18 @@ public plugin_init()
 	// Set a random skybox?
 	if (g_Sky_Custom_Enable)
 	{
-		set_cvar_string("sv_skyname", g_Sky_Names[g_Sky_Index]);
+		new szSky_Name[SKYNAME_MAX_LENGTH];
+		ArrayGetString(g_aSky_Names, g_Sky_Index, szSky_Name, charsmax(szSky_Name));
+		set_cvar_string("sv_skyname", szSky_Name);
 	}
 }
 
 public plugin_precache()
 {
-	// Initialize arrays
 	g_aSky_Names = ArrayCreate(SKYNAME_MAX_LENGTH, 1);
 	g_aThunder_Lights = ArrayCreate(LIGHTS_MAX_LENGTH, 1);
 	g_aSound_Thunder = ArrayCreate(SOUND_MAX_LENGTH, 1);
 
-	// Load from external file
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Custom Skies", "SKY NAMES", g_aSky_Names);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Lightning Lights Cycle", "LIGHTS", g_aThunder_Lights);
 	amx_load_setting_string_arr(ZPE_SETTINGS_FILE, "Sounds", "THUNDER", g_aSound_Thunder);
@@ -96,34 +77,33 @@ public plugin_precache()
 	// Choose random sky and precache sky files
 	if (g_Sky_Custom_Enable)
 	{
+		g_Sky_Index = RANDOM(ArraySize(g_aSky_Names));
+
+		new szSky_Name[SKYNAME_MAX_LENGTH];
+		ArrayGetString(g_aSky_Names, g_Sky_Index, szSky_Name, charsmax(szSky_Name));
+
 		new szPath[128];
 
-		g_Sky_Index = RANDOM(sizeof g_Sky_Names);
-
-		formatex(szPath, charsmax(szPath), "gfx/env/%sbk.tga", g_Sky_Names[g_Sky_Index]);
+		formatex(szPath, charsmax(szPath), "gfx/env/%sbk.tga", szSky_Name);
 		precache_generic(szPath);
 
-		formatex(szPath, charsmax(szPath), "gfx/env/%sdn.tga", g_Sky_Names[g_Sky_Index]);
+		formatex(szPath, charsmax(szPath), "gfx/env/%sdn.tga", szSky_Name);
 		precache_generic(szPath);
 
-		formatex(szPath, charsmax(szPath), "gfx/env/%sft.tga", g_Sky_Names[g_Sky_Index]);
+		formatex(szPath, charsmax(szPath), "gfx/env/%sft.tga", szSky_Name);
 		precache_generic(szPath);
 
-		formatex(szPath, charsmax(szPath), "gfx/env/%slf.tga", g_Sky_Names[g_Sky_Index]);
+		formatex(szPath, charsmax(szPath), "gfx/env/%slf.tga", szSky_Name);
 		precache_generic(szPath);
 
-		formatex(szPath, charsmax(szPath), "gfx/env/%srt.tga", g_Sky_Names[g_Sky_Index]);
+		formatex(szPath, charsmax(szPath), "gfx/env/%srt.tga", szSky_Name);
 		precache_generic(szPath);
 
-		formatex(szPath, charsmax(szPath), "gfx/env/%sup.tga", g_Sky_Names[g_Sky_Index]);
+		formatex(szPath, charsmax(szPath), "gfx/env/%sup.tga", szSky_Name);
 		precache_generic(szPath);
 	}
 
-	// Precache thunder sounds
-	for (new i = 0; i < sizeof g_Sound_Thunder; i++)
-	{
-		precache_sound(g_Sound_Thunder[i]);
-	}
+	Precache_Sounds(g_aSound_Thunder);
 }
 
 public plugin_cfg()
@@ -176,7 +156,7 @@ public Lighting_Task()
 	{
 		g_Thunder_Light_Index = 0;
 
-		formatex(g_Thunder_Light, charsmax(g_Thunder_Light), g_Thunder_Lights[RANDOM(sizeof g_Thunder_Lights)]);
+		ArrayGetString(g_aThunder_Lights, RANDOM(ArraySize(g_aThunder_Lights)), g_Thunder_Light, charsmax(g_Thunder_Light));
 
 		g_Thunder_Light_Max_Len = strlen(g_Thunder_Light);
 
@@ -191,7 +171,9 @@ public Thunder_Task()
 	if (g_Thunder_Light_Index == 0)
 	{
 		// Play thunder sound
-		Play_Sound_To_Clients(g_Sound_Thunder[RANDOM(sizeof g_Sound_Thunder)]);
+		new szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Thunder, RANDOM(ArraySize(g_aSound_Thunder)), szSound, charsmax(szSound));
+		Play_Sound_To_Clients(szSound);
 
 		// Set thunder lights task
 		set_task(0.1, "Thunder_Task", TASK_THUNDER_LIGHTS, _, _, "b");

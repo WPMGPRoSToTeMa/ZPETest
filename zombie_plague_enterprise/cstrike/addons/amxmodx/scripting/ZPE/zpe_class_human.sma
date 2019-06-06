@@ -37,8 +37,6 @@
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
-#define MODEL_MAX_LENGTH 64
-
 // For class list menu handlers
 #define MENU_PAGE_CLASS(%0) g_Menu_Data[%0]
 
@@ -94,7 +92,7 @@ public plugin_init()
 public plugin_precache()
 {
 	// Load from external file
-	amx_load_setting_string(ZPE_SETTINGS_FILE, "Settings", "VIEW MODELS HUMAN KNIFE", g_V_Models_Human_Knife, charsmax(g_V_Models_Human_Knife));
+	amx_load_setting_string(ZPE_SETTINGS_FILE, "Settings", "VIEW MODEL HUMAN KNIFE", g_V_Models_Human_Knife, charsmax(g_V_Models_Human_Knife));
 
 	// Precache models
 	precache_model(g_V_Models_Human_Knife);
@@ -375,9 +373,7 @@ public zpe_fw_core_cure_post(iPlayer)
 		new iIndex = RANDOM(ArraySize(aClass_Human_Models));
 
 		new szPlayer_Model[32];
-
 		ArrayGetString(aClass_Human_Models, iIndex, szPlayer_Model, charsmax(szPlayer_Model));
-
 		rg_set_user_model(iPlayer, szPlayer_Model);
 	}
 
@@ -540,9 +536,7 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 		for (new i = 0; i < iArray_Size; i++)
 		{
 			ArrayGetString(aClass_Human_Models, i, szPlayer_Model, charsmax(szPlayer_Model));
-
 			formatex(szModel_Path, charsmax(szModel_Path), "models/player/%s/%s.mdl", szPlayer_Model, szPlayer_Model);
-
 			precache_model(szModel_Path);
 		}
 	}
@@ -634,7 +628,6 @@ public native_class_human_register_model(iPlugin_ID, iNum_Params)
 	if (aClass_Human_Models == Invalid_Array)
 	{
 		aClass_Human_Models = ArrayCreate(32, 1);
-
 		ArraySetCell(g_aClass_Human_Models_Handle, iClass_ID, aClass_Human_Models);
 	}
 
