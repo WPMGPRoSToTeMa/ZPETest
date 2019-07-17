@@ -91,8 +91,6 @@ new g_pCvar_Grenade_Frost_Hudicon_Player;
 new g_pCvar_Grenade_Frost_Hudicon_Enemy;
 new g_pCvar_Grenade_Frost_Frozen_Hit;
 
-new g_pCvar_Grenade_Frost_Explosion_Radius;
-
 new g_pCvar_Grenade_Frost_Hudicon_Player_Color_R;
 new g_pCvar_Grenade_Frost_Hudicon_Player_Color_G;
 new g_pCvar_Grenade_Frost_Hudicon_Player_Color_B;
@@ -121,6 +119,8 @@ new g_pCvar_Grenade_Frost_Screen_Rendering_R;
 new g_pCvar_Grenade_Frost_Screen_Rendering_G;
 new g_pCvar_Grenade_Frost_Screen_Rendering_B;
 
+new Float:g_fGrenade_Radius;
+
 new g_iBit_Alive;
 
 public plugin_init()
@@ -131,8 +131,6 @@ public plugin_init()
 	g_pCvar_Grenade_Frost_Hudicon_Player = register_cvar("zpe_grenade_frost_hudicon_player", "1");
 	g_pCvar_Grenade_Frost_Hudicon_Enemy = register_cvar("zpe_grenade_frost_hudicon_enemy", "1");
 	g_pCvar_Grenade_Frost_Frozen_Hit = register_cvar("zpe_grenade_frost_frozen_hit", "1");
-
-	g_pCvar_Grenade_Frost_Explosion_Radius = register_cvar("zpe_grenade_frost_explosion_radius", "240");
 
 	g_pCvar_Grenade_Frost_Hudicon_Player_Color_R = register_cvar("zpe_grenade_frost_hudicon_player_color_r", "100");
 	g_pCvar_Grenade_Frost_Hudicon_Player_Color_G = register_cvar("zpe_grenade_frost_hudicon_player_color_g", "149");
@@ -161,6 +159,8 @@ public plugin_init()
 	g_pCvar_Grenade_Frost_Screen_Rendering_R = register_cvar("zpe_grenade_frost_screen_rendering_r", "0");
 	g_pCvar_Grenade_Frost_Screen_Rendering_G = register_cvar("zpe_grenade_frost_screen_rendering_g", "255");
 	g_pCvar_Grenade_Frost_Screen_Rendering_B = register_cvar("zpe_grenade_frost_screen_rendering_b", "0");
+
+	bind_pcvar_float(register_cvar("zpe_grenade_frost_explosion_radius", "240"), g_fGrenade_Radius);
 
 	RegisterHookChain(RG_CBasePlayer_TraceAttack, "RG_CBasePlayer_TraceAttack_");
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
@@ -495,10 +495,10 @@ Frost_Explode(iEntity)
 	// Collisions
 	new iVictim = -1;
 
-	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Frost_Explosion_Radius))) != 0)
+	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, g_fGrenade_Radius)) != 0)
 	{
 		// Only effect alive zombies
-		if (iVictim < 33 && BIT_VALID(g_iBit_Alive, iVictim) && zpe_core_is_zombie(iVictim))
+		if (iVictim <= MaxClients && BIT_VALID(g_iBit_Alive, iVictim) && zpe_core_is_zombie(iVictim))
 		{
 			Set_Freeze(iVictim);
 		}
