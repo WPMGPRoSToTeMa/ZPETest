@@ -107,7 +107,7 @@ new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_R;
 new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_G;
 new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_B;
 
-new g_pCvar_Grenade_Napalm_Explosion_Radius;
+new Float:g_fGrenade_Radius;
 
 new g_iBit_Alive;
 
@@ -154,7 +154,7 @@ public plugin_init()
 	g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_G = register_cvar("zpe_grenade_napalm_largest_ring_rendering_g", "0");
 	g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_B = register_cvar("zpe_grenade_napalm_largest_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Napalm_Explosion_Radius = register_cvar("zpe_grenade_napalm_explosion_radius", "240");
+	bind_pcvar_float(register_cvar("zpe_grenade_napalm_explosion_radius", "240"), g_fGrenade_Radius);
 
 	RegisterHam(Ham_Think, "grenade", "Ham_Think_Grenade_");
 
@@ -434,15 +434,13 @@ Fire_Explode(iEntity)
 	// Collisions
 	new iVictim = -1;
 
-	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Napalm_Explosion_Radius))) != 0)
+	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, g_fGrenade_Radius)) != 0)
 	{
 		// Only effect alive zombies
-		if (iVictim > 32 || BIT_NOT_VALID(g_iBit_Alive, iVictim) || !zpe_core_is_zombie(iVictim))
+		if (iVictim <= MaxClients && BIT_VALID(g_iBit_Alive, iVictim) && zpe_core_is_zombie(iVictim))
 		{
-			continue;
+			Set_On_Fire(iVictim);
 		}
-
-		Set_On_Fire(iVictim);
 	}
 }
 

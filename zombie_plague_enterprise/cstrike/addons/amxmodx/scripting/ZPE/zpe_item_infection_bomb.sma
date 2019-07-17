@@ -54,8 +54,6 @@ new g_Game_Mode_Multi_ID;
 
 new g_Grenade_Infection_Counter;
 
-new g_pCvar_Grenade_Infection_Explosion_Radius;
-
 new g_pCvar_Grenade_Infection_Glow_Rendering_R;
 new g_pCvar_Grenade_Infection_Glow_Rendering_G;
 new g_pCvar_Grenade_Infection_Glow_Rendering_B;
@@ -75,6 +73,8 @@ new g_pCvar_Grenade_Infection_Medium_Ring_Rendering_B;
 new g_pCvar_Grenade_Infection_Largest_Ring_Rendering_R;
 new g_pCvar_Grenade_Infection_Largest_Ring_Rendering_G;
 new g_pCvar_Grenade_Infection_Largest_Ring_Rendering_B;
+
+new Float:g_fGrenade_Radius;
 
 new g_iBit_Alive;
 new g_iBit_Connected;
@@ -103,7 +103,7 @@ public plugin_init()
 	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_G = register_cvar("zpe_grenade_infection_largest_ring_rendering_g", "200");
 	g_pCvar_Grenade_Infection_Largest_Ring_Rendering_B = register_cvar("zpe_grenade_infection_largest_ring_rendering_b", "0");
 
-	g_pCvar_Grenade_Infection_Explosion_Radius = register_cvar("zpe_grenade_infection_explosion_radius", "240");
+	bind_pcvar_float(register_cvar("zpe_grenade_infection_explosion_radius", "240"), g_fGrenade_Radius);
 
 	RegisterHam(Ham_Think, "grenade", "Ham_Think_Grenade_");
 
@@ -329,30 +329,28 @@ Infection_Explode(iEntity)
 	}
 
 	// Collisions
-	new iVctim = -1;
+	new iVictim = -1;
 
-	while ((iVctim = engfunc(EngFunc_FindEntityInSphere, iVctim, fOrigin, get_pcvar_num(g_pCvar_Grenade_Infection_Explosion_Radius))) != 0)
+	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, g_fGrenade_Radius)) != 0)
 	{
 		// Only effect alive humans
-		if (BIT_NOT_VALID(g_iBit_Alive, iVctim) || zpe_core_is_zombie(iVctim))
+		if (iVictim <= MaxClients && BIT_VALID(g_iBit_Alive, iVictim) && !zpe_core_is_zombie(iVictim))
 		{
-			continue;
+			// Last human is killed
+			if (zpe_core_get_human_count() == 1)
+			{
+				ExecuteHamB(Ham_Killed, iVictim, iAttacker, 0);
+
+				break;
+			}
+
+			// Turn into zombie
+			zpe_core_infect(iVictim, iAttacker);
+
+			// Victim's sound
+			ArrayGetString(g_aSound_Grenade_Infection_Player, RANDOM(ArraySize(g_aSound_Grenade_Infection_Player)), szSound, charsmax(szSound));
+			emit_sound(iVictim, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 		}
-
-		// Last human is killed
-		if (zpe_core_get_human_count() == 1)
-		{
-			ExecuteHamB(Ham_Killed, iVctim, iAttacker, 0);
-
-			continue;
-		}
-
-		// Turn into zombie
-		zpe_core_infect(iVctim, iAttacker);
-
-		// Victim's sound
-		ArrayGetString(g_aSound_Grenade_Infection_Player, RANDOM(ArraySize(g_aSound_Grenade_Infection_Player)), szSound, charsmax(szSound));
-		emit_sound(iVctim, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Get rid of the grenade
