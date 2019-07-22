@@ -22,6 +22,13 @@
 native zpe_items_register(const name[], cost);
 
 /**
+ * Returns a count of items.
+ *
+ * @return Items count.
+ */
+native zpe_items_count();
+
+/**
  * Returns an item's ID.
  *
  * @param {real_name} Item name to look for.
@@ -60,6 +67,16 @@ native zpe_items_get_real_name(itemid, real_name[], len);
  * @return Item's cost.
  */
 native zpe_items_get_cost(itemid);
+
+/**
+ * Sets new cost for item.
+ *
+ * @param {itemid} A valid item ID.
+ * @param {cost} New cost.
+ *
+ * @return True on success, false otherwise.
+ */
+native zpe_items_set_cost(itemid, cost);
 
 /**
  * Shows menu with available extra items for player.
@@ -137,3 +154,12 @@ forward zpe_fw_items_select_pre(player, itemid, ignorecost);
  * @return None.
  */
 forward zpe_fw_items_select_post(player, itemid, ignorecost);
+
+/**
+ * Called after item registered.
+ *
+ * @param {itemid} Internal item ID.
+ *
+ * @return None.
+ */
+forward zpe_fw_items_register_post(itemid);
