@@ -22,7 +22,8 @@
 #include <zpe_kernel>
 #include <zpe_items_const>
 
-#define ZPE_EXTRAITEMS_FILE "ZPE/zpe_extraitems.ini"
+#define ZPE_ITEMS_SETTINGS_FOLDER "ZPE/items"
+#define ZPE_ITEMS_SETTINGS_SECTION_NAME "Settings"
 
 // For item list menu handlers
 #define MENU_PAGE_ITEMS(%0) g_Menu_Data[%0]
@@ -32,7 +33,8 @@ new g_Menu_Data[MAX_PLAYERS + 1];
 enum TOTAL_FORWARDS
 {
 	FW_ITEM_SELECT_PRE = 0,
-	FW_ITEM_SELECT_POST
+	FW_ITEM_SELECT_POST,
+	FW_ITEM_REGISTER_POST
 };
 
 new g_Forwards[TOTAL_FORWARDS];
@@ -59,6 +61,7 @@ public plugin_init()
 
 	g_Forwards[FW_ITEM_SELECT_PRE] = CreateMultiForward("zpe_fw_items_select_pre", ET_CONTINUE, FP_CELL, FP_CELL, FP_CELL);
 	g_Forwards[FW_ITEM_SELECT_POST] = CreateMultiForward("zpe_fw_items_select_post", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL);
+	g_Forwards[FW_ITEM_REGISTER_POST] = CreateMultiForward("zpe_fw_items_register_post", ET_IGNORE, FP_CELL);
 }
 
 public plugin_cfg()
@@ -82,6 +85,9 @@ public plugin_natives()
 	register_native("zpe_items_menu_get_text_add", "native_items_menu_get_text_add");
 	register_native("zpe_items_available", "native_items_available");
 
+	register_native("zpe_items_count", "native_items_count");
+	register_native("zpe_items_set_cost", "native_items_set_cost");
+
 	// Initialize dynamic arrays
 	g_aItem_Real_Name = ArrayCreate(32, 1);
 	g_aItem_Name = ArrayCreate(32, 1);
@@ -91,7 +97,6 @@ public plugin_natives()
 public native_items_register(iPlugin_ID, iNum_Params)
 {
 	new szItem_Name[32];
-
 	get_string(1, szItem_Name, charsmax(szItem_Name));
 
 	if (strlen(szItem_Name) < 1)
@@ -115,17 +120,28 @@ public native_items_register(iPlugin_ID, iNum_Params)
 		}
 	}
 
-	// Load settings from extra items file
-	new szReal_Name[32];
+	new szItem_Settings_Path[64];
+	formatex(szItem_Settings_Path, charsmax(szItem_Settings_Path), "%s/%s.ini", ZPE_ITEMS_SETTINGS_FOLDER, szItem_Name);
 
-	copy(szReal_Name, charsmax(szReal_Name), szItem_Name);
+	new szItem_Settings_Full_Path[128];
+	formatex(szItem_Settings_Full_Path, charsmax(szItem_Settings_Full_Path), "addons/amxmodx/configs/%s", szItem_Settings_Path);
 
-	ArrayPushString(g_aItem_Real_Name, szReal_Name);
+	if (!file_exists(szItem_Settings_Full_Path))
+	{
+		if (!write_file(szItem_Settings_Full_Path, ""))
+		{
+			log_error(AMX_ERR_NATIVE, "Can't create config for item (%s)", szItem_Name);
+
+			return ZPE_INVALID_ITEM;
+		}
+	}
+
+	ArrayPushString(g_aItem_Real_Name, szItem_Name);
 
 	// Name
-	if (!amx_load_setting_string(ZPE_EXTRAITEMS_FILE, szReal_Name, "NAME", szItem_Name, charsmax(szItem_Name)))
+	if (!amx_load_setting_string(szItem_Settings_Path, ZPE_ITEMS_SETTINGS_SECTION_NAME, "NAME", szItem_Name, charsmax(szItem_Name)))
 	{
-		amx_save_setting_string(ZPE_EXTRAITEMS_FILE, szReal_Name, "NAME", szItem_Name);
+		amx_save_setting_string(szItem_Settings_Path, ZPE_ITEMS_SETTINGS_SECTION_NAME, "NAME", szItem_Name);
 	}
 
 	ArrayPushString(g_aItem_Name, szItem_Name);
@@ -133,16 +149,20 @@ public native_items_register(iPlugin_ID, iNum_Params)
 	new iCost = get_param(2);
 
 	// Cost
-	if (!amx_load_setting_int(ZPE_EXTRAITEMS_FILE, szReal_Name, "COST", iCost))
+	if (!amx_load_setting_int(szItem_Settings_Path, ZPE_ITEMS_SETTINGS_SECTION_NAME, "COST", iCost))
 	{
-		amx_save_setting_int(ZPE_EXTRAITEMS_FILE, szReal_Name, "COST", iCost);
+		amx_save_setting_int(szItem_Settings_Path, ZPE_ITEMS_SETTINGS_SECTION_NAME, "COST", iCost);
 	}
 
 	ArrayPushCell(g_aItem_Cost, iCost);
 
+	new iItem_ID = g_Item_Count;
+
 	g_Item_Count++;
 
-	return g_Item_Count - 1;
+	ExecuteForward(g_Forwards[FW_ITEM_REGISTER_POST], _, iItem_ID);
+
+	return iItem_ID;
 }
 
 public native_items_get_id(iPlugin_ID, iNum_Params)
@@ -307,6 +327,36 @@ public native_items_available(iPlugin_ID, iNum_Params)
 	ExecuteForward(g_Forwards[FW_ITEM_SELECT_PRE], g_Forward_Result, iPlayer, iItem_ID, 0);
 
 	return g_Forward_Result;
+}
+
+public native_items_count()
+{
+	return g_Item_Count;
+}
+
+public native_items_set_cost(iPlugin_ID, iNum_Params)
+{
+	new iItem_ID = get_param(1);
+
+	if (iItem_ID < 0 || iItem_ID >= g_Item_Count)
+	{
+		log_error(AMX_ERR_NATIVE, "Invalid item (%d)", iItem_ID);
+
+		return false;
+	}
+
+	new iNew_Cost = get_param(2);
+
+	if (iNew_Cost < 0)
+	{
+		log_error(AMX_ERR_NATIVE, "Invalid item cost (%d)", iNew_Cost);
+
+		return false;
+	}
+
+	ArraySetCell(g_aItem_Cost, iItem_ID, iNew_Cost);
+
+	return true;
 }
 
 public Client_Command_Items(iPlayer)
