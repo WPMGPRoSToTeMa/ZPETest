@@ -50,6 +50,8 @@ new g_pCvar_Grenade_Flare_Hudicon_Player_Color_R;
 new g_pCvar_Grenade_Flare_Hudicon_Player_Color_G;
 new g_pCvar_Grenade_Flare_Hudicon_Player_Color_B;
 
+new g_pCvar_Grenade_Flare_Random_Hue_Color;
+
 new g_pCvar_Grenade_Flare_Lighting_Rendering_R;
 new g_pCvar_Grenade_Flare_Lighting_Rendering_G;
 new g_pCvar_Grenade_Flare_Lighting_Rendering_B;
@@ -75,6 +77,8 @@ public plugin_init()
 	g_pCvar_Grenade_Flare_Hudicon_Player_Color_R = register_cvar("zpe_grenade_flare_hudicon_player_color_r", "255");
 	g_pCvar_Grenade_Flare_Hudicon_Player_Color_G = register_cvar("zpe_grenade_flare_hudicon_player_color_g", "255");
 	g_pCvar_Grenade_Flare_Hudicon_Player_Color_B = register_cvar("zpe_grenade_flare_hudicon_player_color_b", "255");
+
+	g_pCvar_Grenade_Flare_Random_Hue_Color = register_cvar("zpe_grenade_flare_random_hue_color", "1");
 
 	g_pCvar_Grenade_Flare_Lighting_Rendering_R = register_cvar("zpe_grenade_flare_lighting_rendering_r", "255");
 	g_pCvar_Grenade_Flare_Lighting_Rendering_G = register_cvar("zpe_grenade_flare_lighting_rendering_g", "255");
@@ -164,7 +168,27 @@ public FM_SetModel_(iEntity, const sModel[])
 	if (sModel[9] == 's' && sModel[10] == 'm')
 	{
 		// Give it a glow
-		rg_set_user_rendering(iEntity, kRenderFxGlowShell, get_pcvar_num(g_pCvar_Grenade_Flare_Glow_Rendering_R), get_pcvar_num(g_pCvar_Grenade_Flare_Glow_Rendering_G), get_pcvar_num(g_pCvar_Grenade_Flare_Glow_Rendering_B), kRenderNormal, 16);
+		new iRGB[3];
+
+		new bool:bRandom_Hue_Color = bool:get_pcvar_num(g_pCvar_Grenade_Flare_Random_Hue_Color);
+
+		if (bRandom_Hue_Color)
+		{
+			new iHSV[3];
+			iHSV[0] = RANDOM(360);
+			iHSV[1] = 100;
+			iHSV[2] = 100;
+			HSV_To_RGB(iHSV, iRGB);
+		}
+
+		else
+		{
+			iRGB[0] = get_pcvar_num(g_pCvar_Grenade_Flare_Glow_Rendering_R); 
+			iRGB[1] = get_pcvar_num(g_pCvar_Grenade_Flare_Glow_Rendering_G); 
+			iRGB[2] = get_pcvar_num(g_pCvar_Grenade_Flare_Glow_Rendering_B); 
+		}
+
+		rg_set_user_rendering(iEntity, kRenderFxGlowShell, iRGB[0], iRGB[1], iRGB[2], kRenderNormal, 16);
 
 		// And a colored trail
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY);
@@ -173,9 +197,17 @@ public FM_SetModel_(iEntity, const sModel[])
 		write_short(g_Trail_Sprite); // sprite
 		write_byte(10); // life
 		write_byte(10); // width
-		write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Trail_Rendering_R)); // r
-		write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Trail_Rendering_G)); // g
-		write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Trail_Rendering_B)); // b
+
+		if (!bRandom_Hue_Color)
+		{
+			iRGB[0] = get_pcvar_num(g_pCvar_Grenade_Flare_Trail_Rendering_R); 
+			iRGB[1] = get_pcvar_num(g_pCvar_Grenade_Flare_Trail_Rendering_G); 
+			iRGB[2] = get_pcvar_num(g_pCvar_Grenade_Flare_Trail_Rendering_B); 
+		}
+
+		write_byte(iRGB[0]); // r
+		write_byte(iRGB[1]); // g
+		write_byte(iRGB[2]); // b
 		write_byte(200); // brightness
 		message_end();
 
@@ -305,8 +337,7 @@ Grenade_Icon_Remove(iPlayer)
 Flare_Lighting(iEntity, iDuration)
 {
 	// Get origin and color
-	static Float:fOrigin[3];
-
+	new Float:fOrigin[3];
 	get_entvar(iEntity, var_origin, fOrigin);
 
 	// Lighting
@@ -316,9 +347,24 @@ Flare_Lighting(iEntity, iDuration)
 	engfunc(EngFunc_WriteCoord, fOrigin[1]); // y
 	engfunc(EngFunc_WriteCoord, fOrigin[2]); // z
 	write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Radius)); // radius
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Lighting_Rendering_R)); // r
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Lighting_Rendering_G)); // g
-	write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Lighting_Rendering_B)); // b
+
+	if (get_pcvar_num(g_pCvar_Grenade_Flare_Random_Hue_Color))
+	{
+		new Float:fRGB[3];
+		get_entvar(iEntity, var_rendercolor, fRGB);
+
+		write_byte(floatround(fRGB[0])); // r
+		write_byte(floatround(fRGB[1])); // g
+		write_byte(floatround(fRGB[2])); // b
+	}
+
+	else
+	{
+		write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Lighting_Rendering_R)); // r
+		write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Lighting_Rendering_G)); // g
+		write_byte(get_pcvar_num(g_pCvar_Grenade_Flare_Lighting_Rendering_B)); // b
+	}
+
 	write_byte(21); //life
 	write_byte((iDuration < 2) ? 3 : 0); //decay rate
 	message_end();
