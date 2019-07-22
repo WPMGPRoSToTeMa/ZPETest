@@ -478,3 +478,67 @@ stock bool:Ends_With(const szString[], const szSuffix[])
 
 	return iString_Length >= iSuffix_Length && equal(szString[iString_Length - iSuffix_Length], szSuffix);
 }
+
+stock HSV_To_RGB(const HSV[3], RGB[3])
+{
+	new H = clamp(HSV[0], 0, 360);
+	new S = clamp(HSV[1], 0, 100);
+	new V = clamp(HSV[2], 0, 100);
+
+	new Hi = (H / 60) % 6;
+
+	new Vmin = (100 - S) * V / 100;
+	new a = (V - Vmin) * (H % 60) / 60;
+
+	new Vinc = Vmin + a;
+	new Vdec = V - a
+
+	switch (Hi)
+	{
+		case 0:
+		{
+			RGB[0] = V;
+			RGB[1] = Vinc;
+			RGB[2] = Vmin;
+		}
+
+		case 1:
+		{
+			RGB[0] = Vdec;
+			RGB[1] = V;
+			RGB[2] = Vmin;
+		}
+
+		case 2:
+		{
+			RGB[0] = Vmin;
+			RGB[1] = V;
+			RGB[2] = Vinc;
+		}
+
+		case 3:
+		{
+			RGB[0] = Vmin;
+			RGB[1] = Vdec;
+			RGB[2] = V;
+		}
+
+		case 4:
+		{
+			RGB[0] = Vinc;
+			RGB[1] = Vmin;
+			RGB[2] = V;
+		}
+
+		case 5:
+		{
+			RGB[0] = V;
+			RGB[1] = Vmin;
+			RGB[2] = Vdec;
+		}
+	}
+
+	RGB[0] = RGB[0] * 255 / 100;
+	RGB[1] = RGB[1] * 255 / 100;
+	RGB[2] = RGB[2] * 255 / 100;
+}
