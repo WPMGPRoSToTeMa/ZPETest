@@ -11,6 +11,8 @@
 #define PLAYER_MODEL_MAX_LENGTH 			32
 #define PLAYER_MODEL_PATH_MAX_LENGTH 		64
 
+#define AMMO_NAME_MAX_LENGTH 				16
+
 #define BIT_ADD(%0,%1)						(%0 |= (1 << (%1)))
 #define BIT_SUB(%0,%1)						(%0 &= ~(1 << (%1)))
 #define BIT_VALID(%0,%1)					(%0 & (1 << (%1)))
@@ -38,6 +40,8 @@
 #define GET_USER_HEALTH(%0)					get_entvar(%0, var_health) // get_user_health
 #define GET_USER_GRAVITY(%0)				get_entvar(%0, var_gravity) // get_user_gravity
 #define SET_USER_GRAVITY(%0,%1)				set_entvar(%0, var_gravity, %1) // set_user_gravity
+
+#define IS_GUN(%0) 							((1 << (%0)) & CSW_ALL_GUNS)
 
 #if !defined CsTeams
 
