@@ -24,135 +24,24 @@
 #include <zpe_class_sniper>
 
 // Weapon id for ammo types
-new const g_Ammo_Weapon[] =
+new const any:g_Ammo_Weapon[] =
 {
 	0,
-	CSW_AWP,
-	CSW_SCOUT,
-	CSW_M249,
-	CSW_AUG,
-	CSW_XM1014,
-	CSW_MAC10,
-	CSW_FIVESEVEN,
-	CSW_DEAGLE,
-	CSW_P228,
-	CSW_ELITE,
-	CSW_FLASHBANG,
-	CSW_HEGRENADE,
-	CSW_SMOKEGRENADE,
-	CSW_C4
+	WEAPON_AWP,
+	WEAPON_SCOUT,
+	WEAPON_M249,
+	WEAPON_AUG,
+	WEAPON_XM1014,
+	WEAPON_MAC10,
+	WEAPON_FIVESEVEN,
+	WEAPON_DEAGLE,
+	WEAPON_P228,
+	WEAPON_ELITE,
+	WEAPON_FLASHBANG,
+	WEAPON_HEGRENADE,
+	WEAPON_SMOKEGRENADE,
+	WEAPON_C4
 };
-
-// Ammo Type Names for weapons
-new const g_Ammo_Type[][] =
-{
-	"",
-	"357sig",
-	"",
-	"762nato",
-	"",
-	"buckshot",
-	"",
-	"45acp",
-	"556nato",
-	"",
-	"9mm",
-	"57mm",
-	"45acp",
-	"556nato",
-	"556nato",
-	"556nato",
-	"45acp",
-	"9mm",
-	"338magnum",
-	"9mm",
-	"556natobox",
-	"buckshot",
-	"556nato",
-	"9mm",
-	"762nato",
-	"",
-	"50ae",
-	"556nato",
-	"762nato",
-	"",
-	"57mm"
-};
-
-// Max BP ammo for weapons
-new const g_Max_BP_Ammo[] =
-{
-	-1,
-	52,
-	-1,
-	90,
-	1,
-	32,
-	1,
-	100,
-	90,
-	1,
-	120,
-	100,
-	100,
-	90,
-	90,
-	90,
-	100,
-	120,
-	30,
-	120,
-	200,
-	32,
-	90,
-	120,
-	90,
-	2,
-	35,
-	90,
-	90,
-	-1,
-	100
-};
-
-// Max Clip for weapons
-new const g_Max_Clip[] =
-{
-	-1,
-	13,
-	-1,
-	10,
-	-1,
-	7,
-	-1,
-	30,
-	30,
-	-1,
-	30,
-	20,
-	25,
-	30,
-	35,
-	25,
-	12,
-	20,
-	10,
-	30,
-	100,
-	8,
-	30,
-	30,
-	20,
-	-1,
-	7,
-	30,
-	30,
-	-1,
-	50
-};
-
-// BP Ammo Refill task
-#define REFILL_WEAPON_ID iArgs[0]
 
 new g_Message_Ammo_Pickup;
 
@@ -225,30 +114,29 @@ public Event_Ammo_X(iPlayer)
 		return;
 	}
 
-	// Get weapon's player
 	new iWeapon = g_Ammo_Weapon[iType];
 
 	// Primary and secondary only
-	if (g_Max_BP_Ammo[iWeapon] <= 2)
+	if (!IS_GUN(iWeapon))
 	{
 		return;
 	}
 
 	// Get ammo amount
 	new iAmount = read_data(2);
+	new iMax_BP_Ammo = rg_get_weapon_info(iWeapon, WI_MAX_ROUNDS);
 
 	// Unlimited BP Ammo
-	if (iAmount < g_Max_BP_Ammo[iWeapon])
+	if (iAmount < iMax_BP_Ammo)
 	{
-		new iArgs[1];
-
-		iArgs[0] = iWeapon;
-
 		new iBlock_Status = get_msg_block(g_Message_Ammo_Pickup);
-
 		set_msg_block(g_Message_Ammo_Pickup, BLOCK_ONCE);
 
-		ExecuteHamB(Ham_GiveAmmo, iPlayer, g_Max_BP_Ammo[REFILL_WEAPON_ID], g_Ammo_Type[REFILL_WEAPON_ID], g_Max_BP_Ammo[REFILL_WEAPON_ID]);
+		new szAmmo_Name[AMMO_NAME_MAX_LENGTH];
+		rg_get_weapon_info(iWeapon, WI_AMMO_NAME, szAmmo_Name, charsmax(szAmmo_Name));
+
+		// szAmmo_Name[5] to skip "ammo_" prefix
+		ExecuteHamB(Ham_GiveAmmo, iPlayer, iMax_BP_Ammo, szAmmo_Name[5], iMax_BP_Ammo);
 
 		set_msg_block(g_Message_Ammo_Pickup, iBlock_Status);
 	}
@@ -298,25 +186,25 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 		return;
 	}
 
-	// Get weapon's player
 	new iWeapon = get_msg_arg_int(2);
 
 	// Primary and secondary only
-	if (g_Max_BP_Ammo[iWeapon] <= 2)
+	if (!IS_GUN(iWeapon))
 	{
 		return;
 	}
 
 	// Max out clip ammo
 	new iWeapon_Entity = CS_GET_CURRENT_WEAPON_ENTITY(iMessage_Entity);
+	new iMax_Clip = rg_get_weapon_info(iWeapon, WI_GUN_CLIP_SIZE);
 
 	if (is_entity(iWeapon_Entity)) // pev_valid
 	{
-		CS_SET_WEAPON_AMMO(iWeapon_Entity, g_Max_Clip[iWeapon]);
+		CS_SET_WEAPON_AMMO(iWeapon_Entity, iMax_Clip);
 	}
 
 	// HUD should show full clip all the time
-	set_msg_arg_int(3, get_msg_argtype(3), g_Max_Clip[iWeapon]);
+	set_msg_arg_int(3, get_msg_argtype(3), iMax_Clip);
 }
 
 public client_disconnected(iPlayer)
