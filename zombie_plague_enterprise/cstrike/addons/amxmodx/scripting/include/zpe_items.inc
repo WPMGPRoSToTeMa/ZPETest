@@ -17,7 +17,7 @@
  * @param {name} Caption to display on the menu.
  * @param {cost} Cost to display on the menu.
  *
- * @return An internal item ID, or ZPE_INVALID_ITEM on failure.
+ * @return An internal item ID.
  */
 native zpe_items_register(const name[], cost);
 
@@ -44,7 +44,7 @@ native zpe_items_get_id(const real_name[]);
  * @param {name} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_items_get_name(itemid, name[], len);
 
@@ -55,7 +55,7 @@ native zpe_items_get_name(itemid, name[], len);
  * @param {real_name} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_items_get_real_name(itemid, real_name[], len);
 
@@ -94,7 +94,7 @@ native zpe_items_show_menu(player);
  * @param {itemid} A valid extra item ID.
  * @param {ignorecost} If set, item's cost won't be deduced from player.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_items_force_buy(player, itemid, ignorecost = false);
 

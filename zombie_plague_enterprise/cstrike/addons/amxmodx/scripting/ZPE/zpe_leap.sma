@@ -25,6 +25,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 new Float:g_fLeap_Last_Time[MAX_PLAYERS + 1];
 
@@ -54,8 +55,6 @@ new g_pCvar_Leap_Sniper_Height;
 new g_pCvar_Leap_Sniper_Cooldown;
 
 new g_Game_Mode_Infection_ID;
-
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -94,8 +93,8 @@ public plugin_cfg()
 
 public fw_button_changed(iPlayer, iPressed, iUnpressed)
 {
-	// Not alive
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || !zpe_core_is_zombie(iPlayer))
+	// Not alive or human
+	if (!is_player_alive(iPlayer) || zpe_core_is_human(iPlayer))
 	{
 		return;
 	}
@@ -238,19 +237,4 @@ public fw_button_changed(iPlayer, iPressed, iUnpressed)
 
 	// Update last leap time
 	g_fLeap_Last_Time[iPlayer] = fCurrent_Time;
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

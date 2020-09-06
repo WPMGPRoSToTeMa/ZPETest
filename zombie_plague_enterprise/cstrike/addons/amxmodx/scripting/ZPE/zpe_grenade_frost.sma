@@ -24,6 +24,7 @@
 #include <hamsandwich>
 #include <ck_cs_weap_models_api>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 
@@ -121,8 +122,6 @@ new g_pCvar_Grenade_Frost_Screen_Rendering_B;
 
 new Float:g_fGrenade_Radius;
 
-new g_iBit_Alive;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -164,6 +163,7 @@ public plugin_init()
 
 	RegisterHookChain(RG_CBasePlayer_TraceAttack, "RG_CBasePlayer_TraceAttack_");
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
 	RegisterHam(Ham_Player_ResetMaxSpeed, "player", "Ham_Player_ResetMaxSpeed_Post", 1);
 	RegisterHam(Ham_Think, "grenade", "Ham_Think_Grande_");
@@ -220,13 +220,8 @@ public plugin_natives()
 public native_grenade_frost_get(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_ALIVE(iPlayer, false)
 
 	return BIT_VALID(g_Is_Frozen, iPlayer);
 }
@@ -234,13 +229,8 @@ public native_grenade_frost_get(iPlugin_ID, iNum_Params)
 public native_grenade_frost_set(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_ALIVE(iPlayer, false)
 
 	new iSet = get_param(2);
 
@@ -301,7 +291,7 @@ public zpe_fw_core_infect_post(iPlayer)
 public Ham_Player_ResetMaxSpeed_Post(iPlayer)
 {
 	// Dead or not frozen
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || BIT_NOT_VALID(g_Is_Frozen, iPlayer))
+	if (!is_player_alive(iPlayer) || BIT_NOT_VALID(g_Is_Frozen, iPlayer))
 	{
 		return;
 	}
@@ -312,8 +302,7 @@ public Ham_Player_ResetMaxSpeed_Post(iPlayer)
 
 public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 {
-	// Non-player damage or self damage
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
@@ -330,8 +319,7 @@ public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 // ReAPI Take Damage Forward (needed to block explosion damage too)
 public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker)
 {
-	// Non-player damage or self damage
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
@@ -345,7 +333,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker)
 	return HC_CONTINUE;
 }
 
-public zpe_fw_kill_pre_bit_sub(iVictim)
+public RG_CSGameRules_PlayerKilled_Post(iVictim)
 {
 	// Frozen player being killed (usually caused by a 3rd party plugin, e.g. lasermines)
 	if (BIT_VALID(g_Is_Frozen, iVictim))
@@ -354,15 +342,13 @@ public zpe_fw_kill_pre_bit_sub(iVictim)
 		Remove_Freeze(iVictim + TASK_FROST_REMOVE);
 		remove_task(iVictim + TASK_FROST_REMOVE);
 	}
-
-	BIT_SUB(g_iBit_Alive, iVictim);
 }
 
 // Forward Player PreThink
 public FM_PlayerPreThink_(iPlayer)
 {
 	// Not alive or not frozen
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || BIT_NOT_VALID(g_Is_Frozen, iPlayer))
+	if (!is_player_alive(iPlayer) || BIT_NOT_VALID(g_Is_Frozen, iPlayer))
 	{
 		return;
 	}
@@ -467,14 +453,6 @@ public Ham_Think_Grande_(iEntity)
 public client_disconnected(iPlayer)
 {
 	remove_task(iPlayer + TASK_FROST_REMOVE);
-
-	BIT_SUB(g_Is_Frozen, iPlayer);
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 // Frost Grenade Explosion
@@ -498,7 +476,7 @@ Frost_Explode(iEntity)
 	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, g_fGrenade_Radius)) != 0)
 	{
 		// Only effect alive zombies
-		if (iVictim <= MaxClients && BIT_VALID(g_iBit_Alive, iVictim) && zpe_core_is_zombie(iVictim))
+		if (is_player(iVictim) && is_player_alive(iVictim) && zpe_core_is_zombie(iVictim))
 		{
 			Set_Freeze(iVictim);
 		}

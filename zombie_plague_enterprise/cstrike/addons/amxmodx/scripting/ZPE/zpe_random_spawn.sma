@@ -21,6 +21,7 @@
 #include <cs_util>
 #include <fakemeta>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 #define SPAWN_DATA_ORIGIN_X 0
 #define SPAWN_DATA_ORIGIN_Y 1
@@ -39,8 +40,6 @@ new g_Spawn_Count_CSDM;
 new g_Spawn_Count_Regular;
 
 new g_pCvar_Random_Spawning;
-
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -62,19 +61,11 @@ public plugin_natives()
 public native_random_spawn_do(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	new iCSDM_Spawns = get_param(2);
-
 	Do_Random_Spawn(iPlayer, iCSDM_Spawns);
-
-	return true;
 }
 
 // ZPE Player Spawn Post Forward
@@ -309,19 +300,4 @@ stock Load_Spawns()
 		Collect_Spawns_Entity("info_player_start");
 		Collect_Spawns_Entity("info_player_deathmatch");
 	}
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

@@ -21,11 +21,10 @@
 #include <fakemeta>
 #include <hamsandwich>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 new g_pCvar_Zombie_Strip_Armor;
 new g_pCvar_Remove_Dropped_Weapons;
-
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -80,25 +79,10 @@ public FM_SetModel_(iEntity, const szModel[])
 // Ham Weapon Touch Forward
 public Ham_Touch_(iWeapon, iPlayer)
 {
-	if ((0 < iPlayer <= MaxClients) && BIT_VALID(g_iBit_Alive, iPlayer) && zpe_core_is_zombie(iPlayer))
+	if (is_player(iPlayer) && is_player_alive(iPlayer) && zpe_core_is_zombie(iPlayer))
 	{
 		return HAM_SUPERCEDE;
 	}
 
 	return HAM_IGNORED;
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

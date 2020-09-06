@@ -32,7 +32,7 @@ native zpe_class_human_get_next(player);
  * @param {player} Player index.
  * @param {classid} A valid human class ID.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_human_set_next(player, classid);
 
@@ -70,7 +70,7 @@ native zpe_class_human_register(const name[], const description[], Float:health,
  * @param {classid} A valid human class ID.
  * @param {model} Player model's short name.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_human_register_model(classid, const model[]);
 
@@ -90,7 +90,7 @@ native zpe_class_human_get_id(const real_name[]);
  * @param {name} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_human_get_name(classid, name[], len);
 
@@ -101,7 +101,7 @@ native zpe_class_human_get_name(classid, name[], len);
  * @param {name} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_human_get_real_name(classid, real_name[], len);
 
@@ -112,7 +112,7 @@ native zpe_class_human_get_real_name(classid, real_name[], len);
  * @param {description}	The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_human_get_description(classid, description[], len);
 

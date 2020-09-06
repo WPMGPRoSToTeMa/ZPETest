@@ -21,6 +21,8 @@
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
 #include <zpe_kernel>
+#include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_sniper.ini"
 
@@ -32,9 +34,6 @@ new Array:g_aModels_Sniper_Player;
 new Array:g_aSound_Sniper_Die;
 new Array:g_aSound_Sniper_Fall;
 new Array:g_aSound_Sniper_Pain;
-
-new g_Forward;
-new g_Forward_Result;
 
 new g_pCvar_Sniper_Base_Health;
 new g_pCvar_Sniper_Health_Per_Player;
@@ -62,16 +61,15 @@ new g_pCvar_Sniper_Damage;
 new g_pCvar_Sniper_Weapon_Block;
 new g_pCvar_Sniper_Weapon_Ammo;
 
+new g_iBvar_Sniper;
+
 new g_Gib_Model;
-
-new g_iBit_Sniper;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_iBvar_Sniper = get_bvar_id("iBit_Sniper");
 
 	g_pCvar_Sniper_Base_Health = register_cvar("zpe_sniper_base_health", "200.0");
 	g_pCvar_Sniper_Health_Per_Player = register_cvar("zpe_sniper_health_per_player", "50.0");
@@ -99,12 +97,11 @@ public plugin_init()
 	g_pCvar_Sniper_Weapon_Block = register_cvar("zpe_sniper_weapon_block", "0");
 	g_pCvar_Sniper_Weapon_Ammo = register_cvar("zpe_sniper_weapon_ammo", "30");
 
-	g_Forward = CreateMultiForward("zpe_fw_class_sniper_bit_change", ET_CONTINUE, FP_CELL);
-
 	register_clcmd("drop", "Client_Command_Drop");
 
 	RegisterHookChain(RG_CSGameRules_CanHavePlayerItem, "RG_CSGameRules_CanHavePlayerItem_");
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
 	// Dont use ReAPI, in the form of code - load
 	register_forward(FM_EmitSound, "FM_EmitSound_");
@@ -148,7 +145,7 @@ public plugin_natives()
 public Client_Command_Drop(iPlayer)
 {
 	// Should sniper stick to his weapon?
-	if (get_pcvar_num(g_pCvar_Sniper_Weapon_Block) && BIT_VALID(g_iBit_Sniper, iPlayer))
+	if (zpe_class_sniper_get(iPlayer) && get_pcvar_num(g_pCvar_Sniper_Weapon_Block))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -159,7 +156,7 @@ public Client_Command_Drop(iPlayer)
 public RG_CSGameRules_CanHavePlayerItem_(iWeapon, iPlayer)
 {
 	// Should sniper stick to his weapon?
-	if (get_pcvar_num(g_pCvar_Sniper_Weapon_Block) && BIT_VALID(g_iBit_Sniper, iPlayer) && BIT_VALID(g_iBit_Alive, iPlayer))
+	if (zpe_class_sniper_get(iPlayer) && get_pcvar_num(g_pCvar_Sniper_Weapon_Block))
 	{
 		return HC_SUPERCEDE;
 	}
@@ -169,7 +166,7 @@ public RG_CSGameRules_CanHavePlayerItem_(iWeapon, iPlayer)
 
 public zpe_fw_core_spawn_post(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Sniper, iPlayer))
+	if (zpe_class_sniper_get(iPlayer))
 	{
 		// Remove sniper glow
 		if (get_pcvar_num(g_pCvar_Sniper_Glow))
@@ -184,15 +181,13 @@ public zpe_fw_core_spawn_post(iPlayer)
 		}
 
 		// Remove sniper flag
-		BIT_SUB(g_iBit_Sniper, iPlayer);
-
-		ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Sniper);
+		set_bvar_num(g_iBvar_Sniper, iBit_Sniper & ~(1 << iPlayer));
 	}
 }
 
 public zpe_fw_core_infect(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Sniper, iPlayer))
+	if (zpe_class_sniper_get(iPlayer))
 	{
 		// Remove sniper glow
 		if (get_pcvar_num(g_pCvar_Sniper_Glow))
@@ -207,22 +202,20 @@ public zpe_fw_core_infect(iPlayer)
 		}
 
 		// Remove sniper flag
-		BIT_SUB(g_iBit_Sniper, iPlayer);
-
-		ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Sniper);
+		set_bvar_num(g_iBvar_Sniper, iBit_Sniper & ~(1 << iPlayer));
 	}
 }
 
 public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
 {
 	// Non-player damage or self damage
-	if (!(1 <= iAttacker <= MaxClients) || iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
 
 	// Sniper attacking zombie
-	if (BIT_VALID(g_iBit_Sniper, iAttacker) && zpe_core_is_zombie(iVictim))
+	if (zpe_class_sniper_get(iAttacker) && zpe_core_is_zombie(iVictim))
 	{
 		// Ignore assassin damage override if damage comes from a 3rd party entity
 		// (to prevent this from affecting a sub-plugin's rockets e.g.)
@@ -241,7 +234,7 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
 public zpe_fw_core_cure_post(iPlayer, iAttacker)
 {
 	// Apply sniper attributes?
-	if (BIT_NOT_VALID(g_iBit_Sniper, iPlayer))
+	if (!zpe_class_sniper_get(iAttacker))
 	{
 		return;
 	}
@@ -290,28 +283,13 @@ public zpe_fw_core_cure_post(iPlayer, iAttacker)
 public native_class_sniper_set(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
+	CHECK_IS_NOT_SNIPER(iPlayer,)
 
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
-
-	if (BIT_VALID(g_iBit_Sniper, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Player already a sniper (%d)", iPlayer);
-
-		return false;
-	}
-
-	BIT_ADD(g_iBit_Sniper, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Sniper);
+	set_bvar_num(g_iBvar_Sniper, iBit_Sniper | (1 << iPlayer));
 
 	zpe_core_force_cure(iPlayer);
-
-	return true;
 }
 
 public native_class_sniper_get_count(iPlugin_ID, iNum_Params)
@@ -344,51 +322,43 @@ public Sniper_Aura(iTask_ID)
 
 public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zpe_core_is_zombie(iPlayer))
+	if (!is_player(iPlayer) || !zpe_class_sniper_get(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
 
-	if (BIT_VALID(g_iBit_Sniper, iPlayer))
+	static szSound[SOUND_MAX_LENGTH];
+
+	if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 	{
-		static szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Sniper_Die, RANDOM(ArraySize(g_aSound_Sniper_Die)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
-		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
-		{
-			ArrayGetString(g_aSound_Sniper_Die, RANDOM(ArraySize(g_aSound_Sniper_Die)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
+		return FMRES_SUPERCEDE;
+	}
 
-			return FMRES_SUPERCEDE;
-		}
+	if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
+	{
+		ArrayGetString(g_aSound_Sniper_Fall, RANDOM(ArraySize(g_aSound_Sniper_Fall)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
-		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
-		{
-			ArrayGetString(g_aSound_Sniper_Fall, RANDOM(ArraySize(g_aSound_Sniper_Fall)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
+		return FMRES_SUPERCEDE;
+	}
 
-			return FMRES_SUPERCEDE;
-		}
+	if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
+	{
+		ArrayGetString(g_aSound_Sniper_Pain, RANDOM(ArraySize(g_aSound_Sniper_Pain)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
-		if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
-		{
-			ArrayGetString(g_aSound_Sniper_Pain, RANDOM(ArraySize(g_aSound_Sniper_Pain)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
-
-			return FMRES_SUPERCEDE;
-		}
+		return FMRES_SUPERCEDE;
 	}
 
 	return FMRES_IGNORED;
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Sniper, iPlayer))
+	if (zpe_class_sniper_get(iPlayer))
 	{
 		// Remove sniper aura
 		if (get_pcvar_num(g_pCvar_Sniper_Aura))
@@ -396,24 +366,21 @@ public client_disconnected(iPlayer)
 			remove_task(iPlayer + TASK_AURA);
 		}
 	}
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
 public FM_ClientDisconnect_Post(iPlayer)
 {
 	// Reset flags AFTER disconnect (to allow checking if the player was sniper before disconnecting)
-	BIT_SUB(g_iBit_Sniper, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Sniper);
+	if (zpe_class_sniper_get(iPlayer))
+	{
+		set_bvar_num(g_iBvar_Sniper, iBit_Sniper & ~(1 << iPlayer));
+	}
 }
 
-// This is RG_CSGameRules_PlayerKilled Pre. Simply optimization.
-public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
+public RG_CSGameRules_PlayerKilled_Post(iVictim, iKiller)
 {
 	// When killed by a sniper victim explodes
-	if (BIT_VALID(g_iBit_Sniper, iAttacker))
+	if (is_player(iKiller) && zpe_class_sniper_get(iKiller))
 	{
 		if (get_pcvar_num(g_pCvar_Sniper_Kill_Splash))
 		{
@@ -456,18 +423,11 @@ public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 		}
 	}
 
-	if (BIT_VALID(g_iBit_Sniper, iVictim) && get_pcvar_num(g_pCvar_Sniper_Aura))
+	else if (zpe_class_sniper_get(iVictim) && get_pcvar_num(g_pCvar_Sniper_Aura))
 	{
 		// Remove sniper aura
 		remove_task(iVictim + TASK_AURA);
 	}
-
-	BIT_SUB(g_iBit_Alive, iVictim);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 // Get Alive Count returns -alive players number-
@@ -477,7 +437,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -493,7 +453,7 @@ Get_Sniper_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i) && BIT_VALID(g_iBit_Sniper, i))
+		if (is_player_alive(i) && zpe_class_sniper_get(i))
 		{
 			iSniper++;
 		}

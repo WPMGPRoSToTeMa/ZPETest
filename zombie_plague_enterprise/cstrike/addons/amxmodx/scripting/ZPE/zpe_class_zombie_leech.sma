@@ -23,6 +23,7 @@
 #include <zpe_class_nemesis>
 #include <zpe_class_assassin>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 #define CLASS_ZOMBIE_LEECH_NAME "Leech Zombie"
 #define CLASS_ZOMBIE_LEECH_INFO "HP- Knockback+ Leech++"
@@ -45,8 +46,6 @@ new const g_Class_Zombie_Leech_Clawmodels[][] =
 new g_pCvar_Class_Zombie_Leech_HP_Reward;
 
 new g_Class_Zombie_ID;
-
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -90,7 +89,7 @@ public plugin_cfg()
 public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Infected by a valid attacker?
-	if (BIT_VALID(g_iBit_Alive, iAttacker) && iAttacker != iPlayer && zpe_core_is_zombie(iAttacker))
+	if (is_player_alive(iAttacker) && iAttacker != iPlayer && zpe_core_is_zombie(iAttacker))
 	{
 		// Leech Zombie infection hp bonus
 		if (zpe_class_zombie_get_current(iAttacker) == g_Class_Zombie_ID)
@@ -103,7 +102,7 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 {
 	// Killed by a non-player entity or self killed
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return;
 	}
@@ -117,19 +116,4 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Class_Zombie_Leech_HP_Reward);
 		}
 	}
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

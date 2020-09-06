@@ -23,6 +23,7 @@
 #include <zpe_kernel>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define LIBRARY_AMMOPACKS "zpe_ammopacks"
 #include <zpe_ammopacks>
@@ -44,8 +45,6 @@ new g_pCvar_Buy_Zone_Zombies;
 new g_pCvar_Buy_Ammo_Human;
 new g_pCvar_Buy_Ammo_Cost_Ammopacks;
 new g_pCvar_Buy_Ammo_Cost_Money;
-
-new g_iBit_Alive;
 
 public plugin_precache()
 {
@@ -185,7 +184,7 @@ public zpe_fw_core_infect_post(iPlayer)
 public RG_CBasePlayer_PreThink_(iPlayer)
 {
 	// Not alive
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
+	if (!is_player_alive(iPlayer))
 	{
 		return;
 	}
@@ -206,7 +205,7 @@ public RG_CBasePlayer_PreThink_(iPlayer)
 public Client_Command_Buy_Ammo(iPlayer)
 {
 	// Setting disabled, player dead or zombie
-	if (!get_pcvar_num(g_pCvar_Buy_Ammo_Human) || BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
+	if (!get_pcvar_num(g_pCvar_Buy_Ammo_Human) || !is_player_alive(iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
@@ -294,19 +293,4 @@ public Client_Command_Buy_Ammo(iPlayer)
 	emit_sound(iPlayer, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 
 	zpe_client_print_color(iPlayer, print_team_default, "%L", iPlayer, "AMMO_BOUGHT_COLOR");
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

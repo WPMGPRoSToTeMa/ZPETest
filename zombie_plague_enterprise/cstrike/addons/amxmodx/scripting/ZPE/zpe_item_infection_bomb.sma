@@ -24,6 +24,7 @@
 #include <zpe_kernel>
 #include <zpe_items>
 #include <zpe_gamemodes>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 
@@ -75,9 +76,6 @@ new g_pCvar_Grenade_Infection_Largest_Ring_Rendering_G;
 new g_pCvar_Grenade_Infection_Largest_Ring_Rendering_B;
 
 new Float:g_fGrenade_Radius;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -319,8 +317,8 @@ Infection_Explode(iEntity)
 	// Get attacker
 	new iAttacker = get_entvar(iEntity, var_owner);
 
-	// Infection grenade owner disconnected or not zombie anymore?
-	if (BIT_NOT_VALID(g_iBit_Connected, iAttacker) || !zpe_core_is_zombie(iAttacker))
+	// Infection grenade owner disconnected or has become human?
+	if (!is_player_connected(iAttacker) || zpe_core_is_human(iAttacker))
 	{
 		// Get rid of the grenade
 		rg_remove_entity(iEntity);
@@ -334,23 +332,25 @@ Infection_Explode(iEntity)
 	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, g_fGrenade_Radius)) != 0)
 	{
 		// Only effect alive humans
-		if (iVictim <= MaxClients && BIT_VALID(g_iBit_Alive, iVictim) && !zpe_core_is_zombie(iVictim))
+		if (!is_player(iVictim) || !is_player_alive(iVictim) || zpe_core_is_zombie(iVictim))
 		{
-			// Last human is killed
-			if (zpe_core_get_human_count() == 1)
-			{
-				ExecuteHamB(Ham_Killed, iVictim, iAttacker, 0);
-
-				break;
-			}
-
-			// Turn into zombie
-			zpe_core_infect(iVictim, iAttacker);
-
-			// Victim's sound
-			ArrayGetString(g_aSound_Grenade_Infection_Player, RANDOM(ArraySize(g_aSound_Grenade_Infection_Player)), szSound, charsmax(szSound));
-			emit_sound(iVictim, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
+			continue;
 		}
+
+		// Last human is killed
+		if (zpe_core_get_human_count() == 1)
+		{
+			ExecuteHamB(Ham_Killed, iVictim, iAttacker, 0);
+
+			break;
+		}
+
+		// Turn into zombie
+		zpe_core_infect(iVictim, iAttacker);
+
+		// Victim's sound
+		ArrayGetString(g_aSound_Grenade_Infection_Player, RANDOM(ArraySize(g_aSound_Grenade_Infection_Player)), szSound, charsmax(szSound));
+		emit_sound(iVictim, CHAN_VOICE, szSound, 1.0, ATTN_NORM, 0, PITCH_NORM);
 	}
 
 	// Get rid of the grenade
@@ -425,25 +425,4 @@ Create_Blast(const Float:fOrigin[3])
 	write_byte(200); // brightness
 	write_byte(0); // speed
 	message_end();
-}
-
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

@@ -11,7 +11,7 @@
  *
  * @param {player} Player index.
  *
- * @return None.
+ * @return True on success, false otherwise.
  */
 native zpe_grenade_frost_get(player);
 

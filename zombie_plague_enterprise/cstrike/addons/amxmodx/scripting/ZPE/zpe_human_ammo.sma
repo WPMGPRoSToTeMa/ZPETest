@@ -22,6 +22,7 @@
 #include <zpe_kernel>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 // Weapon id for ammo types
 new const any:g_Ammo_Weapon[] =
@@ -49,8 +50,6 @@ new g_pCvar_Human_Unlimited_Ammo;
 new g_pCvar_Survivor_Unlimited_Ammo;
 new g_pCvar_Sniper_Unlimited_Ammo;
 
-new g_iBit_Alive;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -71,7 +70,7 @@ public plugin_init()
 public Event_Ammo_X(iPlayer)
 {
 	// Not alive or not human
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
+	if (!is_player_alive(iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
@@ -146,7 +145,7 @@ public Event_Ammo_X(iPlayer)
 public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 {
 	// Not alive or not human
-	if (BIT_NOT_VALID(g_iBit_Alive, iMessage_Entity) || zpe_core_is_zombie(iMessage_Entity))
+	if (!is_player_alive(iMessage_Entity) || zpe_core_is_zombie(iMessage_Entity))
 	{
 		return;
 	}
@@ -205,19 +204,4 @@ public Message_Cur_Weapon(iMessage_ID, iMessage_Dest, iMessage_Entity)
 
 	// HUD should show full clip all the time
 	set_msg_arg_int(3, get_msg_argtype(3), iMax_Clip);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

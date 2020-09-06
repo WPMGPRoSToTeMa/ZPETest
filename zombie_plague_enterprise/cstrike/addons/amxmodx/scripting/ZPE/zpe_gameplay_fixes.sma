@@ -26,6 +26,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -48,9 +49,6 @@ new g_pCvar_Keep_HP_On_Disconnect;
 new g_unfwSpawn;
 new g_Game_Mode_Started;
 new g_Round_Ended;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -104,13 +102,11 @@ public client_putinserver(iPlayer)
 	{
 		set_task(0.1, "Disable_Minmodels_Task", iPlayer);
 	}
-
-	BIT_ADD(g_iBit_Connected, iPlayer);
 }
 
 public Disable_Minmodels_Task(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Connected, iPlayer))
+	if (is_player_connected(iPlayer))
 	{
 		client_cmd(iPlayer, "cl_minmodels 0");
 	}
@@ -120,7 +116,7 @@ public Disable_Minmodels_Task(iPlayer)
 public Client_Command_Changeteam(iPlayer)
 {
 	// Block suicides by choosing a different team
-	if (get_pcvar_num(g_pCvar_Block_Suicide) && g_Game_Mode_Started && BIT_VALID(g_iBit_Alive, iPlayer))
+	if (get_pcvar_num(g_pCvar_Block_Suicide) && g_Game_Mode_Started && is_player_alive(iPlayer))
 	{
 		zpe_client_print_color(iPlayer, print_team_default, "%L", LANG_PLAYER, "CANT_CHANGE_TEAM_COLOR");
 
@@ -198,7 +194,7 @@ public FM_Spawn_(iEntity)
 	return FMRES_IGNORED;
 }
 
-public zpe_fw_spawn_post_bit_add(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
 	// Remove respawn task
 	remove_task(iPlayer + TASK_RESPAWN);
@@ -208,15 +204,13 @@ public zpe_fw_spawn_post_bit_add(iPlayer)
 	{
 		set_task(1.0, "Respawn_Player_Check_Task", iPlayer + TASK_RESPAWN);
 	}
-
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 // Respawn Player Check Task (if killed by worldspawn)
 public Respawn_Player_Check_Task(Task_ID)
 {
 	// Successfully spawned or round ended
-	if (BIT_VALID(g_iBit_Alive, ID_RESPAWN) || g_Round_Ended)
+	if (is_player_alive(ID_RESPAWN) || g_Round_Ended)
 	{
 		return;
 	}
@@ -243,7 +237,7 @@ public client_disconnected(iLeaving_Player)
 	remove_task(iLeaving_Player + TASK_RESPAWN);
 
 	// Player was not alive
-	if (BIT_NOT_VALID(g_iBit_Alive, iLeaving_Player))
+	if (!is_player_alive(iLeaving_Player))
 	{
 		return;
 	}
@@ -365,9 +359,6 @@ public client_disconnected(iLeaving_Player)
 			}
 		}
 	}
-
-	BIT_SUB(g_iBit_Alive, iLeaving_Player);
-	BIT_SUB(g_iBit_Connected, iLeaving_Player);
 }
 
 public zpe_fw_gamemodes_start()
@@ -391,7 +382,7 @@ public zpe_fw_gamemodes_end()
 public Ham_Use_(iEntity, iCaller, iActivator, iUse_Type)
 {
 	// Prevent zombies from using stationary guns
-	if (iUse_Type == STATIONARY_USING && BIT_VALID(g_iBit_Alive, iCaller) && zpe_core_is_zombie(iCaller))
+	if (iUse_Type == STATIONARY_USING && is_player(iCaller) && is_player_alive(iCaller) && zpe_core_is_zombie(iCaller))
 	{
 		return HAM_SUPERCEDE;
 	}
@@ -422,11 +413,6 @@ public FM_ClientKill_()
 	return FMRES_IGNORED;
 }
 
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
 // Get Alive CTs -returns number of CTs alive-
 Get_AliveCT_Count()
 {
@@ -434,7 +420,7 @@ Get_AliveCT_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i) && CS_GET_USER_TEAM(i) == CS_TEAM_CT)
+		if (is_player_alive(i) && CS_GET_USER_TEAM(i) == CS_TEAM_CT)
 		{
 			iCTs++;
 		}
@@ -450,7 +436,7 @@ Get_AliveT_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i) && CS_GET_USER_TEAM(i) == CS_TEAM_T)
+		if (is_player_alive(i) && CS_GET_USER_TEAM(i) == CS_TEAM_T)
 		{
 			iTs++;
 		}
@@ -466,7 +452,7 @@ Get_CT_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Connected, i) && CS_GET_USER_TEAM(i) == CS_TEAM_CT)
+		if (is_player_connected(i) && CS_GET_USER_TEAM(i) == CS_TEAM_CT)
 		{
 			iCTs++;
 		}
@@ -482,7 +468,7 @@ Get_T_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Connected, i) && CS_GET_USER_TEAM(i) == CS_TEAM_T)
+		if (is_player_connected(i) && CS_GET_USER_TEAM(i) == CS_TEAM_T)
 		{
 			iTs++;
 		}
@@ -498,7 +484,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -519,7 +505,7 @@ Get_Random_Alive_Player(const iIgnore_Player = 0)
 			continue;
 		}
 
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iPlayers[iCount++] = i;
 		}

@@ -25,6 +25,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 new g_Message_Score_Info;
 new g_Last_Human_Health_Rewarded;
@@ -42,9 +43,6 @@ new g_pCvar_Frags_Sniper_Ignore;
 
 new g_pCvar_Infection_Health_Bonus;
 new g_pCvar_Human_Last_Health_Bonus;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -71,7 +69,7 @@ public plugin_init()
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 {
 	// Killed by a non-player entity or self killed
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return;
 	}
@@ -127,13 +125,13 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 
 public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
-	if (BIT_VALID(g_iBit_Connected, iAttacker) && iAttacker != iPlayer)
+	if (is_player_connected(iAttacker) && iAttacker != iPlayer)
 	{
 		// Reward frags, deaths
 		Update_Frags(iAttacker, iPlayer, get_pcvar_num(g_pCvar_Frags_Human_Infected), 1, 1);
 
 		// Reward health
-		if (BIT_VALID(g_iBit_Alive, iAttacker))
+		if (is_player_alive(iAttacker))
 		{
 			SET_USER_HEALTH(iAttacker, Float:GET_USER_HEALTH(iAttacker)) + get_pcvar_float(g_pCvar_Infection_Health_Bonus);
 		}
@@ -199,25 +197,4 @@ Remove_Frags(iAttacker, iVictim)
 
 	// Remove victim deaths
 	cs_set_user_deaths(iVictim, cs_get_user_deaths(iVictim) - 1);
-}
-
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

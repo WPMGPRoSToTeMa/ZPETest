@@ -18,8 +18,7 @@
 
 #include <amxmodx>
 #include <cs_util>
-
-#define Is_User_Valid(%1) (0 < %1 <= MaxClients)
+#include <ck_cs_common_bits_api>
 
 new g_Ammo_Packs[MAX_PLAYERS + 1];
 
@@ -28,8 +27,6 @@ new g_Message_Crosshair;
 
 new g_pCvar_Starting_Ammo_Packs;
 new g_pCvar_Disable_Money;
-
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -55,13 +52,8 @@ public plugin_natives()
 public native_ammopacks_get(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (!Is_User_Valid(iPlayer) || BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return -1;
-	}
+	CHECK_IS_PLAYER(iPlayer, -1)
+	CHECK_IS_CONNECTED(iPlayer, -1)
 
 	return g_Ammo_Packs[iPlayer];
 }
@@ -69,25 +61,15 @@ public native_ammopacks_get(iPlugin_ID, iNum_Params)
 public native_ammopacks_set(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (!Is_User_Valid(iPlayer) || BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	new iAmount = get_param(2);
-
 	g_Ammo_Packs[iPlayer] = iAmount;
-
-	return true;
 }
 
 public client_putinserver(iPlayer)
 {
-	BIT_ADD(g_iBit_Connected, iPlayer);
-
 	g_Ammo_Packs[iPlayer] = get_pcvar_num(g_pCvar_Starting_Ammo_Packs);
 }
 
@@ -101,7 +83,7 @@ public Event_Reset_Hud(iPlayer)
 
 public Hide_Money(iPlayer)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
+	if (!is_player_connected(iPlayer))
 	{
 		return;
 	}
@@ -115,9 +97,4 @@ public Hide_Money(iPlayer)
 	message_begin(MSG_ONE_UNRELIABLE, g_Message_Crosshair, { 0.0, 0.0, 0.0 }, iPlayer);
 	write_byte(0); // toggle
 	message_end();
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }

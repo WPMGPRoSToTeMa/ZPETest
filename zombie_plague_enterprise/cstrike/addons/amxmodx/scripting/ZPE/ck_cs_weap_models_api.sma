@@ -19,6 +19,7 @@
 #include <amxmodx>
 #include <cs_util>
 #include <hamsandwich>
+#include <ck_cs_common_bits_api>
 
 #define CSW_FIRST_WEAPON CSW_P228
 #define CSW_LAST_WEAPON CSW_P90
@@ -69,9 +70,6 @@ new Array:g_aCustom_Weapon_Models_Names;
 new g_Custom_View_Models_Count;
 new g_Custom_Weapon_Models_Count;
 
-new g_iBit_Alive;
-new g_iBit_Connected;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -115,36 +113,24 @@ public plugin_natives()
 public native_set_player_view_model(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1)
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
-
-	new szWeapon_ID = get_param(2);
-
-	if (szWeapon_ID < CSW_FIRST_WEAPON || szWeapon_ID > CSW_LAST_WEAPON)
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Invalid weapon player (%d)", szWeapon_ID);
-
-		return false;
-	}
+	new iWeapon_ID = get_param(2);
+	CHECK_WEAPON(iWeapon_ID, CSW_FIRST_WEAPON, CSW_LAST_WEAPON,)
 
 	new szView_Model[128];
-
 	get_string(3, szView_Model, charsmax(szView_Model));
 
 	// Check whether player already has a custom view model set
-	if (g_Custom_View_Models_Position[iPlayer][szWeapon_ID] == POSITION_NULL)
+	if (g_Custom_View_Models_Position[iPlayer][iWeapon_ID] == POSITION_NULL)
 	{
-		Add_Custom_View_Model(iPlayer, szWeapon_ID, szView_Model);
+		Add_Custom_View_Model(iPlayer, iWeapon_ID, szView_Model);
 	}
 
 	else
 	{
-		Replace_Custom_View_Model(iPlayer, szWeapon_ID, szView_Model);
+		Replace_Custom_View_Model(iPlayer, iWeapon_ID, szView_Model);
 	}
 
 	// Get current weapon's player
@@ -152,90 +138,63 @@ public native_set_player_view_model(iPlugin_ID, iNum_Params)
 	new iCurrent_Weapon_ID = is_entity(iCurrent_Weapon_Entity) ? get_member(iCurrent_Weapon_Entity, m_iId) : -1;
 
 	// Model was set for the current weapon?
-	if (szWeapon_ID == iCurrent_Weapon_ID)
+	if (iWeapon_ID == iCurrent_Weapon_ID)
 	{
 		// Update weapon models manually
 		Ham_Item_Deploy_Post(iCurrent_Weapon_Entity);
 	}
-
-	return true;
 }
 
 public native_reset_player_view_model(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
-
-	new szWeapon_ID = get_param(2);
-
-	if (szWeapon_ID < CSW_FIRST_WEAPON || szWeapon_ID > CSW_LAST_WEAPON)
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Invalid weapon player (%d)", szWeapon_ID);
-
-		return false;
-	}
+	new iWeapon_ID = get_param(2);
+	CHECK_WEAPON(iWeapon_ID, CSW_FIRST_WEAPON, CSW_LAST_WEAPON,)
 
 	// Player doesn't have a custom view model, no need to reset
-	if (g_Custom_View_Models_Position[iPlayer][szWeapon_ID] == POSITION_NULL)
+	if (g_Custom_View_Models_Position[iPlayer][iWeapon_ID] == POSITION_NULL)
 	{
-		return true;
+		return;
 	}
 
-	Remove_Custom_View_Model(iPlayer, szWeapon_ID);
+	Remove_Custom_View_Model(iPlayer, iWeapon_ID);
 
 	// Get current weapon's player
 	new iCurrent_Weapon_Entity = CS_GET_CURRENT_WEAPON_ENTITY(iPlayer);
 	new iCurrent_Weapon_ID = is_entity(iCurrent_Weapon_Entity) ? get_member(iCurrent_Weapon_Entity, m_iId) : -1;
 
 	// Model was reset for the current weapon?
-	if (szWeapon_ID == iCurrent_Weapon_ID)
+	if (iWeapon_ID == iCurrent_Weapon_ID)
 	{
 		// Let CS update weapon models
 		ExecuteHamB(Ham_Item_Deploy, iCurrent_Weapon_Entity);
 	}
-
-	return true;
 }
 
 public native_set_player_weapon_model(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
-
-	new szWeapon_ID = get_param(2);
-
-	if (szWeapon_ID < CSW_FIRST_WEAPON || szWeapon_ID > CSW_LAST_WEAPON)
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Invalid weapon player (%d)", szWeapon_ID);
-
-		return false;
-	}
+	new iWeapon_ID = get_param(2);
+	CHECK_WEAPON(iWeapon_ID, CSW_FIRST_WEAPON, CSW_LAST_WEAPON,)
 
 	new szWeapon_Model[128];
-
 	get_string(3, szWeapon_Model, charsmax(szWeapon_Model));
 
 	// Check whether player already has a custom view model set
-	if (g_Custom_Weapon_Models_Position[iPlayer][szWeapon_ID] == POSITION_NULL)
+	if (g_Custom_Weapon_Models_Position[iPlayer][iWeapon_ID] == POSITION_NULL)
 	{
-		Add_Custom_Weapon_Model(iPlayer, szWeapon_ID, szWeapon_Model);
+		Add_Custom_Weapon_Model(iPlayer, iWeapon_ID, szWeapon_Model);
 	}
 
 	else
 	{
-		Replace_Custom_Weapon_Model(iPlayer, szWeapon_ID, szWeapon_Model);
+		Replace_Custom_Weapon_Model(iPlayer, iWeapon_ID, szWeapon_Model);
 	}
 
 	// Get current weapon's player
@@ -243,55 +202,40 @@ public native_set_player_weapon_model(iPlugin_ID, iNum_Params)
 	new iCurrent_Weapon_ID = is_entity(iCurrent_Weapon_Entity) ? get_member(iCurrent_Weapon_Entity, m_iId) : -1;
 
 	// Model was reset for the current weapon?
-	if (szWeapon_ID == iCurrent_Weapon_ID)
+	if (iWeapon_ID == iCurrent_Weapon_ID)
 	{
 		// Update weapon models manually
 		Ham_Item_Deploy_Post(iCurrent_Weapon_Entity);
 	}
-
-	return true;
 }
 
 public native_reset_player_weap_model(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
-
-	new szWeapon_ID = get_param(2);
-
-	if (szWeapon_ID < CSW_FIRST_WEAPON || szWeapon_ID > CSW_LAST_WEAPON)
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Invalid weapon player (%d)", szWeapon_ID);
-
-		return false;
-	}
+	new iWeapon_ID = get_param(2);
+	CHECK_WEAPON(iWeapon_ID, CSW_FIRST_WEAPON, CSW_LAST_WEAPON,)
 
 	// Player doesn't have a custom weapon model, no need to reset
-	if (g_Custom_Weapon_Models_Position[iPlayer][szWeapon_ID] == POSITION_NULL)
+	if (g_Custom_Weapon_Models_Position[iPlayer][iWeapon_ID] == POSITION_NULL)
 	{
-		return true;
+		return;
 	}
 
-	Remove_Custom_Weapon_Model(iPlayer, szWeapon_ID);
+	Remove_Custom_Weapon_Model(iPlayer, iWeapon_ID);
 
 	// Get current weapon's player
 	new iCurrent_Weapon_Entity = CS_GET_CURRENT_WEAPON_ENTITY(iPlayer);
 	new iCurrent_Weapon_ID = is_entity(iCurrent_Weapon_Entity) ? get_member(iCurrent_Weapon_Entity, m_iId) : -1;
 
 	// Model was reset for the current weapon?
-	if (szWeapon_ID == iCurrent_Weapon_ID)
+	if (iWeapon_ID == iCurrent_Weapon_ID)
 	{
 		// Let CS update weapon models
 		ExecuteHamB(Ham_Item_Deploy, iCurrent_Weapon_Entity);
 	}
-
-	return true;
 }
 
 Add_Custom_View_Model(iPlayer, szWeapon_ID, const szView_Model[])
@@ -372,7 +316,7 @@ public Ham_Item_Deploy_Post(iEntity)
 	new iOwner = CS_GET_WEAPON_ENTITY_OWNER(iEntity);
 
 	// Owner not valid
-	if (BIT_NOT_VALID(g_iBit_Alive, iOwner))
+	if (!is_player(iOwner) || !is_player_alive(iOwner))
 	{
 		return;
 	}
@@ -401,16 +345,8 @@ public Ham_Item_Deploy_Post(iEntity)
 	}
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-
 	// Remove custom models for player after disconnecting
 	for (new i = CSW_FIRST_WEAPON; i <= CSW_LAST_WEAPON; i++)
 	{
@@ -424,14 +360,4 @@ public client_disconnected(iPlayer)
 			Remove_Custom_Weapon_Model(iPlayer, i);
 		}
 	}
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

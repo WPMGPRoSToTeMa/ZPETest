@@ -24,6 +24,7 @@
 #include <ck_cs_weap_restrict_api>
 #include <zpe_kernel>
 #include <zpe_class_zombie_const>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 
@@ -74,8 +75,6 @@ new g_Forward_Result;
 new g_Class_Zombie_Count;
 
 new g_pCvar_Zombie_Armor_Type;
-
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -397,13 +396,8 @@ public zpe_fw_core_cure(iPlayer)
 public native_class_zombie_get_current(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (!is_user_connected(iPlayer)) // Use bit = invalid player
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return ZPE_INVALID_CLASS_ZOMBIE;
-	}
+	CHECK_IS_PLAYER(iPlayer, ZPE_INVALID_CLASS_ZOMBIE)
+	CHECK_IS_CONNECTED(iPlayer, ZPE_INVALID_CLASS_ZOMBIE)
 
 	return g_Class_Zombie[iPlayer];
 }
@@ -411,13 +405,8 @@ public native_class_zombie_get_current(iPlugin_ID, iNum_Params)
 public native_class_zombie_get_next(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return ZPE_INVALID_CLASS_ZOMBIE;
-	}
+	CHECK_IS_PLAYER(iPlayer, ZPE_INVALID_CLASS_ZOMBIE)
+	CHECK_IS_CONNECTED(iPlayer, ZPE_INVALID_CLASS_ZOMBIE)
 
 	return g_Class_Zombie_Next[iPlayer];
 }
@@ -425,38 +414,19 @@ public native_class_zombie_get_next(iPlugin_ID, iNum_Params)
 public native_class_zombie_set_next(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	new iClass_ID = get_param(2);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count,)
 
 	g_Class_Zombie_Next[iPlayer] = iClass_ID;
-
-	return true;
 }
 
 public Float:native_class_zombie_get_max_health(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return -1.0;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count, -1.0)
 
 	return ArrayGetCell(g_aClass_Zombie_Health, iClass_ID);
 }
@@ -642,17 +612,11 @@ public native_class_zombie_register(iPlugin_ID, iNum_Params)
 public native_class_zombie_register_model(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count,)
 
 	if (ArrayGetCell(g_aClass_Zombie_Models_File, iClass_ID))
 	{
-		return true;
+		return;
 	}
 
 	new szPlayer_Model[32];
@@ -679,24 +643,16 @@ public native_class_zombie_register_model(iPlugin_ID, iNum_Params)
 	new szClass_Zombie_Settings_Path[64];
 	formatex(szClass_Zombie_Settings_Path, charsmax(szClass_Zombie_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
 	amx_save_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "PLAYER MODELS", aClass_Models);
-
-	return true;
 }
 
 public native_class_zombie_register_claw(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count,)
 
 	if (ArrayGetCell(g_aClass_Zombie_Claws_File, iClass_ID))
 	{
-		return true;
+		return;
 	}
 
 	new szClaw_Model[86];
@@ -720,24 +676,16 @@ public native_class_zombie_register_claw(iPlugin_ID, iNum_Params)
 	new szClass_Zombie_Settings_Path[64];
 	formatex(szClass_Zombie_Settings_Path, charsmax(szClass_Zombie_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
 	amx_save_setting_string_arr(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "CLAWS MODEL", aClass_Claws);
-
-	return true;
 }
 
 public native_class_zombie_register_kb(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count,)
 
 	if (ArrayGetCell(g_aClass_Zombie_Knockback_File, iClass_ID))
 	{
-		return true;
+		return;
 	}
 
 	new Float:fKnockback = get_param_f(2);
@@ -752,8 +700,6 @@ public native_class_zombie_register_kb(iPlugin_ID, iNum_Params)
 	new szClass_Zombie_Settings_Path[64];
 	formatex(szClass_Zombie_Settings_Path, charsmax(szClass_Zombie_Settings_Path), "%s/%s.ini", ZPE_CLASS_ZOMBIE_SETTINGS_PATH, szReal_Name);
 	amx_save_setting_float(szClass_Zombie_Settings_Path, ZPE_CLASS_ZOMBIE_SETTINGS_SECTION_NAME, "KNOCKBACK", fKnockback);
-
-	return true;
 }
 
 public native_class_zombie_get_id(iPlugin_ID, iNum_Params)
@@ -780,69 +726,43 @@ public native_class_zombie_get_id(iPlugin_ID, iNum_Params)
 public native_class_zombie_get_name(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count,)
 
 	new szName[32];
 	ArrayGetString(g_aClass_Zombie_Name, iClass_ID, szName, charsmax(szName));
 
-	new sLen = get_param(3);
-	set_string(2, szName, sLen);
-
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szName, iLen);
 }
 
 public native_class_zombie_get_real_name(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count,)
 
 	new szReal_Name[32];
 	ArrayGetString(g_aClass_Zombie_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
-	set_string(2, szReal_Name, get_param(3));
 
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szReal_Name, iLen);
 }
 
 public native_class_zombie_get_description(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count,)
 
 	new szDescription[32];
 	ArrayGetString(g_aClass_Zombie_Description, iClass_ID, szDescription, charsmax(szDescription));
-	set_string(2, szDescription, get_param(3));
 
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szDescription, iLen);
 }
 
 public Float:native_class_zombie_get_kb(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Zombie_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class zombie player (%d)", iClass_ID);
-
-		return 1.0;
-	}
+	CHECK_CLASS_ZOMBIE(iClass_ID, g_Class_Zombie_Count, 1.0)
 
 	// Return class zombie knockback
 	return ArrayGetCell(g_aClass_Zombie_Knockback, iClass_ID);
@@ -856,24 +776,16 @@ public native_class_zombie_get_count(iPlugin_ID, iNum_Params)
 public native_class_zombie_show_menu(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	Show_Menu_Class_Zombie(iPlayer);
-
-	return true;
 }
 
 public native_class_zombie_menu_text_add(iPlugin_ID, iNum_Params)
 {
-	static szText[32];
+	new szText[32];
 	get_string(1, szText, charsmax(szText));
-
 	format(g_Additional_Menu_Text, charsmax(g_Additional_Menu_Text), "%s %s", g_Additional_Menu_Text, szText);
 }
 
@@ -881,14 +793,10 @@ public client_putinserver(iPlayer)
 {
 	g_Class_Zombie[iPlayer] = ZPE_INVALID_CLASS_ZOMBIE;
 	g_Class_Zombie_Next[iPlayer] = ZPE_INVALID_CLASS_ZOMBIE;
-
-	BIT_ADD(g_iBit_Connected, iPlayer);
 }
 
 public client_disconnected(iPlayer)
 {
 	// Reset remembered menu pages
 	MENU_PAGE_CLASS(iPlayer) = 0;
-
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }

@@ -8,28 +8,23 @@
 
 #include <cs_util_const>
 
+public stock iBit_Nemesis;
+
 /**
  * Returns whether a player is a Nemesis.
  *
- * @param {player} Player index.
+ * @param {%0} Player index.
  *
  * @return True if it is, false otherwise.
  */
-#define zpe_class_nemesis_get(%0) BIT_VALID(g_iBit_Nemesis, %0)
-
-new stock g_iBit_Nemesis;
-
-public zpe_fw_class_nemesis_bit_change(player)
-{
-	g_iBit_Nemesis = player;
-}
+#define zpe_class_nemesis_get(%0) BIT_VALID(iBit_Nemesis, %0)
 
 /**
  * Forces a player to become a Nemesis.
  *
  * @param {player} Player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_nemesis_set(player);
 

@@ -6,48 +6,58 @@
 
 #define _zpe_kernel_included
 
+public stock iBit_Zombie;
+
 /**
  * Returns whether a player is a zombie.
  *
- * @param {player} Player index.
+ * @param {%0} Player index.
  *
  * @return True if it is, false otherwise.
  */
-#define zpe_core_is_zombie(%0) BIT_VALID(g_iBit_Zombie, %0)
+#define zpe_core_is_zombie(%0) BIT_VALID(iBit_Zombie, %0)
 
-new stock g_iBit_Zombie;
+/**
+ * Returns whether a player is a human.
+ *
+ * @param {%0} Player index.
+ *
+ * @return True if it is, false otherwise.
+ */
+#define zpe_core_is_human(%0) BIT_NOT_VALID(iBit_Zombie, %0)
 
-public zpe_fw_class_zombie_bit_change(player)
-{
-	g_iBit_Zombie = player;
-}
+public stock iBit_First_Zombie;
 
 /**
  * Returns whether a player is the first zombie.
  *
- * @param {player} Player index.
+ * @param {%0} Player index.
  *
  * @return True if it is, false otherwise.
  */
-native zpe_core_is_first_zombie(player);
+#define zpe_core_is_first_zombie(%0) BIT_VALID(iBit_First_Zombie, %0)
+
+public stock iBit_Last_Zombie;
 
 /**
  * Returns whether a player is the last zombie.
  *
- * @param {player} Player index.
+ * @param {%0} Player index.
  *
  * @return True if it is, false otherwise.
  */
-native zpe_core_is_last_zombie(player);
+#define zpe_core_is_last_zombie(%0) BIT_VALID(iBit_Last_Zombie, %0)
+
+public stock iBit_Last_Human;
 
 /**
  * Returns whether a player is the last human.
  *
- * @param {player} Player index.
+ * @param {%0} Player index.
  *
  * @return True if it is, false otherwise.
  */
-native zpe_core_is_last_human(player);
+#define zpe_core_is_last_human(%0) BIT_VALID(iBit_Last_Human, %0)
 
 /**
  * Returns number of alive zombies.
@@ -69,7 +79,7 @@ native zpe_core_get_human_count();
  * @param {player} Player index to be infected.
  * @param {attacker} Player who triggered the infection. (optional)
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_core_infect(player, attacker = false);
 
@@ -79,7 +89,7 @@ native zpe_core_infect(player, attacker = false);
  * @param {player} Player index to be cured.
  * @param {attacker} Player who triggered the cure. (optional)
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_core_cure(player, attacker = false);
 
@@ -90,7 +100,7 @@ native zpe_core_cure(player, attacker = false);
  *
  * @param {player} Player index to be infected or cured.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_core_force_infect(player);
 native zpe_core_force_cure(player);
@@ -159,23 +169,3 @@ forward zpe_fw_core_last_human(player);
  * @return None.
  */
 forward zpe_fw_core_spawn_post(player);
-
-/**
- * Called by CBasePlayer::Spawn just before releasing the player into the game.
- *
- * @param {player} Player index.
- *
- * @return None.
- */
-forward zpe_fw_spawn_post_bit_add(player);
-
-/**
- * Called each time a player dies.
- *
- * @param {player} Player index.
- * @param {killer} Killer index.
- * @param {inflictor} The object with which the damage was inflicted.
- *
- * @return None.
- */
-forward zpe_fw_kill_pre_bit_sub(player, killer, inflictor);

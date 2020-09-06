@@ -23,6 +23,7 @@
 #include <zpe_kernel>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -117,9 +118,6 @@ new g_pCvar_Grenades_Give_Count[3];
 new g_pCvar_Grenades_Show_Count[3];
 new g_pCvar_Grenades_Show_Count_If_One[3];
 
-new g_iBit_Alive;
-new g_iBit_Connected;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -182,17 +180,10 @@ public plugin_natives()
 public native_give_menus_show(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (iPlayer > 32 || BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	Client_Command_Give(iPlayer);
-
-	return true;
 }
 
 public Client_Command_Give(iPlayer)
@@ -205,7 +196,7 @@ public Client_Command_Give(iPlayer)
 	}
 
 	// Player dead or zombie
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
+	if (!is_player_alive(iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
@@ -224,7 +215,7 @@ public zpe_fw_core_cure_post(iPlayer)
 public Human_Weapons(iPlayer)
 {
 	// Player dead or zombie
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer))
+	if (!is_player_alive(iPlayer) || zpe_core_is_zombie(iPlayer))
 	{
 		return;
 	}
@@ -457,7 +448,7 @@ Show_Give_Menu_Grenades(iPlayer)
 public Give_Menu_Primary(iPlayer, iKey)
 {
 	// Player dead or zombie or already bought primary
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Give_Primary, iPlayer))
+	if (!is_player_alive(iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Give_Primary, iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -528,7 +519,7 @@ Give_Primary_Weapon(iPlayer, iSelection)
 public Give_Menu_Secondary(iPlayer, iKey)
 {
 	// Player dead or zombie or already bought secondary
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Give_Secondary, iPlayer))
+	if (!is_player_alive(iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Give_Secondary, iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -580,7 +571,7 @@ Give_Secondary_Weapon(iPlayer, iSelection)
 public Give_Menu_Grenades(iPlayer, iKey)
 {
 	// Player dead or zombie or already bought grenades
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Give_Grenades, iPlayer))
+	if (!is_player_alive(iPlayer) || zpe_core_is_zombie(iPlayer) || BIT_NOT_VALID(g_Can_Give_Grenades, iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -657,26 +648,8 @@ Give_Random_Grenades(iPlayer)
 	}
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	WEAPON_AUTO_ON(iPlayer) = 0;
 	WEAPON_START_ID(iPlayer) = 0;
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

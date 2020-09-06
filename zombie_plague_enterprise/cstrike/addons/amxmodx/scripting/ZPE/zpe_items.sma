@@ -21,6 +21,7 @@
 #include <amx_settings_api>
 #include <zpe_kernel>
 #include <zpe_items_const>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_ITEMS_SETTINGS_FOLDER "ZPE/items"
 #define ZPE_ITEMS_SETTINGS_SECTION_NAME "Settings"
@@ -48,9 +49,6 @@ new Array:g_aItem_Cost;
 new g_Item_Count;
 
 new g_Additional_Menu_Text[32];
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -168,7 +166,6 @@ public native_items_register(iPlugin_ID, iNum_Params)
 public native_items_get_id(iPlugin_ID, iNum_Params)
 {
 	new szReal_Name[32];
-
 	get_string(1, szReal_Name, charsmax(szReal_Name));
 
 	// Loop through every item
@@ -190,57 +187,31 @@ public native_items_get_id(iPlugin_ID, iNum_Params)
 public native_items_get_name(iPlugin_ID, iNum_Params)
 {
 	new iItem_ID = get_param(1);
-
-	if (iItem_ID < 0 || iItem_ID >= g_Item_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid item player (%d)", iItem_ID);
-
-		return false;
-	}
+	CHECK_ITEM(iItem_ID, g_Item_Count,)
 
 	new szItem_Name[32];
-
 	ArrayGetString(g_aItem_Name, iItem_ID, szItem_Name, charsmax(szItem_Name));
 
-	new sLen = get_param(3);
-
-	set_string(2, szItem_Name, sLen);
-
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szItem_Name, iLen);
 }
 
 public native_items_get_real_name(iPlugin_ID, iNum_Params)
 {
 	new iItem_ID = get_param(1);
-
-	if (iItem_ID < 0 || iItem_ID >= g_Item_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid item player (%d)", iItem_ID);
-
-		return false;
-	}
+	CHECK_ITEM(iItem_ID, g_Item_Count,)
 
 	new szReal_Name[32];
-
 	ArrayGetString(g_aItem_Real_Name, iItem_ID, szReal_Name, charsmax(szReal_Name));
 
-	new sLen = get_param(3);
-
-	set_string(2, szReal_Name, sLen);
-
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szReal_Name, iLen);
 }
 
 public native_items_get_cost(iPlugin_ID, iNum_Params)
 {
 	new iItem_ID = get_param(1);
-
-	if (iItem_ID < 0 || iItem_ID >= g_Item_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid item player (%d)", iItem_ID);
-
-		return -1;
-	}
+	CHECK_ITEM(iItem_ID, g_Item_Count, -1)
 
 	return ArrayGetCell(g_aItem_Cost, iItem_ID);
 }
@@ -248,52 +219,29 @@ public native_items_get_cost(iPlugin_ID, iNum_Params)
 public native_items_show_menu(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	Client_Command_Items(iPlayer);
-
-	return true;
 }
 
 public native_items_force_buy(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	new iItem_ID = get_param(2);
-
-	if (iItem_ID < 0 || iItem_ID >= g_Item_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid item player (%d)", iItem_ID);
-
-		return false;
-	}
+	CHECK_ITEM(iItem_ID, g_Item_Count,)
 
 	new iIgnore_Cost = get_param(3);
-
 	Buy_Item(iPlayer, iItem_ID, iIgnore_Cost);
-
-	return true;
 }
 
 public native_items_menu_text_add(iPlugin_ID, iNum_Params)
 {
-	static szText[32];
-
+	new szText[32];
 	get_string(1, szText, charsmax(szText));
-
 	format(g_Additional_Menu_Text, charsmax(g_Additional_Menu_Text), "%s %s", g_Additional_Menu_Text, szText);
 }
 
@@ -305,22 +253,11 @@ public native_items_menu_get_text_add(iPlugin_ID, iNum_Params)
 public native_items_available(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_CONNECTED(iPlayer, false)
 
 	new iItem_ID = get_param(2);
-
-	if (iItem_ID < 0 || iItem_ID >= g_Item_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid item (%d)", iItem_ID);
-
-		return false;
-	}
+	CHECK_ITEM(iItem_ID, g_Item_Count, false)
 
 	g_Additional_Menu_Text[0] = 0;
 
@@ -362,7 +299,7 @@ public native_items_set_cost(iPlugin_ID, iNum_Params)
 public Client_Command_Items(iPlayer)
 {
 	// Player dead
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
+	if (!is_player_alive(iPlayer))
 	{
 		return;
 	}
@@ -474,7 +411,7 @@ public Menu_Extra_Items(iPlayer, iMenu_ID, iItem)
 	MENU_PAGE_ITEMS(iPlayer) = iItem / 7;
 
 	// Dead players are not allowed to buy items
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
+	if (!is_player_alive(iPlayer))
 	{
 		menu_destroy(iMenu_ID);
 
@@ -515,26 +452,8 @@ Buy_Item(iPlayer, iItem_ID, iIgnore_Cost = 0)
 	ExecuteForward(g_Forwards[FW_ITEM_SELECT_POST], g_Forward_Result, iPlayer, iItem_ID, iIgnore_Cost);
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	// Reset remembered menu pages
 	MENU_PAGE_ITEMS(iPlayer) = 0;
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

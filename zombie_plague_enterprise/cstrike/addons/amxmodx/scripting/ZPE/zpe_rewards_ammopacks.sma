@@ -25,6 +25,7 @@
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
 #include <zpe_ammopacks>
+#include <ck_cs_common_bits_api>
 
 new Float:g_fDamage_Dealt_To_Zombies[MAX_PLAYERS + 1];
 new Float:g_fDamage_Dealt_To_Humans[MAX_PLAYERS + 1];
@@ -45,9 +46,6 @@ new g_pCvar_Ammo_Packs_Nemesis_Ignore;
 new g_pCvar_Ammo_Packs_Assassin_Ignore;
 new g_pCvar_Ammo_Packs_Survivor_Ignore;
 new g_pCvar_Ammo_Packs_Sniper_Ignore;
-
-new g_iBit_Connected;
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -77,7 +75,7 @@ public plugin_init()
 public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Reward ammo packs to zombies infecting humans?
-	if (BIT_VALID(g_iBit_Connected, iAttacker) && iAttacker != iPlayer && get_pcvar_num(g_pCvar_Ammo_Packs_Human_Infected) > 0)
+	if (is_player_connected(iAttacker) && iAttacker != iPlayer && get_pcvar_num(g_pCvar_Ammo_Packs_Human_Infected) > 0)
 	{
 		zpe_ammopacks_set(iAttacker, zpe_ammopacks_get(iAttacker) + get_pcvar_num(g_pCvar_Ammo_Packs_Human_Infected));
 	}
@@ -86,7 +84,7 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDamage, iDamage_Type)
 {
 	// Non-player damage or self damage
-	if (iVictim == iAttacker || iAttacker > 32 || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return;
 	}
@@ -161,7 +159,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 {
 	// Non-player kill or self kill
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return;
 	}
@@ -210,7 +208,7 @@ public zpe_fw_gamemodes_end()
 		// Human team wins
 		for (new i = 1; i <= MaxClients; i++)
 		{
-			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			if (!is_player_connected(i))
 			{
 				continue;
 			}
@@ -232,7 +230,7 @@ public zpe_fw_gamemodes_end()
 		// Zombie team wins
 		for (new i = 1; i <= MaxClients; i++)
 		{
-			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			if (!is_player_connected(i))
 			{
 				continue;
 			}
@@ -254,7 +252,7 @@ public zpe_fw_gamemodes_end()
 		// No one wins
 		for (new i = 1; i <= MaxClients; i++)
 		{
-			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			if (!is_player_connected(i))
 			{
 				continue;
 			}
@@ -264,27 +262,10 @@ public zpe_fw_gamemodes_end()
 	}
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	// Clear damage after disconnecting
 	g_fDamage_Dealt_To_Zombies[iPlayer] = 0.0;
 	g_fDamage_Dealt_To_Humans[iPlayer] = 0.0;
 
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
