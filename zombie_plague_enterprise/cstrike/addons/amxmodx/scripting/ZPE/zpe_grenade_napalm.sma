@@ -25,6 +25,7 @@
 #include <zpe_kernel>
 #include <zpe_class_nemesis>
 #include <zpe_class_assassin>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_items.ini"
 
@@ -108,8 +109,6 @@ new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_G;
 new g_pCvar_Grenade_Napalm_Largest_Ring_Rendering_B;
 
 new Float:g_fGrenade_Radius;
-
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -202,13 +201,8 @@ public plugin_natives()
 public native_grenade_napalm_get(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_ALIVE(iPlayer, false)
 
 	return task_exists(iPlayer + TASK_BURN);
 }
@@ -216,13 +210,8 @@ public native_grenade_napalm_get(iPlugin_ID, iNum_Params)
 public native_grenade_napalm_set(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_ALIVE(iPlayer, false)
 
 	new iSet = get_param(2);
 
@@ -397,18 +386,6 @@ public client_disconnected(iPlayer)
 	remove_task(iPlayer + TASK_BURN);
 
 	g_Burning_Duration[iPlayer] = 0;
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
 // Napalm Grenade Explosion
@@ -437,7 +414,7 @@ Fire_Explode(iEntity)
 	while ((iVictim = engfunc(EngFunc_FindEntityInSphere, iVictim, fOrigin, g_fGrenade_Radius)) != 0)
 	{
 		// Only effect alive zombies
-		if (iVictim <= MaxClients && BIT_VALID(g_iBit_Alive, iVictim) && zpe_core_is_zombie(iVictim))
+		if (is_player(iVictim) && is_player_alive(iVictim) && zpe_core_is_zombie(iVictim))
 		{
 			Set_On_Fire(iVictim);
 		}

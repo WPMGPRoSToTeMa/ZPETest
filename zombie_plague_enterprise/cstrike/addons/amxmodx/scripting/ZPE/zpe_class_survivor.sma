@@ -21,6 +21,8 @@
 #include <amx_settings_api>
 #include <ck_cs_maxspeed_api>
 #include <zpe_kernel>
+#include <zpe_class_survivor>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_survivor.ini"
 
@@ -32,9 +34,6 @@ new Array:g_aModels_Survivor_Player
 new Array:g_aSound_Survivor_Die;
 new Array:g_aSound_Survivor_Fall;
 new Array:g_aSound_Survivor_Pain;
-
-new g_Forward;
-new g_Forward_Result;
 
 new g_pCvar_Survivor_Base_Health;
 new g_pCvar_Survivor_Health_Per_Player;
@@ -61,16 +60,15 @@ new g_pCvar_Survivor_Gib_Life;
 new g_pCvar_Survivor_Weapon_Block;
 new g_pCvar_Survivor_Weapon_Ammo;
 
+new g_iBvar_Survivor;
+
 new g_Gib_Model;
-
-new g_iBit_Survivor;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_iBvar_Survivor = get_bvar_id("iBit_Survivor");
 
 	g_pCvar_Survivor_Base_Health = register_cvar("zpe_survivor_base_health", "500.0");
 	g_pCvar_Survivor_Health_Per_Player = register_cvar("zpe_survivor_health_per_player", "200.0");
@@ -97,11 +95,10 @@ public plugin_init()
 	g_pCvar_Survivor_Weapon_Block = register_cvar("zpe_survivor_weapon_block", "0");
 	g_pCvar_Survivor_Weapon_Ammo = register_cvar("zpe_survivor_weapon_ammo", "200");
 
-	g_Forward = CreateMultiForward("zpe_fw_class_survivor_bit_change", ET_CONTINUE, FP_CELL);
-
 	register_clcmd("drop", "Client_Command_Drop");
 
 	RegisterHookChain(RG_CSGameRules_CanHavePlayerItem, "RG_CSGameRules_CanHavePlayerItem_");
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
 	// Dont use ReAPI, in the form of code - load
 	register_forward(FM_EmitSound, "FM_EmitSound_");
@@ -145,7 +142,7 @@ public plugin_natives()
 public Client_Command_Drop(iPlayer)
 {
 	// Should survivor stick to his weapon?
-	if (get_pcvar_num(g_pCvar_Survivor_Weapon_Block) && BIT_VALID(g_iBit_Survivor, iPlayer))
+	if (zpe_class_survivor_get(iPlayer) && get_pcvar_num(g_pCvar_Survivor_Weapon_Block))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -156,7 +153,7 @@ public Client_Command_Drop(iPlayer)
 public RG_CSGameRules_CanHavePlayerItem_(iWeapon, iPlayer)
 {
 	// Should survivor stick to his weapon?
-	if (get_pcvar_num(g_pCvar_Survivor_Weapon_Block) && BIT_VALID(g_iBit_Survivor, iPlayer) && BIT_VALID(g_iBit_Alive, iPlayer))
+	if (zpe_class_survivor_get(iPlayer) && get_pcvar_num(g_pCvar_Survivor_Weapon_Block))
 	{
 		return HC_SUPERCEDE;
 	}
@@ -166,7 +163,7 @@ public RG_CSGameRules_CanHavePlayerItem_(iWeapon, iPlayer)
 
 public zpe_fw_core_spawn_post(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Survivor, iPlayer))
+	if (zpe_class_survivor_get(iPlayer))
 	{
 		// Remove survivor glow
 		if (get_pcvar_num(g_pCvar_Survivor_Glow))
@@ -181,15 +178,13 @@ public zpe_fw_core_spawn_post(iPlayer)
 		}
 
 		// Remove survivor flag
-		BIT_SUB(g_iBit_Survivor, iPlayer);
-
-		ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Survivor);
+		set_bvar_num(g_iBvar_Survivor, iBit_Survivor & ~(1 << iPlayer));
 	}
 }
 
 public zpe_fw_core_infect(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Survivor, iPlayer))
+	if (zpe_class_survivor_get(iPlayer))
 	{
 		// Remove survivor glow
 		if (get_pcvar_num(g_pCvar_Survivor_Glow))
@@ -204,16 +199,14 @@ public zpe_fw_core_infect(iPlayer)
 		}
 
 		// Remove survivor flag
-		BIT_SUB(g_iBit_Survivor, iPlayer);
-
-		ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Survivor);
+		set_bvar_num(g_iBvar_Survivor, iBit_Survivor & ~(1 << iPlayer));
 	}
 }
 
 public zpe_fw_core_cure_post(iPlayer)
 {
 	// Apply survivor attributes?
-	if (BIT_NOT_VALID(g_iBit_Survivor, iPlayer))
+	if (!zpe_class_survivor_get(iPlayer))
 	{
 		return;
 	}
@@ -262,28 +255,13 @@ public zpe_fw_core_cure_post(iPlayer)
 public native_class_survivor_set(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
+	CHECK_IS_NOT_SURVIVOR(iPlayer,)
 
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
-
-	if (BIT_VALID(g_iBit_Survivor, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Player already a survivor (%d)", iPlayer);
-
-		return false;
-	}
-
-	BIT_ADD(g_iBit_Survivor, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Survivor);
+	set_bvar_num(g_iBvar_Survivor, iBit_Survivor | (1 << iPlayer));
 
 	zpe_core_force_cure(iPlayer);
-
-	return true;
 }
 
 public native_class_survivor_get_count(iPlugin_ID, iNum_Params)
@@ -316,51 +294,43 @@ public Survivor_Aura(iTask_ID)
 
 public FM_EmitSound_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zpe_core_is_zombie(iPlayer))
+	if (!is_player(iPlayer) || !zpe_class_survivor_get(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
 
-	if (BIT_VALID(g_iBit_Survivor, iPlayer))
+	static szSound[SOUND_MAX_LENGTH];
+
+	if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 	{
-		static szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Survivor_Die, RANDOM(ArraySize(g_aSound_Survivor_Die)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
-		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
-		{
-			ArrayGetString(g_aSound_Survivor_Die, RANDOM(ArraySize(g_aSound_Survivor_Die)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
+		return FMRES_SUPERCEDE;
+	}
 
-			return FMRES_SUPERCEDE;
-		}
+	if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
+	{
+		ArrayGetString(g_aSound_Survivor_Fall, RANDOM(ArraySize(g_aSound_Survivor_Fall)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
-		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
-		{
-			ArrayGetString(g_aSound_Survivor_Fall, RANDOM(ArraySize(g_aSound_Survivor_Fall)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
+		return FMRES_SUPERCEDE;
+	}
 
-			return FMRES_SUPERCEDE;
-		}
+	if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
+	{
+		ArrayGetString(g_aSound_Survivor_Pain, RANDOM(ArraySize(g_aSound_Survivor_Pain)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
-		if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
-		{
-			ArrayGetString(g_aSound_Survivor_Pain, RANDOM(ArraySize(g_aSound_Survivor_Pain)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
-
-			return FMRES_SUPERCEDE;
-		}
+		return FMRES_SUPERCEDE;
 	}
 
 	return FMRES_IGNORED;
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Survivor, iPlayer))
+	if (zpe_class_survivor_get(iPlayer))
 	{
 		// Remove survivor aura
 		if (get_pcvar_num(g_pCvar_Survivor_Glow))
@@ -368,24 +338,20 @@ public client_disconnected(iPlayer)
 			remove_task(iPlayer + TASK_AURA);
 		}
 	}
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
 public FM_ClientDisconnect_Post(iPlayer)
 {
 	// Reset flags AFTER disconnect (to allow checking if the player was survivor before disconnecting)
-	BIT_SUB(g_iBit_Survivor, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Survivor);
+	if (zpe_class_survivor_get(iPlayer))
+	{
+		set_bvar_num(g_iBvar_Survivor, iBit_Survivor & ~(1 << iPlayer));
+	}
 }
 
-// This is RG_CSGameRules_PlayerKilled Pre. Simply optimization.
-public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
+public RG_CSGameRules_PlayerKilled_Post(iVictim, iKiller)
 {
-	// When killed by a survivor victim explodes
-	if (BIT_VALID(g_iBit_Survivor, iAttacker))
+	if (is_player(iKiller) && zpe_class_survivor_get(iKiller))
 	{
 		if (get_pcvar_num(g_pCvar_Survivor_Kill_Splash))
 		{
@@ -428,18 +394,11 @@ public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 		}
 	}
 
-	if (BIT_VALID(g_iBit_Survivor, iVictim) && get_pcvar_num(g_pCvar_Survivor_Aura))
+	else if (zpe_class_survivor_get(iVictim) && get_pcvar_num(g_pCvar_Survivor_Aura))
 	{
 		// Remove survivor aura
 		remove_task(iVictim + TASK_AURA);
 	}
-
-	BIT_SUB(g_iBit_Alive, iVictim);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 // Get Alive Count -returns alive players number-
@@ -449,7 +408,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -465,7 +424,7 @@ Get_Survivor_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i) && BIT_VALID(g_iBit_Survivor, i))
+		if (is_player_alive(i) && zpe_class_survivor_get(i))
 		{
 			iSurvivors++;
 		}

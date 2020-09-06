@@ -19,6 +19,7 @@
 #include <amxmodx>
 #include <amxmisc>
 #include <cs_util>
+#include <ck_cs_common_bits_api>
 #include <amx_settings_api>
 #include <engine>
 #include <zpe_gamemodes>
@@ -147,7 +148,7 @@ public zpe_fw_gamemodes_start()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (!is_user_alive(i)) // Use bit - invalid player
+		if (!is_player_alive(i))
 		{
 			continue;
 		}
@@ -247,7 +248,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i)) // Use bit - invalid player
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -263,7 +264,7 @@ Get_Random_Alive_Player()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i)) // Use bit - invalid player
+		if (is_player_alive(i))
 		{
 			iPlayers[iCount++] = i;
 		}

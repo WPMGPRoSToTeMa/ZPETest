@@ -24,6 +24,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define TASK_NIGHT_VISION 100
 #define ID_NIGHT_VISION (iTask_ID - TASK_NIGHT_VISION)
@@ -75,9 +76,6 @@ new g_pCvar_Night_Vision_Sniper_Radius;
 new g_pCvar_Night_Vision_Sniper_Color_R;
 new g_pCvar_Night_Vision_Sniper_Color_G;
 new g_pCvar_Night_Vision_Sniper_Color_B;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -145,8 +143,6 @@ public RG_CSGameRules_PlayerKilled_Post(iPlayer)
 
 public client_putinserver(iPlayer)
 {
-	BIT_ADD(g_iBit_Connected, iPlayer);
-
 	set_task(0.1, "Spectator_Night_Vision", iPlayer);
 }
 
@@ -366,7 +362,7 @@ public zpe_fw_core_cure_post(iPlayer)
 
 public Client_Command_Night_Vision(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Alive, iPlayer))
+	if (is_player_alive(iPlayer))
 	{
 		// Player owns nightvision?
 		if (!cs_get_user_nvg(iPlayer))
@@ -408,12 +404,12 @@ public Event_Reset_Hud(iPlayer)
 
 public Spectator_Night_Vision(iEntity)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iEntity))
+	if (!is_player_connected(iEntity))
 	{
 		return;
 	}
 
-	if (BIT_VALID(g_iBit_Alive, iEntity))
+	if (is_player_alive(iEntity))
 	{
 		return;
 	}
@@ -443,20 +439,7 @@ public client_disconnected(iPlayer)
 	// Reset nightvision flags
 	BIT_SUB(g_Night_Vision_Active, iPlayer);
 
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-
 	remove_task(iPlayer + TASK_NIGHT_VISION);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 Enable_Night_Vision(iPlayer)
@@ -490,7 +473,7 @@ public Custom_Night_Vision_Task(iTask_ID)
 	write_coord(iOrigin[2]); // z
 
 	// Spectator
-	if (BIT_NOT_VALID(g_iBit_Alive, ID_NIGHT_VISION))
+	if (!is_player_alive(ID_NIGHT_VISION))
 	{
 		write_byte(get_pcvar_num(g_pCvar_Night_Vision_Spectator_Radius)); // radius
 

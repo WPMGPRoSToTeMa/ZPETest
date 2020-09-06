@@ -25,6 +25,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define TASK_GAMEMODE 100
 
@@ -75,9 +76,6 @@ new g_pCvar_Message_Notice_Gamemodes_Start_Fadeouttime;
 new g_pCvar_Message_Notice_Gamemodes_Start_Channel;
 
 new g_pCvar_All_Messages_Are_Converted;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -191,17 +189,9 @@ public native_gamemodes_register(iPlugin_ID, iNum_Params)
 public native_gamemodes_set_default(iPlugin_ID, iNum_Params)
 {
 	new iGame_Mode_ID = get_param(1);
-
-	if (iGame_Mode_ID < 0 || iGame_Mode_ID >= g_Game_Mode_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid game mode player (%d)", iGame_Mode_ID);
-
-		return false;
-	}
+	CHECK_GAME_MODE(iGame_Mode_ID, g_Game_Mode_Count,)
 
 	g_Default_Game_Mode = iGame_Mode_ID;
-
-	return true;
 }
 
 public native_gamemodes_get_default(iPlugin_ID, iNum_Params)
@@ -222,7 +212,6 @@ public native_gamemodes_get_current(iPlugin_ID, iNum_Params)
 public native_gamemodes_get_id(iPlugin_ID, iNum_Params)
 {
 	new szGame_Name[32];
-
 	get_string(1, szGame_Name, charsmax(szGame_Name));
 
 	// Loop through every game mode
@@ -244,43 +233,25 @@ public native_gamemodes_get_id(iPlugin_ID, iNum_Params)
 public native_gamemodes_get_name(iPlugin_ID, iNum_Params)
 {
 	new iGame_Mode_ID = get_param(1);
-
-	if (iGame_Mode_ID < 0 || iGame_Mode_ID >= g_Game_Mode_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid game mode player (%d)", iGame_Mode_ID);
-
-		return false;
-	}
+	CHECK_GAME_MODE(iGame_Mode_ID, g_Game_Mode_Count,)
 
 	new szGame_Name[32];
-
 	ArrayGetString(g_aGame_Mode_Name, iGame_Mode_ID, szGame_Name, charsmax(szGame_Name));
 
-	new sLen = get_param(3);
-
-	set_string(2, szGame_Name, sLen);
-
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szGame_Name, iLen);
 }
 
 public native_gamemodes_start(iPlugin_ID, iNum_Params)
 {
 	new iGame_Mode_ID = get_param(1);
-
-	if (iGame_Mode_ID < 0 || iGame_Mode_ID >= g_Game_Mode_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid game mode player (%d)", iGame_Mode_ID);
-
-		return false;
-	}
+	CHECK_GAME_MODE(iGame_Mode_ID, g_Game_Mode_Count, false)
 
 	new iTarget_Player = get_param(2);
 
-	if (iTarget_Player != RANDOM_TARGET_PLAYER && BIT_NOT_VALID(g_iBit_Alive, iTarget_Player))
+	if (iTarget_Player != RANDOM_TARGET_PLAYER)
 	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iTarget_Player);
-
-		return false;
+		CHECK_IS_ALIVE(iTarget_Player, false)
 	}
 
 	// Game modes can only be started at roundstart
@@ -393,7 +364,7 @@ public Event_Round_Start()
 	// Players respawn as humans when a new round begins
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_NOT_VALID(g_iBit_Connected, i))
+		if (!is_player_connected(i))
 		{
 			continue;
 		}
@@ -571,8 +542,7 @@ public RG_CSGameRules_PlayerKilled_Post(iPlayer)
 
 public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 {
-	// Non-player damage or self damage
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
@@ -595,8 +565,7 @@ public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 // Ham Take Damage Forward (needed to block explosion damage too)
 public Ham_TakeDamage_Player_(iVictim, iInflictor, iAttacker, Float:fDamage, iDamage_Type)
 {
-	// Non-player damage or self damage
-	if (iVictim == iAttacker || iAttacker > 32 || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker) || !is_player_alive(iAttacker))
 	{
 		return HAM_IGNORED;
 	}
@@ -665,17 +634,6 @@ public Ham_TakeDamage_Player_(iVictim, iInflictor, iAttacker, Float:fDamage, iDa
 	return HAM_IGNORED;
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
 public FM_ClientDisconnect_Post(iPlayer)
 {
 	// Are there any other players? (if not, round end is automatically triggered after last player leaves)
@@ -684,16 +642,6 @@ public FM_ClientDisconnect_Post(iPlayer)
 		// Choose game mode again (to check game mode conditions such as min players)
 		Choose_Game_Mode();
 	}
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 public zpe_fw_core_infect_post(iPlayer)
@@ -734,7 +682,7 @@ Balance_Teams()
 	for (new i = 1; i <= MaxClients; i++)
 	{
 		// Skip if not connected
-		if (BIT_NOT_VALID(g_iBit_Connected, i))
+		if (!is_player_connected(i))
 		{
 			continue;
 		}
@@ -761,7 +709,7 @@ Balance_Teams()
 		}
 
 		// Skip if not connected
-		if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
+		if (!is_player_connected(iPlayer))
 		{
 			continue;
 		}
@@ -789,7 +737,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -805,7 +753,7 @@ Get_Playing_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			if (CS_GET_USER_TEAM(i) != CS_TEAM_SPECTATOR && CS_GET_USER_TEAM(i) != CS_TEAM_UNASSIGNED)
 			{

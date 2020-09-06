@@ -18,6 +18,7 @@
 
 #include <amxmodx>
 #include <cs_util>
+#include <ck_cs_common_bits_api>
 #include <amx_settings_api>
 #include <zpe_kernel>
 #include <zpe_gamemodes>
@@ -157,17 +158,11 @@ public zpe_fw_gamemodes_start()
 	new iPlayer;
 
 	new iAlive_Count = Get_Alive_Count();
-
 	new iMax_Zombies = floatround(iAlive_Count * get_pcvar_float(g_pCvar_Multi_Ratio), floatround_ceil);
 
 	while (iZombies < iMax_Zombies)
 	{
 		iPlayer = Get_Random_Alive_Player();
-
-		if (!is_user_alive(iPlayer)) // Use bit - invalid player
-		{
-			continue;
-		}
 
 		if (zpe_core_is_zombie(iPlayer))
 		{
@@ -181,14 +176,7 @@ public zpe_fw_gamemodes_start()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		// Not alive
-		if (!is_user_alive(i)) // Use bit - invalid player
-		{
-			continue;
-		}
-
-		// This is our first zombie
-		if (zpe_core_is_zombie(i))
+		if (!is_player_alive(i) || zpe_core_is_zombie(i))
 		{
 			continue;
 		}
@@ -266,7 +254,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i)) // Use bit - invalid player
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -282,7 +270,7 @@ Get_Random_Alive_Player()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (is_user_alive(i)) // Use bit - invalid player
+		if (is_player_alive(i))
 		{
 			iPlayers[iCount++] = i;
 		}

@@ -24,6 +24,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -38,8 +39,6 @@ new g_pCvar_Human_Armor_Protect;
 
 new g_pCvar_Nemesis_Armor_Protect;
 new g_pCvar_Assassin_Armor_Protect;
-
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -66,7 +65,7 @@ public plugin_precache()
 public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage, iDamage_Type)
 {
 	// Non-player damage or self damage
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
@@ -139,19 +138,4 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage,
 	}
 
 	return HC_CONTINUE;
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

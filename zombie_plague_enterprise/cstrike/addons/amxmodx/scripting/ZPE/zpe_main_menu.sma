@@ -20,6 +20,7 @@
 #include <amxmisc>
 #include <cs_util>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 #define LIBRARY_GIVE_MENUS "zpe_give_menus"
 #include <zpe_give_menus>
@@ -47,8 +48,6 @@ new g_pCvar_Give_Custom_Grenades;
 
 new g_pCvar_Random_Spawning_CSDM;
 
-new g_iBit_Alive;
-new g_iBit_Connected;
 new g_iBit_Admin;
 
 public plugin_init()
@@ -128,7 +127,7 @@ Show_Main_Menu(iPlayer)
 	iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "%L", iPlayer, "MENU_TITLE");
 
 	// 1. Give menu
-	if (LibraryExists(LIBRARY_GIVE_MENUS, LibType_Library) && (get_pcvar_num(g_pCvar_Give_Custom_Primary) || get_pcvar_num(g_pCvar_Give_Custom_Secondary) || get_pcvar_num(g_pCvar_Give_Custom_Grenades)) && BIT_VALID(g_iBit_Alive, iPlayer))
+	if (LibraryExists(LIBRARY_GIVE_MENUS, LibType_Library) && (get_pcvar_num(g_pCvar_Give_Custom_Primary) || get_pcvar_num(g_pCvar_Give_Custom_Secondary) || get_pcvar_num(g_pCvar_Give_Custom_Grenades)) && is_player_alive(iPlayer))
 	{
 		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 1. \w %L ^n", iPlayer, "MENU_GIVE_WEAPONS");
 	}
@@ -139,7 +138,7 @@ Show_Main_Menu(iPlayer)
 	}
 
 	// 2. Extra items
-	if (LibraryExists(LIBRARY_ITEMS, LibType_Library) && BIT_VALID(g_iBit_Alive, iPlayer))
+	if (LibraryExists(LIBRARY_ITEMS, LibType_Library) && is_player_alive(iPlayer))
 	{
 		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 2. \w %L ^n", iPlayer, "MENU_BUY_EXTRA_ITEMS");
 	}
@@ -172,7 +171,7 @@ Show_Main_Menu(iPlayer)
 	}
 
 	// 5. Unstuck
-	if (LibraryExists(LIBRARY_RANDOM_SPAWN, LibType_Library) && BIT_VALID(g_iBit_Alive, iPlayer))
+	if (LibraryExists(LIBRARY_RANDOM_SPAWN, LibType_Library) && is_player_alive(iPlayer))
 	{
 		iLen += formatex(szMenu[iLen], charsmax(szMenu) - iLen, "\r 5. \w %L ^n", iPlayer, "MENU_UNSTUCK");
 	}
@@ -205,7 +204,7 @@ Show_Main_Menu(iPlayer)
 // Main menu
 public Main_Menu(iPlayer, iKey)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
+	if (!is_player_connected(iPlayer))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -218,7 +217,7 @@ public Main_Menu(iPlayer, iKey)
 			if (LibraryExists(LIBRARY_GIVE_MENUS, LibType_Library) && (get_pcvar_num(g_pCvar_Give_Custom_Primary) || get_pcvar_num(g_pCvar_Give_Custom_Secondary) || get_pcvar_num(g_pCvar_Give_Custom_Grenades)))
 			{
 				// Check whether the player is able to give anything
-				if (BIT_VALID(g_iBit_Alive, iPlayer))
+				if (is_player_alive(iPlayer))
 				{
 					zpe_give_menus_show(iPlayer);
 				}
@@ -241,7 +240,7 @@ public Main_Menu(iPlayer, iKey)
 			if (LibraryExists(LIBRARY_ITEMS, LibType_Library))
 			{
 				// Check whether the player is able to buy anything
-				if (BIT_VALID(g_iBit_Alive, iPlayer))
+				if (is_player_alive(iPlayer))
 				{
 					zpe_items_show_menu(iPlayer);
 				}
@@ -287,7 +286,7 @@ public Main_Menu(iPlayer, iKey)
 		case 4:
 		{
 			// Check if player is stuck
-			if (LibraryExists(LIBRARY_RANDOM_SPAWN, LibType_Library) && BIT_VALID(g_iBit_Alive, iPlayer))
+			if (LibraryExists(LIBRARY_RANDOM_SPAWN, LibType_Library) && is_player_alive(iPlayer))
 			{
 				if (Is_Player_Stuck(iPlayer))
 				{
@@ -345,25 +344,9 @@ public client_putinserver(iPlayer)
 	{
 		BIT_ADD(g_iBit_Admin, iPlayer);
 	}
-
-	BIT_ADD(g_Choose_Team_Override_Active, iPlayer);
-
-	BIT_ADD(g_iBit_Connected, iPlayer);
 }
 
 public client_disconnected(iPlayer)
 {
 	BIT_SUB(g_iBit_Admin, iPlayer);
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

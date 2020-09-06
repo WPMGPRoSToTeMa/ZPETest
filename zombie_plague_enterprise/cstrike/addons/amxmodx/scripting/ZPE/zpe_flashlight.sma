@@ -24,6 +24,7 @@
 #include <fakemeta>
 #include <xs>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 #define TASK_FLASHLIGHT 100
 #define TASK_CHARGE 200
@@ -55,9 +56,6 @@ new g_pCvar_Flashlight_Color_G;
 new g_pCvar_Flashlight_Color_B;
 new g_pCvar_Flashlight_Life;
 new g_pCvar_Flashlight_Decay_Rate;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -102,13 +100,8 @@ public plugin_natives()
 public native_flashlight_get_charge(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return -1;
-	}
+	CHECK_IS_PLAYER(iPlayer, -1)
+	CHECK_IS_CONNECTED(iPlayer, -1)
 
 	// Custom flashlight not enabled
 	if (!get_pcvar_num(g_pCvar_Flashlight_Custom))
@@ -122,30 +115,22 @@ public native_flashlight_get_charge(iPlugin_ID, iNum_Params)
 public native_flashlight_set_charge(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	// Custom flashlight not enabled
 	if (!get_pcvar_num(g_pCvar_Flashlight_Custom))
 	{
-		return false;
+		return;
 	}
 
 	new iCharge = get_param(2);
-
 	g_Flashlight_Charge[iPlayer] = clamp(iCharge, 0, 100);
 
 	// Set the flashlight charge task to update batteries
 	remove_task(iPlayer + TASK_CHARGE);
 
 	set_task(1.0, "Flashlight_Charge_Task", iPlayer + TASK_CHARGE, _, _, "b");
-
-	return true;
 }
 
 public plugin_cfg()
@@ -158,7 +143,7 @@ public plugin_cfg()
 public FM_CmdStart_Post(iPlayer, iHandle)
 {
 	// Not alive
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
+	if (!is_player_alive(iPlayer))
 	{
 		return;
 	}
@@ -249,11 +234,6 @@ public zpe_fw_core_cure_post(iPlayer)
 	Turn_Off_Flashlight(iPlayer);
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	// Reset flashlight flags
@@ -261,19 +241,6 @@ public client_disconnected(iPlayer)
 
 	remove_task(iPlayer + TASK_FLASHLIGHT);
 	remove_task(iPlayer + TASK_CHARGE);
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 // Turn off flashlight and restore batteries

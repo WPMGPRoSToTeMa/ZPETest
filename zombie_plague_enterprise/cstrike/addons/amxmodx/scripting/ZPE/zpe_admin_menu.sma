@@ -27,6 +27,7 @@
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
 #include <zpe_admin_commands>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -61,9 +62,6 @@ new g_Access_Start_Game_Mode[ACCESS_FLAG_MAX_LENGTH] = "d";
 
 new g_Menu_Data[MAX_PLAYERS + 1][3];
 
-new g_iBit_Alive;
-new g_iBit_Connected;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -95,17 +93,10 @@ public plugin_natives()
 public native_admin_menu_show(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	Show_Menu_Admin(iPlayer);
-
-	return true;
 }
 
 public Client_Command_Admin_Menu(iPlayer)
@@ -425,7 +416,7 @@ Show_Menu_Player_List(iPlayer)
 	for (new i = 1; i <= MaxClients; i++)
 	{
 		// Skip if not connected
-		if (BIT_NOT_VALID(g_iBit_Connected, i))
+		if (!is_player_connected(i))
 		{
 			continue;
 		}
@@ -440,7 +431,7 @@ Show_Menu_Player_List(iPlayer)
 			{
 				if (zpe_core_is_zombie(i))
 				{
-					if (iUser_Flags & read_flags(g_Access_Make_Human) && BIT_VALID(g_iBit_Alive, i))
+					if (iUser_Flags & read_flags(g_Access_Make_Human) && is_player_alive(i))
 					{
 						formatex(szMenu, charsmax(szMenu), "%s \r [%L]", szPlayer_Name, iPlayer, zpe_class_nemesis_get(i) ? "CLASS_NEMESIS" : zpe_class_assassin_get(i) ? "CLASS_ASSASSIN" : "CLASS_ZOMBIE");
 					}
@@ -453,7 +444,7 @@ Show_Menu_Player_List(iPlayer)
 
 				else
 				{
-					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && BIT_VALID(g_iBit_Alive, i))
+					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && is_player_alive(i))
 					{
 						formatex(szMenu, charsmax(szMenu), "%s \y [%L]", szPlayer_Name, iPlayer, zpe_class_survivor_get(i) ? "CLASS_SURVIVOR" : zpe_class_sniper_get(i) ? "CLASS_SNIPER" : "CLASS_HUMAN");
 					}
@@ -467,7 +458,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_NEMESIS: // Nemesis command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_nemesis_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && is_player_alive(i) && !zpe_class_nemesis_get(i))
 				{
 					if (zpe_core_is_zombie(i))
 					{
@@ -522,7 +513,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_ASSASSIN: // Assassin command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_assassin_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && is_player_alive(i) && !zpe_class_assassin_get(i))
 				{
 					if (zpe_core_is_zombie(i))
 					{
@@ -577,7 +568,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_survivor_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && is_player_alive(i) && !zpe_class_survivor_get(i))
 				{
 					if (zpe_core_is_zombie(i))
 					{
@@ -632,7 +623,7 @@ Show_Menu_Player_List(iPlayer)
 
 			case ACTION_MAKE_SNIPER: // Sniper command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, i) && !zpe_class_sniper_get(i))
+				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && is_player_alive(i) && !zpe_class_sniper_get(i))
 				{
 					if (zpe_core_is_zombie(i))
 					{
@@ -810,7 +801,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 	new iUser_Flags = get_user_flags(iPlayer);
 
 	// Make sure it's still connected
-	if (BIT_VALID(g_iBit_Connected, iPlayers))
+	if (is_player_connected(iPlayers))
 	{
 		// Perform the right action if allowed
 		switch (PL_ACTION(iPlayer))
@@ -819,7 +810,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 			{
 				if (zpe_core_is_zombie(iPlayers))
 				{
-					if (iUser_Flags & read_flags(g_Access_Make_Human) && BIT_VALID(g_iBit_Alive, iPlayers))
+					if (iUser_Flags & read_flags(g_Access_Make_Human) && is_player_alive(iPlayers))
 					{
 						zpe_admin_commands_human(iPlayer, iPlayers);
 					}
@@ -832,7 +823,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 				else
 				{
-					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && BIT_VALID(g_iBit_Alive, iPlayers))
+					if (iUser_Flags & read_flags(g_Access_Make_Zombie) && is_player_alive(iPlayers))
 					{
 						zpe_admin_commands_zombie(iPlayer, iPlayers);
 					}
@@ -846,7 +837,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_NEMESIS: // Nemesis command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_nemesis_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Nemesis) && is_player_alive(iPlayers) && !zpe_class_nemesis_get(iPlayers))
 				{
 					zpe_admin_commands_nemesis(iPlayer, iPlayers);
 				}
@@ -859,7 +850,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_ASSASSIN: // Assassin command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_assassin_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Assassin) && is_player_alive(iPlayers) && !zpe_class_assassin_get(iPlayers))
 				{
 					zpe_admin_commands_assassin(iPlayer, iPlayers);
 				}
@@ -872,7 +863,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_SURVIVOR: // Survivor command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_survivor_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Survivor) && is_player_alive(iPlayers) && !zpe_class_survivor_get(iPlayers))
 				{
 					zpe_admin_commands_survivor(iPlayer, iPlayers);
 				}
@@ -885,7 +876,7 @@ public Menu_Player_List(iPlayer, iMenu, iItem)
 
 			case ACTION_MAKE_SNIPER: // Sniper command
 			{
-				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && BIT_VALID(g_iBit_Alive, iPlayers) && !zpe_class_sniper_get(iPlayers))
+				if (iUser_Flags & read_flags(g_Access_Make_Sniper) && is_player_alive(iPlayers) && !zpe_class_sniper_get(iPlayers))
 				{
 					zpe_admin_commands_sniper(iPlayer, iPlayers);
 				}
@@ -963,7 +954,7 @@ public Menu_Game_Mode_List(iPlayer, iMenu, iItem)
 // Checks if a players is allowed to respawn
 Allowed_Respawn(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Alive, iPlayer))
+	if (is_player_alive(iPlayer))
 	{
 		return false;
 	}
@@ -976,27 +967,9 @@ Allowed_Respawn(iPlayer)
 	return true;
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	// Reset remembered menu pages
 	MENU_PAGE_GAME_MODES(iPlayer) = 0;
 	MENU_PAGE_PLAYERS(iPlayer) = 0;
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

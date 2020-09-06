@@ -25,6 +25,7 @@
 #include <zpe_class_zombie>
 #include <zpe_class_nemesis>
 #include <zpe_class_assassin>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -85,8 +86,6 @@ new g_pCvar_Knockback_Distance;
 new g_pCvar_Knockback_Nemesis;
 new g_pCvar_Knockback_Assassin;
 
-new g_iBit_Alive;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -117,22 +116,18 @@ public plugin_precache()
 	}
 }
 
-// Ham Trace Attack Post Forward
 public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDirection[3], iTracehandle, iDamage_Type)
 {
-	// Non-player damage or self damage
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker) || !is_player_alive(iAttacker))
 	{
 		return;
 	}
 
-	// Victim isn't zombie or attacker isn't human
-	if (!zpe_core_is_zombie(iVictim) || zpe_core_is_zombie(iAttacker))
+	if (zpe_core_is_human(iVictim) || zpe_core_is_zombie(iAttacker))
 	{
 		return;
 	}
 
-	// Not bullet damage
 	if (!(iDamage_Type & DMG_BULLET))
 	{
 		return;
@@ -235,19 +230,4 @@ public Ham_TraceAttack_Player_Post(iVictim, iAttacker, Float:fDamage, Float:fDir
 
 	// Set the knockback'd victim's velocity
 	set_entvar(iVictim, var_velocity, fDirection);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

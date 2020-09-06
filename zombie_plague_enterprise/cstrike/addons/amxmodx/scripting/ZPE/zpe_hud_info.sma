@@ -26,6 +26,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define LIBRARY_AMMOPACKS "zpe_ammopacks"
 #include <zpe_ammopacks>
@@ -69,9 +70,6 @@ new g_pCvar_Global_Hud_Informer_Human_B;
 new g_pCvar_All_Messages_Are_Converted;
 
 new g_Message_Sync;
-
-new g_iBit_Connected;
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -143,8 +141,6 @@ public client_putinserver(iPlayer)
 {
 	// Set the custom HUD display task
 	set_task(1.0, "Show_HUD", iPlayer + TASK_SHOWHUD, _, _, "b");
-
-	BIT_ADD(g_iBit_Connected, iPlayer);
 }
 
 // Show HUD Task
@@ -153,13 +149,13 @@ public Show_HUD(iTask_ID)
 	new iPlayer = ID_SHOWHUD;
 
 	// Player dead?
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
+	if (!is_player_alive(iPlayer))
 	{
 		// Get spectating target
 		iPlayer = get_entvar(iPlayer, PEV_SPEC_TARGET);
 
 		// Target not alive
-		if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
+		if (!is_player_alive(iPlayer))
 		{
 			return;
 		}
@@ -373,20 +369,7 @@ public Show_HUD(iTask_ID)
 	}
 }
 
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	remove_task(iPlayer + TASK_SHOWHUD);
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }

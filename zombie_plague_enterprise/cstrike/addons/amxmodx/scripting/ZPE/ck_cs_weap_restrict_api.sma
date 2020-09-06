@@ -20,6 +20,7 @@
 #include <cs_util>
 #include <hamsandwich>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 // Weapon entity names
 new const g_Weapon_Entity_Names[][] =
@@ -76,9 +77,6 @@ new g_Has_Weapon_Restrictions;
 new g_Allowed_Weapons_Bitsum[33];
 new g_Default_Allowed_Weapon[33];
 
-new g_iBit_Alive;
-new g_iBit_Connected;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -103,13 +101,8 @@ public plugin_natives()
 public native_set_player_weap_restrict(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	new iSet = get_param(2);
 
@@ -118,7 +111,7 @@ public native_set_player_weap_restrict(iPlugin_ID, iNum_Params)
 		// Player doesn't have weapon restrictions, no need to reset
 		if (BIT_NOT_VALID(g_Has_Weapon_Restrictions, iPlayer))
 		{
-			return true;
+			return;
 		}
 
 		BIT_SUB(g_Has_Weapon_Restrictions, iPlayer);
@@ -131,7 +124,7 @@ public native_set_player_weap_restrict(iPlugin_ID, iNum_Params)
 			ExecuteHamB(Ham_Item_Deploy, iCurrent_Weapon_Entity);
 		}
 
-		return true;
+		return;
 	}
 
 	new iAllowed_Bitsum = get_param(3);
@@ -145,9 +138,9 @@ public native_set_player_weap_restrict(iPlugin_ID, iNum_Params)
 
 	else if (!(iAllowed_Bitsum & iAllowed_Default))
 	{
-		log_error(AMX_ERR_NATIVE, "[CS] Default allowed weapon must be in allowed weapons bitsum");
+		log_error(AMX_ERR_NATIVE, "Default allowed weapon must be in allowed weapons bitsum");
 
-		return false;
+		return;
 	}
 
 	BIT_ADD(g_Has_Weapon_Restrictions, iPlayer);
@@ -162,20 +155,13 @@ public native_set_player_weap_restrict(iPlugin_ID, iNum_Params)
 	{
 		Ham_Item_Deploy_Post(iCurrent_Weapon_Entity);
 	}
-
-	return true;
 }
 
 public native_get_player_weap_restrict(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_CONNECTED(iPlayer, false)
 
 	if (BIT_NOT_VALID(g_Has_Weapon_Restrictions, iPlayer))
 	{
@@ -194,7 +180,7 @@ public Ham_Item_Deploy_Post(iWeapon_Entity)
 	new iOwner = CS_GET_WEAPON_ENTITY_OWNER(iWeapon_Entity)
 
 	// Owner not valid or does not have any restrictions set
-	if (BIT_NOT_VALID(g_iBit_Alive, iOwner) || BIT_NOT_VALID(g_Has_Weapon_Restrictions, iOwner))
+	if (!is_player(iOwner) || !is_player_alive(iOwner) || BIT_NOT_VALID(g_Has_Weapon_Restrictions, iOwner))
 	{
 		return;
 	}
@@ -224,25 +210,7 @@ public Ham_Item_Deploy_Post(iWeapon_Entity)
 	}
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-
 	BIT_SUB(g_Has_Weapon_Restrictions, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

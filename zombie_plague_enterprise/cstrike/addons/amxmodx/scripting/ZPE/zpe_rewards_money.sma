@@ -24,6 +24,7 @@
 #include <zpe_class_assassin>
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
+#include <ck_cs_common_bits_api>
 
 #define NO_DATA -1
 
@@ -57,9 +58,6 @@ new g_pCvar_Money_Nemesis_Ignore;
 new g_pCvar_Money_Assassin_Ignore;
 new g_pCvar_Money_Survivor_Ignore;
 new g_pCvar_Money_Sniper_Ignore;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -100,7 +98,7 @@ public plugin_init()
 public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Reward money to zombies infecting humans?
-	if (BIT_VALID(g_iBit_Connected, iAttacker) && iAttacker != iPlayer && get_pcvar_num(g_pCvar_Money_Human_Infected) > 0)
+	if (is_player_connected(iAttacker) && iAttacker != iPlayer && get_pcvar_num(g_pCvar_Money_Human_Infected) > 0)
 	{
 		UTIL_Set_User_Money(iAttacker, min(CS_GET_USER_MONEY(iAttacker) + get_pcvar_num(g_pCvar_Money_Human_Infected), get_pcvar_num(g_pCvar_Money_Limit)));
 	}
@@ -109,7 +107,7 @@ public zpe_fw_core_infect_post(iPlayer, iAttacker)
 public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDamage)
 {
 	// Non-player damage or self damage
-	if (iVictim == iAttacker || iAttacker > 32 || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return;
 	}
@@ -184,7 +182,7 @@ public RG_CBasePlayer_TakeDamage_Post(iVictim, iInflictor, iAttacker, Float:fDam
 public RG_CSGameRules_PlayerKilled_(iVictim, iAttacker)
 {
 	// Non-player kill or self kill
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return;
 	}
@@ -201,7 +199,7 @@ public RG_CSGameRules_PlayerKilled_(iVictim, iAttacker)
 public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 {
 	// Non-player kill or self kill
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return;
 	}
@@ -266,7 +264,7 @@ public Event_Round_Start()
 	// Save player's money at round start, plus our custom money rewards
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_NOT_VALID(g_iBit_Connected, i) || g_Money_Rewarded[i] == NO_DATA)
+		if (!is_player_connected(i) || g_Money_Rewarded[i] == NO_DATA)
 		{
 			continue;
 		}
@@ -285,7 +283,7 @@ public zpe_fw_gamemodes_end()
 		// Human team wins
 		for (new i = 1; i <= MaxClients; i++)
 		{
-			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			if (!is_player_connected(i))
 			{
 				continue;
 			}
@@ -307,7 +305,7 @@ public zpe_fw_gamemodes_end()
 		// Zombie team wins
 		for (new i = 1; i <= MaxClients; i++)
 		{
-			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			if (!is_player_connected(i))
 			{
 				continue;
 			}
@@ -329,7 +327,7 @@ public zpe_fw_gamemodes_end()
 		// No one wins
 		for (new i = 1; i <= MaxClients; i++)
 		{
-			if (BIT_NOT_VALID(g_iBit_Connected, i))
+			if (!is_player_connected(i))
 			{
 				continue;
 			}
@@ -341,7 +339,7 @@ public zpe_fw_gamemodes_end()
 
 public Message_Money(iMessage_ID, iMessage_Dest, iMessage_Entity)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iMessage_Entity))
+	if (!is_player_connected(iMessage_Entity))
 	{
 		return;
 	}
@@ -362,11 +360,6 @@ public Event_Game_Restart()
 	g_Game_Restarting = true;
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	// Clear saved money after disconnecting
@@ -376,17 +369,4 @@ public client_disconnected(iPlayer)
 	// Clear damage after disconnecting
 	g_fDamage_Dealt_To_Zombies[iPlayer] = 0.0;
 	g_fDamage_Dealt_To_Humans[iPlayer] = 0.0;
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iVictim)
-{
-	BIT_SUB(g_iBit_Alive, iVictim);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

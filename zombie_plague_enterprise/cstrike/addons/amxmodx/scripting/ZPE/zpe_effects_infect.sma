@@ -20,6 +20,7 @@
 #include <cs_util>
 #include <fakemeta>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 #define UNIT_SECOND (1 << 12)
 
@@ -76,8 +77,6 @@ new g_Message_Death;
 new g_Message_Score_Attrib;
 
 new g_Message_Damage;
-
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -138,7 +137,7 @@ public plugin_init()
 public zpe_fw_core_infect_post(iPlayer, iAttacker)
 {
 	// Attacker is valid?
-	if (BIT_VALID(g_iBit_Connected, iAttacker))
+	if (is_player_connected(iAttacker))
 	{
 		// Player infected himself
 		if (iAttacker == iPlayer)
@@ -353,14 +352,4 @@ Fix_Dead_Attrib(iPlayer)
 	write_byte(iPlayer); // player
 	write_byte(0); // attrib
 	message_end();
-}
-
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }

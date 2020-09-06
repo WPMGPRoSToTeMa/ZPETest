@@ -22,6 +22,8 @@
 #include <ck_cs_maxspeed_api>
 #include <ck_cs_weap_models_api>
 #include <zpe_kernel>
+#include <zpe_class_assassin>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/classes/other/zpe_assassin.ini"
 
@@ -38,9 +40,6 @@ new Array:g_aSound_Assassin_Miss_Slash;
 new Array:g_aSound_Assassin_Hit_Solid;
 new Array:g_aSound_Assassin_Hit_Normal;
 new Array:g_aSound_Assassin_Hit_Stab;
-
-new g_Forward;
-new g_Forward_Result;
 
 new g_pCvar_Assassin_Base_Health;
 new g_pCvar_Assassin_Health_Per_Player;
@@ -69,16 +68,15 @@ new g_pCvar_Assassin_Damage;
 new g_pCvar_Assassin_Grenade_Frost;
 new g_pCvar_Assassin_Grenade_Napalm;
 
+new g_iBvar_Assassin;
+
 new g_Gib_Model;
-
-new g_iBit_Assassin;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	g_iBvar_Assassin = get_bvar_id("iBit_Assassin");
 
 	g_pCvar_Assassin_Base_Health = register_cvar("zpe_assassin_base_health", "2000.0");
 	g_pCvar_Assassin_Health_Per_Player = register_cvar("zpe_assassin_health_per_player", "250.0");
@@ -106,9 +104,8 @@ public plugin_init()
 	g_pCvar_Assassin_Grenade_Frost = register_cvar("zpe_assassin_grenade_frost", "0");
 	g_pCvar_Assassin_Grenade_Napalm = register_cvar("zpe_assassin_grenade_napalm", "1");
 
-	g_Forward = CreateMultiForward("zpe_fw_class_asassin_bit_change", ET_CONTINUE, FP_CELL);
-
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "RG_CBasePlayer_TakeDamage_");
+	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
 	// Dont use ReAPI, in the form of code - load
 	register_forward(FM_EmitSound, "FM_EmitSound_");
@@ -170,13 +167,13 @@ public plugin_natives()
 public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
 {
 	// Non-player damage or self damage
-	if (!(1 <= iAttacker <= MaxClients) || iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
 
 	// Assassin attacking human
-	if (BIT_VALID(g_iBit_Assassin, iAttacker) && !zpe_core_is_zombie(iVictim))
+	if (zpe_class_assassin_get(iAttacker) && zpe_core_is_human(iAttacker))
 	{
 		// Ignore assassin damage override if damage comes from a 3rd party entity
 		// (to prevent this from affecting a sub-plugin's rockets e.g.)
@@ -192,75 +189,72 @@ public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker, Float:fDamage)
 
 public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer) || !zpe_core_is_zombie(iPlayer))
+	if (!is_player(iPlayer) || !zpe_class_assassin_get(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
 
-	if (BIT_VALID(g_iBit_Assassin, iPlayer))
+	static szSound[SOUND_MAX_LENGTH];
+
+	if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
 	{
-		static szSound[SOUND_MAX_LENGTH];
+		ArrayGetString(g_aSound_Assassin_Die, RANDOM(ArraySize(g_aSound_Assassin_Die)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
-		if (szSample[7] == 'd' && ((szSample[8] == 'i' && szSample[9] == 'e') || (szSample[8] == 'e' && szSample[9] == 'a')))
+		return FMRES_SUPERCEDE;
+	}
+
+	if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
+	{
+		ArrayGetString(g_aSound_Assassin_Fall, RANDOM(ArraySize(g_aSound_Assassin_Fall)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
+
+		return FMRES_SUPERCEDE;
+	}
+
+	if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
+	{
+		ArrayGetString(g_aSound_Assassin_Pain, RANDOM(ArraySize(g_aSound_Assassin_Pain)), szSound, charsmax(szSound));
+		emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
+
+		return FMRES_SUPERCEDE;
+	}
+
+	if (szSample[8] == 'k' && szSample[9] == 'n' && szSample[10] == 'i')
+	{
+		if (szSample[14] == 's' && szSample[15] == 'l' && szSample[16] == 'a')
 		{
-			ArrayGetString(g_aSound_Assassin_Die, RANDOM(ArraySize(g_aSound_Assassin_Die)), szSound, charsmax(szSound));
+			ArrayGetString(g_aSound_Assassin_Miss_Slash, RANDOM(ArraySize(g_aSound_Assassin_Miss_Slash)), szSound, charsmax(szSound));
 			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
 			return FMRES_SUPERCEDE;
 		}
 
-		if (szSample[10] == 'f' && szSample[11] == 'a' && szSample[12] == 'l' && szSample[13] == 'l')
+		if (szSample[14] == 'h' && szSample[15] == 'i' && szSample[16] == 't')
 		{
-			ArrayGetString(g_aSound_Assassin_Fall, RANDOM(ArraySize(g_aSound_Assassin_Fall)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
-
-			return FMRES_SUPERCEDE;
-		}
-
-		if (szSample[7] == 'b' && szSample[8] == 'h' && szSample[9] == 'i' && szSample[10] == 't')
-		{
-			ArrayGetString(g_aSound_Assassin_Pain, RANDOM(ArraySize(g_aSound_Assassin_Pain)), szSound, charsmax(szSound));
-			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
-
-			return FMRES_SUPERCEDE;
-		}
-
-		if (szSample[8] == 'k' && szSample[9] == 'n' && szSample[10] == 'i')
-		{
-			if (szSample[14] == 's' && szSample[15] == 'l' && szSample[16] == 'a')
+			if (szSample[18] == 's')
 			{
-				ArrayGetString(g_aSound_Assassin_Miss_Slash, RANDOM(ArraySize(g_aSound_Assassin_Miss_Slash)), szSound, charsmax(szSound));
+				ArrayGetString(g_aSound_Assassin_Hit_Solid, RANDOM(ArraySize(g_aSound_Assassin_Hit_Solid)), szSound, charsmax(szSound));
 				emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
 				return FMRES_SUPERCEDE;
 			}
 
-			if (szSample[14] == 'h' && szSample[15] == 'i' && szSample[16] == 't')
+			else
 			{
-				if (szSample[18] == 's')
-				{
-					ArrayGetString(g_aSound_Assassin_Hit_Solid, RANDOM(ArraySize(g_aSound_Assassin_Hit_Solid)), szSound, charsmax(szSound));
-					emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
-
-					return FMRES_SUPERCEDE;
-				}
-
-				else
-				{
-					ArrayGetString(g_aSound_Assassin_Hit_Normal, RANDOM(ArraySize(g_aSound_Assassin_Hit_Normal)), szSound, charsmax(szSound));
-					emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
-
-					return FMRES_SUPERCEDE;
-				}
-			}
-
-			if (szSample[14] == 's' && szSample[15] == 't' && szSample[16] == 'a')
-			{
-				ArrayGetString(g_aSound_Assassin_Hit_Stab, RANDOM(ArraySize(g_aSound_Assassin_Hit_Stab)), szSound, charsmax(szSound));
+				ArrayGetString(g_aSound_Assassin_Hit_Normal, RANDOM(ArraySize(g_aSound_Assassin_Hit_Normal)), szSound, charsmax(szSound));
 				emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
 
 				return FMRES_SUPERCEDE;
 			}
+		}
+
+		if (szSample[14] == 's' && szSample[15] == 't' && szSample[16] == 'a')
+		{
+			ArrayGetString(g_aSound_Assassin_Hit_Stab, RANDOM(ArraySize(g_aSound_Assassin_Hit_Stab)), szSound, charsmax(szSound));
+			emit_sound(iPlayer, iChannel, szSound, fVolume, fAttn, iFlags, iPitch);
+
+			return FMRES_SUPERCEDE;
 		}
 	}
 
@@ -270,7 +264,7 @@ public FM_EmitSound_(iPlayer, iChannel, const szSample[], Float:fVolume, Float:f
 public zpe_fw_grenade_frost_pre(iPlayer)
 {
 	// Prevent frost for assassin
-	if (BIT_VALID(g_iBit_Assassin, iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Frost))
+	if (zpe_class_assassin_get(iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Frost))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -281,7 +275,7 @@ public zpe_fw_grenade_frost_pre(iPlayer)
 public zpe_fw_grenade_napalm_pre(iPlayer)
 {
 	// Prevent burning for assassin
-	if (BIT_VALID(g_iBit_Assassin, iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Napalm))
+	if (zpe_class_assassin_get(iPlayer) && !get_pcvar_num(g_pCvar_Assassin_Grenade_Napalm))
 	{
 		return PLUGIN_HANDLED;
 	}
@@ -291,7 +285,7 @@ public zpe_fw_grenade_napalm_pre(iPlayer)
 
 public zpe_fw_core_spawn_post(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Assassin, iPlayer))
+	if (zpe_class_assassin_get(iPlayer))
 	{
 		// Remove assassin glow
 		if (get_pcvar_num(g_pCvar_Assassin_Glow))
@@ -306,15 +300,13 @@ public zpe_fw_core_spawn_post(iPlayer)
 		}
 
 		// Remove assassin flag
-		BIT_SUB(g_iBit_Assassin, iPlayer);
-
-		ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Assassin);
+		set_bvar_num(g_iBvar_Assassin, iBit_Assassin & ~(1 << iPlayer));
 	}
 }
 
 public zpe_fw_core_cure(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Assassin, iPlayer))
+	if (zpe_class_assassin_get(iPlayer))
 	{
 		// Remove assassin glow
 		if (get_pcvar_num(g_pCvar_Assassin_Glow))
@@ -329,16 +321,14 @@ public zpe_fw_core_cure(iPlayer)
 		}
 
 		// Remove assassin flag
-		BIT_SUB(g_iBit_Assassin, iPlayer);
-
-		ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Assassin);
+		set_bvar_num(g_iBvar_Assassin, iBit_Assassin & ~(1 << iPlayer));
 	}
 }
 
 public zpe_fw_core_infect_post(iPlayer)
 {
 	// Apply assassin attributes?
-	if (BIT_NOT_VALID(g_iBit_Assassin, iPlayer))
+	if (!zpe_class_assassin_get(iPlayer))
 	{
 		return;
 	}
@@ -389,28 +379,13 @@ public zpe_fw_core_infect_post(iPlayer)
 public native_class_assassin_set(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
+	CHECK_IS_NOT_ASSASSIN(iPlayer,)
 
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
-
-	if (BIT_VALID(g_iBit_Assassin, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Player already a assassin (%d)", iPlayer);
-
-		return false;
-	}
-
-	BIT_ADD(g_iBit_Assassin, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Assassin);
+	set_bvar_num(g_iBvar_Assassin, iBit_Assassin | (1 << iPlayer));
 
 	zpe_core_force_infect(iPlayer);
-
-	return true;
 }
 
 public native_class_assassin_get_count(iPlugin_ID, iNum_Params)
@@ -441,14 +416,9 @@ public Assassin_Aura(iTask_ID)
 	message_end();
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Assassin, iPlayer))
+	if (zpe_class_assassin_get(iPlayer))
 	{
 		// Remove assassin aura
 		if (get_pcvar_num(g_pCvar_Assassin_Aura))
@@ -456,24 +426,20 @@ public client_disconnected(iPlayer)
 			remove_task(iPlayer + TASK_AURA);
 		}
 	}
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
 public FM_ClientDisconnect_Post(iPlayer)
 {
 	// Reset flags AFTER disconnect (to allow checking if the player was assassin before disconnecting)
-	BIT_SUB(g_iBit_Assassin, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Assassin);
+	if (zpe_class_assassin_get(iPlayer))
+	{
+		set_bvar_num(g_iBvar_Assassin, iBit_Assassin & ~(1 << iPlayer));
+	}
 }
 
-// This is RG_CSGameRules_PlayerKilled Pre. Simply optimization.
-public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
+public RG_CSGameRules_PlayerKilled_Post(iVictim, iKiller)
 {
-	// When killed by a assassin victim explodes
-	if (BIT_VALID(g_iBit_Assassin, iAttacker))
+	if (is_player(iKiller) && zpe_class_assassin_get(iKiller))
 	{
 		if (get_pcvar_num(g_pCvar_Assassin_Kill_Splash))
 		{
@@ -516,18 +482,11 @@ public zpe_fw_kill_pre_bit_sub(iVictim, iAttacker)
 		}
 	}
 
-	if (BIT_VALID(g_iBit_Assassin, iVictim) && get_pcvar_num(g_pCvar_Assassin_Aura))
+	else if (zpe_class_assassin_get(iVictim) && get_pcvar_num(g_pCvar_Assassin_Aura))
 	{
 		// Remove assassin aura
 		remove_task(iVictim + TASK_AURA);
 	}
-
-	BIT_SUB(g_iBit_Alive, iVictim);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 // Get alive count -returns alive players number-
@@ -537,7 +496,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -553,7 +512,7 @@ Get_Assassin_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i) && BIT_VALID(g_iBit_Assassin, i))
+		if (is_player_alive(i) && zpe_class_assassin_get(i))
 		{
 			iAssassin++;
 		}

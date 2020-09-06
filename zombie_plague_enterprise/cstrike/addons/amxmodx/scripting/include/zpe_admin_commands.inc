@@ -12,7 +12,7 @@
  * @param {id} Admin player index.
  * @param {player} Target player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_admin_commands_zombie(id, player);
 
@@ -22,7 +22,7 @@ native zpe_admin_commands_zombie(id, player);
  * @param {id} Admin player index.
  * @param {player} Target player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_admin_commands_human(id, player);
 
@@ -32,7 +32,7 @@ native zpe_admin_commands_human(id, player);
  * @param {id} Admin player index.
  * @param {player} Target player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_admin_commands_nemesis(id, player);
 
@@ -42,7 +42,7 @@ native zpe_admin_commands_nemesis(id, player);
  * @param {id} Admin player index.
  * @param {player} Target player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_admin_commands_assassin(id, player);
 
@@ -52,7 +52,7 @@ native zpe_admin_commands_assassin(id, player);
  * @param {id} Admin player index.
  * @param {player} Target player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_admin_commands_survivor(id, player);
 
@@ -62,7 +62,7 @@ native zpe_admin_commands_survivor(id, player);
  * @param {id} Admin player index.
  * @param {player} Target player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_admin_commands_sniper(id, player);
 
@@ -82,6 +82,6 @@ native zpe_admin_commands_respawn(id, player);
  * @param {id} Admin player index.
  * @param {game_mode_id} A valid game mode ID.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_admin_commands_start_mode(id, game_mode_id);

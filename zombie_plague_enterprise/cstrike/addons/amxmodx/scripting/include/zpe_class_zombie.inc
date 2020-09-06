@@ -32,7 +32,7 @@ native zpe_class_zombie_get_next(player);
  * @param {player} Player index.
  * @param {classid} A valid zombie class ID.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_zombie_set_next(player, classid);
 
@@ -70,7 +70,7 @@ native zpe_class_zombie_register(const name[], const description[], Float:health
  * @param {classid} A valid zombie class ID.
  * @param {model} Player model's short name.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_zombie_register_model(classid, const model[]);
 
@@ -80,7 +80,7 @@ native zpe_class_zombie_register_model(classid, const model[]);
  * @param {classid} A valid zombie class ID.
  * @param {clawmodel} Claw model filename.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_zombie_register_claw(classid, const clawmodel[]);
 
@@ -90,7 +90,7 @@ native zpe_class_zombie_register_claw(classid, const clawmodel[]);
  * @param {classid} A valid zombie class ID.
  * @param {knockback} Knockback multiplier.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_zombie_register_kb(classid, Float:knockback);
 
@@ -110,7 +110,7 @@ native zpe_class_zombie_get_id(const real_name[]);
  * @param {name} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_zombie_get_name(classid, name[], len);
 
@@ -121,7 +121,7 @@ native zpe_class_zombie_get_name(classid, name[], len);
  * @param {name} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_zombie_get_real_name(classid, real_name[], len);
 
@@ -132,7 +132,7 @@ native zpe_class_zombie_get_real_name(classid, real_name[], len);
  * @param {description} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_zombie_get_description(classid, description[], len);
 

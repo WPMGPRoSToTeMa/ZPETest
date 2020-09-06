@@ -13,7 +13,7 @@
  *
  * @param {name} Game mode name.
  *
- * @return An internal game mode ID, or ZPE_INVALID_GAME_MODE on failure.
+ * @return An internal game mode ID.
  */
 native zpe_gamemodes_register(const name[]);
 
@@ -22,7 +22,7 @@ native zpe_gamemodes_register(const name[]);
  *
  * @param {game_mode_id} A valid game mode ID.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_gamemodes_set_default(game_mode_id);
 
@@ -52,7 +52,7 @@ native zpe_gamemodes_get_current();
  *
  * @param {name} Game mode name to look for.
  *
- * @return Internal game mode ID, or ZPE_INVALID_GAME_MODE if not found.
+ * @return Internal game mode ID, or ZPE_INVALID_GAME_MODE.
  */
 native zpe_gamemodes_get_id(const name[]);
 
@@ -63,7 +63,7 @@ native zpe_gamemodes_get_id(const name[]);
  * @param {name} The buffer to store the string in.
  * @param {len} Character size of the output buffer.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_gamemodes_get_name(game_mode_id, name[], len);
 

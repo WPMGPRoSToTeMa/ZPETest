@@ -18,6 +18,7 @@
 
 #include <amxmodx>
 #include <cs_util>
+#include <ck_cs_common_bits_api>
 #include <ck_cs_maxspeed_api>
 
 new g_Has_Custom_Max_Speed;
@@ -25,8 +26,6 @@ new g_Max_Speed_Is_Multiplier;
 new g_Freeze_Time;
 
 new Float:g_fCustom_Max_Speed[MAX_PLAYERS + 1];
-
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -55,22 +54,11 @@ public plugin_natives()
 public native_set_player_maxspeed(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	new Float:fMax_Speed = get_param_f(2);
-
-	if (fMax_Speed < 0.0)
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Invalid maxspeed value %.2f", fMax_Speed);
-
-		return false;
-	}
+	CHECK_MAX_SPEED(fMax_Speed,)
 
 	new iMultiplier = get_param(3);
 
@@ -89,32 +77,23 @@ public native_set_player_maxspeed(iPlugin_ID, iNum_Params)
 	}
 
 	rg_reset_maxspeed(iPlayer);
-
-	return true;
 }
 
 public native_reset_player_maxspeed(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "[CS] Player is not in game (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	// Player doesn't have custom maxspeed, no need to reset
 	if (BIT_NOT_VALID(g_Has_Custom_Max_Speed, iPlayer))
 	{
-		return true;
+		return;
 	}
 
 	BIT_SUB(g_Has_Custom_Max_Speed, iPlayer);
 
 	rg_reset_maxspeed(iPlayer);
-
-	return true;
 }
 
 public Event_Round_Start()
@@ -129,8 +108,7 @@ public Logevent_Round_Start()
 
 public RG_CBasePlayer_ResetMaxSpeed_Post(iPlayer)
 {
-	// is_user_alive is used to prevent the bug that occurs when using the bit sum
-	if (g_Freeze_Time || !is_user_alive(iPlayer) || BIT_NOT_VALID(g_Has_Custom_Max_Speed, iPlayer))
+	if (g_Freeze_Time || !is_player_alive(iPlayer) || BIT_NOT_VALID(g_Has_Custom_Max_Speed, iPlayer))
 	{
 		return;
 	}
@@ -147,15 +125,7 @@ public RG_CBasePlayer_ResetMaxSpeed_Post(iPlayer)
 		set_entvar(iPlayer, var_maxspeed, g_fCustom_Max_Speed[iPlayer]);
 	}
 }
-
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	BIT_SUB(g_Has_Custom_Max_Speed, iPlayer);
-
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }

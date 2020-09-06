@@ -18,6 +18,8 @@
 
 #include <amxmodx>
 #include <cs_util>
+#include <ck_cs_common_bits_api>
+#include <zpe_kernel>
 
 // Custom Forwards
 enum TOTAL_FORWARDS
@@ -30,9 +32,7 @@ enum TOTAL_FORWARDS
 	FW_USER_CURE_POST,
 	FW_USER_LAST_ZOMBIE,
 	FW_USER_LAST_HUMAN,
-	FW_USER_SPAWN_POST,
-	FW_USER_BIT_ADD,
-	FW_USER_BIT_SUB
+	FW_USER_SPAWN_POST
 };
 
 new g_Last_Zombie_Forward_Called;
@@ -40,17 +40,13 @@ new g_Last_Human_Forward_Called;
 
 new g_Respawn_As_Zombie;
 
-new g_Forward;
 new g_Forward_Result;
 new g_Forwards[TOTAL_FORWARDS];
 
-new g_iBit_Zombie;
-new g_iBit_First_Zombie;
-new g_iBit_Last_Zombie;
-new g_iBit_Last_Human;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
+new g_iBvar_Zombie;
+new g_iBvar_First_Zombie;
+new g_iBvar_Last_Zombie;
+new g_iBvar_Last_Human;
 
 public plugin_init()
 {
@@ -58,7 +54,10 @@ public plugin_init()
 
 	register_dictionary("zombie_plague_enterprise.txt");
 
-	g_Forward = CreateMultiForward("zpe_fw_class_zombie_bit_change", ET_CONTINUE, FP_CELL);
+	g_iBvar_Zombie = get_bvar_id("iBit_Zombie");
+	g_iBvar_First_Zombie = get_bvar_id("iBit_First_Zombie");
+	g_iBvar_Last_Zombie = get_bvar_id("iBit_Last_Zombie");
+	g_iBvar_Last_Human = get_bvar_id("iBit_Last_Human");
 
 	g_Forwards[FW_USER_INFECT_PRE] = CreateMultiForward("zpe_fw_core_infect_pre", ET_CONTINUE, FP_CELL, FP_CELL);
 	g_Forwards[FW_USER_INFECT] = CreateMultiForward("zpe_fw_core_infect", ET_IGNORE, FP_CELL, FP_CELL);
@@ -73,11 +72,7 @@ public plugin_init()
 
 	g_Forwards[FW_USER_SPAWN_POST] = CreateMultiForward("zpe_fw_core_spawn_post", ET_IGNORE, FP_CELL);
 
-	g_Forwards[FW_USER_BIT_ADD] = CreateMultiForward("zpe_fw_spawn_post_bit_add", ET_IGNORE, FP_CELL);
-	g_Forwards[FW_USER_BIT_SUB] = CreateMultiForward("zpe_fw_kill_pre_bit_sub", ET_IGNORE, FP_CELL);
-
 	RegisterHookChain(RG_CSGameRules_PlayerSpawn, "RG_CSGameRules_PlayerSpawn_Post", 1);
-	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Pre");
 	RegisterHookChain(RG_CSGameRules_PlayerKilled, "RG_CSGameRules_PlayerKilled_Post", 1);
 
 	register_forward(FM_ClientDisconnect, "FM_ClientDisconnect_Post", 1)
@@ -92,9 +87,6 @@ public plugin_natives()
 {
 	register_library("zpe_kernel");
 
-	register_native("zpe_core_is_first_zombie", "native_core_is_first_zombie");
-	register_native("zpe_core_is_last_zombie", "native_core_is_last_zombie");
-	register_native("zpe_core_is_last_human", "native_core_is_last_human");
 	register_native("zpe_core_get_zombie_count", "native_core_get_zombie_count");
 	register_native("zpe_core_get_human_count", "native_core_get_human_count");
 	register_native("zpe_core_infect", "native_core_infect");
@@ -107,17 +99,13 @@ public plugin_natives()
 public RG_CSGameRules_PlayerSpawn_Post(iPlayer)
 {
 	// Not connected
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
+	if (!is_player_connected(iPlayer))
 	{
 		return HC_CONTINUE;
 	}
 
-	BIT_ADD(g_iBit_Alive, iPlayer);
-
 	// ZPE Spawn Forward
 	ExecuteForward(g_Forwards[FW_USER_SPAWN_POST], g_Forward_Result, iPlayer);
-
-	ExecuteForward(g_Forwards[FW_USER_BIT_ADD], g_Forward_Result, iPlayer);
 
 	// Set zombie/human attributes upon respawn
 	if (BIT_VALID(g_Respawn_As_Zombie, iPlayer))
@@ -153,18 +141,17 @@ Infect_Player(iPlayer, iAttacker = 0)
 
 	ExecuteForward(g_Forwards[FW_USER_INFECT], g_Forward_Result, iPlayer, iAttacker);
 
-	BIT_ADD(g_iBit_Zombie, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Zombie);
+	set_bvar_num(g_iBvar_Zombie, iBit_Zombie | (1 << iPlayer));
 
 	if (Get_Zombie_Count() == 1)
 	{
-		BIT_ADD(g_iBit_First_Zombie, iPlayer);
+		set_bvar_num(g_iBvar_First_Zombie, iBit_First_Zombie | (1 << iPlayer));
 	}
 
 	else
 	{
-		BIT_SUB(g_iBit_First_Zombie, iPlayer);
+		// TODO: may be it's not needed
+		set_bvar_num(g_iBvar_First_Zombie, iBit_First_Zombie & ~(1 << iPlayer));
 	}
 
 	ExecuteForward(g_Forwards[FW_USER_INFECT_POST], g_Forward_Result, iPlayer, iAttacker);
@@ -184,9 +171,7 @@ Cure_Player(iPlayer, iAttacker = 0)
 
 	ExecuteForward(g_Forwards[FW_USER_CURE], g_Forward_Result, iPlayer, iAttacker);
 
-	BIT_SUB(g_iBit_Zombie, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Zombie);
+	set_bvar_num(g_iBvar_Zombie, iBit_Zombie & ~(1 << iPlayer));
 
 	ExecuteForward(g_Forwards[FW_USER_CURE_POST], g_Forward_Result, iPlayer, iAttacker);
 
@@ -207,16 +192,13 @@ Check_Last_Zombie_And_Human()
 		for (new i = 1; i <= MaxClients; i++)
 		{
 			// Last zombie
-			if (BIT_VALID(g_iBit_Alive, i) && BIT_VALID(g_iBit_Zombie, i))
+			if (is_player_alive(i) && zpe_core_is_zombie(i))
 			{
-				BIT_ADD(g_iBit_Last_Zombie, i);
+				set_bvar_num(g_iBvar_Last_Zombie, 1 << i);
 
 				iLast_Zombie_ID = i;
-			}
 
-			else
-			{
-				BIT_SUB(g_iBit_Last_Zombie, i);
+				break;
 			}
 		}
 	}
@@ -225,7 +207,7 @@ Check_Last_Zombie_And_Human()
 	{
 		g_Last_Zombie_Forward_Called = false;
 
-		g_iBit_Last_Zombie = false;
+		set_bvar_num(g_iBvar_Last_Zombie, 0);
 	}
 
 	// Last zombie forward
@@ -241,16 +223,13 @@ Check_Last_Zombie_And_Human()
 		for (new i = 1; i <= MaxClients; i++)
 		{
 			// Last human
-			if (BIT_VALID(g_iBit_Alive, i) && BIT_NOT_VALID(g_iBit_Zombie, i))
+			if (is_player_alive(i) && zpe_core_is_human(i))
 			{
-				BIT_ADD(g_iBit_Last_Human, i);
+				set_bvar_num(g_iBvar_Last_Human, 1 << i);
 
 				iLast_Human_ID = i;
-			}
 
-			else
-			{
-				BIT_SUB(g_iBit_Last_Human, i);
+				break;
 			}
 		}
 	}
@@ -259,7 +238,7 @@ Check_Last_Zombie_And_Human()
 	{
 		g_Last_Human_Forward_Called = false;
 
-		g_iBit_Last_Human = false;
+		set_bvar_num(g_iBvar_Last_Human, 0);
 	}
 
 	// Last human forward
@@ -269,48 +248,6 @@ Check_Last_Zombie_And_Human()
 
 		g_Last_Human_Forward_Called = true;
 	}
-}
-
-public native_core_is_first_zombie(iPlugin_ID, iNum_Params)
-{
-	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return -1;
-	}
-
-	return BIT_VALID(g_iBit_First_Zombie, iPlayer);
-}
-
-public native_core_is_last_zombie(iPlugin_ID, iNum_Params)
-{
-	new iPlayer = get_param(1);
-
-	if (!is_user_connected(iPlayer)) // Use bit = invalid player
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return -1;
-	}
-
-	return BIT_VALID(g_iBit_Last_Zombie, iPlayer);
-}
-
-public native_core_is_last_human(iPlugin_ID, iNum_Params)
-{
-	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return -1;
-	}
-
-	return BIT_VALID(g_iBit_Last_Human, iPlayer);
 }
 
 public native_core_get_zombie_count(iPlugin_ID, iNum_Params)
@@ -326,109 +263,62 @@ public native_core_get_human_count(iPlugin_ID, iNum_Params)
 public native_core_infect(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (!is_user_alive(iPlayer)) // Use bit = invalid player
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
-
-	if (BIT_VALID(g_iBit_Zombie, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Player already infected (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
+	CHECK_IS_HUMAN(iPlayer,)
 
 	new iAttacker = get_param(2);
 
-	if (iAttacker && !is_user_alive(iAttacker)) // Use bit = invalid player
+	if (iAttacker)
 	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iAttacker);
-
-		return false;
+		CHECK_IS_PLAYER(iAttacker,)
+		CHECK_IS_ALIVE(iAttacker,)
 	}
 
 	Infect_Player(iPlayer, iAttacker);
-
-	return true;
 }
 
 public native_core_cure(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
-
-	if (BIT_NOT_VALID(g_iBit_Zombie, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Player not infected (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,) 
+	CHECK_IS_ZOMBIE(iPlayer,)
 
 	new iAttacker = get_param(2);
 
-	if (iAttacker && BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iAttacker)
 	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iAttacker);
-
-		return false;
+		CHECK_IS_PLAYER(iAttacker,)
+		CHECK_IS_ALIVE(iAttacker,)
 	}
 
 	Cure_Player(iPlayer, iAttacker);
-
-	return true;
 }
 
 public native_core_force_infect(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Infect_Player(iPlayer);
-
-	return true;
 }
 
 public native_core_force_cure(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Cure_Player(iPlayer);
-
-	return true;
 }
 
 public native_core_respawn_as_zombie(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	new iRespawn_As_Zombie = get_param(2);
 
@@ -441,8 +331,6 @@ public native_core_respawn_as_zombie(iPlugin_ID, iNum_Params)
 	{
 		BIT_SUB(g_Respawn_As_Zombie, iPlayer);
 	}
-
-	return true;
 }
 
 // Get Zombie Count -returns alive zombies number-
@@ -452,7 +340,7 @@ Get_Zombie_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i) && BIT_VALID(g_iBit_Zombie, i))
+		if (is_player_alive(i) && zpe_core_is_zombie(i))
 		{
 			iZombies++;
 		}
@@ -468,7 +356,7 @@ Get_Human_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i) && BIT_NOT_VALID(g_iBit_Zombie, i))
+		if (is_player_alive(i) && zpe_core_is_human(i))
 		{
 			iHumans++;
 		}
@@ -477,33 +365,13 @@ Get_Human_Count()
 	return iHumans;
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
 public FM_ClientDisconnect_Post(iPlayer)
 {
 	// Reset flags AFTER disconnect (to allow checking if the player was zombie before disconnecting)
-	BIT_SUB(g_iBit_Zombie, iPlayer);
-
-	ExecuteForward(g_Forward, g_Forward_Result, g_iBit_Zombie);
+	set_bvar_num(g_iBvar_Zombie, iBit_Zombie & ~(1 << iPlayer));
 
 	BIT_SUB(g_Respawn_As_Zombie, iPlayer);
 
 	// This should be called AFTER client disconnects (post forward)
 	Check_Last_Zombie_And_Human();
-}
-
-public RG_CSGameRules_PlayerKilled_Pre(iPlayer, iAttacker)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-
-	ExecuteForward(g_Forwards[FW_USER_BIT_SUB], g_Forward_Result, iPlayer);
 }

@@ -23,6 +23,7 @@
 #include <ck_cs_weap_models_api>
 #include <zpe_kernel>
 #include <zpe_class_human_const>
+#include <ck_cs_common_bits_api>
 
 #define HUMANS_DEFAULT_NAME "Human"
 #define HUMANS_DEFAULT_DESCRIPTION "Default"
@@ -72,9 +73,6 @@ new Array:g_aClass_Human_Gravity;
 new g_Class_Human_Count;
 
 new g_pCvar_Human_Armor_Type;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -390,13 +388,8 @@ public zpe_fw_core_infect(iPlayer, iAttacker)
 public native_class_human_get_current(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return ZPE_INVALID_CLASS_HUMAN;
-	}
+	CHECK_IS_PLAYER(iPlayer, ZPE_INVALID_CLASS_HUMAN)
+	CHECK_IS_CONNECTED(iPlayer, ZPE_INVALID_CLASS_HUMAN)
 
 	return g_Class_Human[iPlayer];
 }
@@ -404,13 +397,8 @@ public native_class_human_get_current(iPlugin_ID, iNum_Params)
 public native_class_human_get_next(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return ZPE_INVALID_CLASS_HUMAN;
-	}
+	CHECK_IS_PLAYER(iPlayer, ZPE_INVALID_CLASS_HUMAN)
+	CHECK_IS_CONNECTED(iPlayer, ZPE_INVALID_CLASS_HUMAN)
 
 	return g_Class_Human_Next[iPlayer];
 }
@@ -418,38 +406,19 @@ public native_class_human_get_next(iPlugin_ID, iNum_Params)
 public native_class_human_set_next(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	new iClass_ID = get_param(2);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Human_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class human player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_HUMAN(iClass_ID, g_Class_Human_Count,)
 
 	g_Class_Human_Next[iPlayer] = iClass_ID;
-
-	return true;
 }
 
 public Float:native_class_human_get_max_health(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Human_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid class human player (%d)", iClass_ID);
-
-		return -1.0;
-	}
+	CHECK_CLASS_HUMAN(iClass_ID, g_Class_Human_Count, -1.0)
 
 	return ArrayGetCell(g_aClass_Human_Health, iClass_ID);
 }
@@ -601,18 +570,12 @@ public native_class_human_register(iPlugin_ID, iNum_Params)
 public native_class_human_register_model(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Human_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid human class player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_HUMAN(iClass_ID, g_Class_Human_Count,)
 
 	// Player models already loaded from file
 	if (ArrayGetCell(g_aClass_Human_Models_File, iClass_ID))
 	{
-		return true;
+		return;
 	}
 
 	new szPlayer_Model[32];
@@ -635,22 +598,16 @@ public native_class_human_register_model(iPlugin_ID, iNum_Params)
 
 	// Save models to file
 	new szReal_Name[32];
-
 	ArrayGetString(g_aClass_Human_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
 
 	new szClass_Human_Settings_Path[64];
-
 	formatex(szClass_Human_Settings_Path, charsmax(szClass_Human_Settings_Path), "%s/%s.ini", ZPE_CLASS_HUMAN_SETTINGS_PATH, szReal_Name);
-
 	amx_save_setting_string_arr(szClass_Human_Settings_Path, ZPE_CLASS_HUMAN_SETTINGS_SECTION_NAME, "PLAYER MODELS", aClass_Human_Models);
-
-	return true;
 }
 
 public native_class_human_get_id(iPlugin_ID, iNum_Params)
 {
 	new szReal_Name[32];
-
 	get_string(1, szReal_Name, charsmax(szReal_Name));
 
 	// Loop through every class
@@ -672,67 +629,37 @@ public native_class_human_get_id(iPlugin_ID, iNum_Params)
 public native_class_human_get_name(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Human_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid human class player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_HUMAN(iClass_ID, g_Class_Human_Count,)
 
 	new szName[32];
-
 	ArrayGetString(g_aClass_Human_Name, iClass_ID, szName, charsmax(szName));
 
-	new sLen = get_param(3);
-
-	set_string(2, szName, sLen);
-
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szName, iLen);
 }
 
 public native_class_human_get_real_name(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Human_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid human class player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_HUMAN(iClass_ID, g_Class_Human_Count,)
 
 	new szReal_Name[32];
-
 	ArrayGetString(g_aClass_Human_Real_Name, iClass_ID, szReal_Name, charsmax(szReal_Name));
 
-	new sLen = get_param(3);
-
-	set_string(2, szReal_Name, sLen);
-
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szReal_Name, iLen);
 }
 
 public native_class_human_get_description(iPlugin_ID, iNum_Params)
 {
 	new iClass_ID = get_param(1);
-
-	if (iClass_ID < 0 || iClass_ID >= g_Class_Human_Count)
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid human class player (%d)", iClass_ID);
-
-		return false;
-	}
+	CHECK_CLASS_HUMAN(iClass_ID, g_Class_Human_Count,)
 
 	new szDescription[32];
-
 	ArrayGetString(g_aClass_Human_Description, iClass_ID, szDescription, charsmax(szDescription));
 
-	new sLen = get_param(3);
-
-	set_string(2, szDescription, sLen);
-
-	return true;
+	new iLen = get_param(3);
+	set_string(2, szDescription, iLen);
 }
 
 public native_class_human_get_count(iPlugin_ID, iNum_Params)
@@ -743,25 +670,16 @@ public native_class_human_get_count(iPlugin_ID, iNum_Params)
 public native_class_human_show_menu(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_CONNECTED(iPlayer,)
 
 	Show_Menu_Class_Human(iPlayer);
-
-	return true;
 }
 
 public native_class_human_menu_text_add(iPlugin_ID, iNum_Params)
 {
-	static szText[32];
-
+	new szText[32];
 	get_string(1, szText, charsmax(szText));
-
 	format(g_Additional_Menu_Text, charsmax(g_Additional_Menu_Text), "%s %s", g_Additional_Menu_Text, szText);
 }
 
@@ -769,25 +687,10 @@ public client_putinserver(iPlayer)
 {
 	g_Class_Human[iPlayer] = ZPE_INVALID_CLASS_HUMAN;
 	g_Class_Human_Next[iPlayer] = ZPE_INVALID_CLASS_HUMAN;
-
-	BIT_ADD(g_iBit_Connected, iPlayer);
 }
 
 public client_disconnected(iPlayer)
 {
 	// Reset remembered menu pages
 	MENU_PAGE_CLASS(iPlayer) = 0;
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

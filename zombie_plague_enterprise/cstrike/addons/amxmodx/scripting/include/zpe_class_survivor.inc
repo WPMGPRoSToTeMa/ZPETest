@@ -8,28 +8,23 @@
 
 #include <cs_util_const>
 
+public stock iBit_Survivor;
+
 /**
  * Returns whether a player is a Survivor.
  *
- * @param {player} Player index.
+ * @param {%0} Player index.
  *
  * @return True if it is, false otherwise.
  */
-#define zpe_class_survivor_get(%0) BIT_VALID(g_iBit_Survivor, %0)
-
-new stock g_iBit_Survivor;
-
-public zpe_fw_class_survivor_bit_change(player)
-{
-	g_iBit_Survivor = player;
-}
+#define zpe_class_survivor_get(%0) BIT_VALID(iBit_Survivor, %0)
 
 /**
  * Forces a player to become a Survivor.
  *
  * @param {player} Player index.
  *
- * @return True on success, false otherwise.
+ * @return None.
  */
 native zpe_class_survivor_set(player);
 

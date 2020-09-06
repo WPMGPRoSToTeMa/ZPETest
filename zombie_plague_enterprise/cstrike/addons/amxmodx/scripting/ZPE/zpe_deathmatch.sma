@@ -20,6 +20,7 @@
 #include <cs_util>
 #include <zpe_gamemodes>
 #include <zpe_kernel>
+#include <ck_cs_common_bits_api>
 
 #define TASK_RESPAWN 100
 #define ID_RESPAWN (iTask_ID - TASK_RESPAWN)
@@ -41,9 +42,6 @@ new g_pCvar_Respawn_Zombies;
 new g_pCvar_Respawn_Humans;
 new g_pCvar_Respawn_On_Suicide;
 
-new g_iBit_Alive;
-new g_iBit_Connected;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -64,13 +62,13 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 	// Respawn if deathmatch is enabled
 	if (get_pcvar_num(g_pCvar_Deathmatch))
 	{
-		if (!get_pcvar_num(g_pCvar_Respawn_On_Suicide) && (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Connected, iAttacker)))
+		if (!get_pcvar_num(g_pCvar_Respawn_On_Suicide) && iVictim == iAttacker)
 		{
 			return;
 		}
 
 		// Respawn if human/zombie?
-		if ((zpe_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Zombies)) || (!zpe_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Humans)))
+		if ((zpe_core_is_zombie(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Zombies)) || (zpe_core_is_human(iVictim) && !get_pcvar_num(g_pCvar_Respawn_Humans)))
 		{
 			return;
 		}
@@ -82,7 +80,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim, iAttacker)
 public Respawn_Player_Task(iTask_ID)
 {
 	// Already alive or round ended
-	if (BIT_VALID(g_iBit_Alive, ID_RESPAWN) || zpe_gamemodes_get_current() == ZPE_NO_GAME_MODE)
+	if (is_player_alive(ID_RESPAWN) || zpe_gamemodes_get_current() == ZPE_NO_GAME_MODE)
 	{
 		return;
 	}
@@ -136,30 +134,15 @@ public zpe_fw_gamemodes_end()
 	}
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	// Remove tasks on disconnect
 	remove_task(iPlayer + TASK_RESPAWN);
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }
 
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
 	remove_task(iPlayer + TASK_RESPAWN);
-
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
 
 // Get Alive Count -returns alive players number-
@@ -169,7 +152,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}

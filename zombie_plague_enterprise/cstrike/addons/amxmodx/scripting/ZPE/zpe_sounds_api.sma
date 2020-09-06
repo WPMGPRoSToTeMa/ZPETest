@@ -28,6 +28,7 @@
 #include <zpe_class_sniper>
 #include <zpe_grenade_napalm>
 #include <zpe_sounds_api>
+#include <ck_cs_common_bits_api>
 
 #define TASK_IDLE_SOUNDS 100
 #define TASK_FLAME_SOUNDS 1212
@@ -47,8 +48,6 @@ new g_pCvar_Sound_Time_Idle_Max_Zombie;
 
 new g_pCvar_Sound_Time_Idle_Min_Human;
 new g_pCvar_Sound_Time_Idle_Max_Human;
-
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -74,12 +73,12 @@ public plugin_natives()
 
 public FM_EmitSound_Zombie_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
-	if (iPlayer > 32 || BIT_NOT_VALID(g_iBit_Connected, iPlayer))
+	if (!is_player(iPlayer) || !is_player_connected(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
 
-	if (zpe_class_nemesis_get(iPlayer) || zpe_class_assassin_get(iPlayer) || !zpe_core_is_zombie(iPlayer))
+	if (zpe_class_nemesis_get(iPlayer) || zpe_class_assassin_get(iPlayer) || zpe_core_is_human(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
@@ -170,7 +169,7 @@ public FM_EmitSound_Zombie_(iPlayer, iChannel, szSample[], Float:fVolume, Float:
 
 public FM_EmitSound_Human_(iPlayer, iChannel, szSample[], Float:fVolume, Float:fAttn, iFlags, iPitch)
 {
-	if (iPlayer > 32 || BIT_NOT_VALID(g_iBit_Connected, iPlayer))
+	if (!is_player(iPlayer) || !is_player_connected(iPlayer))
 	{
 		return FMRES_IGNORED;
 	}
@@ -525,14 +524,7 @@ Remove_Tasks(iPlayer)
 	remove_task(iPlayer + TASK_FLAME_SOUNDS);
 }
 
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
 public client_disconnected(iPlayer)
 {
 	Remove_Tasks(iPlayer);
-
-	BIT_SUB(g_iBit_Connected, iPlayer);
 }

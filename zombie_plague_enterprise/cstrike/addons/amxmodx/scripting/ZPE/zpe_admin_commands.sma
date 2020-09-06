@@ -27,6 +27,7 @@
 #include <zpe_class_survivor>
 #include <zpe_class_sniper>
 #include <zpe_log>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -62,9 +63,6 @@ new g_Game_Mode_Nemesis_ID;
 new g_Game_Mode_Assassin_ID;
 new g_Game_Mode_Survivor_ID;
 new g_Game_Mode_Sniper_ID;
-
-new g_iBit_Alive;
-new g_iBit_Connected;
 
 public plugin_init()
 {
@@ -156,172 +154,90 @@ public plugin_cfg()
 public native_admin_commands_zombie(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin,)
+	CHECK_IS_CONNECTED(iID_Admin,)
 
 	new iPlayer = get_param(2);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Command_Zombie(iID_Admin, iPlayer);
-
-	return true;
 }
 
 public native_admin_commands_human(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin,)
+	CHECK_IS_CONNECTED(iID_Admin,)
 
 	new iPlayer = get_param(2);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Command_Human(iID_Admin, iPlayer);
-
-	return true;
 }
 
 public native_admin_commands_nemesis(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin,)
+	CHECK_IS_CONNECTED(iID_Admin,)
 
 	new iPlayer = get_param(2);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Command_Nemesis(iID_Admin, iPlayer);
-
-	return true;
 }
 
 public native_admin_commands_assassin(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin,)
+	CHECK_IS_CONNECTED(iID_Admin,)
 
 	new iPlayer = get_param(2);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Command_Assassin(iID_Admin, iPlayer);
-
-	return true;
 }
 
 public native_admin_commands_survivor(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin,)
+	CHECK_IS_CONNECTED(iID_Admin,)
 
 	new iPlayer = get_param(2);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Command_Survivor(iID_Admin, iPlayer);
-
-	return true;
 }
 
 public native_admin_commands_sniper(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin,)
+	CHECK_IS_CONNECTED(iID_Admin,)
 
 	new iPlayer = get_param(2);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer,)
+	CHECK_IS_ALIVE(iPlayer,)
 
 	Command_Sniper(iID_Admin, iPlayer);
-
-	return true;
 }
 
 public native_admin_commands_respawn(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin, false)
+	CHECK_IS_CONNECTED(iID_Admin, false)
 
 	new iPlayer = get_param(2);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_CONNECTED(iPlayer, false)
 
 	// Respawn allowed for player?
 	if (!Allowed_Respawn(iPlayer))
@@ -337,13 +253,8 @@ public native_admin_commands_respawn(iPlugin_ID, iNum_Params)
 public native_admin_commands_start_mode(iPlugin_ID, iNum_Params)
 {
 	new iID_Admin = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Connected, iID_Admin))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iID_Admin);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iID_Admin,)
+	CHECK_IS_CONNECTED(iID_Admin,)
 
 	new szGame_Mode[32];
 	get_string(2, szGame_Mode, charsmax(szGame_Mode));
@@ -354,12 +265,10 @@ public native_admin_commands_start_mode(iPlugin_ID, iNum_Params)
 	{
 		log_error(AMX_ERR_NATIVE, "Invalid game mode name (%s)", szGame_Mode);
 
-		return false;
+		return;
 	}
 
 	Command_Start_Mode(iID_Admin, iGame_Mode_ID);
-
-	return true;
 }
 
 // zpe_zombie [target]
@@ -1072,7 +981,7 @@ Get_Playing_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_NOT_VALID(g_iBit_Connected, i))
+		if (!is_player_connected(i))
 		{
 			continue;
 		}
@@ -1092,7 +1001,7 @@ Get_Alive_Count()
 
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (BIT_VALID(g_iBit_Alive, i))
+		if (is_player_alive(i))
 		{
 			iAlive++;
 		}
@@ -1104,7 +1013,7 @@ Get_Alive_Count()
 // Checks if a player is allowed to respawn
 Allowed_Respawn(iPlayer)
 {
-	if (BIT_VALID(g_iBit_Alive, iPlayer))
+	if (is_player_alive(iPlayer))
 	{
 		return false;
 	}
@@ -1115,25 +1024,4 @@ Allowed_Respawn(iPlayer)
 	}
 
 	return true;
-}
-
-public client_putinserver(iPlayer)
-{
-	BIT_ADD(g_iBit_Connected, iPlayer);
-}
-
-public client_disconnected(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-	BIT_SUB(g_iBit_Connected, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

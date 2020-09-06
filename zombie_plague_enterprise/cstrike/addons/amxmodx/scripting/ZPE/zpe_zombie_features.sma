@@ -22,6 +22,7 @@
 #include <zpe_kernel>
 #include <zpe_class_nemesis>
 #include <zpe_class_assassin>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_SETTINGS_FILE "ZPE/zpe_settings.ini"
 
@@ -41,8 +42,6 @@ new g_pCvar_Zombie_Silent;
 new g_pCvar_Nemesis_Bleeding;
 new g_pCvar_Assassin_Bleeding;
 new g_pCvar_Zombie_Bleeding;
-
-new g_iBit_Alive;
 
 public plugin_init()
 {
@@ -96,7 +95,7 @@ public RG_CSGameRules_PlayerKilled_Post(iVictim)
 
 public Message_Setfov(iMessage_ID, iMessage_Dest, iMessage_Entity)
 {
-	if (BIT_NOT_VALID(g_iBit_Alive, iMessage_Entity) || !zpe_core_is_zombie(iMessage_Entity) || get_msg_arg_int(1) != CS_DEFAULT_FOV)
+	if (!is_player(iMessage_Entity) || !is_player_alive(iMessage_Entity) || !zpe_core_is_zombie(iMessage_Entity) || get_msg_arg_int(1) != CS_DEFAULT_FOV)
 	{
 		return;
 	}
@@ -224,16 +223,4 @@ public client_disconnected(iPlayer)
 {
 	// Remove bleeding task
 	remove_task(iPlayer);
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
-{
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }

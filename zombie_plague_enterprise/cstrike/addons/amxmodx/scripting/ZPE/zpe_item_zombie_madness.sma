@@ -26,6 +26,7 @@
 #include <zpe_grenade_napalm>
 #include <zpe_class_nemesis>
 #include <zpe_class_assassin>
+#include <ck_cs_common_bits_api>
 
 #define ZPE_CLASS_ZOMBIE_SETTINGS_PATH "ZPE/classes/zombie"
 
@@ -60,8 +61,6 @@ new g_pCvar_Zombie_Madness_Aura_Color_R;
 new g_pCvar_Zombie_Madness_Aura_Color_G;
 new g_pCvar_Zombie_Madness_Aura_Color_B;
 
-new g_iBit_Alive;
-
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -92,13 +91,8 @@ public plugin_natives()
 public native_item_zombie_madness_get(iPlugin_ID, iNum_Params)
 {
 	new iPlayer = get_param(1);
-
-	if (BIT_NOT_VALID(g_iBit_Alive, iPlayer))
-	{
-		log_error(AMX_ERR_NATIVE, "Invalid player (%d)", iPlayer);
-
-		return false;
-	}
+	CHECK_IS_PLAYER(iPlayer, false)
+	CHECK_IS_ALIVE(iPlayer, false)
 
 	return BIT_VALID(g_Zombie_Madness_Block_Damage, iPlayer);
 }
@@ -211,8 +205,7 @@ public Remove_Zombie_Madness(iTask_ID)
 
 public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 {
-	// Non-player damage or self damage
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
@@ -229,8 +222,7 @@ public RG_CBasePlayer_TraceAttack_(iVictim, iAttacker)
 // Needed to block explosion damage too
 public RG_CBasePlayer_TakeDamage_(iVictim, iInflictor, iAttacker)
 {
-	// Non-player damage or self damage
-	if (iVictim == iAttacker || BIT_NOT_VALID(g_iBit_Alive, iAttacker))
+	if (iVictim == iAttacker || !is_player(iAttacker))
 	{
 		return HC_CONTINUE;
 	}
@@ -314,22 +306,11 @@ public client_disconnected(iPlayer)
 	remove_task(iPlayer + TASK_AURA);
 
 	BIT_SUB(g_Zombie_Madness_Block_Damage, iPlayer);
-
-	BIT_SUB(g_iBit_Alive, iPlayer);
 }
 
-public zpe_fw_kill_pre_bit_sub(iPlayer)
-{
-	BIT_SUB(g_iBit_Alive, iPlayer);
-}
-
-public zpe_fw_spawn_post_bit_add(iPlayer)
+public zpe_fw_core_spawn_post(iPlayer)
 {
 	// Remove zombie madness from a previous round
 	remove_task(iPlayer + TASK_MADNESS);
 	remove_task(iPlayer + TASK_AURA);
-
-	BIT_SUB(g_Zombie_Madness_Block_Damage, iPlayer);
-
-	BIT_ADD(g_iBit_Alive, iPlayer);
 }
